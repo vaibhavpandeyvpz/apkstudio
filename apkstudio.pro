@@ -13,6 +13,8 @@ TEMPLATE = app
 
 
 SOURCES += src/main.cpp\
-        src/ide.cpp
+        src/ide.cpp \
+    src/ideui.cpp
 
-HEADERS  += src/ide.h
+HEADERS  += src/ide.h \
+    src/ideui.h

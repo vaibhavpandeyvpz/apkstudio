@@ -2,15 +2,18 @@
 #define IDE_H
 
 #include <QApplication>
-#include <QMainWindow>
 
-class IDE : public QMainWindow
+#include "ideui.h"
+
+class IDE : public IDEUI
 {
     Q_OBJECT
-
 public:
-    IDE(QWidget *parent = 0);
-    ~IDE();
+    IDE(QWidget *parent = 0)
+        : IDEUI(parent) {
+    }
+    ~IDE() {
+    }
 };
 
 #endif // IDE_H
