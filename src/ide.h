@@ -1,8 +1,6 @@
 #ifndef IDE_H
 #define IDE_H
 
-#include <QApplication>
-
 #include "ideui.h"
 
 class IDE : public IDEUI
