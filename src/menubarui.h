@@ -80,9 +80,6 @@ protected:
     }
 private:
     void prepare();
-protected Q_SLOTS:
-    virtual void onRestart() = 0;
-    virtual void onQuit() = 0;
 public:
     explicit MenuBarUI(QWidget *parent = 0)
         : QMenuBar(parent) {

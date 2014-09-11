@@ -158,7 +158,4 @@ void MenuBarUI::prepare()
     addAction(_scripts->menuAction());
     addAction(_window->menuAction());
     addAction(_help->menuAction());
-    // Bind: Children
-    connect(_restart, SIGNAL(triggered()), this, SLOT(onRestart()));
-    connect(_quit, SIGNAL(triggered()), this, SLOT(onQuit()));
 }

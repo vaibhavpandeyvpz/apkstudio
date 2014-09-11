@@ -13,9 +13,10 @@ public:
     explicit ToolBar(QWidget *parent = 0)
         : ToolBarUI(parent) {
     }
-    void invalidate();
     ~ToolBar() {
     }
+public:
+    void invalidate();
 };
 
 #endif // TOOLBAR_H
