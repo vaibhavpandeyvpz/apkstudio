@@ -48,15 +48,25 @@ void Settings::addRecentProjects(const QStringList &paths)
     set(SETTING_RECENT_PROJECTS, QVariant(projects));
 }
 
-int Settings::defaultEncoding()
+int Settings::characterEncoding()
 {
-    int encoding = qvariant_cast<int>(get(SETTING_DEFAULT_ENCODING, QVariant(-1)));
+    int encoding = qvariant_cast<int>(get(SETTING_CHARACTER_ENCODING, QVariant(-1)));
     return (encoding < 0) ? QTextCodec::codecForName("UTF-8")->mibEnum() : encoding;
 }
 
-void Settings::defaultEncoding(const int encoding)
+void Settings::characterEncoding(const int encoding)
 {
-    set(SETTING_DEFAULT_ENCODING, QVariant(encoding));
+    set(SETTING_CHARACTER_ENCODING, QVariant(encoding));
+}
+
+QString Settings::imageBackground()
+{
+    return qvariant_cast<QString>(get(SETTING_IMAGE_BACKGROUND, QVariant("#ffffff")));
+}
+
+void Settings::imageBackground(const QString &color)
+{
+    set(SETTING_IMAGE_BACKGROUND, QVariant(color));
 }
 
 QString Settings::language()

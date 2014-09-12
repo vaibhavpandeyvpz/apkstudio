@@ -2,6 +2,20 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US" sourcelanguage="en_IN">
     <context>
+        <name>editors</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Editors</translation>
+        </message>
+    </context>
+    <context>
+        <name>files</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Files</translation>
+        </message>
+    </context>
+    <context>
         <name>ide</name>
         <message>
             <source>mbox_close_message</source>
@@ -14,6 +28,13 @@
         <message>
             <source>window_title</source>
             <translation>APK Studio | By Vaibhav Pandey a.k.a VPZ | www.vaibhavpandey.com/apkstudio</translation>
+        </message>
+    </context>
+    <context>
+        <name>logs</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Logs</translation>
         </message>
     </context>
     <context>
@@ -265,6 +286,27 @@
         <message>
             <source>menu_window</source>
             <translation>Window</translation>
+        </message>
+    </context>
+    <context>
+        <name>outline</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Outline</translation>
+        </message>
+    </context>
+    <context>
+        <name>projects</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Projects</translation>
+        </message>
+    </context>
+    <context>
+        <name>tasks</name>
+        <message>
+            <source>dock_title</source>
+            <translation>Tasks</translation>
         </message>
     </context>
     <context>

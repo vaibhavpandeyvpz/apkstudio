@@ -1,17 +1,22 @@
 #ifndef TASKSPANELUI_H
 #define TASKSPANELUI_H
 
-#include <QWidget>
+#include "panelui.h"
+#include "utility.h"
 
-class TasksPanelUI : public QWidget
+class TasksPanelUI : public PanelUI
 {
     Q_OBJECT
 private:
-    void prepare();
+    void inflate();
+protected:
+    static QString translate(const char *key) {
+        return Utility::translate("tasks", key);
+    }
 public:
     explicit TasksPanelUI(QWidget *parent) :
-        QWidget(parent) {
-        prepare();
+        PanelUI(parent) {
+        inflate();
     }
     ~TasksPanelUI() {
     }

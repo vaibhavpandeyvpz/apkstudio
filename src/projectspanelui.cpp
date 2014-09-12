@@ -1,5 +1,5 @@
 #include "projectspanelui.h"
 
-void ProjectsPanelUI::prepare()
+void ProjectsPanelUI::inflate()
 {
 }

@@ -16,5 +16,11 @@
         <file>icon/hammer.png</file>
         <file>icon/new.png</file>
         <file>icon/terminal.png</file>
+        <file>icon/apkstudio.ico</file>
+        <file>icon/apkstudio.png</file>
+        <file>background/checkerboard.png</file>
+        <file>icon/cross.png</file>
+        <file>icon/split_horizontal.png</file>
+        <file>icon/split_vertical.png</file>
     </qresource>
 </RCC>

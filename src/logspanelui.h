@@ -1,17 +1,22 @@
 #ifndef LOGSPANELUI_H
 #define LOGSPANELUI_H
 
-#include <QWidget>
+#include "panelui.h"
+#include "utility.h"
 
-class LogsPanelUI : public QWidget
+class LogsPanelUI : public PanelUI
 {
     Q_OBJECT
 private:
-    void prepare();
+    void inflate();
+protected:
+    static QString translate(const char *key) {
+        return Utility::translate("logs", key);
+    }
 public:
     explicit LogsPanelUI(QWidget *parent = 0) :
-        QWidget(parent) {
-        prepare();
+        PanelUI(parent) {
+        inflate();
     }
     ~LogsPanelUI() {
     }

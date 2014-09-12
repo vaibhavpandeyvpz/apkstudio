@@ -1,19 +1,24 @@
 #ifndef FILESPANELUI_H
 #define FILESPANELUI_H
 
-#include <QWidget>
+#include "panelui.h"
+#include "utility.h"
 
-class FilesPanelUI : public QWidget
+class FilesPanelUI : public PanelUI
 {
     Q_OBJECT
 private:
-    void prepare();
+    void inflate();
+protected:
+    static QString translate(const char *key) {
+        return Utility::translate("files", key);
+    }
 public:
     explicit FilesPanelUI(QWidget *parent = 0)
-        : QWidget(parent) {
-        prepare();
+        : PanelUI(parent) {
+        inflate();
     }
-    ~ProjectsPanel() {
+    ~FilesPanelUI() {
     }
 };
 

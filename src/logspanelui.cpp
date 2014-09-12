@@ -1,5 +1,5 @@
 #include "logspanelui.h"
 
-void LogsPanelUI::prepare()
+void LogsPanelUI::inflate()
 {
 }

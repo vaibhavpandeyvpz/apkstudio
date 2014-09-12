@@ -16,8 +16,10 @@ public:
     static void addRecentFiles(const QStringList &);
     static void addRecentProject(const QString &);
     static void addRecentProjects(const QStringList &);
-    static int defaultEncoding();
-    static void defaultEncoding(const int);
+    static int characterEncoding();
+    static void characterEncoding(const int);
+    static QString imageBackground();
+    static void imageBackground(const QString &);
     static QString language();
     static void language(const QString &);
     static bool maximized();

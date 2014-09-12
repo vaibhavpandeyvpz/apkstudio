@@ -1,5 +1,5 @@
 #include "filespanelui.h"
 
-void FilesPanelUI::prepare()
+void FilesPanelUI::inflate()
 {
 }

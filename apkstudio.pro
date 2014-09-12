@@ -24,7 +24,13 @@ HEADERS  += src/ide.h \
     src/taskspanel.h \
     src/taskspanelui.h \
     src/logspanelui.h \
-    src/logspanel.h
+    src/logspanel.h \
+    src/panelui.h \
+    src/imageeditorui.h \
+    src/imageeditor.h \
+    src/flickcharm.h \
+    src/editorwidgetui.h \
+    src/editorwidget.h
 
 OTHER_FILES += \
     res/windows.rc
@@ -53,7 +59,13 @@ SOURCES += src/main.cpp\
     src/taskspanel.cpp \
     src/taskspanelui.cpp \
     src/logspanelui.cpp \
-    src/logspanel.cpp
+    src/logspanel.cpp \
+    src/panelui.cpp \
+    src/imageeditorui.cpp \
+    src/imageeditor.cpp \
+    src/flickcharm.cpp \
+    src/editorwidgetui.cpp \
+    src/editorwidget.cpp
 
 TARGET = apkstudio
 TEMPLATE = app

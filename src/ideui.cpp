@@ -18,6 +18,22 @@ void IDEUI::prepare()
     _menubar = new MenuBar(this);
     _menubar->invalidate();
     setMenuBar(_menubar);
+    // Panels
+    _editors_panel = new EditorsPanel(this);
+    _files_panel = new FilesPanel(this);
+    _logs_panel = new LogsPanel(this);
+    _outline_panel = new OutlinePanel(this);
+    _projects_panel = new ProjectsPanel(this);
+    _tasks_panel = new TasksPanel(this);
+    addDockWidget(Qt::BottomDockWidgetArea, _logs_panel);
+    addDockWidget(Qt::LeftDockWidgetArea, _projects_panel);
+    addDockWidget(Qt::LeftDockWidgetArea, _files_panel);
+    addDockWidget(Qt::RightDockWidgetArea, _outline_panel);
+    addDockWidget(Qt::RightDockWidgetArea, _tasks_panel);
+    setCentralWidget(_editors_panel);
+    // StatusBar
+    _statusbar = new QStatusBar(this);
+    setStatusBar(_statusbar);
     // ToolBar
     _toolbar = new ToolBar(this);
     _toolbar->invalidate();
@@ -35,6 +51,6 @@ void IDEUI::inflate()
     else
         resize(Settings::windowSize());
     // Window
-    setDockOptions(AllowTabbedDocks | AllowNestedDocks | AnimatedDocks);
+    setDockOptions(AnimatedDocks | AllowNestedDocks);
     setWindowTitle(translate("window_title"));
 }

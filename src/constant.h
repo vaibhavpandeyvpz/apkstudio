@@ -12,12 +12,15 @@
 #define RESOURCE_PATH_ICON ":/icon/"
 #define RESOURCE_PATH_LANGUAGE ":/lang/"
 
-#define SETTING_DEFAULT_ENCODING "default_encoding"
+#define SETTING_CHARACTER_ENCODING "character_encoding"
+#define SETTING_IMAGE_BACKGROUND "image_background"
 #define SETTING_LANGUAGE "language"
 #define SETTING_MAXIMIZED "maximized"
 #define SETTING_PREVIOUS_DIRECTORY "previous_directory"
 #define SETTING_RECENT_FILES "recent_files"
 #define SETTING_RECENT_PROJECTS "recent_projects"
 #define SETTING_WINDOW_SIZE "window_size"
+
+#define STYLESHEET_COMBOBOXES "QComboBox { max-height: 22px; }"
 
 #endif // CONSTANT_H

@@ -4,7 +4,7 @@ void ToolBarUI::onEncodingSelected(int index)
 {
     if (index < 0)
         return;
-    Settings::defaultEncoding(qvariant_cast<int>(_encoding->itemData(index)));
+    Settings::characterEncoding(qvariant_cast<int>(_encoding->itemData(index)));
 }
 
 void ToolBarUI::prepare()
@@ -26,10 +26,10 @@ void ToolBarUI::prepare()
     // Initialize: ComboBoxes
     _encoding = new QComboBox(this);
     _encoding->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    _encoding->setStyleSheet("QComboBox { max-height: 22px; }");
+    _encoding->setStyleSheet(STYLESHEET_COMBOBOXES);
     // Initialize: Self
     setAcceptDrops(false);
-    setMovable(false);
+    setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
     // Add: Actions
     addAction(_new);
     addAction(_open);

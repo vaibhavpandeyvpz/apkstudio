@@ -1,5 +1,5 @@
 #include "taskspanelui.h"
 
-void TasksPanelUI::prepare()
+void TasksPanelUI::inflate()
 {
 }

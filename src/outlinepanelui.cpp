@@ -1,5 +1,5 @@
 #include "outlinepanelui.h"
 
-void OutlinePanelUI::prepare()
+void OutlinePanelUI::inflate()
 {
 }

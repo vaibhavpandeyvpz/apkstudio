@@ -1,16 +1,22 @@
 #ifndef EDITORSPANELUI_H
 #define EDITORSPANELUI_H
 
-#include <QWidget>
+#include "editorwidget.h"
+#include "panelui.h"
+#include "utility.h"
 
-class EditorsPanelUI : public QWidget
+class EditorsPanelUI : public PanelUI
 {
     Q_OBJECT
 private:
     void prepare();
+protected:
+    static QString translate(const char *key) {
+        return Utility::translate("editors", key);
+    }
 public:
     explicit EditorsPanelUI(QWidget *parent = 0)
-        : QWidget(parent) {
+        : PanelUI(parent) {
         prepare();
     }
     ~EditorsPanelUI() {

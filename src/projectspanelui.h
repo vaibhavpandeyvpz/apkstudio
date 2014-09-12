@@ -1,17 +1,22 @@
 #ifndef PROJECTSPANELUI_H
 #define PROJECTSPANELUI_H
 
-#include <QWidget>
+#include "panelui.h"
+#include "utility.h"
 
-class ProjectsPanelUI : public QWidget
+class ProjectsPanelUI : public PanelUI
 {
     Q_OBJECT
 private:
-    void prepare();
+    void inflate();
+protected:
+    static QString translate(const char *key) {
+        return Utility::translate("projects", key);
+    }
 public:
     explicit ProjectsPanelUI(QWidget *parent = 0)
-        : QWidget(parent) {
-        prepare();
+        : PanelUI(parent) {
+        inflate();
     }
     ~ProjectsPanelUI() {
     }
