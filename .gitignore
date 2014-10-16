@@ -16,7 +16,6 @@
 *.so
 /.qmake.cache
 /.qmake.stash
-build/*
 Makefile*
 moc_*.cpp
 qrc_*.cpp
