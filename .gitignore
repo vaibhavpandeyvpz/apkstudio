@@ -10,7 +10,6 @@
 *.o
 *.pro.user
 *.pro.user.*
-*.qm
 *.qmlproject.user
 *.qmlproject.user.*
 *.slo
