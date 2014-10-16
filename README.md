@@ -1,4 +1,4 @@
-APK Studio is a cross-platform IDE IDE for reverse-engineering (decompiling/editing) & recompiling of android application binaries within single user-interface. Unlike initial release being Windows exclusive & also didn’t support frameworks, this one is completely re-written using QT for cross-platform support. You can now have multiple frameworks installed & pick a particular one on a per project basis.
+APK Studio is a cross-platform IDE for reverse-engineering (decompiling/editing) & recompiling of android application binaries within single user-interface. Unlike initial release being Windows exclusive & also didn’t support frameworks, this one is completely re-written using QT for cross-platform support. You can now have multiple frameworks installed & pick a particular one on a per project basis.
 
 **Download 2.0.x:** [via Codeplex](https://apkstudio.codeplex.com/releases/view/133065)
 
