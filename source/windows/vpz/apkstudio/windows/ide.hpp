@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStatusBar>
+#include "components/coder.hpp"
 #include "resources/constant.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"

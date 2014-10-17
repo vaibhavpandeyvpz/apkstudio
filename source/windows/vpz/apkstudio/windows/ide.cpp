@@ -1,6 +1,7 @@
 #include "qdebug.h"
 #include "ide.hpp"
 
+using namespace VPZ::APKStudio::Components;
 using namespace VPZ::APKStudio::Helpers;
 
 namespace VPZ {
@@ -13,6 +14,7 @@ IDE::IDE(QWidget *parent) :
     menu_bar = new MenuBar(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
+    setCentralWidget(new Coder(this));
     addToolBar(Qt::TopToolBarArea, tool_bar);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);

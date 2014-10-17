@@ -2,6 +2,8 @@
     error("Unable to locate &/or include apkstudio.pri")
 }
 
+QT += core gui widgets
+
 # Source files to be included/compiled within target
 HEADERS += \
     vpz/apkstudio/components/coder.hpp
