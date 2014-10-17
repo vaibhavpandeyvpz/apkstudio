@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definition extensions="*.smali" name="Smali">
+  <include definition="number">
+  <include definition="string">
+  <rule style="commentsl" id="smali#commentsl"><![CDATA[#[^\n]*]]></rule>
+  <rule style="folder" id="smali#folder"><![CDATA[[ .](annotation|end|method|sparse\-switch|packed\-switch)\b]]></rule>
+  <rule style="variable" id="smali#parameter"><![CDATA[\bp(?:[0-9]{1,2}|100)\b]]></rule>
+  <rule style="variable" id="smali#variable"><![CDATA[\bv(?:[0-9]{1,2}|100)\b]]></rule>
+</definition>

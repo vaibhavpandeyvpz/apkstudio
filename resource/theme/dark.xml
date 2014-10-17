@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<theme name="Dark">
+  <style bold="true" color="#FFFFFF" name="annotation" />
+  <style color="#1E1E1E" name="background" />
+  <style color="#C7DD0C" name="commentml" />
+  <style color="#D9E577" name="commentsl" />
+  <style color="#D25252" name="folder" />
+  <style color="#D8D8D8" name="foreground" />
+  <style bold="true" color="#D197D9" name="keyword" />
+  <style color="#7FB347" name="number" />
+  <style color="#FFC600" name="string" />
+  <style color="#000000" name="symbol" />
+  <style color="#79ABFF" name="variable" />
+</theme>

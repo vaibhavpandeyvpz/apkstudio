@@ -38,7 +38,13 @@ INCLUDEPATH += $$PWD/../windows/vpz/apkstudio
 # Other misclleneous or platform specific files
 OTHER_FILES += \
     ../../resource/language/en.ts \
-    ../../resource/windows.rc
+    ../../resource/windows.rc \
+    ../../resource/highlight/java.xml \
+    ../../resource/highlight/number.xml \
+    ../../resource/highlight/smali.xml \
+    ../../resource/highlight/string.xml \
+    ../../resource/theme/dark.xml \
+    ../../resource/theme/light.xml
 
 # Refrence QT framework dependencies
 QT += core gui widgets

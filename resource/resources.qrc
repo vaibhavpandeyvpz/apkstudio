@@ -17,5 +17,11 @@
         <file>icon/apkstudio.png</file>
         <file>icon/cross.png</file>
         <file>language/en.qm</file>
+        <file>highlight/java.xml</file>
+        <file>highlight/number.xml</file>
+        <file>highlight/smali.xml</file>
+        <file>highlight/string.xml</file>
+        <file>theme/dark.xml</file>
+        <file>theme/light.xml</file>
     </qresource>
 </RCC>
