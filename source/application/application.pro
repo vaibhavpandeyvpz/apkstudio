@@ -60,3 +60,5 @@ TARGET = ../apkstudio
 TEMPLATE = app
 
 win32:RC_FILE = ../../resource/windows.rc
+
+HEADERS +=

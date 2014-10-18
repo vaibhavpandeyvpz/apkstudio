@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<definition name="String">
-  <rule style="string" id="common#character"><![CDATA['.*']]></rule>
-  <rule style="string" id="common#string"><![CDATA[".*"]]></rule>
+<definition>
+  <rule style="string"><![CDATA['(?:[^\']|\.)*']]></rule>
+  <rule style="string"><![CDATA[\"(?:[^\\"]|\.)*\"]]></rule>
 </definition>

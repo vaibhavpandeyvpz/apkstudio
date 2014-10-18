@@ -63,6 +63,26 @@ void Settings::characterEncoding(const int encoding)
     set(SETTING_CHARACTER_ENCODING, QVariant(encoding));
 }
 
+QString Settings::fontFamily()
+{
+    return qvariant_cast<QString>(get(SETTING_FONT_FAMILY, QVariant("Source Code Pro")));
+}
+
+void Settings::fontFamily(const QString &family)
+{
+    set(SETTING_FONT_FAMILY, QVariant(family));
+}
+
+int Settings::fontSize()
+{
+    return qvariant_cast<int>(get(SETTING_FONT_SIZE, QVariant(10)));
+}
+
+void Settings::fontSize(const int size)
+{
+    set(SETTING_FONT_SIZE, QVariant(size));
+}
+
 QVariant Settings::get(const QString &key, const QVariant &fallback = QVariant())
 {
     QSettings settings;
@@ -71,7 +91,7 @@ QVariant Settings::get(const QString &key, const QVariant &fallback = QVariant()
 
 QString Settings::imageBackground()
 {
-    return qvariant_cast<QString>(get(SETTING_IMAGE_BACKGROUND, QVariant("#ffffff")));
+    return qvariant_cast<QString>(get(SETTING_IMAGE_BACKGROUND, QVariant("#FFFFFF")));
 }
 
 void Settings::imageBackground(const QString &color)
@@ -94,7 +114,7 @@ bool Settings::maximized()
     return qvariant_cast<bool>(get(SETTING_MAXIMIZED, QVariant(false)));
 }
 
-void Settings::maximized(bool maximized)
+void Settings::maximized(const bool maximized)
 {
     set(SETTING_MAXIMIZED, QVariant(maximized));
 }
@@ -147,6 +167,36 @@ void Settings::set(const QString &key, const QVariant &value)
     settings.sync();
 }
 
+bool Settings::spacesForTab()
+{
+    return qvariant_cast<bool>(get(SETTING_SPACES_FOR_TAB, QVariant(false)));
+}
+
+void Settings::spacesForTab(const bool enable)
+{
+    set(SETTING_SPACES_FOR_TAB, QVariant(enable));
+}
+
+int Settings::tabWidth()
+{
+    return qvariant_cast<int>(get(SETTING_TAB_WIDTH, QVariant(4)));
+}
+
+void Settings::tabWidth(const int count)
+{
+    set(SETTING_TAB_WIDTH, QVariant(count));
+}
+
+QString Settings::theme()
+{
+    return qvariant_cast<QString>(get(SETTING_THEME, QVariant("light")));
+}
+
+void Settings::theme(const QString &name)
+{
+    set(SETTING_THEME, QVariant(name));
+}
+
 QSize Settings::windowSize()
 {
     return qvariant_cast<QSize>(get(SETTING_WINDOW_SIZE, QVariant(QSize(800, 600))));
@@ -155,6 +205,16 @@ QSize Settings::windowSize()
 void Settings::windowSize(const QSize &size)
 {
     set(SETTING_WINDOW_SIZE, QVariant(size));
+}
+
+bool Settings::wordWrap()
+{
+    return qvariant_cast<bool>(get(SETTING_WORD_WRAP, QVariant(false)));
+}
+
+void Settings::wordWrap(const bool enable)
+{
+    set(SETTING_WORD_WRAP, QVariant(enable));
 }
 
 } // namespace Helpers

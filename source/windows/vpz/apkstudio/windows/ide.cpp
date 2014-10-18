@@ -11,10 +11,13 @@ namespace Windows {
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent), exit_code(0)
 {
+    Coder *coder = new Coder(this);
+    highlighter = new Highlighter(this);
+    highlighter->setDocument(coder->document());
     menu_bar = new MenuBar(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
-    setCentralWidget(new Coder(this));
+    setCentralWidget(coder);
     addToolBar(Qt::TopToolBarArea, tool_bar);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);

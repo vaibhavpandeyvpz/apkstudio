@@ -1,7 +1,22 @@
 #ifndef VPZ_APKSTUDIO_HELPERS_HIGHLIGHTER_HPP
 #define VPZ_APKSTUDIO_HELPERS_HIGHLIGHTER_HPP
 
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QHash>
+#include <QHashIterator>
+#include <QIODevice>
+#include <QRegularExpression>
 #include <QSyntaxHighlighter>
+#include <QTextCharFormat>
+#include <QVariant>
+#include <QVector>
+#include <QXmlStreamReader>
+#include "application.hpp"
+#include "resources/constant.hpp"
+#include "resources/variant.hpp"
+#include "settings.hpp"
 
 namespace VPZ {
 namespace APKStudio {
@@ -10,8 +25,18 @@ namespace Helpers {
 class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
+private:
+    QHash<QString, QVector<Resources::Highlight> > definitions;
+    QString mode;
+    QHash<QString, QTextCharFormat> theme;
+private:
+    void initialize();
+    QVector<Resources::Highlight> parse(const QString &);
 public:
-    explicit Highlighter(QTextDocument *parent = 0);
+    explicit Highlighter(QObject * = 0);
+    explicit Highlighter(QTextDocument * = 0);
+    void highlightBlock(const QString &);
+    void setMode(const QString &);
 };
 
 } // namespace Helpers

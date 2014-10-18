@@ -15,11 +15,13 @@ HEADERS += \
     vpz/apkstudio/helpers/settings.hpp \
     vpz/apkstudio/helpers/macro.hpp \
     vpz/apkstudio/helpers/highlighter.hpp \
-    vpz/apkstudio/helpers/completer.hpp
+    vpz/apkstudio/helpers/completer.hpp \
+    vpz/apkstudio/helpers/application.hpp
 
 SOURCES += \
     vpz/apkstudio/helpers/text.cpp \
     vpz/apkstudio/helpers/format.cpp \
     vpz/apkstudio/helpers/settings.cpp \
     vpz/apkstudio/helpers/highlighter.cpp \
-    vpz/apkstudio/helpers/completer.cpp
+    vpz/apkstudio/helpers/completer.cpp \
+    vpz/apkstudio/helpers/application.cpp
