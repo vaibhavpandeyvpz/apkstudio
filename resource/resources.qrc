@@ -23,5 +23,6 @@
         <file>highlight/string.xml</file>
         <file>theme/dark.xml</file>
         <file>theme/light.xml</file>
+        <file>highlight/xml.xml</file>
     </qresource>
 </RCC>

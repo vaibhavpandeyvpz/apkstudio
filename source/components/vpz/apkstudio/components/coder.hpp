@@ -17,6 +17,8 @@ class Coder : public QPlainTextEdit
     Q_OBJECT
 private:
     QHash<QString, QString> theme;
+private:
+    void cursorPositionChanged();
 private Q_SLOTS:
     void highlightCurrentLine();
 public:

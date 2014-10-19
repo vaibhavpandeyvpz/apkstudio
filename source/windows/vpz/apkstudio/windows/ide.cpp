@@ -14,6 +14,7 @@ IDE::IDE(QWidget *parent) :
     Coder *coder = new Coder(this);
     highlighter = new Highlighter(this);
     highlighter->setDocument(coder->document());
+    highlighter->setMode("xml");
     menu_bar = new MenuBar(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);

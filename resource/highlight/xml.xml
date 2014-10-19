@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definition>
+  <include definition="number">
+  <rule style="keyword"><![CDATA[([^\x00-\x7F])([^\x00-\x7F])*]]></rule>
+  <rule style="function"><![CDATA[([A-Za-z_:])([A-Za-z0-9_:.-])*]]></rule>
+  <rule style="string"><![CDATA["[^<"]*"|'[^<']*']]></rule>
+  <rule style="commentsl"><![CDATA[<!--[^-]*-([^-][^-]*-)*->]]></rule>
+  <rule style="commentml"><![CDATA[<!--|[^-]*-([^-][^-]*-)*->]]></rule>
+</definition>

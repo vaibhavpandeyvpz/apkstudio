@@ -2,15 +2,15 @@
 <theme name="Light">
   <style bold="true" color="#990099" name="annotation" underline="true" />
   <style color="#FFFFFF" name="background" />
-  <style color="#CC0000" name="commentml" italic="true" />
-  <style color="#990000" name="commentsl" italic="true" />
-  <style color="#0066FF" name="folder" />
+  <style color="#CC0000" italic="true" name="commentml" />
+  <style color="#990000" italic="true" name="commentsl" />
   <style color="#333333" name="foreground" />
+  <style bold="true" color="#2B91AF" name="function" />
   <style color="#EEEEEE" name="highlight" />
   <style bold="true" color="#0000FF" name="keyword" />
   <style color="#552200" name="number" />
   <style color="#2AA198" name="selection" />
-  <style color="#2B91AF" name="string" />
+  <style color="#27C400" name="string" />
   <style color="#333333" name="symbol" />
   <style color="#000099" name="variable" />
 </theme>

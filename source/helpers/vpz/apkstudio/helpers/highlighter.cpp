@@ -57,7 +57,7 @@ void Highlighter::highlightBlock(const QString &text)
 void Highlighter::initialize()
 {
     QStringList languages;
-    languages << "java" << "smali";
+    languages << "java" << "smali" << "xml";
     foreach (const QString language, languages)
         definitions.insert(language, parse(language));
     QList<Resources::Style> styles = Application::theme();
