@@ -2,6 +2,7 @@
 #define VPZ_APKSTUDIO_WINDOWS_IDE_HPP
 
 #include <QCloseEvent>
+#include <QDesktopServices>
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStatusBar>
@@ -34,6 +35,10 @@ private:
 public:
     explicit IDE(QWidget *parent = 0);
 public Q_SLOTS:
+    void onActionContribute();
+    void onActionDonate();
+    void onActionFeedbackIssues();
+    void onActionFeedbackThanks();
     void onActionQuit();
     void onActionRestart();
     void onActionToggle(QAction *);

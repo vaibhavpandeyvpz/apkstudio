@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <definition>
-  <include definition="number">
-  <rule style="keyword"><![CDATA[([^\x00-\x7F])([^\x00-\x7F])*]]></rule>
-  <rule style="function"><![CDATA[([A-Za-z_:])([A-Za-z0-9_:.-])*]]></rule>
-  <rule style="string"><![CDATA["[^<"]*"|'[^<']*']]></rule>
-  <rule style="commentsl"><![CDATA[<!--[^-]*-([^-][^-]*-)*->]]></rule>
-  <rule style="commentml"><![CDATA[<!--|[^-]*-([^-][^-]*-)*->]]></rule>
+    <include definition="number">
+    <rule style="variable"><![CDATA[\b[A-Za-z0-9_]+(?=\=)]]></rule>
+    <rule style="variable"><![CDATA[\b(/?)[A-Za-z0-9_]+:([A-Za-z0-9_]+/?)+(?=\=)]]></rule>
+    <rule style="keyword"><![CDATA[\b[A-Za-z0-9_]+(?=[\s/>])]]></rule>
+    <rule style="keyword"><![CDATA[\b(/?)[A-Za-z0-9_]+-([A-Za-z0-9_]+/?)+(?=[\s/>])]]></rule>
+    <include definition="string">
+    <rule style="stringul"><![CDATA[@([a-zA-Z])+(?=/)]]></rule>
+    <rule style="stringb"><![CDATA[&[^\s]*;]]></rule>
+    <rule style="commentml"><![CDATA[<!--|[^-]*-([^-][^-]*-)*->]]></rule>
 </definition>

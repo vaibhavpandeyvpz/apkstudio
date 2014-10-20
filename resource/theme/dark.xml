@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<theme name="Dark">
-  <style bold="true" color="#FFFFFF" name="annotation" underline="true" />
-  <style color="#1E1E1E" name="background" />
-  <style color="#C7DD0C" italic="true" name="commentml" />
-  <style color="#D9E577" italic="true" name="commentsl" />
-  <style color="#D8D8D8" name="foreground" />
-  <style bold="true" color="#D25252" name="function" />
-  <style color="#222222" name="highlight" />
-  <style bold="true" color="#D197D9" name="keyword" />
-  <style color="#7FB347" name="number" />
-  <style color="#999999" name="selection" />
-  <style color="#FFC600" name="string" />
-  <style color="#EEEEEE" name="symbol" />
-  <style color="#79ABFF" name="variable" />
+<theme>
+    <style bold="true" color="#D9E577" name="annotation" />
+    <style color="#000000" name="background" />
+    <style color="#CCDF32" name="commentml" />
+    <style color="#CCDF32" name="commentsl" />
+    <style bold="true" color="#EFC090" name="constant" />
+    <style color="#131314" name="highlight" />
+    <style color="#C0C0C0" name="foreground" />
+    <style bold="true" color="#00AA34" name="keyword" />
+    <style color="#686868" name="line" />
+    <style color="#000000" name="lines" />
+    <style color="#2BA8C3" name="namespace" />
+    <style color="#FFFF00" name="number" />
+    <style color="#000000" name="selected" />
+    <style color="#888888" name="selection" />
+    <style color="#82CE80" name="string" />
+    <style bold="true" color="#82CE80" name="stringb" />
+    <style color="#82CE80" name="stringul" underline="true" />
+    <style color="#FFFFFF" name="symbol" />
+    <style color="#2BA8C3" name="type" underline="true" />
+    <style color="#79ABFF" name="variable" />
 </theme>

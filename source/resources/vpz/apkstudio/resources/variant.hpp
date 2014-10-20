@@ -1,7 +1,7 @@
 #ifndef VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP
 #define VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP
 
-#include <QRegularExpression>
+#include <QHash>
 
 namespace VPZ {
 namespace APKStudio {
@@ -16,9 +16,10 @@ struct Style {
     bool bold;
     QString color;
     bool italic;
-    QString name;
     bool underline;
 };
+
+typedef QHash<QString, Style> Theme;
 
 } // namespace Resources
 } // namespace APKStudio
@@ -26,5 +27,6 @@ struct Style {
 
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Highlight)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Style)
+Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Theme)
 
 #endif // VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP

@@ -36,6 +36,26 @@ void IDE::closeEvent(QCloseEvent *event)
     qApp->exit(exit_code);
 }
 
+void IDE::onActionContribute()
+{
+    QDesktopServices::openUrl(QUrl(URL_CONTRIBUTE));
+}
+
+void IDE::onActionDonate()
+{
+    QDesktopServices::openUrl(QUrl(URL_DONATE));
+}
+
+void IDE::onActionFeedbackIssues()
+{
+    QDesktopServices::openUrl(QUrl(URL_ISSUES));
+}
+
+void IDE::onActionFeedbackThanks()
+{
+    QDesktopServices::openUrl(QUrl(URL_THANKS));
+}
+
 void IDE::onActionQuit()
 {
     exit_code = 0;

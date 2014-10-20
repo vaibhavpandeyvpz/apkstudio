@@ -31,4 +31,9 @@
 
 #define STYLESHEET_COMBOBOXES "QComboBox { max-height: 22px; }"
 
+#define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
+#define URL_DONATE "https://pledgie.com/campaigns/26789"
+#define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
+#define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"
+
 #endif // VPZ_APKSTUDIO_RESOURCES_CONSTANT_HPP

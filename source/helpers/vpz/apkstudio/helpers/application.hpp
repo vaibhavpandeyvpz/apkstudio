@@ -25,7 +25,7 @@ public:
 #else
     Application(int &, char **, int = ApplicationFlags);
 #endif
-    static QList<Resources::Style> theme();
+    static Resources::Theme theme();
 };
 
 } // namespace Helpers

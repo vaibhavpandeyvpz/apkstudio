@@ -60,15 +60,17 @@ void Highlighter::initialize()
     languages << "java" << "smali" << "xml";
     foreach (const QString language, languages)
         definitions.insert(language, parse(language));
-    QList<Resources::Style> styles = Application::theme();
-    foreach (Resources::Style style, styles) {
+    Resources::Theme styles = Application::theme();
+    Resources::Theme::iterator iterator;
+    for (iterator = styles.begin(); iterator != styles.end(); iterator++) {
+        Resources::Style style = iterator.value();
         QTextCharFormat format;
         if (style.bold)
             format.setFontWeight(QFont::Bold);
         format.setFontItalic(style.italic);
         format.setFontUnderline(style.underline);
         format.setForeground(QColor(style.color));
-        this->theme.insert(style.name, format);
+        theme.insert(iterator.key(), format);
     }
 }
 

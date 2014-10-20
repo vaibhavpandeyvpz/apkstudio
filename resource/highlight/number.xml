@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <definition>
-  <rule style="number"><![CDATA[\b0[xX][0-9a-fA-F]+\b]]></rule>
-  <rule style="number"><![CDATA[[-+]?\b\d+\b]]></rule>
+    <rule style="number"><![CDATA[\b0[xX][0-9a-fA-F]+\b]]></rule>
+    <rule style="number"><![CDATA[[-+]?\b\d+\b]]></rule>
 </definition>

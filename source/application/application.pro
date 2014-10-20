@@ -43,6 +43,7 @@ OTHER_FILES += \
     ../../resource/highlight/number.xml \
     ../../resource/highlight/smali.xml \
     ../../resource/highlight/string.xml \
+    ../../resource/highlight/xml.xml \
     ../../resource/theme/dark.xml \
     ../../resource/theme/light.xml
 

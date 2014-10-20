@@ -16,10 +16,10 @@ namespace Helpers {
     }
 #endif
 
-    QList<Resources::Style> Application::theme()
+    Resources::Theme Application::theme()
     {
         QVariant theme = instance()->property("theme");
-        QList<Resources::Style> styles = theme.isNull() ? QList<Resources::Style>() : theme.value<QList<Resources::Style> >();
+        Resources::Theme styles = theme.isNull() ? Resources::Theme() : theme.value<Resources::Theme>();
         if (!styles.isEmpty())
             return styles;
         QFile *xml = new QFile(QString(RESOURCE_PATH_THEME).append(Settings::theme()).append(".xml"));
@@ -45,14 +45,13 @@ namespace Helpers {
                     style.bold = (attributes.hasAttribute("bold") && (QString::compare(attributes.value("bold").toString(), "true", Qt::CaseInsensitive) == 0));
                     style.italic = (attributes.hasAttribute("italic") && (QString::compare(attributes.value("italic").toString(), "true", Qt::CaseInsensitive) == 0));
                     style.underline = (attributes.hasAttribute("underline") && (QString::compare(attributes.value("underline").toString(), "true", Qt::CaseInsensitive) == 0));
-                    style.name = name;
-                    styles.append(style);
+                    styles.insert(name, style);
                 }
             }
             reader.clear();
             xml->close();
         }
-        theme.setValue<QList<Resources::Style> >(styles);
+        theme.setValue<Resources::Theme>(styles);
         instance()->setProperty("theme", theme);
         return styles;
     }

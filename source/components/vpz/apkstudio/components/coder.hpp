@@ -3,6 +3,7 @@
 
 #include <QHash>
 #include <QKeyEvent>
+#include <QPair>
 #include <QPlainTextEdit>
 #include "helpers/application.hpp"
 #include "helpers/settings.hpp"
@@ -16,14 +17,31 @@ class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
-    QHash<QString, QString> theme;
-private:
-    void cursorPositionChanged();
+
+    QPair<int, int> cache;
+    LineNumbers *linenumbers;
+    Resources::Theme theme;
 private Q_SLOTS:
-    void highlightCurrentLine();
+    void onBlockCountChanged(const int);
+    void onCursorPositionChanged();
+    void onUpdateRequest(const QRect &, const int);
 public:
     explicit Coder(QWidget *parent = 0);
     void keyPressEvent(QKeyEvent *);
+    int lineNumbersAreaWidth();
+    void lineNumbersPaintEvent(QPaintEvent *);
+};
+
+class LineNumbers : public QWidget
+{
+    Q_OBJECT
+private:
+    Coder *coder;
+protected:
+    void paintEvent(QPaintEvent *);
+public:
+    explicit LineNumbers(Coder *coder = 0);
+    QSize sizeHint() const;
 };
 
 } // namespace Components
