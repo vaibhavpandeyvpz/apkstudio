@@ -8,8 +8,8 @@
     <style color="#EEEEEE" name="highlight" />
     <style color="#000000" name="foreground" />
     <style bold="true" color="#007524" name="keyword" />
-    <style color="#686868" name="line" />
-    <style color="#000000" name="lines" />
+    <style color="#999999" name="line" />
+    <style color="#EEEEEE" name="lines" />
     <style color="#000066" name="namespace" />
     <style color="#552200" name="number" />
     <style color="#000000" name="selected" />

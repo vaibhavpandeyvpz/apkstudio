@@ -10,8 +10,6 @@ Coder::Coder(QWidget *parent) :
     QPlainTextEdit(parent), theme(Application::theme())
 {
     linenumbers = new LineNumbers(this);
-    QStringList required;
-    required << "background" << "foreground" << "highlight" << "selection";
     QFont font;
     font.setFamily(Settings::fontFamily());
     font.setFixedPitch(true);
@@ -24,7 +22,6 @@ Coder::Coder(QWidget *parent) :
     palette.setColor(QPalette::Active, QPalette::Base, QColor(theme.value("background").color));
     palette.setColor(QPalette::Inactive, QPalette::Base, QColor(theme.value("background").color));
     palette.setColor(QPalette::Text, QColor(theme.value("foreground").color));
-    highlightCurrentLine();
     setFont(font);
     setFrameStyle(QFrame::NoFrame);
     setPalette(palette);
@@ -165,6 +162,13 @@ void Coder::lineNumbersPaintEvent(QPaintEvent *event)
     }
 }
 
+void Coder::resizeEvent(QResizeEvent *event)
+{
+    QPlainTextEdit::resizeEvent(event);
+    QRect resized = contentsRect();
+    linenumbers->setGeometry(QRect(resized.left(), resized.top(), lineNumbersAreaWidth(), resized.height()));
+}
+
 void Coder::onBlockCountChanged(const int /* count */)
 {
     setViewportMargins(lineNumbersAreaWidth(), 0, 0, 0);
@@ -194,27 +198,13 @@ void Coder::onUpdateRequest(const QRect &rectangle, const int column)
 {
     if (column)
         linenumbers->scroll(0, column);
-    else if ((cache.first != blockCount()) || (cache.second != extCursor().block().lineCount())) {
+    else if ((cache.first != blockCount()) || (cache.second != textCursor().block().lineCount())) {
         linenumbers->update(0, rectangle.y(), linenumbers->width(), rectangle.height());
         cache.first = blockCount();
         cache.second = textCursor().block().lineCount();
     }
     if (rectangle.contains(viewport()->rect()))
         onBlockCountChanged(0);
-}
-
-LineNumbers::LineNumbers(Coder *coder) :
-    QWidget(coder)
-{
-    this->coder = coder;
-}
-
-void LineNumbers::paintEvent(QPaintEvent *event) {
-    coder->lineNumbersPaintEvent(event);
-}
-
-QSize LineNumbers::sizeHint() const {
-    return QSize(coder->lineNumbersAreaWidth(), 0);
 }
 
 } // namespace Components

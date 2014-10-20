@@ -4,7 +4,11 @@
 #include <QHash>
 #include <QKeyEvent>
 #include <QPair>
+#include <QPainter>
+#include <QPaintEvent>
 #include <QPlainTextEdit>
+#include <QTextBlock>
+#include <QWidget>
 #include "helpers/application.hpp"
 #include "helpers/settings.hpp"
 #include "resources/variant.hpp"
@@ -13,11 +17,12 @@ namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
+class LineNumbers;
+
 class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
-
     QPair<int, int> cache;
     LineNumbers *linenumbers;
     Resources::Theme theme;
@@ -30,6 +35,7 @@ public:
     void keyPressEvent(QKeyEvent *);
     int lineNumbersAreaWidth();
     void lineNumbersPaintEvent(QPaintEvent *);
+    void resizeEvent(QResizeEvent *);
 };
 
 class LineNumbers : public QWidget
@@ -38,10 +44,16 @@ class LineNumbers : public QWidget
 private:
     Coder *coder;
 protected:
-    void paintEvent(QPaintEvent *);
+    void paintEvent(QPaintEvent *event) {
+        coder->lineNumbersPaintEvent(event);
+    }
 public:
-    explicit LineNumbers(Coder *coder = 0);
-    QSize sizeHint() const;
+    explicit LineNumbers(Coder *coder = 0) : QWidget(coder) {
+        this->coder = coder;
+    }
+    QSize sizeHint() const {
+        return QSize(coder->lineNumbersAreaWidth(), 0);
+    }
 };
 
 } // namespace Components
