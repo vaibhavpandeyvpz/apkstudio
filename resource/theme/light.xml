@@ -2,6 +2,7 @@
 <theme>
     <style bold="true" color="#999999" name="annotation" />
     <style color="#FFFFFF" name="background" />
+    <style color="#0072BC" name="bracket" />
     <style color="#666666" name="commentml" />
     <style color="#666666" name="commentsl" />
     <style bold="true" color="#00AA34" name="constant" />
@@ -9,7 +10,7 @@
     <style color="#000000" name="foreground" />
     <style bold="true" color="#007524" name="keyword" />
     <style color="#999999" name="line" />
-    <style color="#EEEEEE" name="lines" />
+    <style color="#FFFFFF" name="lines" />
     <style color="#000066" name="namespace" />
     <style color="#552200" name="number" />
     <style color="#000000" name="selected" />

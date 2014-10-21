@@ -5,6 +5,29 @@ namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
 
+void Block::bracket(Resources::Bracket *bracket)
+{
+    int index = 0;
+    while ((index < brackets.size()) && (bracket->position > brackets.at(index)->position))
+        ++index;
+    brackets.insert(index, bracket);
+}
+
+bool Block::literal(int column)
+{
+    QPair<int, int> literal;
+    foreach (literal, literals) {
+        if ((column >= literal.first) || (column <= literal.second))
+            return true;
+    }
+    return false;
+}
+
+void Block::literal(int line, int column)
+{
+    literals.append(QPair<int, int>(line, column));
+}
+
 Highlighter::Highlighter(QObject *parent) :
     QSyntaxHighlighter(parent), mode("java")
 {
@@ -19,6 +42,8 @@ Highlighter::Highlighter(QTextDocument *parent) :
 
 void Highlighter::highlightBlock(const QString &text)
 {
+    Block *block = new Block;
+    QStringList literals = QString("commentsl|string|stringb|stringul").split('|');
     foreach (const Resources::Highlight &rule, definitions.value(mode)) {
         if (rule.style == "commentml") {
             QTextCharFormat multiline = theme.value(rule.style);
@@ -50,8 +75,25 @@ void Highlighter::highlightBlock(const QString &text)
             int length = matcher.capturedLength();
             setFormat(index, length, theme.value(rule.style));
             matcher = expression.match(text, index + length);
+            if (!literals.contains(rule.style))
+                continue;
+            block->literal(index, index + length);
         }
     }
+    QStringList brackets = Settings::brackets();
+    foreach (const QString &pair, brackets) {
+        foreach (const QChar &character, pair) {
+            int position = text.indexOf(character);
+            if ((position < 0) || block->literal(position))
+                continue;
+            Resources::Bracket *bracket = new Resources::Bracket;
+            bracket->character = character;
+            bracket->position = position;
+            block->bracket(bracket);
+            position = text.indexOf(character, position + 1);
+        }
+    }
+    setCurrentBlockUserData(block);
 }
 
 void Highlighter::initialize()

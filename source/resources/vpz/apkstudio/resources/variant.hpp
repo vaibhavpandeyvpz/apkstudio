@@ -7,6 +7,11 @@ namespace VPZ {
 namespace APKStudio {
 namespace Resources {
 
+struct Bracket {
+    QChar character;
+    int position;
+};
+
 struct Highlight {
     QString regex;
     QString style;
@@ -25,6 +30,7 @@ typedef QHash<QString, Style> Theme;
 } // namespace APKStudio
 } // namespace VPZ
 
+Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Bracket)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Highlight)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Style)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Theme)

@@ -33,6 +33,7 @@ public:
     static void imageBackground(const QString &);
     static QString language();
     static void language(const QString &);
+    inline static QStringList brackets() { return QString("()").split(','); }
     static bool maximized();
     static void maximized(const bool);
     static QString previousDirectory();

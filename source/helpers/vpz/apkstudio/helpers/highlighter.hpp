@@ -7,6 +7,7 @@
 #include <QHash>
 #include <QHashIterator>
 #include <QIODevice>
+#include <QPair>
 #include <QRegularExpression>
 #include <QSyntaxHighlighter>
 #include <QTextCharFormat>
@@ -21,6 +22,18 @@
 namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
+
+class Block : public QTextBlockUserData
+{
+public:
+    QVector<Resources::Bracket *> brackets;
+    QVector<QPair<int, int> > literals;
+public:
+    Block() { }
+    void bracket(Resources::Bracket *);
+    bool literal(int);
+    void literal(int, int);
+};
 
 class Highlighter : public QSyntaxHighlighter
 {

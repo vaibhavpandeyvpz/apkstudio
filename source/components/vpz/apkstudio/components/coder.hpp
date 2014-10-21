@@ -2,14 +2,19 @@
 #define VPZ_APKSTUDIO_COMPONENTS_CODER_HPP
 
 #include <QHash>
+#include <QHelpEvent>
 #include <QKeyEvent>
 #include <QPair>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QPlainTextEdit>
 #include <QTextBlock>
+#include <QTextCharFormat>
+#include <QToolTip>
 #include <QWidget>
 #include "helpers/application.hpp"
+#include "helpers/bracketmatcher.hpp"
+#include "helpers/highlighter.hpp"
 #include "helpers/settings.hpp"
 #include "resources/variant.hpp"
 
@@ -23,8 +28,9 @@ class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
+    Helpers::BracketMatcher *bracket_matcher;
     QPair<int, int> cache;
-    LineNumbers *linenumbers;
+    LineNumbers *line_numbers;
     Resources::Theme theme;
 private Q_SLOTS:
     void onBlockCountChanged(const int);
@@ -32,6 +38,8 @@ private Q_SLOTS:
     void onUpdateRequest(const QRect &, const int);
 public:
     explicit Coder(QWidget *parent = 0);
+    bool event(QEvent* event);
+    void highlightBracket(int, int);
     void keyPressEvent(QKeyEvent *);
     int lineNumbersAreaWidth();
     void lineNumbersPaintEvent(QPaintEvent *);
