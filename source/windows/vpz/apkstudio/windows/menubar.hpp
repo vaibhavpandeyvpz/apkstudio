@@ -4,6 +4,8 @@
 #include <QMenuBar>
 #include "helpers/macro.hpp"
 #include "helpers/text.hpp"
+#include "widgets/recents.hpp"
+#include "widgets/scripts.hpp"
 
 namespace VPZ {
 namespace APKStudio {

@@ -179,7 +179,7 @@ void Settings::set(const QString &key, const QVariant &value)
 
 bool Settings::showWhitespace()
 {
-    return qvariant_cast<bool>(get(SETTING_SHOW_WHITESPACE, QVariant(true)));
+    return qvariant_cast<bool>(get(SETTING_SHOW_WHITESPACE, QVariant(false)));
 }
 
 void Settings::showWhitespace(const bool show)

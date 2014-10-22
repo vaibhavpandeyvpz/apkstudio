@@ -2,6 +2,9 @@
     error("Unable to locate &/or include apkstudio.pri")
 }
 
+# Enable support for newer c++ expressions
+CONFIG += c++11
+
 # Include referenced co-projects & libraries
 INCLUDEPATH += ../resources/vpz/apkstudio
 

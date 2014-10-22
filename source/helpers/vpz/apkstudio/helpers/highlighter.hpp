@@ -44,6 +44,7 @@ private:
     QHash<QString, QTextCharFormat> theme;
 private:
     void initialize();
+    void highlight(Block *, const QString &, const QString &, const QString &);
     QVector<Resources::Highlight> parse(const QString &);
 public:
     explicit Highlighter(QObject * = 0);

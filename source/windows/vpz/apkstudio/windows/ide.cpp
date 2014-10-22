@@ -15,9 +15,9 @@ IDE::IDE(QWidget *parent) :
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
     setCentralWidget(new Coder(this));
-    addToolBar(Qt::TopToolBarArea, tool_bar);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);
+    addToolBar(Qt::TopToolBarArea, tool_bar);
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -71,13 +71,11 @@ void IDE::onActionToggle(QAction *toggle)
 
 void IDE::onInitComplete()
 {
-    // Resize
     setMinimumSize(QSize(800, 600));
     if (Settings::maximized())
         showMaximized();
     else
         resize(Settings::windowSize());
-    // Window
     setDockOptions(AnimatedDocks | AllowNestedDocks);
     setWindowTitle(translate("window_title"));
 }

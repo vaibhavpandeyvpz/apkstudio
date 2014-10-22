@@ -13,7 +13,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QMenu *file = new QMenu(translate("menu_file"), this);
     QMenu *help = new QMenu(translate("menu_help"), this);
     QMenu *project = new QMenu(translate("menu_project"), this);
-    QMenu *scripts = new QMenu(translate("menu_scripts"), this);
+    QMenu *scripts = new Widgets::Scripts(this);
     QMenu *window = new QMenu(translate("menu_window"), this);
     QMenu *tools = new QMenu(translate("menu_tools"), this);
     // Initialize toggle groups
@@ -22,8 +22,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QMenu *adb = new QMenu(translate("item_adb"), tools);
     QMenu *feedback = new QMenu(translate("item_feedback"), help);
     QMenu *open = new QMenu(translate("item_open"), file);
-    QMenu *recent_files = new QMenu(translate("item_recent_files"), file);
-    QMenu *recent_projects = new QMenu(translate("item_recent_projects"), file);
+    QMenu *recents = new Widgets::Recents(file);
     QMenu *views = new QMenu(translate("item_views"), window);
     // Add build items
     APKS_MENUITEM(toggles, false, build, clean, Clean, 0);
@@ -62,8 +61,7 @@ MenuBar::MenuBar(QWidget *parent) :
     file->addSeparator();
     APKS_MENUITEM(toggles, false, file, restart, Restart, 0);
     file->addSeparator();
-    file->addAction(recent_files->menuAction());
-    file->addAction(recent_projects->menuAction());
+    file->addAction(recents->menuAction());
     file->addSeparator();
     APKS_MENUITEM(toggles, false, file, quit, Quit, QKeySequence::Quit);
     // Add help items
@@ -116,8 +114,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QObject::connect(toggles, SIGNAL(triggered(QAction *)), parent, SLOT(onActionToggle(QAction *)));
     toggles->setExclusive(false);
     // Invalidate
-    recent_files->setEnabled(false);
-    recent_projects->setEnabled(false);
+    recents->setEnabled(false);
     scripts->setEnabled(false);
 }
 

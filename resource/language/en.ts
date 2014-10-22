@@ -155,12 +155,8 @@
             <translation>Quit</translation>
         </message>
         <message>
-            <source>item_recent_files</source>
+            <source>item_recents</source>
             <translation>Recent Files</translation>
-        </message>
-        <message>
-            <source>item_recent_projects</source>
-            <translation>Recent Projects</translation>
         </message>
         <message>
             <source>item_redo</source>

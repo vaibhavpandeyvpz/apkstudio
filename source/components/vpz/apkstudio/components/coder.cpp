@@ -64,7 +64,7 @@ bool Coder::event(QEvent *event)
 bool Coder::indent()
 {
     QTextCursor cursor = textCursor();
-    if(!cursor.hasSelection())
+    if (!cursor.hasSelection())
         return false;
     int start = cursor.anchor();
     int stop = cursor.position();
@@ -85,7 +85,7 @@ bool Coder::indent()
     cursor.endEditBlock();
     cursor.setPosition(start, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
-    while(cursor.block().blockNumber() < end)
+    while (cursor.block().blockNumber() < end)
         cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
     setTextCursor(cursor);
@@ -158,7 +158,7 @@ void Coder::keyPressEvent(QKeyEvent *event)
     if (replace && event->isAccepted()) {
         QTextCursor cursor = textCursor();
         cursor.insertText(text);
-        if (QString("'\"[{(").contains(text[0]))
+        if (QString("'\"[{(").startsWith(text[0]))
             cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 1);
         setTextCursor(cursor);
         event->ignore();
@@ -221,7 +221,7 @@ void Coder::paintEvent(QPaintEvent *event)
         if (geometry.top() > event->rect().bottom())
             break;
         if (block.isVisible() && geometry.toRect().intersects(event->rect())) {
-            QString text = block.text().append(' ');
+            QString text = block.text().replace("\t", QString(Settings::tabWidth(), '8')).append(' ');
             painter.setPen(QColor(theme.value("whitespace").color));
             painter.drawText(geometry.left() + fontMetrics().width(text), geometry.top(), width, height, Qt::AlignLeft | Qt::AlignVCenter, "\u00B6");
         }

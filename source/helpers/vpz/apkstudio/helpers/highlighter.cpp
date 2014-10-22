@@ -39,10 +39,25 @@ Highlighter::Highlighter(QTextDocument *parent) :
     initialize();
 }
 
+void Highlighter::highlight(Block *block, const QString &text, const QString &name, const QString &regex)
+{
+    QStringList literals = QString("commentml|commentsl|string|stringb|stringul").split('|');
+    QRegularExpression expression(regex);
+    QRegularExpressionMatch matcher = expression.match(text);
+    while (matcher.hasMatch()) {
+        int index = matcher.capturedStart();
+        int length = matcher.capturedLength();
+        setFormat(index, length, theme.value(name));
+        matcher = expression.match(text, index + length);
+        if (!block && !literals.contains(name))
+            continue;
+        block->literal(index, (index + length));
+    }
+}
+
 void Highlighter::highlightBlock(const QString &text)
 {
     Block *block = new Block;
-    QStringList literals = QString("commentml|commentsl|string|stringb|stringul").split('|');
     foreach (const Resources::Highlight &rule, definitions.value(definition)) {
         if (rule.style == "commentml") {
             QTextCharFormat multiline = theme.value(rule.style);
@@ -66,19 +81,8 @@ void Highlighter::highlightBlock(const QString &text)
                 start = begin.match(text, (start + length)).capturedStart();
             }
             continue;
-        } else if ((rule.style == "whitespace") && !Settings::showWhitespace())
-            continue;
-        QRegularExpression expression(rule.regex);
-        QRegularExpressionMatch matcher = expression.match(text);
-        while (matcher.hasMatch()) {
-            int index = matcher.capturedStart();
-            int length = matcher.capturedLength();
-            setFormat(index, length, theme.value(rule.style));
-            matcher = expression.match(text, index + length);
-            if (!literals.contains(rule.style))
-                continue;
-            block->literal(index, (index + length));
         }
+        highlight(block, text, rule.style, rule.regex);
     }
     QStringList brackets = Settings::brackets();
     foreach (const QString &pair, brackets) {
@@ -98,6 +102,8 @@ void Highlighter::highlightBlock(const QString &text)
         }
     }
     setCurrentBlockUserData(block);
+    if (Settings::showWhitespace())
+        highlight(nullptr, text, "whitespace", "[\\s]");
 }
 
 void Highlighter::initialize()
