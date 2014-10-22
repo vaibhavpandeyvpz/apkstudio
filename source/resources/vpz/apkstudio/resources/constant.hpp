@@ -15,6 +15,7 @@
 #define RESOURCE_PATH_THEME ":/theme/"
 
 #define SETTING_CHARACTER_ENCODING "character_encoding"
+#define SETTING_CURSOR_WIDTH "cursor_width"
 #define SETTING_FONT_FAMILY "font_family"
 #define SETTING_FONT_SIZE "font_size"
 #define SETTING_IMAGE_BACKGROUND "image_background"
@@ -23,6 +24,7 @@
 #define SETTING_PREVIOUS_DIRECTORY "previous_directory"
 #define SETTING_RECENT_FILES "recent_files"
 #define SETTING_RECENT_PROJECTS "recent_projects"
+#define SETTING_SHOW_WHITESPACE "show_whitespace"
 #define SETTING_SPACES_FOR_TAB "spaces_for_tab"
 #define SETTING_TAB_WIDTH "tab_width"
 #define SETTING_THEME "theme"

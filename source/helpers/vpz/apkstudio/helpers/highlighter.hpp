@@ -40,7 +40,7 @@ class Highlighter : public QSyntaxHighlighter
     Q_OBJECT
 private:
     QHash<QString, QVector<Resources::Highlight> > definitions;
-    QString mode;
+    QString definition;
     QHash<QString, QTextCharFormat> theme;
 private:
     void initialize();
@@ -49,7 +49,8 @@ public:
     explicit Highlighter(QObject * = 0);
     explicit Highlighter(QTextDocument * = 0);
     void highlightBlock(const QString &);
-    void setMode(const QString &);
+    inline QString mode() { return this->definition; }
+    inline void mode(const QString &definition) { this->definition = definition; }
 };
 
 } // namespace Helpers

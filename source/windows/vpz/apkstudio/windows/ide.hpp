@@ -7,11 +7,10 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include "components/coder.hpp"
-#include "resources/constant.hpp"
-#include "helpers/highlighter.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 #include "menubar.hpp"
+#include "resources/constant.hpp"
 #include "toolbar.hpp"
 
 namespace VPZ {
@@ -23,7 +22,6 @@ class IDE : public QMainWindow
     Q_OBJECT
 private:
     int exit_code;
-    Helpers::Highlighter *highlighter;
     MenuBar *menu_bar;
     ToolBar *tool_bar;
     QStatusBar *status_bar;

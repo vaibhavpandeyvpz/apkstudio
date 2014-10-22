@@ -24,6 +24,8 @@ public:
     static void addRecentProjects(const QStringList &);
     static int characterEncoding();
     static void characterEncoding(const int);
+    static int cursorWidth();
+    static void cursorWidth(const int);
     static QString fontFamily();
     static void fontFamily(const QString &);
     static int fontSize();
@@ -33,7 +35,7 @@ public:
     static void imageBackground(const QString &);
     static QString language();
     static void language(const QString &);
-    inline static QStringList brackets() { return QString("()").split(','); }
+    inline static QStringList brackets() { return QString("(),{},[]").split(','); }
     static bool maximized();
     static void maximized(const bool);
     static QString previousDirectory();
@@ -43,6 +45,8 @@ public:
     static void removeRecentFile(const QString &);
     static void removeRecentProject(const QString &);
     static void set(const QString &, const QVariant &);
+    static bool showWhitespace();
+    static void showWhitespace(const bool);
     static bool spacesForTab();
     static void spacesForTab(const bool);
     static int tabWidth();

@@ -3,25 +3,27 @@
 //-->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.example"
-    android:versionCode="1"
-    android:versionName="1.0">
+	package="com.android.example"
+	android:versionCode="1"
+	android:versionName="1.0">
     <uses-sdk android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+		android:targetSdkVersion="17" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- This line is written to check single-line comments //-->
     <application android:label="MIUI &amp; Android"
-        android:icon="@drawable/ic_launcher"
-        android:theme="@style/Theme.Sample"
-        android:allowBackup="true">
-        <activity android:name="com.android.example.Dummy"
-            android:label="@string/app_name"
-            android:uiOptions="splitActionBarWhenNarrow"> 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+		android:icon="@drawable/ic_launcher"
+		android:theme="@style/Theme.Sample"
+		android:allowBackup="true">
+	    <activity android:name="com.android.example.Dummy"
+			android:label="@string/app_name"
+			android:uiOptions="splitActionBarWhenNarrow"> 
+		    <intent-filter>
+			    <action android:name="android.intent.action.MAIN" />
+			    <category android:name="android.intent.category.LAUNCHER" />
+		    </intent-filter>
+	    </activity>
     </application>
 </manifest>
+
+	

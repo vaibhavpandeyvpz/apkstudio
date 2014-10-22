@@ -1,4 +1,4 @@
-#include "qdebug.h"
+#include <QDebug>
 #include "ide.hpp"
 
 using namespace VPZ::APKStudio::Components;
@@ -11,14 +11,10 @@ namespace Windows {
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent), exit_code(0)
 {
-    Coder *coder = new Coder(this);
-    highlighter = new Highlighter(this);
-    highlighter->setDocument(coder->document());
-    highlighter->setMode("java");
     menu_bar = new MenuBar(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
-    setCentralWidget(coder);
+    setCentralWidget(new Coder(this));
     addToolBar(Qt::TopToolBarArea, tool_bar);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);

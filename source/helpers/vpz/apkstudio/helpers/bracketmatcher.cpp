@@ -4,10 +4,9 @@ namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
 
-BracketMatcher::BracketMatcher(QPlainTextEdit *editor, const QString &color)
-    : color(QColor(color))
+BracketMatcher::BracketMatcher(QPlainTextEdit *editor)
+    : editor(editor)
 {
-    this->editor = editor;
 }
 
 void BracketMatcher::highlight(const int position)
@@ -24,7 +23,7 @@ void BracketMatcher::highlight(const int position)
     editor->setExtraSelections(selections);
 }
 
-bool BracketMatcher::left(const QChar left, const QChar right, QTextBlock block, int start, int skip)
+bool BracketMatcher::left(const QChar left, const QChar right, QTextBlock block, int start, int skip, bool first)
 {
     Block *data = static_cast<Block *>(block.userData());
     QVector<Resources::Bracket *> brackets;
@@ -32,41 +31,50 @@ bool BracketMatcher::left(const QChar left, const QChar right, QTextBlock block,
     if (!data)
         goto loop;
     brackets = data->brackets;
+    if (!first)
+        start = 0;
     position = block.position();
     for (; start < brackets.size(); ++start) {
         Resources::Bracket *bracket = brackets.at(start);
         if (bracket->character == left) {
             ++skip;
             continue;
-        } else if ((bracket->character == right) && (skip == 0)) {
-            highlight(position + bracket->position);
-            return true;
-        } else
-            --skip;
+        } else if (bracket->character == right) {
+            if (skip == 0) {
+                highlight(position + bracket->position);
+                return true;
+            } else
+                --skip;
+        }
     }
     loop:
     block = block.next();
-    if (block.isValid())
-        return this->left(left, right, block, 0, skip);
-    return false;
+    return block.isValid() ? this->left(left, right, block, 0, skip) : false;
 }
 
 void BracketMatcher::match(const QChar left, const QChar right)
 {
-    Block *data = static_cast<Block *>(editor->textCursor().block().userData());
+    QTextCursor cursor = editor->textCursor();
+    QTextBlock block = cursor.block();
+    Block *data = static_cast<Block *>(block.userData());
     if (!data)
         return;
     QVector<Resources::Bracket *> brackets = data->brackets;
-    int position = editor->textCursor().block().position();
+    int position = block.position();
+    int current = cursor.position() - block.position();
     for (int index = 0; index < brackets.size(); ++index) {
         Resources::Bracket *bracket = brackets.at(index);
-        int current = editor->textCursor().position() - editor->textCursor().block().position();
-        if ((bracket->position == (current - 1)) && (bracket->character == left)) {
-            if (this->left(left, right, editor->textCursor().block(), index + 1, 0))
-                highlight(position + bracket->position);
-        } else if ((bracket->position == (current - 1)) && (bracket->character == right)) {
-            if (this->right(left, right, editor->textCursor().block(), index - 1, 0, true))
-                highlight(position + bracket->position);
+        int highlightable = (position + bracket->position);
+        if (bracket->character == left) {
+            if ((bracket->position == current) && this->left(left, right, block, index + 1, 0, true))
+                highlight(highlightable);
+            else if ((bracket->position == (current - 1)) && this->left(left, right, block, index + 1, 0, true))
+                highlight(highlightable);
+        } else if (bracket->character == right) {
+            if ((bracket->position == current) && this->right(left, right, block, index - 1, 0, true))
+                highlight(highlightable);
+            else if ((bracket->position == (current - 1)) && this->right(left, right, block, index - 1, 0, true))
+                highlight(highlightable);
         }
     }
 }
@@ -87,17 +95,17 @@ bool BracketMatcher::right(const QChar left, const QChar right, QTextBlock block
         if (bracket->character == right) {
             ++skip;
             continue;
-        } else if ((bracket->character == left) && (skip == 0)) {
-            highlight(position + bracket->position);
-            return true;
-        } else
-            --skip;
+        } else if (bracket->character == left) {
+            if (skip == 0) {
+                highlight(position + bracket->position);
+                return true;
+            } else
+                --skip;
+        }
     }
     loop:
     block = block.previous();
-    if (block.isValid())
-        return this->right(left, right, block, 0, skip);
-    return false;
+    return block.isValid() ? this->right(left, right, block, 0, skip) : false;
 }
 
 } // namespace Helpers

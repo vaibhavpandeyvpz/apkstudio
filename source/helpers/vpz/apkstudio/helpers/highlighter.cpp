@@ -1,5 +1,4 @@
 #include "highlighter.hpp"
-#include <QDebug>
 
 namespace VPZ {
 namespace APKStudio {
@@ -17,7 +16,7 @@ bool Block::literal(int column)
 {
     QPair<int, int> literal;
     foreach (literal, literals) {
-        if ((column >= literal.first) || (column <= literal.second))
+        if ((column > literal.first) && (column < literal.second))
             return true;
     }
     return false;
@@ -29,13 +28,13 @@ void Block::literal(int line, int column)
 }
 
 Highlighter::Highlighter(QObject *parent) :
-    QSyntaxHighlighter(parent), mode("java")
+    QSyntaxHighlighter(parent), definition("java")
 {
     initialize();
 }
 
 Highlighter::Highlighter(QTextDocument *parent) :
-    QSyntaxHighlighter(parent), mode("java")
+    QSyntaxHighlighter(parent), definition("java")
 {
     initialize();
 }
@@ -43,8 +42,8 @@ Highlighter::Highlighter(QTextDocument *parent) :
 void Highlighter::highlightBlock(const QString &text)
 {
     Block *block = new Block;
-    QStringList literals = QString("commentsl|string|stringb|stringul").split('|');
-    foreach (const Resources::Highlight &rule, definitions.value(mode)) {
+    QStringList literals = QString("commentml|commentsl|string|stringb|stringul").split('|');
+    foreach (const Resources::Highlight &rule, definitions.value(definition)) {
         if (rule.style == "commentml") {
             QTextCharFormat multiline = theme.value(rule.style);
             QStringList startstop = rule.regex.split('|');
@@ -60,14 +59,15 @@ void Highlighter::highlightBlock(const QString &text)
                 int length;
                 if (stop == -1) {
                     setCurrentBlockState(1);
-                    length = text.length() - start;
+                    length = (text.length() - start);
                 } else
-                    length = stop - start + matcher.capturedLength();
+                    length = ((stop - start) + matcher.capturedLength());
                 setFormat(start, length, multiline);
-                start = begin.match(text, start + length).capturedStart();
+                start = begin.match(text, (start + length)).capturedStart();
             }
             continue;
-        }
+        } else if ((rule.style == "whitespace") && !Settings::showWhitespace())
+            continue;
         QRegularExpression expression(rule.regex);
         QRegularExpressionMatch matcher = expression.match(text);
         while (matcher.hasMatch()) {
@@ -77,20 +77,24 @@ void Highlighter::highlightBlock(const QString &text)
             matcher = expression.match(text, index + length);
             if (!literals.contains(rule.style))
                 continue;
-            block->literal(index, index + length);
+            block->literal(index, (index + length));
         }
     }
     QStringList brackets = Settings::brackets();
     foreach (const QString &pair, brackets) {
         foreach (const QChar &character, pair) {
             int position = text.indexOf(character);
-            if ((position < 0) || block->literal(position))
-                continue;
-            Resources::Bracket *bracket = new Resources::Bracket;
-            bracket->character = character;
-            bracket->position = position;
-            block->bracket(bracket);
-            position = text.indexOf(character, position + 1);
+            while (position > -1) {
+                Resources::Bracket *bracket;
+                if (block->literal(position))
+                    goto loop;
+                bracket = new Resources::Bracket;
+                bracket->character = character;
+                bracket->position = position;
+                block->bracket(bracket);
+                loop:
+                position = text.indexOf(character, position + 1);
+            }
         }
     }
     setCurrentBlockUserData(block);
@@ -151,11 +155,6 @@ QVector<Resources::Highlight> Highlighter::parse(const QString &name)
         xml->close();
     }
     return ruleset;
-}
-
-void Highlighter::setMode(const QString &mode)
-{
-    this->mode = mode;
 }
 
 } // namespace Helpers

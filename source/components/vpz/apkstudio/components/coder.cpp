@@ -1,5 +1,5 @@
 #include "coder.hpp"
-#include <QDebug>
+#include "linenumbers.hpp"
 
 using namespace VPZ::APKStudio::Helpers;
 
@@ -8,14 +8,17 @@ namespace APKStudio {
 namespace Components {
 
 Coder::Coder(QWidget *parent) :
-    QPlainTextEdit(parent), line_numbers(new LineNumbers(this)), theme(Application::theme())
+    QPlainTextEdit(parent), brackets_matcher(new BracketMatcher(this)), highlighter(new Helpers::Highlighter(this)), line_numbers(new LineNumbers(this)), theme(Application::theme())
 {
-    bracket_matcher = new BracketMatcher(this, theme.value("bracket").color);
+    brackets_matcher->background(theme.value("bracket").color);
+    highlighter->setDocument(document());
+    line_numbers->background(QColor(theme.value("lines").color));
+    line_numbers->foreground(QColor(theme.value("line").color));
     QFont font;
     font.setFamily(Settings::fontFamily());
     font.setFixedPitch(true);
     font.setPointSize(Settings::fontSize());
-    font.setStyleHint(QFont::Monospace);
+    font.setStyleHint(QFont::TypeWriter);
     QFontMetrics metrics(font);
     QPalette palette;
     palette.setColor(QPalette::Highlight, QColor(theme.value("selection").color));
@@ -23,16 +26,24 @@ Coder::Coder(QWidget *parent) :
     palette.setColor(QPalette::Active, QPalette::Base, QColor(theme.value("background").color));
     palette.setColor(QPalette::Inactive, QPalette::Base, QColor(theme.value("background").color));
     palette.setColor(QPalette::Text, QColor(theme.value("foreground").color));
+    setCursorWidth(Settings::cursorWidth());
     setFont(font);
     setFrameStyle(QFrame::NoFrame);
     setPalette(palette);
-    setTabStopWidth(Settings::tabWidth() * metrics.width(' '));
+    setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
     connect(this, SIGNAL(blockCountChanged(const int)), this, SLOT(onBlockCountChanged(const int)));
     connect(this, SIGNAL(updateRequest(const QRect &, const int)), this, SLOT(onUpdateRequest(const QRect, const int)));
     onBlockCountChanged(0);
     onCursorPositionChanged();
+    QTextOption options = document()->defaultTextOption();
+    if (Settings::showWhitespace())
+        options.setFlags(options.flags() | QTextOption::ShowTabsAndSpaces);
+    else
+        options.setFlags(options.flags() & ~QTextOption::ShowTabsAndSpaces);
+    options.setFlags(options.flags());
+    document()->setDefaultTextOption(options);
 }
 
 bool Coder::event(QEvent *event)
@@ -50,15 +61,43 @@ bool Coder::event(QEvent *event)
     return true;
 }
 
+bool Coder::indent()
+{
+    QTextCursor cursor = textCursor();
+    if(!cursor.hasSelection())
+        return false;
+    int start = cursor.anchor();
+    int stop = cursor.position();
+    if (start > stop)
+        std::swap(start, stop);
+    cursor.setPosition(start, QTextCursor::MoveAnchor);
+    int begin = cursor.block().blockNumber();
+    cursor.setPosition(stop, QTextCursor::MoveAnchor);
+    int end = cursor.block().blockNumber();
+    cursor.setPosition(start, QTextCursor::MoveAnchor);
+    cursor.beginEditBlock();
+    const int difference = (end - begin);
+    for (int i = 0; i <= difference; ++i) {
+        cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+        cursor.insertText(Settings::spacesForTab() ? QString(Settings::tabWidth(), ' ') : "\t");
+        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::MoveAnchor);
+    }
+    cursor.endEditBlock();
+    cursor.setPosition(start, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
+    while(cursor.block().blockNumber() < end)
+        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
+    cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+    setTextCursor(cursor);
+    return true;
+}
+
 void Coder::keyPressEvent(QKeyEvent *event)
 {
-    bool backward = false;
-    bool override = false;
+    bool replace = true;
     QString text = event->text();
     switch (event->key()) {
     case Qt::Key_Apostrophe: {
-        backward = true;
-        override = true;
         text = "''";
         break;
     }
@@ -69,14 +108,10 @@ void Coder::keyPressEvent(QKeyEvent *event)
         }
         break;
     case Qt::Key_BraceLeft: {
-        backward = true;
-        override = true;
         text = "{}";
         break;
     }
     case Qt::Key_BracketLeft: {
-        backward = true;
-        override = true;
         text = "[]";
         break;
     }
@@ -93,14 +128,10 @@ void Coder::keyPressEvent(QKeyEvent *event)
         }
         break;
     case Qt::Key_ParenLeft: {
-        backward = true;
-        override = true;
         text = "()";
         break;
     }
     case Qt::Key_QuoteDbl: {
-        backward = true;
-        override = true;
         text = "\"\"";
         break;
     }
@@ -114,20 +145,23 @@ void Coder::keyPressEvent(QKeyEvent *event)
         if (false) {
             event->ignore();
             return;
-        } else if (Settings::spacesForTab()) {
-            override = true;
-            text = "    ";
-        }
+        } else if (indent()) {
+            event->ignore();
+            replace = false;
+        } else
+            text = Settings::spacesForTab() ? QString(Settings::tabWidth(), ' ') : "\t";
         break;
     default:
+        replace = false;
         break;
     }
-    if (override) {
+    if (replace && event->isAccepted()) {
         QTextCursor cursor = textCursor();
         cursor.insertText(text);
-        if (backward)
+        if (QString("'\"[{(").contains(text[0]))
             cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 1);
         setTextCursor(cursor);
+        event->ignore();
         return;
     }
     bool shortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_Space);
@@ -135,43 +169,9 @@ void Coder::keyPressEvent(QKeyEvent *event)
         QPlainTextEdit::keyPressEvent(event);
 }
 
-int Coder::lineNumbersAreaWidth()
-{
-    int digits = 1;
-    int max = qMax(1, blockCount());
-    while (max >= 10) {
-        max /= 10;
-        ++digits;
-    }
-    digits++;
-    digits++;
-    return (3 + fontMetrics().width('9') * digits);
-}
-
-void Coder::lineNumbersPaintEvent(QPaintEvent *event)
-{
-    QPainter painter(line_numbers);
-    painter.fillRect(event->rect(), theme.value("lines").color);
-    QTextBlock block = firstVisibleBlock();
-    int number = block.blockNumber();
-    int top = (int) blockBoundingGeometry(block).translated(contentOffset()).top();
-    int bottom = top + (int) blockBoundingRect(block).height();
-    while (block.isValid() && (top <= event->rect().bottom())) {
-        if (block.isVisible() && (bottom >= event->rect().top())) {
-            QString newer = QString::number(number + 1).append(" ");
-            painter.setPen(QColor(theme.value("line").color));
-            painter.drawText(0, top, line_numbers->width(), fontMetrics().height(), Qt::AlignRight, newer);
-        }
-        block = block.next();
-        top = bottom;
-        bottom = (top + ((int) blockBoundingRect(block).height()));
-        ++number;
-    }
-}
-
 void Coder::onBlockCountChanged(const int /* count */)
 {
-    setViewportMargins(lineNumbersAreaWidth(), 0, 0, 0);
+    setViewportMargins(line_numbers->sizeHint().width(), 0, 0, 0);
 }
 
 void Coder::onCursorPositionChanged()
@@ -191,7 +191,7 @@ void Coder::onCursorPositionChanged()
         setExtraSelections(selections);
     }
     foreach (QString pair, Settings::brackets())
-        bracket_matcher->match(pair[0], pair[1]);
+        brackets_matcher->match(pair[0], pair[1]);
 }
 
 void Coder::onUpdateRequest(const QRect &rectangle, const int column)
@@ -207,11 +207,39 @@ void Coder::onUpdateRequest(const QRect &rectangle, const int column)
         onBlockCountChanged(0);
 }
 
+void Coder::paintEvent(QPaintEvent *event)
+{
+    QPlainTextEdit::paintEvent(event);
+    if (!Settings::showWhitespace())
+        return;
+    QPainter painter(viewport());
+    int width = fontMetrics().width("\u00B6");
+    int height = fontMetrics().height();
+    QTextBlock block = firstVisibleBlock();
+    while (block.isValid()) {
+        QRectF geometry = blockBoundingGeometry(block).translated(contentOffset());
+        if (geometry.top() > event->rect().bottom())
+            break;
+        if (block.isVisible() && geometry.toRect().intersects(event->rect())) {
+            QString text = block.text().append(' ');
+            painter.setPen(QColor(theme.value("whitespace").color));
+            painter.drawText(geometry.left() + fontMetrics().width(text), geometry.top(), width, height, Qt::AlignLeft | Qt::AlignVCenter, "\u00B6");
+        }
+        block = block.next();
+    }
+}
+
 void Coder::resizeEvent(QResizeEvent *event)
 {
     QPlainTextEdit::resizeEvent(event);
     QRect resized = contentsRect();
-    line_numbers->setGeometry(QRect(resized.left(), resized.top(), lineNumbersAreaWidth(), resized.height()));
+    line_numbers->setGeometry(QRect(resized.left(), resized.top(), line_numbers->sizeHint().width(), resized.height()));
+}
+
+void Coder::setFont(const QFont &font)
+{
+    QPlainTextEdit::setFont(font);
+    line_numbers->setFont(font);
 }
 
 } // namespace Components

@@ -29,7 +29,7 @@ class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
-    Helpers::BracketMatcher *brackets_matcher;
+    Helpers::BracketMatcher *bracket_matcher;
     Helpers::Highlighter *highlighter;
     QPair<int, int> cache;
     LineNumbers *line_numbers;
@@ -42,18 +42,31 @@ private Q_SLOTS:
     void onUpdateRequest(const QRect &, const int);
 public:
     explicit Coder(QWidget *parent = 0);
-    bool event(QEvent *);
+    bool event(QEvent* event);
     void keyPressEvent(QKeyEvent *);
+    int lineNumbersAreaWidth();
     inline void mode(const QString &definition) { highlighter->mode(definition); }
     inline QString mode() { return highlighter->mode(); }
-    void paintEvent(QPaintEvent *);
+    void lineNumbersPaintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
-    void setFont(const QFont &);
+};
+
+class LineNumbers : public QWidget
+{
+    Q_OBJECT
+private:
+    Coder *coder;
+protected:
+    void paintEvent(QPaintEvent *event) {
+        coder->lineNumbersPaintEvent(event);
+    }
 public:
-    inline QRectF getBlockBoundingRect(const QTextBlock &block) { return blockBoundingRect(block); }
-    inline QRectF getBlockBoundingGeometry(const QTextBlock &block) { return blockBoundingGeometry(block); }
-    inline QTextBlock getFirstVisibleBlock() { return firstVisibleBlock(); }
-    inline QPointF getContentOffset() { return contentOffset(); }
+    explicit LineNumbers(Coder *coder = 0) : QWidget(coder) {
+        this->coder = coder;
+    }
+    QSize sizeHint() const {
+        return QSize(coder->lineNumbersAreaWidth(), 0);
+    }
 };
 
 } // namespace Components

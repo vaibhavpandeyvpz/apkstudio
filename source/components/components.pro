@@ -6,10 +6,12 @@ QT += core gui widgets
 
 # Source files to be included/compiled within target
 HEADERS += \
-    vpz/apkstudio/components/coder.hpp
+    vpz/apkstudio/components/coder.hpp \
+    vpz/apkstudio/components/linenumbers.hpp
 
 SOURCES += \
-    vpz/apkstudio/components/coder.cpp
+    vpz/apkstudio/components/coder.cpp \
+    vpz/apkstudio/components/linenumbers.cpp
 
 # Include referenced co-projects & libraries
 win32 {

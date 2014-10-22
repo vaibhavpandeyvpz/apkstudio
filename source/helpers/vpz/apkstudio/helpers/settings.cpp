@@ -63,6 +63,16 @@ void Settings::characterEncoding(const int encoding)
     set(SETTING_CHARACTER_ENCODING, QVariant(encoding));
 }
 
+int Settings::cursorWidth()
+{
+    return qvariant_cast<int>(get(SETTING_CURSOR_WIDTH, QVariant(2)));
+}
+
+void Settings::cursorWidth(const int pixels)
+{
+    set(SETTING_CURSOR_WIDTH, QVariant(pixels));
+}
+
 QString Settings::fontFamily()
 {
     return qvariant_cast<QString>(get(SETTING_FONT_FAMILY, QVariant("Source Code Pro")));
@@ -167,9 +177,19 @@ void Settings::set(const QString &key, const QVariant &value)
     settings.sync();
 }
 
+bool Settings::showWhitespace()
+{
+    return qvariant_cast<bool>(get(SETTING_SHOW_WHITESPACE, QVariant(true)));
+}
+
+void Settings::showWhitespace(const bool show)
+{
+    set(SETTING_SHOW_WHITESPACE, QVariant(show));
+}
+
 bool Settings::spacesForTab()
 {
-    return qvariant_cast<bool>(get(SETTING_SPACES_FOR_TAB, QVariant(false)));
+    return qvariant_cast<bool>(get(SETTING_SPACES_FOR_TAB, QVariant(true)));
 }
 
 void Settings::spacesForTab(const bool enable)

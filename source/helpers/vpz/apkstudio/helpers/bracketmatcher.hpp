@@ -18,11 +18,13 @@ private:
     QPlainTextEdit *editor;
 private:
     void highlight(const int);
-    bool left(const QChar, const QChar, QTextBlock, int, int);
+    bool left(const QChar, const QChar, QTextBlock, int, int, bool = false);
     bool right(const QChar, const QChar, QTextBlock, int, int, bool = false);
 public:
-    BracketMatcher(QPlainTextEdit *, const QString &);
+    BracketMatcher(QPlainTextEdit *);
     void match(const QChar, const QChar);
+    inline QColor background() { return this->color; }
+    inline void background(const QString &color) { this->color = color; }
 };
 
 } // namespace Helpers

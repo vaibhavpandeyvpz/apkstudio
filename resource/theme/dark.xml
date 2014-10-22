@@ -2,7 +2,7 @@
 <theme>
     <style bold="true" color="#D9E577" name="annotation" />
     <style color="#000000" name="background" />
-    <style color="#0072BC" name="bracket" />
+    <style color="#730000" name="bracket" />
     <style color="#CCDF32" name="commentml" />
     <style color="#CCDF32" name="commentsl" />
     <style bold="true" color="#EFC090" name="constant" />
@@ -21,4 +21,5 @@
     <style color="#FFFFFF" name="symbol" />
     <style color="#2BA8C3" name="type" underline="true" />
     <style color="#79ABFF" name="variable" />
+    <style color="#111111" name="whitespace" />
 </theme>
