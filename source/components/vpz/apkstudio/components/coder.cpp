@@ -30,6 +30,7 @@ Coder::Coder(QWidget *parent) :
     setFont(font);
     setFrameStyle(QFrame::NoFrame);
     setPalette(palette);
+    setTabChangesFocus(false);
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
@@ -48,17 +49,29 @@ Coder::Coder(QWidget *parent) :
 
 bool Coder::event(QEvent *event)
 {
-    if (event->type() != QEvent::ToolTip)
-        return QPlainTextEdit::event(event);
-    QHelpEvent *help = static_cast<QHelpEvent *>(event);
-    QTextCursor cursor = cursorForPosition(help->pos());
-    cursor.select(QTextCursor::WordUnderCursor);
-    if (!cursor.selectedText().isEmpty()) {
-        QToolTip::hideText();
+    if ((event->type() == QEvent::KeyPress)) {
+        QKeyEvent *keyevent = (QKeyEvent*) event;
+        if (keyevent->key() == Qt::Key_Tab) {
+            if (indent())
+                return true;
+            QString text = Settings::spacesForTab() ? QString(Settings::tabWidth(), ' ') : "\t";
+            QTextCursor cursor = textCursor();
+            cursor.insertText(text);
+            setTextCursor(cursor);
+            return true;
+        }
+    } else if (event->type() == QEvent::ToolTip) {
+        QHelpEvent *help = static_cast<QHelpEvent *>(event);
+        QTextCursor cursor = cursorForPosition(help->pos());
+        cursor.select(QTextCursor::WordUnderCursor);
+        if (!cursor.selectedText().isEmpty()) {
+            QToolTip::hideText();
+            return true;
+        }
+        QToolTip::showText(help->globalPos(), cursor.selectedText());
         return true;
     }
-    QToolTip::showText(help->globalPos(), cursor.selectedText());
-    return true;
+    return QPlainTextEdit::event(event);
 }
 
 bool Coder::indent()
@@ -97,16 +110,21 @@ void Coder::keyPressEvent(QKeyEvent *event)
     bool replace = true;
     QString text = event->text();
     switch (event->key()) {
-    case Qt::Key_Apostrophe: {
-        text = "''";
-        break;
-    }
     case Qt::Key_Backtab:
+    case Qt::Key_Enter:
+    case Qt::Key_Escape:
+    case Qt::Key_Return: {
         if (false) {
             event->ignore();
             return;
         }
+        replace = false;
         break;
+    }
+    case Qt::Key_Apostrophe: {
+        text = "''";
+        break;
+    }
     case Qt::Key_BraceLeft: {
         text = "{}";
         break;
@@ -115,18 +133,6 @@ void Coder::keyPressEvent(QKeyEvent *event)
         text = "[]";
         break;
     }
-    case Qt::Key_Enter:
-        if (false) {
-            event->ignore();
-            return;
-        }
-        break;
-    case Qt::Key_Escape:
-        if (false) {
-            event->ignore();
-            return;
-        }
-        break;
     case Qt::Key_ParenLeft: {
         text = "()";
         break;
@@ -135,37 +141,20 @@ void Coder::keyPressEvent(QKeyEvent *event)
         text = "\"\"";
         break;
     }
-    case Qt::Key_Return:
-        if (false) {
-            event->ignore();
-            return;
-        }
-        break;
-    case Qt::Key_Tab:
-        if (false) {
-            event->ignore();
-            return;
-        } else if (indent()) {
-            event->ignore();
-            replace = false;
-        } else
-            text = Settings::spacesForTab() ? QString(Settings::tabWidth(), ' ') : "\t";
-        break;
     default:
         replace = false;
         break;
     }
-    if (replace && event->isAccepted()) {
+    if (replace) {
         QTextCursor cursor = textCursor();
         cursor.insertText(text);
-        if (QString("'\"[{(").startsWith(text[0]))
-            cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 1);
+        cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor, 1);
         setTextCursor(cursor);
         event->ignore();
         return;
     }
     bool shortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_Space);
-    if (!shortcut)
+    if (!shortcut && event->isAccepted())
         QPlainTextEdit::keyPressEvent(event);
 }
 

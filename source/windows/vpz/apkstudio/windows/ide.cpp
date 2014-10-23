@@ -76,7 +76,7 @@ void IDE::onInitComplete()
         showMaximized();
     else
         resize(Settings::windowSize());
-    setDockOptions(AnimatedDocks | AllowNestedDocks);
+    setDockOptions(AllowNestedDocks | AnimatedDocks);
     setWindowTitle(translate("window_title"));
 }
 
