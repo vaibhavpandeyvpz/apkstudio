@@ -26,11 +26,11 @@ Viewer::Viewer(QWidget *parent) :
     connect(save, &QAction::triggered, [this] () {
         this->save();
     });
-    QAction *zoom_in = new QAction(Embedded::icon("magnifier-plus"), translate("item_zoom_in"), context_menu);
+    QAction *zoom_in = new QAction(Embedded::icon("magnifier_plus"), translate("item_zoom_in"), context_menu);
     connect(zoom_in, &QAction::triggered, [this] () {
         this->zoomIn();
     });
-    QAction *zoom_out = new QAction(Embedded::icon("magnifier-minus"), translate("item_zoom_out"), context_menu);
+    QAction *zoom_out = new QAction(Embedded::icon("magnifier_minus"), translate("item_zoom_out"), context_menu);
     connect(zoom_out, &QAction::triggered, [this] () {
         this->zoomOut();
     });

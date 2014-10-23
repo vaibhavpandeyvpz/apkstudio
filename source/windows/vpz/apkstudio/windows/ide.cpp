@@ -15,7 +15,7 @@ IDE::IDE(QWidget *parent) :
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
     Viewer *viewer = new Viewer(this);
-    viewer->load("C:/Users/VPZ/Documents/apkstudio/sample/icon.png");
+    viewer->load("D:/apkstudio/sample/icon.png");
     setCentralWidget(viewer);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);

@@ -27,7 +27,7 @@
         <file>background/checkerboard.png</file>
         <file>icon/arrow_revert.png</file>
         <file>icon/image.png</file>
-        <file>icon/magnifier-minus.png</file>
-        <file>icon/magnifier-plus.png</file>
+        <file>icon/magnifier_minus.png</file>
+        <file>icon/magnifier_plus.png</file>
     </qresource>
 </RCC>
