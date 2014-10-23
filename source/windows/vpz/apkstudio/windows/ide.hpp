@@ -6,7 +6,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStatusBar>
-#include "components/coder.hpp"
+#include "components/viewer.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 #include "menubar.hpp"

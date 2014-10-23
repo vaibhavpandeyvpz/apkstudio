@@ -101,7 +101,7 @@ QVariant Settings::get(const QString &key, const QVariant &fallback = QVariant()
 
 QString Settings::imageBackground()
 {
-    return qvariant_cast<QString>(get(SETTING_IMAGE_BACKGROUND, QVariant("#FFFFFF")));
+    return qvariant_cast<QString>(get(SETTING_IMAGE_BACKGROUND, QVariant("#999999")));
 }
 
 void Settings::imageBackground(const QString &color)

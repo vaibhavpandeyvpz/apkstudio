@@ -2,7 +2,7 @@
 
 namespace VPZ {
 namespace APKStudio {
-namespace Widgets {
+namespace Components {
 
 Scripts::Scripts(QWidget *parent) :
     QMenu(translate("menu_scripts"), parent)

@@ -318,4 +318,35 @@
             <translation>Windowed</translation>
         </message>
     </context>
+    <context>
+        <name>viewer</name>
+        <message>
+            <source>item_load</source>
+            <translation>Load Image</translation>
+        </message>
+        <message>
+            <source>item_revert</source>
+            <translation>Revert Image</translation>
+        </message>
+        <message>
+            <source>item_save</source>
+            <translation>Save</translation>
+        </message>
+        <message>
+            <source>item_zoom_in</source>
+            <translation>Zoom-In</translation>
+        </message>
+        <message>
+            <source>item_zoom_out</source>
+            <translation>Zoom Out</translation>
+        </message>
+        <message>
+            <source>title_load</source>
+            <translation>Choose image file to load</translation>
+        </message>
+        <message>
+            <source>title_save</source>
+            <translation>Choose image path to save as</translation>
+        </message>
+    </context>
 </TS>

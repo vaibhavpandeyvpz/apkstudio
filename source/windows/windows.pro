@@ -22,31 +22,26 @@ SOURCES += \
 # Include referenced co-projects & libraries
 win32 {
     CONFIG(release, debug|release): {
-        LIBS += -L$$OUT_PWD/../resources/release/ -lresources
-        LIBS += -L$$OUT_PWD/../helpers/release/ -lhelpers
         LIBS += -L$$OUT_PWD/../components/release/ -lcomponents
-        LIBS += -L$$OUT_PWD/../widgets/release/ -lwidgets
+        LIBS += -L$$OUT_PWD/../helpers/release/ -lhelpers
+        LIBS += -L$$OUT_PWD/../resources/release/ -lresources
     } else {
-        LIBS += -L$$OUT_PWD/../resources/debug/ -lresources
-        LIBS += -L$$OUT_PWD/../helpers/debug/ -lhelpers
         LIBS += -L$$OUT_PWD/../components/debug/ -lcomponents
-        LIBS += -L$$OUT_PWD/../widgets/debug/ -lwidgets
+        LIBS += -L$$OUT_PWD/../helpers/debug/ -lhelpers
+        LIBS += -L$$OUT_PWD/../resources/debug/ -lresources
     }
 }
 
 unix {
-    LIBS += -L$$OUT_PWD/../resources/ -lresources
-    LIBS += -L$$OUT_PWD/../helpers/ -lhelpers
     LIBS += -L$$OUT_PWD/../components/ -lcomponents
-    LIBS += -L$$OUT_PWD/../widgets/ -lwidgets
+    LIBS += -L$$OUT_PWD/../helpers/ -lhelpers
+    LIBS += -L$$OUT_PWD/../resources/ -lresources
 }
 
+DEPENDPATH += $$PWD/../components
 DEPENDPATH += $$PWD/../helpers
 DEPENDPATH += $$PWD/../resources
-DEPENDPATH += $$PWD/../components
-DEPENDPATH += $$PWD/../widgets
 
 INCLUDEPATH += $$PWD/../helpers/vpz/apkstudio
 INCLUDEPATH += $$PWD/../resources/vpz/apkstudio
 INCLUDEPATH += $$PWD/../components/vpz/apkstudio
-INCLUDEPATH += $$PWD/../widgets/vpz/apkstudio

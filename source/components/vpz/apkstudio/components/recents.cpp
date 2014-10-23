@@ -2,7 +2,7 @@
 
 namespace VPZ {
 namespace APKStudio {
-namespace Widgets {
+namespace Components {
 
 Recents::Recents(QWidget *parent) :
     QMenu(translate("item_recents"), parent)

@@ -24,5 +24,10 @@
         <file>theme/dark.xml</file>
         <file>theme/light.xml</file>
         <file>highlight/xml.xml</file>
+        <file>background/checkerboard.png</file>
+        <file>icon/arrow_revert.png</file>
+        <file>icon/image.png</file>
+        <file>icon/magnifier-minus.png</file>
+        <file>icon/magnifier-plus.png</file>
     </qresource>
 </RCC>

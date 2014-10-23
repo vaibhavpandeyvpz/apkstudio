@@ -14,7 +14,9 @@ IDE::IDE(QWidget *parent) :
     menu_bar = new MenuBar(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
-    setCentralWidget(new Coder(this));
+    Viewer *viewer = new Viewer(this);
+    viewer->load("C:/Users/VPZ/Documents/apkstudio/sample/icon.png");
+    setCentralWidget(viewer);
     setMenuBar(menu_bar);
     setStatusBar(status_bar);
     addToolBar(Qt::TopToolBarArea, tool_bar);

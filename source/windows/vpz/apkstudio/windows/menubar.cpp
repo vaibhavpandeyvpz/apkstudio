@@ -13,7 +13,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QMenu *file = new QMenu(translate("menu_file"), this);
     QMenu *help = new QMenu(translate("menu_help"), this);
     QMenu *project = new QMenu(translate("menu_project"), this);
-    QMenu *scripts = new Widgets::Scripts(this);
+    QMenu *scripts = new Components::Scripts(this);
     QMenu *window = new QMenu(translate("menu_window"), this);
     QMenu *tools = new QMenu(translate("menu_tools"), this);
     // Initialize toggle groups
@@ -22,7 +22,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QMenu *adb = new QMenu(translate("item_adb"), tools);
     QMenu *feedback = new QMenu(translate("item_feedback"), help);
     QMenu *open = new QMenu(translate("item_open"), file);
-    QMenu *recents = new Widgets::Recents(file);
+    QMenu *recents = new Components::Recents(file);
     QMenu *views = new QMenu(translate("item_views"), window);
     // Add build items
     APKS_MENUITEM(toggles, false, build, clean, Clean, 0);
@@ -111,7 +111,7 @@ MenuBar::MenuBar(QWidget *parent) :
     addAction(window->menuAction());
     addAction(help->menuAction());
     // Attach toggles
-    QObject::connect(toggles, SIGNAL(triggered(QAction *)), parent, SLOT(onActionToggle(QAction *)));
+    connect(toggles, SIGNAL(triggered(QAction *)), parent, SLOT(onActionToggle(QAction *)));
     toggles->setExclusive(false);
     // Invalidate
     recents->setEnabled(false);

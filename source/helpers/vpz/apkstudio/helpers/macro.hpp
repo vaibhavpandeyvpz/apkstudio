@@ -8,7 +8,7 @@
         action->setChecked(true); \
         toggles->addAction(action); \
     } else \
-        QObject::connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
+        connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
     if (shortcut != 0) \
         action->setShortcut(shortcut); \
     parent->addAction(action); \
@@ -17,8 +17,8 @@
 #define APKS_TOOLITEM(parent, name, png, slot) ({ \
     QAction *action = new QAction(translate("item_" #name), parent); \
     action->setIcon(VPZ::APKStudio::Resources::Embedded::icon("" #png)); \
-    QObject::connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
     parent->addAction(action); \
+    connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
 })
 
 #endif // VPZ_APKSTUDIO_HELPERS_MACRO_HPP
