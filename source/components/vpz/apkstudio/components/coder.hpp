@@ -1,9 +1,11 @@
 #ifndef VPZ_APKSTUDIO_COMPONENTS_CODER_HPP
 #define VPZ_APKSTUDIO_COMPONENTS_CODER_HPP
 
+#include <QAction>
 #include <QHash>
 #include <QHelpEvent>
 #include <QKeyEvent>
+#include <QMenu>
 #include <QPair>
 #include <QPainter>
 #include <QPaintEvent>
@@ -17,6 +19,7 @@
 #include "helpers/bracketmatcher.hpp"
 #include "helpers/highlighter.hpp"
 #include "helpers/settings.hpp"
+#include "helpers/text.hpp"
 #include "resources/variant.hpp"
 
 namespace VPZ {
@@ -31,11 +34,15 @@ class Coder : public QPlainTextEdit
 private:
     Helpers::BracketMatcher *brackets_matcher;
     Helpers::Highlighter *highlighter;
+    QList<QMetaObject::Connection> connections;
     QPair<int, int> cache;
     LineNumbers *line_numbers;
     Resources::Theme theme;
 private:
     bool indent();
+    static QString translate(const char *key) {
+        return Helpers::Text::translate("coder", key);
+    }
 private Q_SLOTS:
     void onBlockCountChanged(const int);
     void onCursorPositionChanged();

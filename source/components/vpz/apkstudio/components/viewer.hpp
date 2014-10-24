@@ -23,6 +23,7 @@ class Viewer : public QScrollArea
 {
     Q_OBJECT
 private:
+    QList<QMetaObject::Connection> connections;
     QString path;
     double scale;
 private:
@@ -37,6 +38,7 @@ protected:
     void keyPressEvent(QKeyEvent *);
 public:
     explicit Viewer(QWidget *parent = 0);
+    ~Viewer();
     inline bool load(const char *path) { return load(QString(path)); }
     inline bool load(const QString &path) { return load(QFile(path)); }
     bool load(const QFile &);

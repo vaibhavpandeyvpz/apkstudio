@@ -12,28 +12,28 @@ Viewer::Viewer(QWidget *parent) :
 {
     QMenu *context_menu = new QMenu(this);
     QAction *load = new QAction(Embedded::icon("image"), translate("item_load"), context_menu);
-    connect(load, &QAction::triggered, [this] () {
+    connections.append(connect(load, &QAction::triggered, [this] () {
         QString path = QFileDialog::getOpenFileName(this, translate("title_load"), "", QString("PNG Image Files (*.png)"));
         if (path.isNull() || path.isEmpty())
             return;
         this->load(path);
-    });
+    }));
     QAction *revert = new QAction(Embedded::icon("arrow_revert"), translate("item_revert"), context_menu);
-    connect(revert, &QAction::triggered, [this] () {
+    connections.append(connect(revert, &QAction::triggered, [this] () {
         this->load(this->path);
-    });
+    }));
     QAction *save = new QAction(Embedded::icon("disk"), translate("item_save"), context_menu);
-    connect(save, &QAction::triggered, [this] () {
+    connections.append(connect(save, &QAction::triggered, [this] () {
         this->save();
-    });
+    }));
     QAction *zoom_in = new QAction(Embedded::icon("magnifier_plus"), translate("item_zoom_in"), context_menu);
-    connect(zoom_in, &QAction::triggered, [this] () {
+    connections.append(connect(zoom_in, &QAction::triggered, [this] () {
         this->zoomIn();
-    });
+    }));
     QAction *zoom_out = new QAction(Embedded::icon("magnifier_minus"), translate("item_zoom_out"), context_menu);
-    connect(zoom_out, &QAction::triggered, [this] () {
+    connections.append(connect(zoom_out, &QAction::triggered, [this] () {
         this->zoomOut();
-    });
+    }));
     context_menu->addAction(zoom_in);
     context_menu->addAction(zoom_out);
     context_menu->addSeparator();
@@ -51,9 +51,12 @@ Viewer::Viewer(QWidget *parent) :
         "QLabel {"
             "background-color: transparent;"
             "background-image: url(':/background/checkerboard.png');"
-            "border: 1px solid rgba(0, 0, 0, 0.5);"
+            "border: 1px dashed #000000;"
         "}"
     );
+    connections.append(connect(this, &Viewer::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
+        context_menu->popup(this->viewport()->mapToGlobal(position));
+    }));
     setAlignment(Qt::AlignCenter);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setBackgroundRole(QPalette::Dark);
@@ -68,9 +71,6 @@ Viewer::Viewer(QWidget *parent) :
             "background-color: #cccccc;"
         "}"
     );
-    connect(this, &Viewer::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
-        context_menu->popup(this->viewport()->mapToGlobal(position));
-    });
     setWidget(image);
     viewport()->setCursor(Qt::OpenHandCursor);
 }
@@ -135,6 +135,10 @@ void Viewer::zoom(const double factor)
     int vscroll = int(factor * vertical->value() + ((factor - 1) * vertical->pageStep() / 2));
     horizontal->setValue(hscroll);
     vertical->setValue(vscroll);
+}
+
+void Viewer::~Viewer()
+{
 }
 
 } // namespace Components

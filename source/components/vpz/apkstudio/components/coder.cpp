@@ -10,6 +10,7 @@ namespace Components {
 Coder::Coder(QWidget *parent) :
     QPlainTextEdit(parent), brackets_matcher(new BracketMatcher(this)), highlighter(new Helpers::Highlighter(this)), line_numbers(new LineNumbers(this)), theme(Application::theme())
 {
+    QMenu *context_menu = new QMenu(this);
     brackets_matcher->background(theme.value("bracket").color);
     highlighter->setDocument(document());
     line_numbers->background(QColor(theme.value("lines").color));
@@ -34,6 +35,9 @@ Coder::Coder(QWidget *parent) :
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
+    connect(this, &Viewer::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
+        context_menu->popup(this->viewport()->mapToGlobal(position));
+    });
     connect(this, SIGNAL(blockCountChanged(const int)), this, SLOT(onBlockCountChanged(const int)));
     connect(this, SIGNAL(updateRequest(const QRect &, const int)), this, SLOT(onUpdateRequest(const QRect, const int)));
     onBlockCountChanged(0);
