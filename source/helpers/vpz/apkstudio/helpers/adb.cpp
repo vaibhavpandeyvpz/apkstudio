@@ -17,8 +17,9 @@ QMap<QString, QString> ADB::properties(const QString &device) const
     arguments << device;
     arguments << "shell";
     arguments << "getprop";
+    QStringList output = execute(arguments);
     QRegularExpression regex = QRegularExpression(QString(REGEX_GETPROP));
-    foreach (const QString &line, lines) {
+    foreach (const QString &line, output) {
         if (line.startsWith('#'))
             continue;
         QRegularExpressionMatch matcher = regex.match(line);

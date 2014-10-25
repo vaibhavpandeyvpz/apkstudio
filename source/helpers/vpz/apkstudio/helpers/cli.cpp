@@ -13,7 +13,6 @@ QStringList CLI::execute(const QStringList &arguments) const
 {
     QStringList result;
     QProcess process;
-    process.setEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.start(executable, arguments, QIODevice::ReadOnly);
