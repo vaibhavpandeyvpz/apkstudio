@@ -170,6 +170,16 @@ void Settings::removeRecentProject(const QString &path)
     set(SETTING_RECENT_PROJECTS, QVariant(projects));
 }
 
+bool Settings::rootShell()
+{
+    return qvariant_cast<bool>(get(SETTING_ROOT_SHELL, QVariant(false)));
+}
+
+void Settings::rootShell(const bool show)
+{
+    set(SETTING_ROOT_SHELL, QVariant(show));
+}
+
 void Settings::set(const QString &key, const QVariant &value)
 {
     QSettings settings;

@@ -44,6 +44,8 @@ public:
     static QStringList recentProjects();
     static void removeRecentFile(const QString &);
     static void removeRecentProject(const QString &);
+    static bool rootShell();
+    static void rootShell(const bool);
     static void set(const QString &, const QVariant &);
     static bool showWhitespace();
     static void showWhitespace(const bool);

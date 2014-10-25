@@ -8,6 +8,8 @@
 
 #define FORMAT_TIMESTAMP_GENERAL "dd/MM/yyyy hh:mm"
 
+#define REGEX_GETPROP "^\\[(?<key>[^]]+)\\]\\:\\s*\\[(?<value>.*)\\]$"
+
 #define RESOURCE_PATH_FONT ":/font/"
 #define RESOURCE_PATH_HIGHLIGHT ":/highlight/"
 #define RESOURCE_PATH_ICON ":/icon/"
@@ -24,6 +26,7 @@
 #define SETTING_PREVIOUS_DIRECTORY "previous_directory"
 #define SETTING_RECENT_FILES "recent_files"
 #define SETTING_RECENT_PROJECTS "recent_projects"
+#define SETTING_ROOT_SHELL "root_shell"
 #define SETTING_SHOW_WHITESPACE "show_whitespace"
 #define SETTING_SPACES_FOR_TAB "spaces_for_tab"
 #define SETTING_TAB_WIDTH "tab_width"
