@@ -9,14 +9,14 @@ CLI::CLI(const QString &executable, QObject *parent) :
 {
 }
 
-QStringList CLI::execute(const QStringList &commands) const
+QStringList CLI::execute(const QStringList &arguments) const
 {
     QStringList result;
     QProcess process;
     process.setEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessChannelMode(QProcess::MergedChannels);
-    process.start(executable, commands, QIODevice::ReadOnly);
+    process.start(executable, arguments, QIODevice::ReadOnly);
     if (!process.waitForStarted(30 * 1000))
         goto finish;
     process.waitForFinished(-1);
