@@ -56,6 +56,7 @@ public:
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
     void setFont(const QFont &);
+    ~Coder();
 public:
     inline QRectF getBlockBoundingRect(const QTextBlock &block) { return blockBoundingRect(block); }
     inline QRectF getBlockBoundingGeometry(const QTextBlock &block) { return blockBoundingGeometry(block); }

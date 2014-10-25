@@ -137,8 +137,10 @@ void Viewer::zoom(const double factor)
     vertical->setValue(vscroll);
 }
 
-void Viewer::~Viewer()
+Viewer::~Viewer()
 {
+    foreach (QMetaObject::Connection connection, connections)
+        disconnect(connection);
 }
 
 } // namespace Components

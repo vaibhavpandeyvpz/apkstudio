@@ -35,9 +35,9 @@ Coder::Coder(QWidget *parent) :
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
-    connect(this, &Viewer::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
+    connections.append(connect(this, &Coder::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
         context_menu->popup(this->viewport()->mapToGlobal(position));
-    });
+    }));
     connect(this, SIGNAL(blockCountChanged(const int)), this, SLOT(onBlockCountChanged(const int)));
     connect(this, SIGNAL(updateRequest(const QRect &, const int)), this, SLOT(onUpdateRequest(const QRect, const int)));
     onBlockCountChanged(0);
@@ -233,6 +233,12 @@ void Coder::setFont(const QFont &font)
 {
     QPlainTextEdit::setFont(font);
     line_numbers->setFont(font);
+}
+
+Coder::~Coder()
+{
+    foreach (QMetaObject::Connection connection, connections)
+        disconnect(connection);
 }
 
 } // namespace Components
