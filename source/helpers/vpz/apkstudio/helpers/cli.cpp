@@ -13,13 +13,13 @@ QStringList CLI::execute(const QStringList &commands) const
 {
     QStringList result;
     QProcess process;
-    process.setEnvironment(QProcess::systemEnvironment());
+    process.setEnvironment(QProcessEnvironment::systemEnvironment());
+    process.setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.start(executable, commands, QIODevice::ReadOnly);
-    if (!process.waitForStarted())
+    if (!process.waitForStarted(30 * 1000))
         goto finish;
-    if (!process.waitForFinished())
-        process.kill();
+    process.waitForFinished(-1);
     result = QString(process.readAll()).split(QRegularExpression("[\r\n]"), QString::SkipEmptyParts);
     finish:
     return result;
