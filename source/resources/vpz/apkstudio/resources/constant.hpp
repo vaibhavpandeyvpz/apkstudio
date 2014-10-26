@@ -8,7 +8,11 @@
 
 #define FORMAT_TIMESTAMP_GENERAL "dd/MM/yyyy hh:mm"
 
+#define REGEX_APPLICATION "^package:(?<path>.+?)=(?<package>.+)$"
+#define REGEX_EMULATOR "emulator-(?<port>\\d+)"
 #define REGEX_GETPROP "^\\[(?<key>[^]]+)\\]\\:\\s*\\[(?<value>.*)\\]$"
+#define REGEX_IMEI "\\s=\\s"
+#define REGEX_LS "^(?<permission>[bcdlsp-][-r][-w][-xsS][-r][-w][-xsS][-r][-w][-xstST])\\s+(?<owner>\\S+)\\s+(?<group>\\S+)\\s+(?<size>[\\d\\s,]*)\\s+(?<date>\\d{4}-\\d\\d-\\d\\d)\\s+(?<time>\\d\\d:\\d\\d)\\s+(?<name>.*)$"
 
 #define RESOURCE_PATH_FONT ":/font/"
 #define RESOURCE_PATH_HIGHLIGHT ":/highlight/"
@@ -16,6 +20,7 @@
 #define RESOURCE_PATH_LANGUAGE ":/language/"
 #define RESOURCE_PATH_THEME ":/theme/"
 
+#define SETTING_BINARY_PATH "binary_path"
 #define SETTING_CHARACTER_ENCODING "character_encoding"
 #define SETTING_CURSOR_WIDTH "cursor_width"
 #define SETTING_FONT_FAMILY "font_family"

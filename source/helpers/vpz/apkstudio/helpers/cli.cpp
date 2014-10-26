@@ -12,6 +12,7 @@ CLI::CLI(const QString &executable, QObject *parent) :
 QStringList CLI::execute(const QStringList &arguments) const
 {
     QStringList result;
+    QStringList output;
     QProcess process;
     process.setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     process.setProcessChannelMode(QProcess::MergedChannels);
@@ -19,7 +20,9 @@ QStringList CLI::execute(const QStringList &arguments) const
     if (!process.waitForStarted(30 * 1000))
         goto finish;
     process.waitForFinished(-1);
-    result = QString(process.readAll()).split(QRegularExpression("[\r\n]"), QString::SkipEmptyParts);
+    output = QString(process.readAll()).split(QRegularExpression("[\r\n]"), QString::SkipEmptyParts);
+    foreach (const QString &line, output)
+        result.append(line.trimmed());
     finish:
     return result;
 }

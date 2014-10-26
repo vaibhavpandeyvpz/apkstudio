@@ -52,6 +52,21 @@ void Settings::addRecentProjects(const QStringList &paths)
     set(SETTING_RECENT_PROJECTS, QVariant(projects));
 }
 
+QString Settings::binary(const QString &executable)
+{
+    return QString(binaryPath()).append('/').append(executable);
+}
+
+QString Settings::binaryPath()
+{
+    return qvariant_cast<QString>(get(SETTING_BINARY_PATH, QVariant(QString(QDir::homePath()).append("/apkstudio/bin"))));
+}
+
+void Settings::binaryPath(const QString &path)
+{
+    set(SETTING_BINARY_PATH, QVariant(path));
+}
+
 int Settings::characterEncoding()
 {
     int encoding = qvariant_cast<int>(get(SETTING_CHARACTER_ENCODING, QVariant(-1)));

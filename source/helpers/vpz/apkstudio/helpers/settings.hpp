@@ -22,6 +22,9 @@ public:
     static void addRecentFiles(const QStringList &);
     static void addRecentProject(const QString &);
     static void addRecentProjects(const QStringList &);
+    static QString binary(const QString &);
+    static QString binaryPath();
+    static void binaryPath(const QString &);
     static int characterEncoding();
     static void characterEncoding(const int);
     static int cursorWidth();
