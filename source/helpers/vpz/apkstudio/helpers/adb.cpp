@@ -6,6 +6,8 @@ namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
 
+ADB* ADB::self = nullptr;
+
 ADB::ADB(QObject *parent) :
 #ifdef Q_OS_WIN
     CLI(Settings::binary("adb.exe"), parent)
@@ -249,6 +251,13 @@ bool ADB::install(const QString &device, const QString &apk) const
     return false;
 }
 
+ADB *ADB::instance()
+{
+    if (!self)
+        self = new ADB();
+    return self;
+}
+
 void ADB::kill()
 {
     execute(QStringList("kill-server"));
@@ -450,18 +459,37 @@ bool ADB::rename(const QString &device, const QString &source, const QString &de
 
 void ADB::screenshot(const QString &device, const QString &saveas)
 {
-    QStringList arguments;
+    QString binary(Settings::javaHome());
 #ifdef Q_OS_WIN
-    arguments << "java.exe";
+    binary.append("\\bin\\java.exe");
 #else
-    arguments << "java";
+    binary.append("/bin/java");
 #endif
-    arguments << "-jar";
+    QStringList arguments("-jar");
     arguments << Settings::binary("screenshot.jar");
     arguments << "-s";
     arguments << device;
     arguments << saveas;
-    execute(arguments);
+    execute(arguments, binary);
+}
+
+void ADB::shell(const QString &device)
+{
+    QStringList arguments;
+    QString binary;
+#ifdef Q_OS_WIN
+    binary.append("cmd.exe");
+    arguments << "/c";
+    arguments << Settings::binary("adb.exe");
+#else
+    binary.append("xterm");
+    arguments << "-e";
+    arguments << Settings::binary("adb");
+#endif
+    arguments << "-s";
+    arguments << device;
+    arguments << "shell";
+    QProcess::startDetached(binary, arguments);
 }
 
 void ADB::start()

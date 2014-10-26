@@ -6,11 +6,12 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStatusBar>
-#include "components/viewer.hpp"
+#include "components/devicechooser.hpp"
+#include "helpers/adb.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
-#include "menubar.hpp"
 #include "resources/constant.hpp"
+#include "menubar.hpp"
 #include "toolbar.hpp"
 
 namespace VPZ {
@@ -33,6 +34,8 @@ private:
 public:
     explicit IDE(QWidget *parent = 0);
 public Q_SLOTS:
+    void onActionAdbKill();
+    void onActionAdbStart();
     void onActionContribute();
     void onActionDonate();
     void onActionFeedbackIssues();

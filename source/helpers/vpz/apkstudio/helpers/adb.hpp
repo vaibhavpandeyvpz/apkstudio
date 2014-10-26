@@ -15,6 +15,8 @@ namespace Helpers {
 class ADB : public CLI
 {
     Q_OBJECT
+private:
+    static ADB *self;
 public:
     explicit ADB(QObject * = 0);
     QVector<Resources::Application> applications(const QString &) const;
@@ -25,6 +27,7 @@ public:
     QVector<Resources::File> files(const QString &, const QString &) const;
     QString imei(const QString &) const;
     bool install(const QString &, const QString &) const;
+    static ADB *instance();
     void kill();
     QVector<Resources::Partition> partitions(const QString &) const;
     QMap<QString, QString> properties(const QString &) const;
@@ -35,6 +38,7 @@ public:
     bool remount(const QString &, const Resources::Partition &) const;
     bool remove(const QString &, const QString &, bool = false) const;
     void screenshot(const QString &, const QString &);
+    void shell(const QString &);
     void start();
     bool uninstall(const QString &, const QString &) const;
 };

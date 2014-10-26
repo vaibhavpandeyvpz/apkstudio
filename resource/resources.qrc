@@ -29,5 +29,17 @@
         <file>icon/image.png</file>
         <file>icon/magnifier_minus.png</file>
         <file>icon/magnifier_plus.png</file>
+        <file>icon/arrow_circle.png</file>
+        <file>icon/arrow_circle_double.png</file>
+        <file>icon/camera.png</file>
+        <file>icon/control_play.png</file>
+        <file>icon/control_power.png</file>
+        <file>icon/control_stop.png</file>
+        <file>icon/folder_stand.png</file>
+        <file>icon/processor.png</file>
+        <file>icon/resource_monitor.png</file>
+        <file>icon/mobile_phone.png</file>
+        <file>icon/mobile_phone_off.png</file>
+        <file>icon/mobile_phone_warning.png</file>
     </qresource>
 </RCC>

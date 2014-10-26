@@ -45,8 +45,8 @@ OTHER_FILES += \
 # Refrence QT framework dependencies
 QT += core gui widgets
 
-RESOURCES += \
-    ../../resource/resources.qrc
+# The only resources file including everything
+RESOURCES += ../../resource/resources.qrc
 
 # Source files to be included/compiled within target
 SOURCES += main.cpp
@@ -55,6 +55,5 @@ SOURCES += main.cpp
 TARGET = ../apkstudio
 TEMPLATE = app
 
+# This adds icon to executable specific to windows
 win32:RC_FILE = ../../resource/windows.rc
-
-HEADERS +=

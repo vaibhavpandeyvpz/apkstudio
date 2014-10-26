@@ -13,10 +13,10 @@ class CLI : public QObject
 {
     Q_OBJECT
 protected:
-    QString executable;
+    QString binary;
 public:
     explicit CLI(const QString &, QObject *parent = 0);
-    QStringList execute(const QStringList &) const;
+    QStringList execute(const QStringList &, const QString & = QString()) const;
 };
 
 } // namespace Helpers

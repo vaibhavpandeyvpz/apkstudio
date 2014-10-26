@@ -78,8 +78,7 @@ MenuBar::MenuBar(QWidget *parent) :
     APKS_MENUITEM(toggles, false, project, properties, Properties, 0);
     // Add tools items
     APKS_MENUITEM(toggles, false, adb, adb_kill, AdbKill, 0);
-    APKS_MENUITEM(toggles, false, adb, adb_reset, AdbReset, 0);
-    APKS_MENUITEM(toggles, false, adb, adb_start, AdbReset, 0);
+    APKS_MENUITEM(toggles, false, adb, adb_start, AdbStart, 0);
     tools->addAction(adb->menuAction());
     tools->addSeparator();
     APKS_MENUITEM(toggles, false, tools, device_manager, DeviceManager, 0);

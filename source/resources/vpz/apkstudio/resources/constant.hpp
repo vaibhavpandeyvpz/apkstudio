@@ -6,6 +6,7 @@
 #define APPLICATION_AUTHOR "Vaibhav Pandey"
 #define APPLICATION_NAME "APK Studio"
 
+#define FORMAT_TIMESTAMP_FILE "dd-MM-yyyy_hh_mm_ss"
 #define FORMAT_TIMESTAMP_GENERAL "dd/MM/yyyy hh:mm"
 
 #define REGEX_APPLICATION "^package:(?<path>.+?)=(?<package>.+)$"
@@ -20,12 +21,15 @@
 #define RESOURCE_PATH_LANGUAGE ":/language/"
 #define RESOURCE_PATH_THEME ":/theme/"
 
+#define ROLE_STRUCT 60600
+
 #define SETTING_BINARY_PATH "binary_path"
 #define SETTING_CHARACTER_ENCODING "character_encoding"
 #define SETTING_CURSOR_WIDTH "cursor_width"
 #define SETTING_FONT_FAMILY "font_family"
 #define SETTING_FONT_SIZE "font_size"
 #define SETTING_IMAGE_BACKGROUND "image_background"
+#define SETTING_JAVA_HOME "java_home"
 #define SETTING_LANGUAGE "language"
 #define SETTING_MAXIMIZED "maximized"
 #define SETTING_PREVIOUS_DIRECTORY "previous_directory"

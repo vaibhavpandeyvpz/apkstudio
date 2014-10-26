@@ -1,6 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="en_US" sourcelanguage="en_IN">
+<TS version="2.1" language="en_IN" sourcelanguage="en_IN">
+    <context>
+        <name>device_chooser</name>
+        <message>
+            <source>header_serial</source>
+            <translation>Serial</translation>
+        </message>
+        <message>
+            <source>header_type</source>
+            <translation>Type</translation>
+        </message>
+        <message>
+            <source>item_adb</source>
+            <translation>ADB Control</translation>
+        </message>
+        <message>
+            <source>item_browser</source>
+            <translation>File Browser</translation>
+        </message>
+        <message>
+            <source>item_information</source>
+            <translation>Device Information</translation>
+        </message>
+        <message>
+            <source>item_kill</source>
+            <translation>Kill</translation>
+        </message>
+        <message>
+            <source>item_logcat</source>
+            <translation>View Logcat</translation>
+        </message>
+        <message>
+            <source>item_refresh</source>
+            <translation>Refresh devices list</translation>
+        </message>
+        <message>
+            <source>item_restart</source>
+            <translation>Restart</translation>
+        </message>
+        <message>
+            <source>item_screenshot</source>
+            <translation>Take screenshot</translation>
+        </message>
+        <message>
+            <source>item_shell</source>
+            <translation>Open shell over ADB</translation>
+        </message>
+        <message>
+            <source>item_start</source>
+            <translation>Start</translation>
+        </message>
+        <message>
+            <source>status_bootloader</source>
+            <translation>Boot-Loader</translation>
+        </message>
+        <message>
+            <source>status_offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>status_online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>title_save</source>
+            <translation>Save screenshot as</translation>
+        </message>
+        <message>
+            <source>tooltip_adb</source>
+            <translation>Start/stop ADB server</translation>
+        </message>
+        <message>
+            <source>type_emulator</source>
+            <translation>Emulator</translation>
+        </message>
+        <message>
+            <source>type_phone</source>
+            <translation>Phone</translation>
+        </message>
+    </context>
     <context>
         <name>ide</name>
         <message>
@@ -33,10 +112,6 @@
         <message>
             <source>item_adb_start</source>
             <translation>Start</translation>
-        </message>
-        <message>
-            <source>item_adb_reset</source>
-            <translation>Reset</translation>
         </message>
         <message>
             <source>item_applications_manager</source>
@@ -342,11 +417,11 @@
         </message>
         <message>
             <source>title_load</source>
-            <translation>Choose image file to load</translation>
+            <translation>Load image</translation>
         </message>
         <message>
             <source>title_save</source>
-            <translation>Choose image path to save as</translation>
+            <translation>Save image as</translation>
         </message>
     </context>
 </TS>

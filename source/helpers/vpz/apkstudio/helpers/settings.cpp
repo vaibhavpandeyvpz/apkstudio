@@ -59,7 +59,10 @@ QString Settings::binary(const QString &executable)
 
 QString Settings::binaryPath()
 {
-    return qvariant_cast<QString>(get(SETTING_BINARY_PATH, QVariant(QString(QDir::homePath()).append("/apkstudio/bin"))));
+    QString path = qvariant_cast<QString>(get(SETTING_BINARY_PATH, QVariant()));
+    if (path.isEmpty())
+        path = QString(QDir::homePath()).append("/apkstudio/bin");
+    return path;
 }
 
 void Settings::binaryPath(const QString &path)
@@ -122,6 +125,20 @@ QString Settings::imageBackground()
 void Settings::imageBackground(const QString &color)
 {
     set(SETTING_IMAGE_BACKGROUND, QVariant(color));
+}
+
+QString Settings::javaHome()
+{
+    QString java = qvariant_cast<QString>(get(SETTING_JAVA_HOME, QVariant()));
+    QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
+    if (environment.contains("JAVA_HOME"))
+        java = QString(environment.value("JAVA_HOME"));
+    return java;
+}
+
+void Settings::javaHome(const QString &java)
+{
+    set(SETTING_JAVA_HOME, QVariant(java));
 }
 
 QString Settings::language()
@@ -234,7 +251,7 @@ void Settings::tabWidth(const int count)
 
 QString Settings::theme()
 {
-    return qvariant_cast<QString>(get(SETTING_THEME, QVariant("dark")));
+    return qvariant_cast<QString>(get(SETTING_THEME, QVariant("light")));
 }
 
 void Settings::theme(const QString &name)

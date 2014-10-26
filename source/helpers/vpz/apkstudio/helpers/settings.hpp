@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QFile>
 #include <QHash>
+#include <QProcessEnvironment>
 #include <QSettings>
 #include <QSize>
 #include <QTextCodec>
@@ -36,6 +37,8 @@ public:
     static QVariant get(const QString &, const QVariant &);
     static QString imageBackground();
     static void imageBackground(const QString &);
+    static QString javaHome();
+    static void javaHome(const QString &);
     static QString language();
     static void language(const QString &);
     inline static QStringList brackets() { return QString("(),{},[]").split(','); }
