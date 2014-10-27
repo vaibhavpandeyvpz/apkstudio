@@ -102,7 +102,22 @@ void DeviceChooser::onBrowse()
 
 void DeviceChooser::onInformation()
 {
-
+    Device device = selected();
+    if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
+        return;
+    Dialog *dialog = new Dialog(this);
+    DeviceInformation *information = new DeviceInformation(dialog);
+    dialog->setDialogLayout(information);
+    dialog->resize(QSize(560, 450));
+    dialog->setMinimumSize(QSize(320, 240));
+    dialog->setMaximumSize(QSize(800, 600));
+#ifdef Q_OS_WIN
+    dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
+    dialog->setWindowIcon(icon("processor"));
+    dialog->setWindowTitle(translate("title_device_information").arg(device.serial));
+    dialog->show();
+    information->setDevice(device.serial);
 }
 
 void DeviceChooser::onLogcat()

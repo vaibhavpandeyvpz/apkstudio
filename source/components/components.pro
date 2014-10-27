@@ -14,7 +14,9 @@ HEADERS += \
     vpz/apkstudio/components/recents.hpp \
     vpz/apkstudio/components/scripts.hpp \
     vpz/apkstudio/components/viewer.hpp \
-    vpz/apkstudio/components/devicechooser.hpp
+    vpz/apkstudio/components/devicechooser.hpp \
+    vpz/apkstudio/components/deviceinformation.hpp \
+    vpz/apkstudio/components/dialog.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -22,7 +24,8 @@ SOURCES += \
     vpz/apkstudio/components/recents.cpp \
     vpz/apkstudio/components/scripts.cpp \
     vpz/apkstudio/components/viewer.cpp \
-    vpz/apkstudio/components/devicechooser.cpp
+    vpz/apkstudio/components/devicechooser.cpp \
+    vpz/apkstudio/components/deviceinformation.cpp
 
 # Include referenced co-projects & libraries
 win32 {

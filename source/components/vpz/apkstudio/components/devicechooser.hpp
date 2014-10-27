@@ -20,6 +20,8 @@
 #include "resources/constant.hpp"
 #include "resources/embedded.hpp"
 #include "resources/variant.hpp"
+#include "deviceinformation.hpp"
+#include "dialog.hpp"
 
 namespace VPZ {
 namespace APKStudio {

@@ -64,6 +64,10 @@
             <translation>Online</translation>
         </message>
         <message>
+            <source>title_device_information</source>
+            <translation>%1 - Device Information</translation>
+        </message>
+        <message>
             <source>title_save</source>
             <translation>Save screenshot as</translation>
         </message>
@@ -78,6 +82,85 @@
         <message>
             <source>type_phone</source>
             <translation>Phone</translation>
+        </message>
+    </context>
+    <context>
+        <name>device_information</name>
+        <message>
+            <source>group_hardware</source>
+            <translation>Hardware</translation>
+        </message>
+        <message>
+            <source>group_network</source>
+            <translation>Network</translation>
+        </message>
+        <message>
+            <source>group_software</source>
+            <translation>Software</translation>
+        </message>
+        <message>
+            <source>label_board</source>
+            <translation>Board</translation>
+        </message>
+        <message>
+            <source>label_build</source>
+            <translation>Build</translation>
+        </message>
+        <message>
+            <source>label_country</source>
+            <translation>Country</translation>
+        </message>
+        <message>
+            <source>label_cpu</source>
+            <translation>CPU ABI</translation>
+        </message>
+        <message>
+            <source>label_date</source>
+            <translation>Date</translation>
+        </message>
+        <message>
+            <source>label_fingerprint</source>
+            <translation>Fingerprint</translation>
+        </message>
+        <message>
+            <source>label_imei</source>
+            <translation>IMEI</translation>
+        </message>
+        <message>
+            <source>label_manufacturer</source>
+            <translation>Manufacturer</translation>
+        </message>
+        <message>
+            <source>label_model</source>
+            <translation>Model</translation>
+        </message>
+        <message>
+            <source>label_operator</source>
+            <translation>Operator</translation>
+        </message>
+        <message>
+            <source>label_sdk</source>
+            <translation>SDK Level</translation>
+        </message>
+        <message>
+            <source>label_secure</source>
+            <translation>Secure</translation>
+        </message>
+        <message>
+            <source>label_tags</source>
+            <translation>Tags</translation>
+        </message>
+        <message>
+            <source>label_timezone</source>
+            <translation>Timezone</translation>
+        </message>
+        <message>
+            <source>label_type</source>
+            <translation>Type</translation>
+        </message>
+        <message>
+            <source>label_version</source>
+            <translation>Version</translation>
         </message>
     </context>
     <context>
