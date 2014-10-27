@@ -2,7 +2,7 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_IN" sourcelanguage="en_IN">
     <context>
-        <name>device_chooser</name>
+        <name>devices</name>
         <message>
             <source>header_serial</source>
             <translation>Serial</translation>
@@ -64,8 +64,16 @@
             <translation>Online</translation>
         </message>
         <message>
-            <source>title_device_information</source>
+            <source>title_dock</source>
+            <translation>Devices</translation>
+        </message>
+        <message>
+            <source>title_information</source>
             <translation>%1 - Device Information</translation>
+        </message>
+        <message>
+            <source>title_logcat</source>
+            <translation>%1 - Logcat</translation>
         </message>
         <message>
             <source>title_save</source>
@@ -85,19 +93,29 @@
         </message>
     </context>
     <context>
-        <name>device_information</name>
+        <name>files</name>
         <message>
-            <source>group_hardware</source>
-            <translation>Hardware</translation>
+            <source>title_dock</source>
+            <translation>Files</translation>
+        </message>
+    </context>
+    <context>
+        <name>ide</name>
+        <message>
+            <source>mbox_close_message</source>
+            <translation>Any unsaved changes will be lost. Are you sure?</translation>
         </message>
         <message>
-            <source>group_network</source>
-            <translation>Network</translation>
+            <source>mbox_close_title</source>
+            <translation>Quit APK Studio</translation>
         </message>
         <message>
-            <source>group_software</source>
-            <translation>Software</translation>
+            <source>window_title</source>
+            <translation>APK Studio | By Vaibhav Pandey a.k.a VPZ | www.vaibhavpandey.com/apkstudio</translation>
         </message>
+    </context>
+    <context>
+        <name>information</name>
         <message>
             <source>label_board</source>
             <translation>Board</translation>
@@ -131,6 +149,10 @@
             <translation>Manufacturer</translation>
         </message>
         <message>
+            <source>label_mod</source>
+            <translation>Mod Version</translation>
+        </message>
+        <message>
             <source>label_model</source>
             <translation>Model</translation>
         </message>
@@ -162,20 +184,120 @@
             <source>label_version</source>
             <translation>Version</translation>
         </message>
+        <message>
+            <source>tab_hardware</source>
+            <translation>Hardware</translation>
+        </message>
+        <message>
+            <source>tab_network</source>
+            <translation>Network</translation>
+        </message>
+        <message>
+            <source>tab_software</source>
+            <translation>Software</translation>
+        </message>
     </context>
     <context>
-        <name>ide</name>
+        <name>logcat</name>
         <message>
-            <source>mbox_close_message</source>
-            <translation>Any unsaved changes will be lost. Are you sure?</translation>
+            <source>header_message</source>
+            <translation>Message</translation>
         </message>
         <message>
-            <source>mbox_close_title</source>
-            <translation>Quit APK Studio</translation>
+            <source>header_pid</source>
+            <translation>PID</translation>
         </message>
         <message>
-            <source>window_title</source>
-            <translation>APK Studio | By Vaibhav Pandey a.k.a VPZ | www.vaibhavpandey.com/apkstudio</translation>
+            <source>header_priority</source>
+            <translation>Priority</translation>
+        </message>
+        <message>
+            <source>header_tag</source>
+            <translation>Tag</translation>
+        </message>
+        <message>
+            <source>header_tid</source>
+            <translation>TID</translation>
+        </message>
+        <message>
+            <source>header_time</source>
+            <translation>Timestamp</translation>
+        </message>
+        <message>
+            <source>label_clear</source>
+            <translation>Clear</translation>
+        </message>
+        <message>
+            <source>label_debug</source>
+            <translation>Debug</translation>
+        </message>
+        <message>
+            <source>label_error</source>
+            <translation>Error</translation>
+        </message>
+        <message>
+            <source>label_info</source>
+            <translation>Info</translation>
+        </message>
+        <message>
+            <source>label_open</source>
+            <translation>Open</translation>
+        </message>
+        <message>
+            <source>label_save</source>
+            <translation>Save</translation>
+        </message>
+        <message>
+            <source>label_scroll</source>
+            <translation>Scroll</translation>
+        </message>
+        <message>
+            <source>label_start</source>
+            <translation>Start</translation>
+        </message>
+        <message>
+            <source>label_stop</source>
+            <translation>Stop</translation>
+        </message>
+        <message>
+            <source>label_verbose</source>
+            <translation>Verbose</translation>
+        </message>
+        <message>
+            <source>label_warning</source>
+            <translation>Warning</translation>
+        </message>
+        <message>
+            <source>message_empty</source>
+            <translation>Nothing to save as logcat is empty</translation>
+        </message>
+        <message>
+            <source>message_overwrite</source>
+            <translation>File %1 already exists. Overwrite?</translation>
+        </message>
+        <message>
+            <source>message_write</source>
+            <translation>Unable to open %1 in write mode</translation>
+        </message>
+        <message>
+            <source>title_open</source>
+            <translation>Open file</translation>
+        </message>
+        <message>
+            <source>title_empty</source>
+            <translation>Skipping!</translation>
+        </message>
+        <message>
+            <source>title_overwrite</source>
+            <translation>Overwrite?</translation>
+        </message>
+        <message>
+            <source>title_write</source>
+            <translation>Failed!</translation>
+        </message>
+        <message>
+            <source>title_save</source>
+            <translation>Save file as</translation>
         </message>
     </context>
     <context>
@@ -361,16 +483,20 @@
             <translation>Views</translation>
         </message>
         <message>
+            <source>item_views_devices</source>
+            <translation>Devices</translation>
+        </message>
+        <message>
             <source>item_views_files</source>
             <translation>Files</translation>
         </message>
         <message>
-            <source>item_views_logs</source>
-            <translation>Logs</translation>
-        </message>
-        <message>
             <source>item_views_outline</source>
             <translation>Outline</translation>
+        </message>
+        <message>
+            <source>item_views_output</source>
+            <translation>Output</translation>
         </message>
         <message>
             <source>item_views_projects</source>
@@ -419,6 +545,27 @@
         <message>
             <source>menu_window</source>
             <translation>Window</translation>
+        </message>
+    </context>
+    <context>
+        <name>outline</name>
+        <message>
+            <source>title_dock</source>
+            <translation>Outline</translation>
+        </message>
+    </context>
+    <context>
+        <name>output</name>
+        <message>
+            <source>title_dock</source>
+            <translation>Output</translation>
+        </message>
+    </context>
+    <context>
+        <name>projects</name>
+        <message>
+            <source>title_dock</source>
+            <translation>Projects</translation>
         </message>
     </context>
     <context>
@@ -474,6 +621,13 @@
         <message>
             <source>item_windowed</source>
             <translation>Windowed</translation>
+        </message>
+    </context>
+    <context>
+        <name>tasks</name>
+        <message>
+            <source>title_dock</source>
+            <translation>Tasks</translation>
         </message>
     </context>
     <context>

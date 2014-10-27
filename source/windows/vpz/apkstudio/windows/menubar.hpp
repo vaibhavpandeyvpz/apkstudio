@@ -15,11 +15,14 @@ class MenuBar : public QMenuBar
 {
     Q_OBJECT
 private:
+    QList<QMetaObject::Connection> connections;
+private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("menubar", key);
     }
 public:
     explicit MenuBar(QWidget *parent = 0);
+    ~MenuBar();
 };
 
 } // namespace Windows

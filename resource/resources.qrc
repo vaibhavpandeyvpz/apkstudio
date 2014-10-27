@@ -41,5 +41,12 @@
         <file>icon/mobile_phone.png</file>
         <file>icon/mobile_phone_off.png</file>
         <file>icon/mobile_phone_warning.png</file>
+        <file>icon/arrow_skip_bottom.png</file>
+        <file>icon/bin_empty.png</file>
+        <file>icon/info_debug.png</file>
+        <file>icon/info_error.png</file>
+        <file>icon/info_success.png</file>
+        <file>icon/info_verbose.png</file>
+        <file>icon/info_warning.png</file>
     </qresource>
 </RCC>

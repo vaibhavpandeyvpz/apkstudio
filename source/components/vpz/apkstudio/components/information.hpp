@@ -1,10 +1,9 @@
-#ifndef VPZ_APKSTUDIO_COMPONENTS_DEVICEINFORMATION_HPP
-#define VPZ_APKSTUDIO_COMPONENTS_DEVICEINFORMATION_HPP
+#ifndef VPZ_APKSTUDIO_COMPONENTS_INFORMATION_HPP
+#define VPZ_APKSTUDIO_COMPONENTS_INFORMATION_HPP
 
 #include <QLineEdit>
 #include <QFormLayout>
-#include <QGridLayout>
-#include <QGroupBox>
+#include <QTabWidget>
 #include "helpers/adb.hpp"
 #include "helpers/format.hpp"
 #include "helpers/text.hpp"
@@ -13,19 +12,22 @@ namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class DeviceInformation : public QGridLayout
+class Information : public QTabWidget
 {
     Q_OBJECT
 private:
     QList<QMetaObject::Connection> connections;
 private:
+    void inflateHardware();
+    void inflateNetwork();
+    void inflateSoftware();
     static QString translate(const char *key) {
-        return Helpers::Text::translate("device_information", key);
+        return Helpers::Text::translate("information", key);
     }
 public:
-    explicit DeviceInformation(QWidget *parent = 0);
+    explicit Information(QWidget *parent = 0);
     void setDevice(const QString &);
-    ~DeviceInformation();
+    ~Information();
 signals:
     void updateIMEI(const QString &);
     void updateInformation(const QMap<QString, QString> &);
@@ -35,4 +37,4 @@ signals:
 } // namespace APKStudio
 } // namespace VPZ
 
-#endif // VPZ_APKSTUDIO_COMPONENTS_DEVICEINFORMATION_HPP
+#endif // VPZ_APKSTUDIO_COMPONENTS_INFORMATION_HPP

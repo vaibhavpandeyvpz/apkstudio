@@ -61,6 +61,7 @@ Viewer::Viewer(QWidget *parent) :
     setContextMenuPolicy(Qt::CustomContextMenu);
     setBackgroundRole(QPalette::Dark);
     setFocus();
+    setMinimumSize(160, 160);
     setStyleSheet(
         "QScrollArea {"
             "background-color: " + Settings::imageBackground() + ";"

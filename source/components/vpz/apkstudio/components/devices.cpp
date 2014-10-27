@@ -1,5 +1,4 @@
-#include "devicechooser.hpp"
-#include <QDebug>
+#include "devices.hpp"
 
 using namespace VPZ::APKStudio::Helpers;
 using namespace VPZ::APKStudio::Resources;
@@ -8,14 +7,15 @@ namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-DeviceChooser::DeviceChooser(QWidget *parent) :
-    QWidget(parent)
+Devices::Devices(QWidget *parent) :
+    QDockWidget(translate("title_dock"), parent)
 {
-    QToolBar *toolbar = new QToolBar(this);
-    QToolButton *adb = new QToolButton(this);
+    QWidget *widget = new QWidget(this);
+    QToolBar *toolbar = new QToolBar(widget);
+    QToolButton *adb = new QToolButton(widget);
     QAction *browse = new QAction(icon("folder_stand"), translate("item_browse"), toolbar);
     QAction *information = new QAction(icon("processor"), translate("item_information"), toolbar);
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(widget);
     QAction *kill = new QAction(icon("control_stop"), translate("item_kill"), toolbar);
     QAction *logcat = new QAction(icon("resource_monitor"), translate("item_logcat"), toolbar);
     QMenu *menu = new QMenu(adb);
@@ -24,8 +24,7 @@ DeviceChooser::DeviceChooser(QWidget *parent) :
     QAction *screenshot = new QAction(icon("camera"), translate("item_screenshot"), toolbar);
     QAction *shell = new QAction(icon("terminal"), translate("item_shell"), toolbar);
     QAction *start = new QAction(icon("control_play"), translate("item_start"), toolbar);
-    tree = new QTreeView(this);
-    model = new QStandardItemModel(tree);
+    tree = new QTreeWidget(widget);
     adb->setDefaultAction(restart);
     adb->setIcon(icon("control_power"));
     adb->setText(translate("item_adb"));
@@ -43,9 +42,6 @@ DeviceChooser::DeviceChooser(QWidget *parent) :
     menu->addAction(kill);
     menu->addSeparator();
     menu->addAction(restart);
-    model->setHorizontalHeaderItem(0, new QStandardItem(""));
-    model->setHorizontalHeaderItem(1, new QStandardItem(translate("header_serial")));
-    model->setHorizontalHeaderItem(2, new QStandardItem(translate("header_type")));
     screenshot->setEnabled(false);
     shell->setEnabled(false);
     toolbar->addWidget(adb);
@@ -57,9 +53,13 @@ DeviceChooser::DeviceChooser(QWidget *parent) :
     toolbar->addAction(screenshot);
     toolbar->addAction(logcat);
     toolbar->addAction(shell);
+    QStringList labels;
+    labels << "";
+    labels << translate("header_serial");
+    labels << translate("header_type");
+    tree->setHeaderLabels(labels);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tree->setRootIsDecorated(false);
-    tree->setModel(model);
     tree->setSelectionBehavior(QAbstractItemView::SelectRows);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
     tree->setSortingEnabled(true);
@@ -91,91 +91,112 @@ DeviceChooser::DeviceChooser(QWidget *parent) :
         screenshot->setEnabled(enable);
         shell->setEnabled(enable);
     }));
-    setLayout(layout);
-    setMinimumSize(160, 160);
+    widget->setLayout(layout);
+    widget->setMinimumSize(64, 64);
+    setObjectName("devices");
+    setWidget(widget);
 }
 
-void DeviceChooser::onBrowse()
+void Devices::onBrowse()
 {
 
 }
 
-void DeviceChooser::onInformation()
+void Devices::onInformation()
 {
     Device device = selected();
     if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
         return;
     Dialog *dialog = new Dialog(this);
-    DeviceInformation *information = new DeviceInformation(dialog);
-    dialog->setDialogLayout(information);
-    dialog->resize(QSize(560, 450));
+    Information *information = new Information(dialog);
+    QHBoxLayout *layout = new QHBoxLayout(dialog);
+    layout->addWidget(information);
+    layout->setContentsMargins(QMargins(2, 2, 2, 2));
+    layout->setSpacing(0);
+    dialog->setDialogLayout(layout);
+    dialog->resize(QSize(360, 256));
     dialog->setMinimumSize(QSize(320, 240));
     dialog->setMaximumSize(QSize(800, 600));
 #ifdef Q_OS_WIN
     dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
 #endif
     dialog->setWindowIcon(icon("processor"));
-    dialog->setWindowTitle(translate("title_device_information").arg(device.serial));
+    dialog->setWindowTitle(translate("title_information").arg(device.serial));
     dialog->show();
     information->setDevice(device.serial);
 }
 
-void DeviceChooser::onLogcat()
+void Devices::onLogcat()
 {
-
+    Device device = selected();
+    if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
+        return;
+    Dialog *dialog = new Dialog(this);
+    Logcat *logcat = new Logcat(dialog);
+    QHBoxLayout *layout = new QHBoxLayout(dialog);
+    layout->addWidget(logcat);
+    layout->setContentsMargins(QMargins(0, 0, 0, 0));
+    layout->setSpacing(0);
+    dialog->setDialogLayout(layout);
+    dialog->resize(QSize(480, 320));
+    dialog->setMinimumSize(QSize(320, 240));
+    dialog->setMaximumSize(QSize(800, 600));
+#ifdef Q_OS_WIN
+    dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+#endif
+    dialog->setWindowIcon(icon("resource_monitor"));
+    dialog->setWindowTitle(translate("title_logcat").arg(device.serial));
+    dialog->show();
+    logcat->setDevice(device.serial);
 }
 
-void DeviceChooser::onRefresh()
+void Devices::onRefresh()
 {
     QVector<Device> devices = ADB::instance()->devices();
     if (devices.count() <= 0)
         return;
-    while (model->rowCount() > 0)
-        model->removeRow(0);
+    if (tree->model()->hasChildren())
+        tree->model()->removeRows(0, tree->model()->rowCount());
     foreach (const Device &device, devices) {
-        QStandardItem *icon = new QStandardItem();
-        QStandardItem *serial = new QStandardItem(device.serial);
-        QStandardItem *type = new QStandardItem();
+        QTreeWidgetItem *row = new QTreeWidgetItem();
         switch (device.status) {
         case Device::BOOTLOADER:
-            icon->setIcon(this->icon("mobile_phone_warning"));
-            icon->setToolTip(translate("status_bootloader"));
+            row->setIcon(0, this->icon("mobile_phone_warning"));
+            row->setToolTip(0, translate("status_bootloader"));
             break;
         case Device::ONLINE:
-            icon->setIcon(this->icon("mobile_phone"));
-            icon->setToolTip(translate("status_online"));
+            row->setIcon(0, this->icon("mobile_phone"));
+            row->setToolTip(0, translate("status_online"));
             break;
         default:
-            icon->setIcon(this->icon("mobile_phone_off"));
-            icon->setToolTip(translate("status_offline"));
+            row->setIcon(0, this->icon("mobile_phone_off"));
+            row->setToolTip(0, translate("status_offline"));
             break;
         }
+        row->setText(1, device.serial);
         switch (device.type) {
         case Device::DEVICE:
-            type->setText(translate("type_phone"));
+            row->setText(2, translate("type_phone"));
             break;
         default:
-            type->setText(translate("type_emulator"));
+            row->setText(2, translate("type_emulator"));
             break;
         }
         QVariant data;
         data.setValue(device);
-        icon->setData(data, ROLE_STRUCT);
-        QList<QStandardItem *> row;
-        row << icon;
-        row << serial;
-        row << type;
-        model->appendRow(row);
+        row->setData(0, ROLE_STRUCT, data);
+        tree->addTopLevelItem(row);
     }
     tree->header()->resizeSections(QHeaderView::ResizeToContents);
 }
 
-void DeviceChooser::onScreenshot()
+void Devices::onScreenshot()
 {
     Device device = selected();
     if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
         return;
     QString file = QString(Settings::previousDirectory());
+    file.append('/');
     file.append(device.serial);
     file.append('_');
     file.append(Format::timestamp(QDateTime::currentDateTime(), FORMAT_TIMESTAMP_FILE));
@@ -190,7 +211,7 @@ void DeviceChooser::onScreenshot()
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));
 }
 
-void DeviceChooser::onShell()
+void Devices::onShell()
 {
     Device device = selected();
     if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
@@ -198,7 +219,7 @@ void DeviceChooser::onShell()
     ADB::instance()->shell(device.serial);
 }
 
-Device DeviceChooser::selected() const
+Device Devices::selected() const
 {
     Device device;
     QModelIndexList selection = this->tree->selectionModel()->selectedRows(0);
@@ -207,7 +228,7 @@ Device DeviceChooser::selected() const
     return device;
 }
 
-DeviceChooser::~DeviceChooser()
+Devices::~Devices()
 {
     foreach (QMetaObject::Connection connection, connections)
         disconnect(connection);

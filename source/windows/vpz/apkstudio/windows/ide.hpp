@@ -6,7 +6,13 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStatusBar>
-#include "components/devicechooser.hpp"
+#include "components/devices.hpp"
+#include "components/editor.hpp"
+#include "components/files.hpp"
+#include "components/outline.hpp"
+#include "components/output.hpp"
+#include "components/projects.hpp"
+#include "components/tasks.hpp"
 #include "helpers/adb.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
@@ -23,16 +29,26 @@ class IDE : public QMainWindow
     Q_OBJECT
 private:
     int exit_code;
+    QList<QMetaObject::Connection> connections;
+    Components::Devices *devices;
+    Components::Editor *editor;
+    Components::Files *files;
     MenuBar *menu_bar;
+    Components::Outline *outline;
+    Components::Output *output;
+    Components::Projects *projects;
+    Components::Tasks *tasks;
     ToolBar *tool_bar;
     QStatusBar *status_bar;
 private:
     void closeEvent(QCloseEvent *event);
+    void setupDocks();
     static QString translate(const char *key) {
         return Helpers::Text::translate("ide", key);
     }
 public:
     explicit IDE(QWidget *parent = 0);
+    ~IDE();
 public Q_SLOTS:
     void onActionAdbKill();
     void onActionAdbStart();
@@ -44,6 +60,8 @@ public Q_SLOTS:
     void onActionRestart();
     void onActionToggle(QAction *);
     void onInitComplete();
+signals:
+    void viewToggled(const char *id, bool visible);
 };
 
 } // namespace Windows

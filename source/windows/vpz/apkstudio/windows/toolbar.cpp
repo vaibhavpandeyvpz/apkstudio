@@ -7,7 +7,6 @@ namespace Windows {
 ToolBar::ToolBar(QWidget *parent) :
     QToolBar(parent)
 {
-    // Add actions
     APKS_TOOLITEM(this, create, create, OpenApk);
     APKS_TOOLITEM(this, open, folder_open, OpenProject);
     addSeparator();
@@ -23,25 +22,22 @@ ToolBar::ToolBar(QWidget *parent) :
     APKS_TOOLITEM(this, previous, arrow_left, Previous);
     APKS_TOOLITEM(this, next, arrow_right, Next);
     APKS_TOOLITEM(this, last, arrow_skip_right, Last);
-    // Add encoding drop-down
     QComboBox *encoding = new QComboBox(this);
     encoding->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     encoding->setStyleSheet(STYLESHEET_COMBOBOXES);
     addWidget(encoding);
     refreshEncodings(encoding);
-    // Bind encoding drop-down
     connect(encoding, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [=](int index) {
         if (index < 0)
             return;
         Helpers::Settings::characterEncoding(qvariant_cast<int>(encoding->itemData(index)));
     });
-    // Add spacer
     QWidget *spacer = new QWidget(this);
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     addWidget(spacer);
-    // Initialize self
     setAcceptDrops(false);
     setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
+    setObjectName("toolbar");
 }
 
 void ToolBar::refreshEncodings(QComboBox *combo)

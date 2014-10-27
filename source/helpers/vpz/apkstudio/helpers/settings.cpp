@@ -91,6 +91,16 @@ void Settings::cursorWidth(const int pixels)
     set(SETTING_CURSOR_WIDTH, QVariant(pixels));
 }
 
+QByteArray Settings::dockState()
+{
+    return qvariant_cast<QByteArray>(get(SETTING_DOCK_STATE, QVariant(QByteArray())));
+}
+
+void Settings::dockState(const QByteArray &state)
+{
+    set(SETTING_DOCK_STATE, QVariant(state));
+}
+
 QString Settings::fontFamily()
 {
     return qvariant_cast<QString>(get(SETTING_FONT_FAMILY, QVariant("Source Code Pro")));

@@ -2,16 +2,21 @@
 #define VPZ_APKSTUDIO_HELPERS_MACRO_HPP
 
 #define APKS_MENUITEM(toggles, toggle, parent, name, slot, shortcut) ({ \
-    QAction *action = new QAction(translate("item_" #name), parent); \
+    QAction *name = new QAction(translate("item_" #name), parent); \
     if (toggle) { \
-        action->setCheckable(true); \
-        action->setChecked(true); \
-        toggles->addAction(action); \
+        name->setCheckable(true); \
+        name->setChecked(true); \
+        name->setObjectName(#name); \
+        toggles->addAction(name); \
+        connections.append(connect(dynamic_cast<IDE *>(parentWidget()), &IDE::viewToggled, [ name ] (const char *id, bool visible) { \
+            if (QString(#name) == QString(id)) \
+                name->setChecked(visible); \
+        })); \
     } else \
-        connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
+        connect(name, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
     if (shortcut != 0) \
-        action->setShortcut(shortcut); \
-    parent->addAction(action); \
+        name->setShortcut(shortcut); \
+    parent->addAction(name); \
 })
 
 #define APKS_TOOLITEM(parent, name, png, slot) ({ \

@@ -26,6 +26,7 @@
 #define SETTING_BINARY_PATH "binary_path"
 #define SETTING_CHARACTER_ENCODING "character_encoding"
 #define SETTING_CURSOR_WIDTH "cursor_width"
+#define SETTING_DOCK_STATE "dock_state"
 #define SETTING_FONT_FAMILY "font_family"
 #define SETTING_FONT_SIZE "font_size"
 #define SETTING_IMAGE_BACKGROUND "image_background"

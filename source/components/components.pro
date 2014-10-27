@@ -14,9 +14,16 @@ HEADERS += \
     vpz/apkstudio/components/recents.hpp \
     vpz/apkstudio/components/scripts.hpp \
     vpz/apkstudio/components/viewer.hpp \
-    vpz/apkstudio/components/devicechooser.hpp \
-    vpz/apkstudio/components/deviceinformation.hpp \
-    vpz/apkstudio/components/dialog.hpp
+    vpz/apkstudio/components/dialog.hpp \
+    vpz/apkstudio/components/logcat.hpp \
+    vpz/apkstudio/components/devices.hpp \
+    vpz/apkstudio/components/information.hpp \
+    vpz/apkstudio/components/editor.hpp \
+    vpz/apkstudio/components/output.hpp \
+    vpz/apkstudio/components/projects.hpp \
+    vpz/apkstudio/components/files.hpp \
+    vpz/apkstudio/components/outline.hpp \
+    vpz/apkstudio/components/tasks.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -24,8 +31,15 @@ SOURCES += \
     vpz/apkstudio/components/recents.cpp \
     vpz/apkstudio/components/scripts.cpp \
     vpz/apkstudio/components/viewer.cpp \
-    vpz/apkstudio/components/devicechooser.cpp \
-    vpz/apkstudio/components/deviceinformation.cpp
+    vpz/apkstudio/components/logcat.cpp \
+    vpz/apkstudio/components/devices.cpp \
+    vpz/apkstudio/components/information.cpp \
+    vpz/apkstudio/components/editor.cpp \
+    vpz/apkstudio/components/output.cpp \
+    vpz/apkstudio/components/projects.cpp \
+    vpz/apkstudio/components/files.cpp \
+    vpz/apkstudio/components/outline.cpp \
+    vpz/apkstudio/components/tasks.cpp
 
 # Include referenced co-projects & libraries
 win32 {

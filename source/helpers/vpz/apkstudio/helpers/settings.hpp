@@ -30,6 +30,8 @@ public:
     static void characterEncoding(const int);
     static int cursorWidth();
     static void cursorWidth(const int);
+    static QByteArray dockState();
+    static void dockState(const QByteArray &);
     static QString fontFamily();
     static void fontFamily(const QString &);
     static int fontSize();
