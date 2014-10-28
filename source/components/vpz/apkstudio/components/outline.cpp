@@ -9,10 +9,11 @@ namespace Components {
 Outline::Outline(QWidget *parent) :
     QDockWidget(translate("title_dock"), parent)
 {
-    QWidget *widget = new QWidget(this);
-    widget->setMinimumSize(64, 64);
+    tree = new QTreeWidget(this);
+    tree->setMinimumSize(64, 64);
+    setContentsMargins(2, 2, 2, 2);
     setObjectName("outline");
-    setWidget(widget);
+    setWidget(tree);
 }
 
 Outline::~Outline()

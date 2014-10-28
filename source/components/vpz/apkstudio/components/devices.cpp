@@ -35,7 +35,7 @@ Devices::Devices(QWidget *parent) :
     information->setEnabled(false);
     layout->addWidget(toolbar);
     layout->addWidget(tree);
-    layout->setContentsMargins(QMargins(2, 2, 2, 2));
+    layout->setContentsMargins(QMargins(0, 0, 0, 0));
     layout->setSpacing(0);
     logcat->setEnabled(false);
     menu->addAction(start);
@@ -62,6 +62,7 @@ Devices::Devices(QWidget *parent) :
     tree->setRootIsDecorated(false);
     tree->setSelectionBehavior(QAbstractItemView::SelectRows);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
+    tree->setColumnWidth(0, 32);
     tree->setSortingEnabled(true);
     tree->sortByColumn(1, Qt::AscendingOrder);
     connect(browse, SIGNAL(triggered()), this, SLOT(onBrowse()));
@@ -93,6 +94,7 @@ Devices::Devices(QWidget *parent) :
     }));
     widget->setLayout(layout);
     widget->setMinimumSize(64, 64);
+    setContentsMargins(2, 2, 2, 2);
     setObjectName("devices");
     setWidget(widget);
 }

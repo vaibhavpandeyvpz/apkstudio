@@ -261,7 +261,7 @@ void Settings::tabWidth(const int count)
 
 QString Settings::theme()
 {
-    return qvariant_cast<QString>(get(SETTING_THEME, QVariant("dark")));
+    return qvariant_cast<QString>(get(SETTING_THEME, QVariant("light")));
 }
 
 void Settings::theme(const QString &name)

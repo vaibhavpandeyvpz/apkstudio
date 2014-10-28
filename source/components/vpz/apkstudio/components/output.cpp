@@ -11,6 +11,7 @@ Output::Output(QWidget *parent) :
 {
     QWidget *widget = new QWidget(this);
     widget->setMinimumSize(64, 64);
+    setContentsMargins(2, 2, 2, 2);
     setObjectName("output");
     setWidget(widget);
 }

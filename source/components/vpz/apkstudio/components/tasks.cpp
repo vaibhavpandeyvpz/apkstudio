@@ -9,10 +9,11 @@ namespace Components {
 Tasks::Tasks(QWidget *parent) :
     QDockWidget(translate("title_dock"), parent)
 {
-    QWidget *widget = new QWidget(this);
-    widget->setMinimumSize(64, 64);
+    list = new QListWidget(this);
+    list->setMinimumSize(64, 64);
+    setContentsMargins(2, 2, 2, 2);
     setObjectName("tasks");
-    setWidget(widget);
+    setWidget(list);
 }
 
 Tasks::~Tasks()

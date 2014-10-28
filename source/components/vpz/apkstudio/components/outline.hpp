@@ -2,6 +2,7 @@
 #define VPZ_APKSTUDIO_COMPONENTS_OUTLINE_HPP
 
 #include <QDockWidget>
+#include <QTreeWidget>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 
@@ -12,6 +13,8 @@ namespace Components {
 class Outline : public QDockWidget
 {
     Q_OBJECT
+private:
+    QTreeWidget *tree;
 private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("outline", key);

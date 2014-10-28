@@ -2,6 +2,7 @@
 #define VPZ_APKSTUDIO_COMPONENTS_TASKS_HPP
 
 #include <QDockWidget>
+#include <QListWidget>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 
@@ -12,6 +13,8 @@ namespace Components {
 class Tasks : public QDockWidget
 {
     Q_OBJECT
+private:
+    QListWidget *list;
 private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("tasks", key);

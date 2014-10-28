@@ -323,7 +323,7 @@
             <translation>Applications Manager</translation>
         </message>
         <message>
-            <source>item_build</source>
+            <source>item_build_</source>
             <translation>Build</translation>
         </message>
         <message>
@@ -367,7 +367,7 @@
             <translation>Donate</translation>
         </message>
         <message>
-            <source>item_export</source>
+            <source>item_export_</source>
             <translation>Export</translation>
         </message>
         <message>
@@ -395,7 +395,7 @@
             <translation>Full-Screen</translation>
         </message>
         <message>
-            <source>item_goto</source>
+            <source>item_goto_</source>
             <translation>Goto</translation>
         </message>
         <message>
@@ -563,6 +563,14 @@
     </context>
     <context>
         <name>projects</name>
+        <message>
+            <source>tab_active_project</source>
+            <translation>Active Project</translation>
+        </message>
+        <message>
+            <source>tab_projects</source>
+            <translation>Projects</translation>
+        </message>
         <message>
             <source>title_dock</source>
             <translation>Projects</translation>
