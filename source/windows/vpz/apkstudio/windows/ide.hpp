@@ -18,7 +18,11 @@
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 #include "resources/constant.hpp"
+#include "explorer.hpp"
+#include "information.hpp"
+#include "logcat.hpp"
 #include "menubar.hpp"
+#include "settings.hpp"
 #include "toolbar.hpp"
 
 namespace VPZ {
@@ -51,7 +55,7 @@ private:
 public:
     explicit IDE(QWidget *parent = 0);
     ~IDE();
-public Q_SLOTS:
+public slots:
     void onActionAdbKill();
     void onActionAdbStart();
     void onActionContribute();
@@ -64,8 +68,12 @@ public Q_SLOTS:
     void onActionPrevious();
     void onActionQuit();
     void onActionRestart();
+    void onActionSettings();
     void onActionToggle(QAction *);
     void onInitComplete();
+    void onShowExplorer(const QString &);
+    void onShowInformation(const QString &);
+    void onShowLogcat(const QString &);
 signals:
     void viewToggled(const char *id, bool visible);
 };

@@ -13,7 +13,7 @@ Devices::Devices(QWidget *parent) :
     QWidget *widget = new QWidget(this);
     QToolBar *toolbar = new QToolBar(widget);
     QToolButton *adb = new QToolButton(widget);
-    QAction *browse = new QAction(icon("folder_stand"), translate("item_browse"), toolbar);
+    QAction *explore = new QAction(icon("folder_stand"), translate("item_explore"), toolbar);
     QAction *information = new QAction(icon("processor"), translate("item_information"), toolbar);
     QVBoxLayout *layout = new QVBoxLayout(widget);
     QAction *kill = new QAction(icon("control_stop"), translate("item_kill"), toolbar);
@@ -31,7 +31,7 @@ Devices::Devices(QWidget *parent) :
     adb->setToolTip(translate("tooltip_adb"));
     adb->setMenu(menu);
     adb->setPopupMode(QToolButton::MenuButtonPopup);
-    browse->setEnabled(false);
+    explore->setEnabled(false);
     information->setEnabled(false);
     layout->addWidget(toolbar);
     layout->addWidget(tree);
@@ -49,7 +49,7 @@ Devices::Devices(QWidget *parent) :
     toolbar->addSeparator();
     toolbar->addAction(information);
     toolbar->addSeparator();
-    toolbar->addAction(browse);
+    toolbar->addAction(explore);
     toolbar->addAction(screenshot);
     toolbar->addAction(logcat);
     toolbar->addAction(shell);
@@ -65,7 +65,7 @@ Devices::Devices(QWidget *parent) :
     tree->setColumnWidth(0, 32);
     tree->setSortingEnabled(true);
     tree->sortByColumn(1, Qt::AscendingOrder);
-    connect(browse, SIGNAL(triggered()), this, SLOT(onBrowse()));
+    connect(explore, SIGNAL(triggered()), this, SLOT(onExplore()));
     connect(information, SIGNAL(triggered()), this, SLOT(onInformation()));
     connections.append(connect(kill, &QAction::triggered, [] () {
         ADB::instance()->kill();
@@ -81,12 +81,15 @@ Devices::Devices(QWidget *parent) :
     connections.append(connect(start, &QAction::triggered, [] () {
         ADB::instance()->start();
     }));
-    connections.append(connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, [ browse, information, logcat, screenshot, shell, this ] (const QItemSelection &/*current*/, const QItemSelection &/*previous*/) {
+    connections.append(connect(this, SIGNAL(showExplorer(QString)), this->parent(), SLOT(onShowExplorer(QString))));
+    connections.append(connect(this, SIGNAL(showInformation(QString)), this->parent(), SLOT(onShowInformation(QString))));
+    connections.append(connect(this, SIGNAL(showLogcat(QString)), this->parent(), SLOT(onShowLogcat(QString))));
+    connections.append(connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, [ explore, information, logcat, screenshot, shell, this ] (const QItemSelection &/*current*/, const QItemSelection &/*previous*/) {
         bool enable = false;
         Device device = this->selected();
         if (!device.serial.isEmpty())
             enable = (device.status == Device::ONLINE);
-        browse->setEnabled(enable);
+        explore->setEnabled(enable);
         information->setEnabled(enable);
         logcat->setEnabled(enable);
         screenshot->setEnabled(enable);
@@ -99,9 +102,12 @@ Devices::Devices(QWidget *parent) :
     setWidget(widget);
 }
 
-void Devices::onBrowse()
+void Devices::onExplore()
 {
-
+    Device device = selected();
+    if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
+        return;
+    emit showExplorer(device.serial);
 }
 
 void Devices::onInformation()
@@ -109,23 +115,7 @@ void Devices::onInformation()
     Device device = selected();
     if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
         return;
-    Dialog *dialog = new Dialog(this);
-    Information *information = new Information(dialog);
-    QHBoxLayout *layout = new QHBoxLayout(dialog);
-    layout->addWidget(information);
-    layout->setContentsMargins(QMargins(2, 2, 2, 2));
-    layout->setSpacing(0);
-    dialog->setDialogLayout(layout);
-    dialog->resize(QSize(360, 256));
-    dialog->setMinimumSize(QSize(320, 240));
-    dialog->setMaximumSize(QSize(800, 600));
-#ifdef Q_OS_WIN
-    dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
-    dialog->setWindowIcon(icon("processor"));
-    dialog->setWindowTitle(translate("title_information").arg(device.serial));
-    dialog->show();
-    information->setDevice(device.serial);
+    emit showInformation(device.serial);
 }
 
 void Devices::onLogcat()
@@ -133,23 +123,7 @@ void Devices::onLogcat()
     Device device = selected();
     if ((device.serial.isEmpty()) || (device.status != Device::ONLINE))
         return;
-    Dialog *dialog = new Dialog(this);
-    Logcat *logcat = new Logcat(dialog);
-    QHBoxLayout *layout = new QHBoxLayout(dialog);
-    layout->addWidget(logcat);
-    layout->setContentsMargins(QMargins(0, 0, 0, 0));
-    layout->setSpacing(0);
-    dialog->setDialogLayout(layout);
-    dialog->resize(QSize(480, 320));
-    dialog->setMinimumSize(QSize(320, 240));
-    dialog->setMaximumSize(QSize(800, 600));
-#ifdef Q_OS_WIN
-    dialog->setWindowFlags(dialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
-#endif
-    dialog->setWindowIcon(icon("resource_monitor"));
-    dialog->setWindowTitle(translate("title_logcat").arg(device.serial));
-    dialog->show();
-    logcat->setDevice(device.serial);
+    emit showLogcat(device.serial);
 }
 
 void Devices::onRefresh()
@@ -163,15 +137,15 @@ void Devices::onRefresh()
         QTreeWidgetItem *row = new QTreeWidgetItem();
         switch (device.status) {
         case Device::BOOTLOADER:
-            row->setIcon(0, this->icon("mobile_phone_warning"));
+            row->setIcon(0, ::icon("mobile_phone_warning"));
             row->setToolTip(0, translate("status_bootloader"));
             break;
         case Device::ONLINE:
-            row->setIcon(0, this->icon("mobile_phone"));
+            row->setIcon(0, ::icon("mobile_phone"));
             row->setToolTip(0, translate("status_online"));
             break;
         default:
-            row->setIcon(0, this->icon("mobile_phone_off"));
+            row->setIcon(0, ::icon("mobile_phone_off"));
             row->setToolTip(0, translate("status_offline"));
             break;
         }

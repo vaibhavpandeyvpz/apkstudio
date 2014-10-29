@@ -18,4 +18,6 @@ public:
 } // namespace APKStudio
 } // namespace VPZ
 
+QIcon icon(const char *);
+
 #endif // VPZ_APKSTUDIO_RESOURCES_EMBEDDED_HPP

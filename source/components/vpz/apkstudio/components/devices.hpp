@@ -19,9 +19,6 @@
 #include "resources/constant.hpp"
 #include "resources/embedded.hpp"
 #include "resources/variant.hpp"
-#include "dialog.hpp"
-#include "information.hpp"
-#include "logcat.hpp"
 
 namespace VPZ {
 namespace APKStudio {
@@ -34,15 +31,12 @@ private:
     QList<QMetaObject::Connection> connections;
     QTreeWidget *tree;
 private:
-    static QIcon icon(const char *name) {
-        return Resources::Embedded::icon(name);
-    }
     Resources::Device selected() const;
     static QString translate(const char *key) {
         return Helpers::Text::translate("devices", key);
     }
-private Q_SLOTS:
-    void onBrowse();
+private slots:
+    void onExplore();
     void onInformation();
     void onLogcat();
     void onRefresh();
@@ -51,9 +45,13 @@ private Q_SLOTS:
 public:
     explicit Devices(QWidget *parent = 0);
     ~Devices();
+signals:
+    void showExplorer(QString);
+    void showInformation(QString);
+    void showLogcat(QString);
 };
 
-} // namespace Components
+}
 } // namespace APKStudio
 } // namespace VPZ
 

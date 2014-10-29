@@ -13,7 +13,7 @@ Output::Output(QWidget *parent) :
     tabs->setMinimumSize(64, 64);
     tabs->setTabPosition(QTabWidget::South);
     createAPKStudioTab();
-    createAPKToolTab();
+    createApktoolTab();
     createADBTab();
     setContentsMargins(2, 2, 2, 2);
     setObjectName("output");
@@ -46,7 +46,7 @@ void Output::createAPKStudioTab()
     tabs->addTab(tab, translate("tab_apk_studio"));
 }
 
-void Output::createAPKToolTab()
+void Output::createApktoolTab()
 {
     QWidget *tab = new QWidget(tabs);
     QVBoxLayout *layout = new QVBoxLayout(tab);

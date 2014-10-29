@@ -1,5 +1,4 @@
 #include "editor.hpp"
-#include <QDebug>
 
 namespace VPZ {
 namespace APKStudio {
@@ -8,34 +7,49 @@ namespace Components {
 Editor::Editor(QWidget *parent) :
     QWidget(parent)
 {
+    QSizePolicy left(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    QSizePolicy right(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    left.setHorizontalStretch(2);
+    right.setHorizontalStretch(4);
+    // -- //
     QVBoxLayout *layout = new QVBoxLayout(this);
     QToolBar *tool_bar = new QToolBar(this);
     files = new QComboBox(tool_bar);
     stack = new QStackedWidget(this);
-    symbols = new QComboBox(tool_bar);
-    variants = new QComboBox(tool_bar);
+    this->symbols = new QComboBox(tool_bar);
+    this->variants = new QComboBox(tool_bar);
     files->setStyleSheet(STYLESHEET_COMBOBOXES);
+    files->setSizePolicy(left);
     layout->addWidget(tool_bar);
     layout->addWidget(stack);
-    layout->setContentsMargins(QMargins(2, 2, 2, 2));
-    layout->setSpacing(0);
-    symbols->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    symbols->setStyleSheet(STYLESHEET_COMBOBOXES);
+    layout->setContentsMargins(0, 1, 0, 2);
+    layout->setSpacing(2);
+    this->symbols->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->symbols->setStyleSheet(STYLESHEET_COMBOBOXES);
+    this->symbols->setSizePolicy(right);
     tool_bar->addWidget(files);
-    tool_bar->addWidget(symbols);
+    QAction *symbols = tool_bar->addWidget(this->symbols);
+    tool_bar->layout()->setContentsMargins(0, 0, 0, 0);
     tool_bar->layout()->setSpacing(2);
     this->variants->setStyleSheet(STYLESHEET_COMBOBOXES);
+    this->variants->setSizePolicy(right);
     QAction *variants = tool_bar->addWidget(this->variants);
     variants->setVisible(false);
     setLayout(layout);
     setMinimumSize(64, 64);
-    connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ variants, this ] (int index) {
+    connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ symbols, variants, this ] (int index) {
         this->stack->setCurrentIndex(index);
         emit selectionChanged(index);
         QWidget *widget = this->stack->currentWidget();
         if (!widget)
             return;
-        variants->setVisible(widget->inherits(Viewer::staticMetaObject.className()));
+        if (widget->inherits(Viewer::staticMetaObject.className())) {
+            symbols->setVisible(false);
+            variants->setVisible(true);
+        } else {
+            symbols->setVisible(true);
+            variants->setVisible(false);
+        }
         widget->setFocus();
     }));
 }

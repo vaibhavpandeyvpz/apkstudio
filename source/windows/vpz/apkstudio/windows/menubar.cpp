@@ -41,6 +41,7 @@ MenuBar::MenuBar(QWidget *parent) :
     APKS_MENUITEM(toggles, false, edit, replace, Replace, QKeySequence::Replace);
     APKS_MENUITEM(toggles, false, edit, goto_, Goto, 0);
     edit->addSeparator();
+    APKS_MENUITEM(toggles, false, edit, settings, Settings, 0);
     APKS_MENUITEM(toggles, false, open, open_apk, OpenApk, QKeySequence::Open);
     APKS_MENUITEM(toggles, false, open, open_project, OpenProject, 0);
     open->addSeparator();

@@ -16,7 +16,7 @@ private:
     QColor output;
 public:
     explicit Terminal(const QString &, QWidget *parent = 0);
-public Q_SLOTS:
+public slots:
     void onCommandExecuted(const QStringList &, const QStringList &);
 };
 

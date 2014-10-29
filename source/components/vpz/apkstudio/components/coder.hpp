@@ -47,7 +47,7 @@ private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("coder", key);
     }
-private Q_SLOTS:
+private slots:
     void onBlockCountChanged(const int);
     void onCursorPositionChanged();
     void onUpdateRequest(const QRect &, const int);

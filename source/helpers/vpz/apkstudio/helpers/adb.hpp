@@ -25,7 +25,7 @@ public:
     QVector<Resources::Device> devices() const;
     bool enable(const QString &, const QString &, bool) const;
     QVector<Resources::File> files(const QString &, const QString &) const;
-    QString imei(const QString &) const;
+    QString IMEI(const QString &) const;
     bool install(const QString &, const QString &) const;
     static ADB *instance();
     void kill();

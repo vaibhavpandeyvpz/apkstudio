@@ -28,7 +28,7 @@ private:
     }
     void createADBTab();
     void createAPKStudioTab();
-    void createAPKToolTab();
+    void createApktoolTab();
 public:
     explicit Output(QWidget *parent = 0);
     ~Output();

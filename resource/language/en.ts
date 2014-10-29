@@ -16,8 +16,8 @@
             <translation>ADB Control</translation>
         </message>
         <message>
-            <source>item_browser</source>
-            <translation>File Browser</translation>
+            <source>item_explore</source>
+            <translation>Explore Storage</translation>
         </message>
         <message>
             <source>item_information</source>
@@ -68,14 +68,6 @@
             <translation>Devices</translation>
         </message>
         <message>
-            <source>title_information</source>
-            <translation>%1 - Device Information</translation>
-        </message>
-        <message>
-            <source>title_logcat</source>
-            <translation>%1 - Logcat</translation>
-        </message>
-        <message>
             <source>title_save</source>
             <translation>Save screenshot as</translation>
         </message>
@@ -90,6 +82,13 @@
         <message>
             <source>type_phone</source>
             <translation>Phone</translation>
+        </message>
+    </context>
+    <context>
+        <name>explorer</name>
+        <message>
+            <source>title_window</source>
+            <translation>Explorer [%1]</translation>
         </message>
     </context>
     <context>
@@ -196,6 +195,10 @@
             <source>tab_software</source>
             <translation>Software</translation>
         </message>
+        <message>
+            <source>title_window</source>
+            <translation>Device Information [%1]</translation>
+        </message>
     </context>
     <context>
         <name>logcat</name>
@@ -298,6 +301,10 @@
         <message>
             <source>title_save</source>
             <translation>Save file as</translation>
+        </message>
+        <message>
+            <source>title_window</source>
+            <translation>Logcat [%1]</translation>
         </message>
     </context>
     <context>
@@ -459,6 +466,10 @@
             <translation>Save All</translation>
         </message>
         <message>
+            <source>item_settings</source>
+            <translation>Settings</translation>
+        </message>
+        <message>
             <source>item_shell</source>
             <translation>Shell</translation>
         </message>
@@ -594,6 +605,157 @@
         <message>
             <source>title_dock</source>
             <translation>Projects</translation>
+        </message>
+    </context>
+    <context>
+        <name>settings</name>
+        <message>
+            <source>button_browse</source>
+            <translation>Browse</translation>
+        </message>
+        <message>
+            <source>button_cancel</source>
+            <translation>Cancel</translation>
+        </message>
+        <message>
+            <source>button_save</source>
+            <translation>Save</translation>
+        </message>
+        <message>
+            <source>color_grey</source>
+            <translation>Grey</translation>
+        </message>
+        <message>
+            <source>color_transparent</source>
+            <translation>Transparent</translation>
+        </message>
+        <message>
+            <source>color_white</source>
+            <translation>White</translation>
+        </message>
+        <message>
+            <source>item_adb</source>
+            <translation>Android Debug Bridge</translation>
+        </message>
+        <message>
+            <source>item_apktool</source>
+            <translation>apktool</translation>
+        </message>
+        <message>
+            <source>item_editor</source>
+            <translation>Code Editor</translation>
+        </message>
+        <message>
+            <source>item_general</source>
+            <translation>General</translation>
+        </message>
+        <message>
+            <source>item_java</source>
+            <translation>JDK/JRE</translation>
+        </message>
+        <message>
+            <source>item_viewer</source>
+            <translation>Image Viewer</translation>
+        </message>
+        <message>
+            <source>label_background</source>
+            <translation>Background</translation>
+        </message>
+        <message>
+            <source>label_binary</source>
+            <translation>Binaries Location</translation>
+        </message>
+        <message>
+            <source>label_certificate</source>
+            <translation>Signing Certificate</translation>
+        </message>
+        <message>
+            <source>label_cursor</source>
+            <translation>Cursor Width</translation>
+        </message>
+        <message>
+            <source>label_encoding</source>
+            <translation>Character Encoding</translation>
+        </message>
+        <message>
+            <source>label_font</source>
+            <translation>Font Family</translation>
+        </message>
+        <message>
+            <source>label_framework</source>
+            <translation>Frameworks Path</translation>
+        </message>
+        <message>
+            <source>label_heap</source>
+            <translation>Maximum Heap (MBs)</translation>
+        </message>
+        <message>
+            <source>label_language</source>
+            <translation>Language</translation>
+        </message>
+        <message>
+            <source>label_java</source>
+            <translation>JDK Home</translation>
+        </message>
+        <message>
+            <source>label_key</source>
+            <translation>Signing Key</translation>
+        </message>
+        <message>
+            <source>label_root</source>
+            <translation>Root Shell</translation>
+        </message>
+        <message>
+            <source>label_size</source>
+            <translation>Font Size</translation>
+        </message>
+        <message>
+            <source>label_spaces</source>
+            <translation>Use Spaces For Tabs</translation>
+        </message>
+        <message>
+            <source>label_tab</source>
+            <translation>Tab Width</translation>
+        </message>
+        <message>
+            <source>label_theme</source>
+            <translation>Theme</translation>
+        </message>
+        <message>
+            <source>label_whitespace</source>
+            <translation>Show Whitespaces</translation>
+        </message>
+        <message>
+            <source>label_wrap</source>
+            <translation>Word Wrap</translation>
+        </message>
+        <message>
+            <source>language_english</source>
+            <translation>English</translation>
+        </message>
+        <message>
+            <source>theme_dark</source>
+            <translation>Dark</translation>
+        </message>
+        <message>
+            <source>theme_default</source>
+            <translation>Default</translation>
+        </message>
+        <message>
+            <source>theme_light</source>
+            <translation>Light</translation>
+        </message>
+        <message>
+            <source>title_choose_directory</source>
+            <translation>Choose a directory</translation>
+        </message>
+        <message>
+            <source>title_select</source>
+            <translation>Select a file</translation>
+        </message>
+        <message>
+            <source>title_window</source>
+            <translation>Settings</translation>
         </message>
     </context>
     <context>

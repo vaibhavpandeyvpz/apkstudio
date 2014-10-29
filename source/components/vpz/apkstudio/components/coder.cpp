@@ -35,12 +35,12 @@ Coder::Coder(QWidget *parent) :
     setTabChangesFocus(false);
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
-    connections.append(connect(this, &Coder::customContextMenuRequested, [this, context_menu] (const QPoint &position) {
+    connections.append(connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged())));
+    connections.append(connect(this, &Coder::customContextMenuRequested, [context_menu, this] (const QPoint &position) {
         context_menu->popup(this->viewport()->mapToGlobal(position));
     }));
-    connect(this, SIGNAL(blockCountChanged(const int)), this, SLOT(onBlockCountChanged(const int)));
-    connect(this, SIGNAL(updateRequest(const QRect &, const int)), this, SLOT(onUpdateRequest(const QRect, const int)));
+    connections.append(connect(this, SIGNAL(blockCountChanged(const int)), this, SLOT(onBlockCountChanged(const int))));
+    connections.append(connect(this, SIGNAL(updateRequest(const QRect &, const int)), this, SLOT(onUpdateRequest(const QRect, const int))));
     onBlockCountChanged(0);
     onCursorPositionChanged();
     QTextOption options = document()->defaultTextOption();
@@ -257,7 +257,6 @@ bool Coder::save()
     if (!file.open(QIODevice::Text | QIODevice::Truncate | QIODevice::WriteOnly))
         return false;
     QTextStream stream(&file);
-    // stream.setGenerateByteOrderMark(false);
     stream.setCodec(QTextCodec::codecForMib(Settings::characterEncoding()));
     stream << QString::fromUtf8(toPlainText().toStdString().c_str());
     file.close();

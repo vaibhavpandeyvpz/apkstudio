@@ -26,7 +26,7 @@ public:
     explicit Files(QWidget * = 0);
     void setModel(QAbstractItemModel *);
     ~Files();
-public Q_SLOTS:
+public slots:
     void onSelectionChanged(int);
 signals:
     void selectionChanged(int);

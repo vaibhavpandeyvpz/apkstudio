@@ -1,7 +1,6 @@
 #include "ide.hpp"
 
 using namespace VPZ::APKStudio::Components;
-using namespace VPZ::APKStudio::Helpers;
 
 namespace VPZ {
 namespace APKStudio {
@@ -10,15 +9,15 @@ namespace Windows {
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent), exit_code(0)
 {
-    devices = new Components::Devices(this);
-    editor = new Components::Editor(this);
-    files = new Components::Files(this);
+    devices = new Devices(this);
+    editor = new Editor(this);
+    files = new Files(this);
     menu_bar = new MenuBar(this);
     opened = new QStandardItemModel(this);
-    outline = new Components::Outline(this);
-    output = new Components::Output(this);
-    projects = new Components::Projects(this);
-    tasks = new Components::Tasks(this);
+    outline = new Outline(this);
+    output = new Output(this);
+    projects = new Projects(this);
+    tasks = new Tasks(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
     editor->setModel(opened);
@@ -31,7 +30,7 @@ IDE::IDE(QWidget *parent) :
     setStatusBar(status_bar);
     setupDocks();
     foreach (const QString &extension, QString("java|png|smali|xml").split('|'))
-        editor->open(QString("D:/apkstudio/sample/sample.").append(extension));
+        editor->open(QString("C:/Users/VPZ/Documents/apkstudio/sample/sample.").append(extension));
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -40,21 +39,21 @@ void IDE::closeEvent(QCloseEvent *event)
     if (QMessageBox::Yes != QMessageBox::question(this, translate("mbox_close_title"), translate("mbox_close_message"), QMessageBox::No | QMessageBox::Yes))
         return;
     bool maximized = isMaximized();
-    Settings::dockState(saveState());
-    Settings::maximized(maximized);
+    Helpers::Settings::dockState(saveState());
+    Helpers::Settings::maximized(maximized);
     if (!maximized)
-        Settings::windowSize(size());
+        Helpers::Settings::windowSize(size());
     qApp->exit(exit_code);
 }
 
 void IDE::onActionAdbKill()
 {
-    ADB::instance()->kill();
+    Helpers::ADB::instance()->kill();
 }
 
 void IDE::onActionAdbStart()
 {
-    ADB::instance()->start();
+    Helpers::ADB::instance()->start();
 }
 
 void IDE::onActionContribute()
@@ -109,6 +108,12 @@ void IDE::onActionRestart()
     close();
 }
 
+void IDE::onActionSettings()
+{
+    Settings *settings = new Settings(this);
+    settings->open();
+}
+
 void IDE::onActionToggle(QAction *toggle)
 {
     QString name = toggle->objectName();
@@ -128,14 +133,32 @@ void IDE::onActionToggle(QAction *toggle)
 
 void IDE::onInitComplete()
 {
-    restoreState(Settings::dockState());
+    restoreState(Helpers::Settings::dockState());
     setMinimumSize(QSize(800, 600));
-    if (Settings::maximized())
+    if (Helpers::Settings::maximized())
         showMaximized();
     else
-        resize(Settings::windowSize());
+        resize(Helpers::Settings::windowSize());
     setDockOptions(AnimatedDocks);
     setWindowTitle(translate("window_title"));
+}
+
+void IDE::onShowExplorer(const QString &device)
+{
+    Explorer *explorer = new Explorer(device, this);
+    explorer->show();
+}
+
+void IDE::onShowInformation(const QString &device)
+{
+    Information *information = new Information(device, this);
+    information->show();
+}
+
+void IDE::onShowLogcat(const QString &device)
+{
+    Logcat *logcat = new Logcat(device, this);
+    logcat->show();
 }
 
 void IDE::setupDocks()

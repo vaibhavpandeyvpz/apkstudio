@@ -30,7 +30,7 @@ void Files::onSelectionChanged(int row)
 void Files::setModel(QAbstractItemModel *model)
 {
     list->setModel(model);
-    connections.append(connect(list->selectionModel(), &QItemSelectionModel::selectionChanged, [ this ] (const QItemSelection &/*current*/, const QItemSelection &/*previous*/) {
+    connections.append(connect(list->selectionModel(), &QItemSelectionModel::selectionChanged, [ this ] (QItemSelection, QItemSelection) {
         QModelIndexList selection = this->list->selectionModel()->selectedRows(0);
         if (selection.count() != 1)
             return;

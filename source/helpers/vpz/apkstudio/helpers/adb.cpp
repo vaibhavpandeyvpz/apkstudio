@@ -215,7 +215,7 @@ QVector<File> ADB::files(const QString &device, const QString &path) const
     return files;
 }
 
-QString ADB::imei(const QString &device) const
+QString ADB::IMEI(const QString &device) const
 {
     QStringList arguments;
     arguments << "-s";
@@ -470,7 +470,9 @@ void ADB::screenshot(const QString &device, const QString &saveas)
     arguments << "-s";
     arguments << device;
     arguments << saveas;
+    blockSignals(true);
     execute(arguments, binary);
+    blockSignals(false);
 }
 
 void ADB::shell(const QString &device)

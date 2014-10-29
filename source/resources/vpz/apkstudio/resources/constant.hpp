@@ -16,6 +16,7 @@
 #define REGEX_EMULATOR "emulator-(?<port>\\d+)"
 #define REGEX_GETPROP "^\\[(?<key>[^]]+)\\]\\:\\s*\\[(?<value>.*)\\]$"
 #define REGEX_IMEI "\\s=\\s"
+#define REGEX_LOGCAT "^(?<time>\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d\\.\\d+)\\s*(?<pid>\\d+)\\s*(?<tid>\\d+)\\s(?<priority>[VDIWEAF])\\s(?<tag>.*?):\\s+(?<message>.*)$"
 #define REGEX_LS "^(?<permission>[bcdlsp-][-r][-w][-xsS][-r][-w][-xsS][-r][-w][-xstST])\\s+(?<owner>\\S+)\\s+(?<group>\\S+)\\s+(?<size>[\\d\\s,]*)\\s+(?<date>\\d{4}-\\d\\d-\\d\\d)\\s+(?<time>\\d\\d:\\d\\d)\\s+(?<name>.*)$"
 
 #define RESOURCE_PATH_FONT ":/font/"
@@ -25,7 +26,8 @@
 #define RESOURCE_PATH_THEME ":/theme/"
 
 #define ROLE_PATH 70552
-#define ROLE_STRUCT 60600
+#define ROLE_STRUCT 43396
+#define ROLE_TEXT 60600
 
 #define SETTING_BINARY_PATH "binary_path"
 #define SETTING_CHARACTER_ENCODING "character_encoding"

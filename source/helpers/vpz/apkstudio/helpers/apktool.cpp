@@ -4,6 +4,8 @@ namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
 
+apktool* apktool::self = nullptr;
+
 apktool::apktool(QObject *parent) :
 #ifdef Q_OS_WIN
     CLI(QString(Settings::javaHome()).append("\\bin\\java.exe"), parent)
@@ -16,7 +18,7 @@ apktool::apktool(QObject *parent) :
 bool apktool::align(const QFileInfo &apk)
 {
     if (!apk.exists() || !apk.isDir() || (QString::compare(apk.suffix(), "apk", Qt::CaseInsensitive) != 0))
-        return;
+        return false;
     QFileInfo aligned(QString(apk.absoluteDir().absolutePath()).append("signed_").append(apk.fileName()));
     QStringList arguments;
     arguments << "-f";
@@ -35,7 +37,7 @@ bool apktool::align(const QFileInfo &apk)
 bool apktool::decompile(const QFileInfo &apk, const QFileInfo &folder, const QString &tag)
 {
     if (!apk.exists() || !apk.isFile() || folder.exists() || (QString::compare(apk.suffix(), "apk", Qt::CaseInsensitive) != 0))
-        return;
+        return false;
     QStringList arguments;
     arguments << QString("-Xms").append(QString::number(Settings::heapSize())).append("m");
     arguments << "-jar";
@@ -53,14 +55,14 @@ bool apktool::decompile(const QFileInfo &apk, const QFileInfo &folder, const QSt
     arguments << "d";
     arguments << apk.absoluteFilePath();
     execute(arguments);
-    QFileInfo yml = QString(folder).append("/apktool.yml");
+    QFileInfo yml(QString(folder.absolutePath()).append("/apktool.yml"));
     return yml.exists() && yml.isFile();
 }
 
 bool apktool::install(const QFileInfo &framework, const QString &tag)
 {
     if (!framework.exists() || !framework.isFile() || tag.isEmpty())
-        return;
+        return false;
     QStringList arguments;
     arguments << QString("-Xms").append(QString::number(Settings::heapSize())).append("m");
     arguments << "-jar";
@@ -75,7 +77,7 @@ bool apktool::install(const QFileInfo &framework, const QString &tag)
     arguments << framework.absoluteFilePath();
     QStringList lines = execute(arguments);
     foreach (const QString &line, lines) {
-        if (!line.startsWith(QString("INFO: Framework installed to:")))
+        if (!line.startsWith("INFO: Framework installed to:"))
             continue;
         QFileInfo file(line.section(':', 2).trimmed());
         if (!file.exists() || !file.isFile())
@@ -85,10 +87,17 @@ bool apktool::install(const QFileInfo &framework, const QString &tag)
     return false;
 }
 
+apktool *apktool::instance()
+{
+    if (!self)
+        self = new apktool();
+    return self;
+}
+
 bool apktool::recompile(const QFileInfo &folder, const QFileInfo &apk)
 {
     if (!folder.exists() || !folder.isDir() || (QString::compare(apk.suffix(), "apk", Qt::CaseInsensitive) != 0))
-        return;
+        return false;
     if (apk.exists())
         QFile::remove(apk.absoluteFilePath());
     QStringList arguments;
@@ -108,7 +117,7 @@ bool apktool::recompile(const QFileInfo &folder, const QFileInfo &apk)
 bool apktool::sign(const QFileInfo &apk)
 {
     if (!apk.exists() || !apk.isDir() || (QString::compare(apk.suffix(), "apk", Qt::CaseInsensitive) != 0))
-        return;
+        return false;
     QFileInfo _signed(QString(apk.absoluteDir().absolutePath()).append("signed_").append(apk.fileName()));
     QStringList arguments;
     arguments << QString("-Xms").append(QString::number(Settings::heapSize())).append("m");

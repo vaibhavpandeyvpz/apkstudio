@@ -1,23 +1,31 @@
 #include "information.hpp"
 
 using namespace VPZ::APKStudio::Helpers;
+using namespace VPZ::APKStudio::Resources;
 
 namespace VPZ {
 namespace APKStudio {
-namespace Components {
+namespace Windows {
 
-Information::Information(QWidget *parent) :
-    QTabWidget(parent)
+Information::Information(const QString &device, QWidget *parent) :
+    Dialog(parent), device(device)
 {
-    inflateHardware();
-    inflateSoftware();
-    inflateNetwork();
-    setMinimumSize(160, 160);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    tabs = new QTabWidget(this);
+    layout->addWidget(tabs);
+    layout->setContentsMargins(2, 2, 2, 2);
+    layout->setSpacing(0);
+    createHardwareTab();
+    createSoftwareTab();
+    createNetworkTab();
+    setLayout(layout);
+    setWindowIcon(Embedded::icon("processor"));
+    setWindowTitle(translate("title_window").arg(device));
 }
 
-void Information::inflateHardware()
+void Information::createHardwareTab()
 {
-    QWidget *tab = new QWidget(this);
+    QWidget *tab = new QWidget(tabs);
     QFormLayout *layout = new QFormLayout(tab);
     QLineEdit *board = new QLineEdit(tab);
     QLineEdit *cpu = new QLineEdit(tab);
@@ -41,19 +49,19 @@ void Information::inflateHardware()
         imei->setText(number);
     }));
     connections.append(connect(this, &Information::updateInformation, [ board, cpu, manufacturer, model, secure ] (const QMap<QString, QString> &information) {
-        board->setText(information.value(QString("ro.product.board")));
-        cpu->setText(information.value(QString("ro.product.cpu.abi")));
-        manufacturer->setText(Text::capitalize(information.value(QString("ro.product.manufacturer"))));
-        model->setText(information.value(QString("ro.product.model")));
-        secure->setText(information.value(QString("ro.secure")));
+        board->setText(information.value("ro.product.board"));
+        cpu->setText(information.value("ro.product.cpu.abi"));
+        manufacturer->setText(Text::capitalize(information.value("ro.product.manufacturer")));
+        model->setText(information.value("ro.product.model"));
+        secure->setText(information.value("ro.secure"));
     }));
     tab->setLayout(layout);
-    addTab(tab, translate("tab_hardware"));
+    tabs->addTab(tab, translate("tab_hardware"));
 }
 
-void Information::inflateNetwork()
+void Information::createNetworkTab()
 {
-    QWidget *tab = new QWidget(this);
+    QWidget *tab = new QWidget(tabs);
     QFormLayout *layout = new QFormLayout(tab);
     QLineEdit *country = new QLineEdit(tab);
     QLineEdit *operator_ = new QLineEdit(tab);
@@ -68,18 +76,18 @@ void Information::inflateNetwork()
     layout->addRow(translate("label_timezone"), timezone);
     layout->addRow(translate("label_type"), type);
     connections.append(connect(this, &Information::updateInformation, [ country, operator_, timezone, type ] (const QMap<QString, QString> &information) {
-        country->setText(information.value(QString("gsm.sim.operator.iso-country")).toUpper());
-        operator_->setText(Text::capitalize(information.value(QString("gsm.sim.operator.alpha")), true));
-        timezone->setText(information.value(QString("persist.sys.timezone")));
-        type->setText(information.value(QString("gsm.network.type")));
+        country->setText(information.value("gsm.sim.operator.iso-country").toUpper());
+        operator_->setText(Text::capitalize(information.value("gsm.sim.operator.alpha"), true));
+        timezone->setText(information.value("persist.sys.timezone"));
+        type->setText(information.value("gsm.network.type"));
     }));
     tab->setLayout(layout);
-    addTab(tab, translate("tab_network"));
+    tabs->addTab(tab, translate("tab_network"));
 }
 
-void Information::inflateSoftware()
+void Information::createSoftwareTab()
 {
-    QWidget *tab = new QWidget(this);
+    QWidget *tab = new QWidget(tabs);
     QFormLayout *layout = new QFormLayout(tab);
     QLineEdit *build = new QLineEdit(tab);
     QLineEdit *date = new QLineEdit(tab);
@@ -103,30 +111,25 @@ void Information::inflateSoftware()
     layout->addRow(translate("label_date"), date);
     layout->addRow(translate("label_tags"), tags);
     connections.append(connect(this, &Information::updateInformation, [ build, date, fingerprint, mod, sdk, tags, version ] (const QMap<QString, QString> &information) {
-        build->setText(information.value(QString("ro.build.description")));
-        date->setText(Format::timestamp(QDateTime::fromTime_t(information.value(QString("ro.build.date.utc")).toInt())));
-        fingerprint->setText(information.value(QString("ro.build.fingerprint")));
-        mod->setText(information.value(QString("ro.modversion")));
-        sdk->setText(information.value(QString("ro.build.version.sdk")));
-        tags->setText(information.value(QString("ro.build.tags")));
-        version->setText(information.value(QString("ro.build.version.release")));
+        build->setText(information.value("ro.build.description"));
+        date->setText(Format::timestamp(QDateTime::fromTime_t(information.value("ro.build.date.utc").toInt())));
+        fingerprint->setText(information.value("ro.build.fingerprint"));
+        mod->setText(information.value("ro.modversion"));
+        sdk->setText(information.value("ro.build.version.sdk"));
+        tags->setText(information.value("ro.build.tags"));
+        version->setText(information.value("ro.build.version.release"));
     }));
     tab->setLayout(layout);
-    addTab(tab, translate("tab_software"));
+    tabs->addTab(tab, translate("tab_software"));
 }
 
-void Information::setDevice(const QString &serial)
+void Information::showEvent(QShowEvent *event)
 {
-    emit updateIMEI(ADB::instance()->imei(serial));
-    emit updateInformation(ADB::instance()->properties(serial));
+    Dialog::showEvent(event);
+    emit updateIMEI(ADB::instance()->IMEI(device));
+    emit updateInformation(ADB::instance()->properties(device));
 }
 
-Information::~Information()
-{
-    foreach (QMetaObject::Connection connection, connections)
-        disconnect(connection);
-}
-
-} // namespace Components
+} // namespace Windows
 } // namespace APKStudio
 } // namespace VPZ

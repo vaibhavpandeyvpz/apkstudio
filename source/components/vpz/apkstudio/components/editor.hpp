@@ -41,7 +41,7 @@ public:
     void previous();
     inline void setModel(QAbstractItemModel *model) { files->setModel(model); }
     ~Editor();
-public Q_SLOTS:
+public slots:
     void onSelectionChanged(int);
 signals:
     void selectionChanged(int);

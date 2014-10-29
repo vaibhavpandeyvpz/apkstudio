@@ -1,7 +1,6 @@
 #include "viewer.hpp"
 
 using namespace VPZ::APKStudio::Helpers;
-using namespace VPZ::APKStudio::Resources;
 
 namespace VPZ {
 namespace APKStudio {
@@ -11,26 +10,26 @@ Viewer::Viewer(QWidget *parent) :
     QScrollArea(parent), scale(1.0)
 {
     QMenu *context_menu = new QMenu(this);
-    QAction *load = new QAction(Embedded::icon("image"), translate("item_load"), context_menu);
+    QAction *load = new QAction(icon("image"), translate("item_load"), context_menu);
     connections.append(connect(load, &QAction::triggered, [this] () {
         QString path = QFileDialog::getOpenFileName(this, translate("title_load"), "", QString("PNG Image Files (*.png)"));
         if (path.isNull() || path.isEmpty())
             return;
         this->open(path);
     }));
-    QAction *revert = new QAction(Embedded::icon("arrow_revert"), translate("item_revert"), context_menu);
+    QAction *revert = new QAction(icon("arrow_revert"), translate("item_revert"), context_menu);
     connections.append(connect(revert, &QAction::triggered, [this] () {
         this->open(this->path);
     }));
-    QAction *save = new QAction(Embedded::icon("disk"), translate("item_save"), context_menu);
+    QAction *save = new QAction(icon("disk"), translate("item_save"), context_menu);
     connections.append(connect(save, &QAction::triggered, [this] () {
         this->save();
     }));
-    QAction *zoom_in = new QAction(Embedded::icon("magnifier_plus"), translate("item_zoom_in"), context_menu);
+    QAction *zoom_in = new QAction(icon("magnifier_plus"), translate("item_zoom_in"), context_menu);
     connections.append(connect(zoom_in, &QAction::triggered, [this] () {
         this->zoomIn();
     }));
-    QAction *zoom_out = new QAction(Embedded::icon("magnifier_minus"), translate("item_zoom_out"), context_menu);
+    QAction *zoom_out = new QAction(icon("magnifier_minus"), translate("item_zoom_out"), context_menu);
     connections.append(connect(zoom_out, &QAction::triggered, [this] () {
         this->zoomOut();
     }));

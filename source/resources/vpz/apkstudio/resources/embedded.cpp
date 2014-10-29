@@ -12,3 +12,8 @@ QIcon Embedded::icon(const char *name)
 } // namespace Resources
 } // namespace APKStudio
 } // namespace VPZ
+
+QIcon icon(const char *name)
+{
+    return VPZ::APKStudio::Resources::Embedded::icon(name);
+}

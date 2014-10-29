@@ -123,7 +123,10 @@ void Settings::fontSize(const int size)
 
 QString Settings::frameworkPath()
 {
-    return qvariant_cast<QString>(get(SETTING_FRAMEWORK_PATH, QVariant("")));
+    QString path = qvariant_cast<QString>(get(SETTING_FRAMEWORK_PATH, QVariant("")));
+    if (path.isEmpty())
+        path = QDir::homePath().append("/apktool/framework");;
+    return path;
 }
 
 void Settings::frameworkPath(const QString &path)
@@ -261,7 +264,10 @@ void Settings::showWhitespace(const bool show)
 
 QString Settings::signingCertificate()
 {
-    return qvariant_cast<QString>(get(SETTING_SIGNING_CERTIFICATE, QVariant("")));
+    QString certificate = qvariant_cast<QString>(get(SETTING_SIGNING_CERTIFICATE, QVariant("")));
+    if (certificate.isEmpty())
+        certificate = binary("testkey.x509.pem");
+    return certificate;
 }
 
 void Settings::signingCertificate(const QString &path)
@@ -271,7 +277,10 @@ void Settings::signingCertificate(const QString &path)
 
 QString Settings::signingKey()
 {
-    return qvariant_cast<QString>(get(SETTING_SIGNING_KEY, QVariant("")));
+    QString key = qvariant_cast<QString>(get(SETTING_SIGNING_KEY, QVariant("")));
+    if (key.isEmpty())
+        key = binary("testkey.pk8");
+    return key;
 }
 
 void Settings::signingKey(const QString &path)

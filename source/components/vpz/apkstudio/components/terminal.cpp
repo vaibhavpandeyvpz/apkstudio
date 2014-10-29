@@ -8,9 +8,9 @@ Terminal::Terminal(const QString &binary, QWidget *parent) :
     QTextEdit(parent), binary(binary), command(QColor("#39B54A")), output(QColor("#FFFFFF"))
 {
     QFont font;
-    font.setFamily("Terminal TTF");
+    font.setFamily("Terminus (TTF)");
     font.setFixedPitch(true);
-    font.setPointSize(10);
+    font.setPointSize(11);
     font.setStyleHint(QFont::TypeWriter);
     QFontMetrics metrics(font);
     QPalette palette;

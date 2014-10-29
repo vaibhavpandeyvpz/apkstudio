@@ -21,7 +21,7 @@
 
 #define APKS_TOOLITEM(parent, name, png, slot) ({ \
     QAction *action = new QAction(translate("item_" #name), parent); \
-    action->setIcon(VPZ::APKStudio::Resources::Embedded::icon("" #png)); \
+    action->setIcon(icon("" #png)); \
     parent->addAction(action); \
     connect(action, "2triggered()", parentWidget(), "1onAction" #slot "()"); \
 })

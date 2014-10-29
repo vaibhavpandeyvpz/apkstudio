@@ -12,12 +12,22 @@ QT += core gui widgets
 HEADERS += \
     vpz/apkstudio/windows/ide.hpp \
     vpz/apkstudio/windows/menubar.hpp \
-    vpz/apkstudio/windows/toolbar.hpp
+    vpz/apkstudio/windows/toolbar.hpp \
+    vpz/apkstudio/windows/settings.hpp \
+    vpz/apkstudio/windows/logcat.hpp \
+    vpz/apkstudio/windows/information.hpp \
+    vpz/apkstudio/windows/explorer.hpp \
+    vpz/apkstudio/windows/dialog.hpp
 
 SOURCES += \
     vpz/apkstudio/windows/ide.cpp \
     vpz/apkstudio/windows/menubar.cpp \
-    vpz/apkstudio/windows/toolbar.cpp
+    vpz/apkstudio/windows/toolbar.cpp \
+    vpz/apkstudio/windows/settings.cpp \
+    vpz/apkstudio/windows/logcat.cpp \
+    vpz/apkstudio/windows/information.cpp \
+    vpz/apkstudio/windows/explorer.cpp \
+    vpz/apkstudio/windows/dialog.cpp
 
 # Include referenced co-projects & libraries
 win32 {
