@@ -31,6 +31,7 @@ Coder::Coder(QWidget *parent) :
     setFont(font);
     setFrameStyle(QFrame::NoFrame);
     setPalette(palette);
+    setStyleSheet(QString(STYLESHEET_EDITORS).arg(theme.value("border").color));
     setTabChangesFocus(false);
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
@@ -162,6 +163,22 @@ void Coder::keyPressEvent(QKeyEvent *event)
         QPlainTextEdit::keyPressEvent(event);
 }
 
+bool Coder::open(const QFileInfo &info)
+{
+    if (path.isNull() || path.isEmpty())
+        path = info.absoluteFilePath();
+    QString extension = info.suffix();
+    highlighter->setMode(extension);
+    QFile file(info.absoluteFilePath());
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+        return false;
+    setPlainText(file.readAll());
+    file.close();
+    if (QString::compare(extension, "java", Qt::CaseInsensitive) == 0)
+        setReadOnly(true);
+    return true;
+}
+
 void Coder::onBlockCountChanged(const int /* count */)
 {
     setViewportMargins(line_numbers->sizeHint().width(), 0, 0, 0);
@@ -181,8 +198,8 @@ void Coder::onCursorPositionChanged()
         selection.cursor = textCursor();
         selection.cursor.clearSelection();
         selections.append(selection);
-        setExtraSelections(selections);
     }
+    setExtraSelections(selections);
     foreach (QString pair, Settings::brackets())
         brackets_matcher->match(pair[0], pair[1]);
 }
@@ -227,6 +244,24 @@ void Coder::resizeEvent(QResizeEvent *event)
     QPlainTextEdit::resizeEvent(event);
     QRect resized = contentsRect();
     line_numbers->setGeometry(QRect(resized.left(), resized.top(), line_numbers->sizeHint().width(), resized.height()));
+}
+
+bool Coder::save()
+{
+    if (isReadOnly())
+        return false;
+    QFileInfo info(path);
+    if (!info.exists() || !info.isFile())
+        return false;
+    QFile file(info.absoluteFilePath());
+    if (!file.open(QIODevice::Text | QIODevice::Truncate | QIODevice::WriteOnly))
+        return false;
+    QTextStream stream(&file);
+    // stream.setGenerateByteOrderMark(false);
+    stream.setCodec(QTextCodec::codecForMib(Settings::characterEncoding()));
+    stream << QString::fromUtf8(toPlainText().toStdString().c_str());
+    file.close();
+    return true;
 }
 
 void Coder::setFont(const QFont &font)

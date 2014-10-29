@@ -2,6 +2,8 @@
 #define VPZ_APKSTUDIO_COMPONENTS_CODER_HPP
 
 #include <QAction>
+#include <QFile>
+#include <QFileInfo>
 #include <QHash>
 #include <QHelpEvent>
 #include <QKeyEvent>
@@ -12,6 +14,7 @@
 #include <QPlainTextEdit>
 #include <QTextBlock>
 #include <QTextCharFormat>
+#include <QTextStream>
 #include <QTimer>
 #include <QToolTip>
 #include <QWidget>
@@ -37,6 +40,7 @@ private:
     QList<QMetaObject::Connection> connections;
     QPair<int, int> cache;
     LineNumbers *line_numbers;
+    QString path;
     Resources::Theme theme;
 private:
     bool indent();
@@ -51,10 +55,11 @@ public:
     explicit Coder(QWidget *parent = 0);
     bool event(QEvent *);
     void keyPressEvent(QKeyEvent *);
-    inline void mode(const QString &definition) { highlighter->mode(definition); }
-    inline QString mode() { return highlighter->mode(); }
+    bool open(const QString &path) { return open(QFileInfo(path)); }
+    bool open(const QFileInfo &);
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
+    bool save();
     void setFont(const QFont &);
     ~Coder();
 public:

@@ -16,7 +16,7 @@ protected:
     QString binary;
 public:
     explicit CLI(const QString &, QObject *parent = 0);
-    QStringList execute(const QStringList &, const QString & = QString()) const;
+    virtual QStringList execute(const QStringList &, const QString & = QString()) const;
 };
 
 } // namespace Helpers

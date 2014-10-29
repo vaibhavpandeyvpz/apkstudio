@@ -550,12 +550,32 @@
     <context>
         <name>outline</name>
         <message>
+            <source>header_symbol</source>
+            <translation>Symbol</translation>
+        </message>
+        <message>
+            <source>header_type</source>
+            <translation>Type</translation>
+        </message>
+        <message>
             <source>title_dock</source>
             <translation>Outline</translation>
         </message>
     </context>
     <context>
         <name>output</name>
+        <message>
+            <source>tab_adb</source>
+            <translation>ADB</translation>
+        </message>
+        <message>
+            <source>tab_apk_studio</source>
+            <translation>APK Studio</translation>
+        </message>
+        <message>
+            <source>tab_apk_tool</source>
+            <translation>apktool</translation>
+        </message>
         <message>
             <source>title_dock</source>
             <translation>Output</translation>

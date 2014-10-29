@@ -14,17 +14,24 @@ IDE::IDE(QWidget *parent) :
     editor = new Components::Editor(this);
     files = new Components::Files(this);
     menu_bar = new MenuBar(this);
+    opened = new QStandardItemModel(this);
     outline = new Components::Outline(this);
     output = new Components::Output(this);
     projects = new Components::Projects(this);
     tasks = new Components::Tasks(this);
     status_bar = new QStatusBar(this);
     tool_bar = new ToolBar(this);
+    editor->setModel(opened);
+    files->setModel(opened);
+    connections.append(connect(files, SIGNAL(selectionChanged(int)), editor, SLOT(onSelectionChanged(int))));
+    connections.append(connect(editor, SIGNAL(selectionChanged(int)), files, SLOT(onSelectionChanged(int))));
     addToolBar(Qt::TopToolBarArea, tool_bar);
     setMenuBar(menu_bar);
     setCentralWidget(editor);
     setStatusBar(status_bar);
     setupDocks();
+    foreach (const QString &extension, QString("java|png|smali|xml").split('|'))
+        editor->open(QString("D:/apkstudio/sample/sample.").append(extension));
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -68,6 +75,26 @@ void IDE::onActionFeedbackIssues()
 void IDE::onActionFeedbackThanks()
 {
     QDesktopServices::openUrl(QUrl(URL_THANKS));
+}
+
+void IDE::onActionFirst()
+{
+    editor->first();
+}
+
+void IDE::onActionLast()
+{
+    editor->last();
+}
+
+void IDE::onActionNext()
+{
+    editor->next();
+}
+
+void IDE::onActionPrevious()
+{
+    editor->previous();
 }
 
 void IDE::onActionQuit()

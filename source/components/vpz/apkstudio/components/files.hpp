@@ -3,7 +3,8 @@
 
 #include <QDockWidget>
 #include <QListView>
-#include <QStandardItemModel>
+#include <QAbstractItemModel>
+#include <QItemSelectionModel>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 
@@ -15,15 +16,20 @@ class Files : public QDockWidget
 {
     Q_OBJECT
 private:
+    QList<QMetaObject::Connection> connections;
     QListView *list;
 private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("files", key);
     }
 public:
-    explicit Files(QWidget *parent = 0);
-    inline void setModel(QStandardItemModel *model) { list->setModel(model); }
+    explicit Files(QWidget * = 0);
+    void setModel(QAbstractItemModel *);
     ~Files();
+public Q_SLOTS:
+    void onSelectionChanged(int);
+signals:
+    void selectionChanged(int);
 };
 
 } // namespace Components

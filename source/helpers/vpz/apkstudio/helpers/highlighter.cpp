@@ -28,13 +28,13 @@ void Block::literal(int line, int column)
 }
 
 Highlighter::Highlighter(QObject *parent) :
-    QSyntaxHighlighter(parent), definition("java")
+    QSyntaxHighlighter(parent), mode("java")
 {
     initialize();
 }
 
 Highlighter::Highlighter(QTextDocument *parent) :
-    QSyntaxHighlighter(parent), definition("java")
+    QSyntaxHighlighter(parent), mode("java")
 {
     initialize();
 }
@@ -58,7 +58,7 @@ void Highlighter::highlight(Block *block, const QString &text, const QString &na
 void Highlighter::highlightBlock(const QString &text)
 {
     Block *block = new Block;
-    foreach (const Resources::Highlight &rule, definitions.value(definition)) {
+    foreach (const Resources::Highlight &rule, definitions.value(mode)) {
         if (rule.style == "commentml") {
             QTextCharFormat multiline = theme.value(rule.style);
             QStringList startstop = rule.regex.split('|');

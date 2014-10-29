@@ -48,5 +48,7 @@
         <file>icon/info_success.png</file>
         <file>icon/info_verbose.png</file>
         <file>icon/info_warning.png</file>
+        <file>font/droid_sans_mono.ttf</file>
+        <file>font/terminus_ttf.ttf</file>
     </qresource>
 </RCC>

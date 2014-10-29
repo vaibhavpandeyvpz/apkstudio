@@ -22,7 +22,10 @@ namespace Helpers {
         Resources::Theme styles = theme.isNull() ? Resources::Theme() : theme.value<Resources::Theme>();
         if (!styles.isEmpty())
             return styles;
-        QFile *xml = new QFile(QString(RESOURCE_PATH_THEME).append(Settings::theme()).append(".xml"));
+        QString setting = Settings::theme();
+        if (QString::compare(setting, "default") == 0)
+            setting = "light";
+        QFile *xml = new QFile(QString(RESOURCE_PATH_THEME).append(setting).append(".xml"));
         if (xml->exists() && xml->open(QIODevice::ReadOnly | QIODevice::Text)) {
             QXmlStreamReader reader(xml);
             while (!reader.atEnd() && !reader.hasError()) {

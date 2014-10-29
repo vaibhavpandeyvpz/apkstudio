@@ -20,7 +20,7 @@ int main(int count, char *arguments[])
         QString theme(Helpers::Settings::theme());
         Helpers::Application qtApp(count, arguments);
         qtApp.setWindowIcon(Resources::Embedded::icon("apkstudio"));
-        if ((QString::compare(theme, "default", Qt::CaseInsensitive) != 1)) {
+        if ((QString::compare(theme, "default", Qt::CaseInsensitive) != 0)) {
             qtApp.setStyle(QStyleFactory::create("fusion"));
             if ((QString::compare(theme, "dark", Qt::CaseInsensitive) == 0)) {
                 QPalette palette;
@@ -41,8 +41,10 @@ int main(int count, char *arguments[])
                 qtApp.setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
             }
         }
+        QFontDatabase::addApplicationFont(QString(RESOURCE_PATH_FONT).append("droid_sans_mono.ttf"));
         QFontDatabase::addApplicationFont(QString(RESOURCE_PATH_FONT).append("scpro_regular.ttf"));
         QFontDatabase::addApplicationFont(QString(RESOURCE_PATH_FONT).append("scpro_bold.ttf"));
+        QFontDatabase::addApplicationFont(QString(RESOURCE_PATH_FONT).append("terminus_ttf.ttf"));
         QTranslator translator;
         translator.load(Helpers::Settings::language(), RESOURCE_PATH_LANGUAGE);
         qtApp.installTranslator(&translator);

@@ -24,6 +24,7 @@ public:
     bool create(const QString &, const QString &, bool = false) const;
     QVector<Resources::Device> devices() const;
     bool enable(const QString &, const QString &, bool) const;
+    QStringList execute(const QStringList &, const QString & = QString()) const;
     QVector<Resources::File> files(const QString &, const QString &) const;
     QString imei(const QString &) const;
     bool install(const QString &, const QString &) const;
@@ -41,6 +42,8 @@ public:
     void shell(const QString &);
     void start();
     bool uninstall(const QString &, const QString &) const;
+signals:
+    void commandExecuted(QStringList, QStringList) const;
 };
 
 } // namespace Helpers

@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QStandardItemModel>
 #include <QStatusBar>
 #include "components/devices.hpp"
 #include "components/editor.hpp"
@@ -34,6 +35,7 @@ private:
     Components::Editor *editor;
     Components::Files *files;
     MenuBar *menu_bar;
+    QStandardItemModel *opened;
     Components::Outline *outline;
     Components::Output *output;
     Components::Projects *projects;
@@ -56,6 +58,10 @@ public Q_SLOTS:
     void onActionDonate();
     void onActionFeedbackIssues();
     void onActionFeedbackThanks();
+    void onActionFirst();
+    void onActionLast();
+    void onActionNext();
+    void onActionPrevious();
     void onActionQuit();
     void onActionRestart();
     void onActionToggle(QAction *);

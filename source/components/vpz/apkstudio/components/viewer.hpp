@@ -3,6 +3,7 @@
 
 #include <QAction>
 #include <QFile>
+#include <QFileInfo>
 #include <QFileDialog>
 #include <QKeyEvent>
 #include <QLabel>
@@ -39,9 +40,9 @@ protected:
 public:
     explicit Viewer(QWidget *parent = 0);
     ~Viewer();
-    inline bool load(const char *path) { return load(QString(path)); }
-    inline bool load(const QString &path) { return load(QFile(path)); }
-    bool load(const QFile &);
+    inline bool open(const char *path) { return open(QString(path)); }
+    inline bool open(const QString &path) { return open(QFileInfo(path)); }
+    bool open(const QFileInfo &);
     bool save();
     void scrollfix();
     inline void zoomIn() { zoom(1.25); }

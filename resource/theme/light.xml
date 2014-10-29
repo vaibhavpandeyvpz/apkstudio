@@ -2,17 +2,23 @@
 <theme>
     <style bold="true" color="#999999" name="annotation" />
     <style color="#FFFFFF" name="background" />
+    <style color="#CCCCCC" name="border" />
     <style color="#79C462" name="bracket" />
+    <style color="#000000" name="command" />
     <style color="#666666" name="commentml" />
     <style color="#666666" name="commentsl" />
     <style bold="true" color="#00AA34" name="constant" />
+    <style color="#0072BC" name="debug" />
+    <style color="#ED1C24" name="error" />
     <style color="#EEEEEE" name="highlight" />
     <style color="#000000" name="foreground" />
+    <style color="#39B54A" name="info" />
     <style bold="true" color="#007524" name="keyword" />
     <style color="#999999" name="line" />
     <style color="#FFFFFF" name="lines" />
     <style color="#000066" name="namespace" />
     <style color="#552200" name="number" />
+    <style color="#333333" name="output" />
     <style color="#000000" name="selected" />
     <style color="#888888" name="selection" />
     <style color="#FF0000" name="string" />
@@ -21,5 +27,7 @@
     <style color="#333333" name="symbol" />
     <style color="#000066" name="type" underline="true" />
     <style color="#0000FF" name="variable" />
+    <style color="#FFFFFF" name="verbose" />
+    <style color="#ABA000" name="warning" />
     <style color="#DEDEDE" name="whitespace" />
 </theme>

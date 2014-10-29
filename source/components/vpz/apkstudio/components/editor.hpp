@@ -2,9 +2,12 @@
 #define VPZ_APKSTUDIO_COMPONENTS_EDITOR_HPP
 
 #include <QComboBox>
+#include <QFileInfo>
 #include <QStackedWidget>
-#include <QStandardItemModel>
+#include <QAbstractItemModel>
+#include <QAbstractItemView>
 #include <QHBoxLayout>
+#include <QItemSelectionModel>
 #include <QVBoxLayout>
 #include <QToolBar>
 #include <QWidget>
@@ -20,17 +23,28 @@ class Editor : public QWidget
 {
     Q_OBJECT
 private:
-    QComboBox *extra;
+    QList<QMetaObject::Connection> connections;
     QComboBox *files;
     QComboBox *symbols;
+    QComboBox *variants;
     QStackedWidget *stack;
 private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("editor", key);
     }
 public:
-    explicit Editor(QWidget *parent = 0);
-    inline void setModel(QStandardItemModel *model) { files->setModel(model); }
+    explicit Editor(QWidget * = 0);
+    void first();
+    void last();
+    void next();
+    void open(const QString &);
+    void previous();
+    inline void setModel(QAbstractItemModel *model) { files->setModel(model); }
+    ~Editor();
+public Q_SLOTS:
+    void onSelectionChanged(int);
+signals:
+    void selectionChanged(int);
 };
 
 } // namespace Components

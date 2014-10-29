@@ -16,11 +16,11 @@ Viewer::Viewer(QWidget *parent) :
         QString path = QFileDialog::getOpenFileName(this, translate("title_load"), "", QString("PNG Image Files (*.png)"));
         if (path.isNull() || path.isEmpty())
             return;
-        this->load(path);
+        this->open(path);
     }));
     QAction *revert = new QAction(Embedded::icon("arrow_revert"), translate("item_revert"), context_menu);
     connections.append(connect(revert, &QAction::triggered, [this] () {
-        this->load(this->path);
+        this->open(this->path);
     }));
     QAction *save = new QAction(Embedded::icon("disk"), translate("item_save"), context_menu);
     connections.append(connect(save, &QAction::triggered, [this] () {
@@ -93,18 +93,16 @@ void Viewer::keyPressEvent(QKeyEvent *event)
     else if ((event->key() == Qt::Key_Equal) || (event->key() == Qt::Key_Plus))
         zoomIn();
     else if (event->modifiers().testFlag(Qt::ShiftModifier) && (event->key() == Qt::Key_Z))
-        load(path);
+        open(path);
     inherited:
     QScrollArea::keyPressEvent(event);
 }
 
-bool Viewer::load(const QFile &file)
+bool Viewer::open(const QFileInfo &info)
 {
-    if (!file.exists())
-        return false;
     if (path.isNull() || path.isEmpty())
-        path = file.fileName();
-    image->setPixmap(QPixmap::fromImage(QImage(file.fileName())));
+        path = info.absoluteFilePath();
+    image->setPixmap(QPixmap::fromImage(QImage(info.absoluteFilePath())));
     image->adjustSize();
     scale = 1.0;
     zoom(1.0);

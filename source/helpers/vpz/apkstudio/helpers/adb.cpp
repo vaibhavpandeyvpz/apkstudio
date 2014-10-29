@@ -137,6 +137,13 @@ bool ADB::enable(const QString &device, const QString &package, bool enable) con
     return (lines.first().trimmed() != "Killed");
 }
 
+QStringList ADB::execute(const QStringList &arguments, const QString &binary) const
+{
+    const QStringList output = CLI::execute(arguments, binary);
+    emit commandExecuted(arguments, output);
+    return output;
+}
+
 QVector<File> ADB::files(const QString &device, const QString &path) const
 {
     QStringList arguments;
@@ -470,7 +477,7 @@ void ADB::screenshot(const QString &device, const QString &saveas)
     arguments << "-s";
     arguments << device;
     arguments << saveas;
-    execute(arguments, binary);
+    CLI::execute(arguments, binary);
 }
 
 void ADB::shell(const QString &device)

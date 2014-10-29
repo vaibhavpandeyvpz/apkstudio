@@ -23,7 +23,8 @@ HEADERS += \
     vpz/apkstudio/components/projects.hpp \
     vpz/apkstudio/components/files.hpp \
     vpz/apkstudio/components/outline.hpp \
-    vpz/apkstudio/components/tasks.hpp
+    vpz/apkstudio/components/tasks.hpp \
+    vpz/apkstudio/components/terminal.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -39,7 +40,8 @@ SOURCES += \
     vpz/apkstudio/components/projects.cpp \
     vpz/apkstudio/components/files.cpp \
     vpz/apkstudio/components/outline.cpp \
-    vpz/apkstudio/components/tasks.cpp
+    vpz/apkstudio/components/tasks.cpp \
+    vpz/apkstudio/components/terminal.cpp
 
 # Include referenced co-projects & libraries
 win32 {
