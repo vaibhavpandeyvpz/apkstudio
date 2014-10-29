@@ -36,7 +36,11 @@ public:
     static void fontFamily(const QString &);
     static int fontSize();
     static void fontSize(const int);
+    static QString frameworkPath();
+    static void frameworkPath(const QString &);
     static QVariant get(const QString &, const QVariant &);
+    static int heapSize();
+    static void heapSize(const int);
     static QString imageBackground();
     static void imageBackground(const QString &);
     static QString javaHome();
@@ -57,6 +61,10 @@ public:
     static void set(const QString &, const QVariant &);
     static bool showWhitespace();
     static void showWhitespace(const bool);
+    static QString signingCertificate();
+    static void signingCertificate(const QString &);
+    static QString signingKey();
+    static void signingKey(const QString &);
     static bool spacesForTab();
     static void spacesForTab(const bool);
     static int tabWidth();

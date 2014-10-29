@@ -23,7 +23,8 @@ HEADERS += \
     vpz/apkstudio/helpers/bracketmatcher.hpp \
     vpz/apkstudio/helpers/flickcharm.hpp \
     vpz/apkstudio/helpers/adb.hpp \
-    vpz/apkstudio/helpers/cli.hpp
+    vpz/apkstudio/helpers/cli.hpp \
+    vpz/apkstudio/helpers/apktool.hpp
 
 SOURCES += \
     vpz/apkstudio/helpers/text.cpp \
@@ -35,4 +36,5 @@ SOURCES += \
     vpz/apkstudio/helpers/bracketmatcher.cpp \
     vpz/apkstudio/helpers/flickcharm.cpp \
     vpz/apkstudio/helpers/adb.cpp \
-    vpz/apkstudio/helpers/cli.cpp
+    vpz/apkstudio/helpers/cli.cpp \
+    vpz/apkstudio/helpers/apktool.cpp

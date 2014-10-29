@@ -121,10 +121,30 @@ void Settings::fontSize(const int size)
     set(SETTING_FONT_SIZE, QVariant(size));
 }
 
+QString Settings::frameworkPath()
+{
+    return qvariant_cast<QString>(get(SETTING_FRAMEWORK_PATH, QVariant("")));
+}
+
+void Settings::frameworkPath(const QString &path)
+{
+    set(SETTING_FRAMEWORK_PATH, QVariant(path));
+}
+
 QVariant Settings::get(const QString &key, const QVariant &fallback = QVariant())
 {
     QSettings settings;
     return settings.value(key, fallback);
+}
+
+int Settings::heapSize()
+{
+    return qvariant_cast<int>(get(SETTING_HEAP_SIZE, QVariant(512)));
+}
+
+void Settings::heapSize(int mb)
+{
+    set(SETTING_HEAP_SIZE, QVariant(mb));
 }
 
 QString Settings::imageBackground()
@@ -237,6 +257,26 @@ bool Settings::showWhitespace()
 void Settings::showWhitespace(const bool show)
 {
     set(SETTING_SHOW_WHITESPACE, QVariant(show));
+}
+
+QString Settings::signingCertificate()
+{
+    return qvariant_cast<QString>(get(SETTING_SIGNING_CERTIFICATE, QVariant("")));
+}
+
+void Settings::signingCertificate(const QString &path)
+{
+    set(SETTING_SIGNING_CERTIFICATE, QVariant(path));
+}
+
+QString Settings::signingKey()
+{
+    return qvariant_cast<QString>(get(SETTING_SIGNING_KEY, QVariant("")));
+}
+
+void Settings::signingKey(const QString &path)
+{
+    set(SETTING_SIGNING_KEY, QVariant(path));
 }
 
 bool Settings::spacesForTab()

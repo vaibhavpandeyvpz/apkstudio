@@ -17,6 +17,8 @@ protected:
 public:
     explicit CLI(const QString &, QObject *parent = 0);
     virtual QStringList execute(const QStringList &, const QString & = QString()) const;
+signals:
+    void commandExecuted(QStringList, QStringList) const;
 };
 
 } // namespace Helpers

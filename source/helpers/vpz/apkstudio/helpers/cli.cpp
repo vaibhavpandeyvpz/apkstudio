@@ -24,6 +24,7 @@ QStringList CLI::execute(const QStringList &arguments, const QString &binary) co
     foreach (const QString &line, output)
         result.append(line.trimmed());
     finish:
+    emit commandExecuted(arguments, output);
     return result;
 }
 
