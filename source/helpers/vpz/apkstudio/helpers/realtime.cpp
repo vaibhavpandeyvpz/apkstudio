@@ -43,6 +43,7 @@ void Realtime::run()
         mutex.unlock();
         process->waitForFinished(100);
     }
+    mutex.unlock();
     process->kill();
     process->waitForFinished(-1);
     emit stateChanged(false);

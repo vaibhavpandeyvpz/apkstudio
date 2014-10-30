@@ -2,19 +2,19 @@
 #define VPZ_APKSTUDIO_COMPONENTS_PROJECTS_HPP
 
 #include <QComboBox>
-#include <QDockWidget>
 #include <QHeaderView>
 #include <QTabWidget>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
+#include "dockable.hpp"
 
 namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class Projects : public QDockWidget
+class Projects : public Dockable
 {
     Q_OBJECT
 private:
@@ -30,7 +30,6 @@ private:
     void createProjectsTab();
 public:
     explicit Projects(QWidget *parent = 0);
-    ~Projects();
 };
 
 } // namespace Components

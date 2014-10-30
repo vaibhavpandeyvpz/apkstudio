@@ -8,7 +8,7 @@ namespace APKStudio {
 namespace Components {
 
 Devices::Devices(QWidget *parent) :
-    QDockWidget(translate("title_dock"), parent)
+    Dockable(translate("title_dock"), parent)
 {
     QWidget *widget = new QWidget(this);
     QToolBar *toolbar = new QToolBar(widget);
@@ -97,7 +97,6 @@ Devices::Devices(QWidget *parent) :
     }));
     widget->setLayout(layout);
     widget->setMinimumSize(64, 64);
-    setContentsMargins(2, 2, 2, 2);
     setObjectName("devices");
     setWidget(widget);
 }
@@ -202,12 +201,6 @@ Device Devices::selected() const
     if (selection.count() == 1)
         device = qvariant_cast<Device>(selection.first().data(ROLE_STRUCT));
     return device;
-}
-
-Devices::~Devices()
-{
-    foreach (QMetaObject::Connection connection, connections)
-        disconnect(connection);
 }
 
 } // namespace Components

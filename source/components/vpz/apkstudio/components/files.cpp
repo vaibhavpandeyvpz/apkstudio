@@ -7,7 +7,7 @@ namespace APKStudio {
 namespace Components {
 
 Files::Files(QWidget *parent) :
-    QDockWidget(translate("title_dock"), parent)
+    Dockable(translate("title_dock"), parent)
 {
     list = new QListView(this);
     list->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -15,7 +15,6 @@ Files::Files(QWidget *parent) :
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setSelectionMode(QAbstractItemView::SingleSelection);
     list->setMinimumSize(64, 64);
-    setContentsMargins(2, 2, 2, 2);
     setObjectName("files");
     setWidget(list);
 }
@@ -36,12 +35,6 @@ void Files::setModel(QAbstractItemModel *model)
             return;
         emit selectionChanged(selection.first().row());
     }));
-}
-
-Files::~Files()
-{
-    foreach (QMetaObject::Connection connection, connections)
-        disconnect(connection);
 }
 
 } // namespace Components

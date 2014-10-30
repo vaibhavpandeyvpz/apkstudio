@@ -7,7 +7,7 @@ namespace APKStudio {
 namespace Components {
 
 Outline::Outline(QWidget *parent) :
-    QDockWidget(translate("title_dock"), parent)
+    Dockable(translate("title_dock"), parent)
 {
     tree = new QTreeWidget(this);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -20,13 +20,8 @@ Outline::Outline(QWidget *parent) :
     labels << translate("header_symbol");
     labels << translate("header_type");
     tree->setHeaderLabels(labels);
-    setContentsMargins(2, 2, 2, 2);
     setObjectName("outline");
     setWidget(tree);
-}
-
-Outline::~Outline()
-{
 }
 
 } // namespace Components

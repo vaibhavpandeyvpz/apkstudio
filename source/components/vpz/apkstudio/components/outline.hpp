@@ -1,16 +1,16 @@
 #ifndef VPZ_APKSTUDIO_COMPONENTS_OUTLINE_HPP
 #define VPZ_APKSTUDIO_COMPONENTS_OUTLINE_HPP
 
-#include <QDockWidget>
 #include <QTreeWidget>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
+#include "dockable.hpp"
 
 namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class Outline : public QDockWidget
+class Outline : public Dockable
 {
     Q_OBJECT
 private:
@@ -21,7 +21,6 @@ private:
     }
 public:
     explicit Outline(QWidget *parent = 0);
-    ~Outline();
 };
 
 } // namespace Components

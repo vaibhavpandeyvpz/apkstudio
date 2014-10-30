@@ -1,20 +1,20 @@
 #ifndef VPZ_APKSTUDIO_COMPONENTS_OUTPUT_HPP
 #define VPZ_APKSTUDIO_COMPONENTS_OUTPUT_HPP
 
-#include <QDockWidget>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include "helpers/adb.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
+#include "dockable.hpp"
 #include "terminal.hpp"
 
 namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class Output : public QDockWidget
+class Output : public Dockable
 {
     Q_OBJECT
 private:
@@ -31,7 +31,6 @@ private:
     void createApktoolTab();
 public:
     explicit Output(QWidget *parent = 0);
-    ~Output();
 };
 
 } // namespace Components

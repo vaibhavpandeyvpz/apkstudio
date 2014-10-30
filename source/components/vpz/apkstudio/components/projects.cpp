@@ -7,13 +7,12 @@ namespace APKStudio {
 namespace Components {
 
 Projects::Projects(QWidget *parent) :
-    QDockWidget(translate("title_dock"), parent)
+    Dockable(translate("title_dock"), parent)
 {
     tabs = new QTabWidget(this);
     tabs->setMinimumSize(64, 64);
     createProjectsTab();
     createProjectTab();
-    setContentsMargins(2, 2, 2, 2);
     setObjectName("projects");
     setWidget(tabs);
 }
@@ -54,10 +53,6 @@ void Projects::createProjectsTab()
     layout->setSpacing(1);
     tab->setLayout(layout);
     tabs->addTab(tab, translate("tab_projects"));
-}
-
-Projects::~Projects()
-{
 }
 
 } // namespace Components

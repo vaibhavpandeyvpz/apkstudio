@@ -7,7 +7,7 @@ namespace APKStudio {
 namespace Components {
 
 Output::Output(QWidget *parent) :
-    QDockWidget(translate("title_dock"), parent)
+    Dockable(translate("title_dock"), parent)
 {
     tabs = new QTabWidget(this);
     tabs->setMinimumSize(64, 64);
@@ -15,7 +15,6 @@ Output::Output(QWidget *parent) :
     createAPKStudioTab();
     createApktoolTab();
     createADBTab();
-    setContentsMargins(2, 2, 2, 2);
     setObjectName("output");
     setWidget(tabs);
 }
@@ -57,12 +56,6 @@ void Output::createApktoolTab()
     layout->setSpacing(1);
     tab->setLayout(layout);
     tabs->addTab(tab, translate("tab_apk_tool"));
-}
-
-Output::~Output()
-{
-    foreach (QMetaObject::Connection connection, connections)
-        disconnect(connection);
 }
 
 } // namespace Components

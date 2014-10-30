@@ -11,7 +11,6 @@
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
-#include <QDockWidget>
 #include "helpers/adb.hpp"
 #include "helpers/format.hpp"
 #include "helpers/settings.hpp"
@@ -19,16 +18,16 @@
 #include "resources/constant.hpp"
 #include "resources/embedded.hpp"
 #include "resources/variant.hpp"
+#include "dockable.hpp"
 
 namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class Devices : public QDockWidget
+class Devices : public Dockable
 {
     Q_OBJECT
 private:
-    QList<QMetaObject::Connection> connections;
     QTreeWidget *tree;
 private:
     Resources::Device selected() const;
@@ -44,7 +43,6 @@ private slots:
     void onShell();
 public:
     explicit Devices(QWidget *parent = 0);
-    ~Devices();
 signals:
     void showExplorer(QString);
     void showInformation(QString);
