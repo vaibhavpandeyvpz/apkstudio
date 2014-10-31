@@ -89,9 +89,11 @@ void Settings::createApktoolTab()
     layout->addRow("", kbrowse);
     widget->setLayout(layout);
     connections.append(connect(cbrowse, &QPushButton::clicked, [ certificate, this ] () {
-        QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory());
-        dialog.setNameFilter("x509 Certificate (*.pem)");
-        dialog.exec();
+        QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory(), "x509 Certificate (*.pem)");
+        dialog.setAcceptMode(QFileDialog::AcceptOpen);
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        if (dialog.exec() != QFileDialog::Accepted)
+            return;
         QStringList files = dialog.selectedFiles();
         if (files.isEmpty())
             return;
@@ -109,9 +111,11 @@ void Settings::createApktoolTab()
         framework->setText(path);
     }));
     connections.append(connect(kbrowse, &QPushButton::clicked, [ key, this ] () {
-        QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory());
-        dialog.setNameFilter("Private Key (*.pk8)");
-        dialog.exec();
+        QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory(), "Private Key (*.pk8)");
+        dialog.setAcceptMode(QFileDialog::AcceptOpen);
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        if (dialog.exec() != QFileDialog::Accepted)
+            return;
         QStringList files = dialog.selectedFiles();
         if (files.isEmpty())
             return;

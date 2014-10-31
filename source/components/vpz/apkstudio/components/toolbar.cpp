@@ -2,7 +2,7 @@
 
 namespace VPZ {
 namespace APKStudio {
-namespace Windows {
+namespace Components {
 
 ToolBar::ToolBar(QWidget *parent) :
     QToolBar(parent)
@@ -22,14 +22,17 @@ ToolBar::ToolBar(QWidget *parent) :
     APKS_TOOLITEM(this, previous, arrow_left, Previous);
     APKS_TOOLITEM(this, next, arrow_right, Next);
     APKS_TOOLITEM(this, last, arrow_skip_right, Last);
-    QWidget *spacer = new QWidget(this);
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    addWidget(spacer);
     setAcceptDrops(false);
     setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
     setObjectName("toolbar");
 }
 
-} // namespace Windows
+ToolBar::~ToolBar()
+{
+    foreach (QMetaObject::Connection connection, connections)
+        disconnect(connection);
+}
+
+} // namespace Components
 } // namespace APKStudio
 } // namespace VPZ

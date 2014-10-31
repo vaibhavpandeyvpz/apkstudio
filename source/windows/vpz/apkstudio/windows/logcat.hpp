@@ -2,11 +2,16 @@
 #define VPZ_APKSTUDIO_WINDOWS_LOGCAT_HPP
 
 #include <QAction>
+#include <QClipboard>
+#include <QFileDialog>
+#include <QShortcut>
 #include <QRegularExpression>
 #include <QToolBar>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 #include "helpers/adb.hpp"
+#include "helpers/application.hpp"
+#include "helpers/format.hpp"
 #include "helpers/realtime.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
@@ -42,7 +47,10 @@ private:
         return Helpers::Text::translate("logcat", key);
     }
 private slots:
+    void onCopy();
     void onLineRead(const QString &);
+    void onOpen();
+    void onSave();
     void onStateChanged(const bool);
 public:
     explicit Logcat(const QString &, QWidget * = 0);

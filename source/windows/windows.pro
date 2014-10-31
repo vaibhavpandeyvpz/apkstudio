@@ -11,8 +11,6 @@ QT += core gui widgets
 # Source files to be included/compiled within target
 HEADERS += \
     vpz/apkstudio/windows/ide.hpp \
-    vpz/apkstudio/windows/menubar.hpp \
-    vpz/apkstudio/windows/toolbar.hpp \
     vpz/apkstudio/windows/settings.hpp \
     vpz/apkstudio/windows/logcat.hpp \
     vpz/apkstudio/windows/information.hpp \
@@ -21,8 +19,6 @@ HEADERS += \
 
 SOURCES += \
     vpz/apkstudio/windows/ide.cpp \
-    vpz/apkstudio/windows/menubar.cpp \
-    vpz/apkstudio/windows/toolbar.cpp \
     vpz/apkstudio/windows/settings.cpp \
     vpz/apkstudio/windows/logcat.cpp \
     vpz/apkstudio/windows/information.cpp \

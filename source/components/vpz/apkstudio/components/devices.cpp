@@ -175,7 +175,7 @@ void Devices::onScreenshot()
     file.append(device.serial);
     file.append('_');
     file.append(Format::timestamp(QDateTime::currentDateTime(), FORMAT_TIMESTAMP_FILE));
-    QString path = QFileDialog::getSaveFileName(this, translate("title_save"), file, QString("PNG Image Files (*.png)"));
+    QString path = QFileDialog::getSaveFileName(this, translate("title_save"), file, "PNG Image Files (*.png)", 0, 0);
     if (path.isNull() || path.isEmpty())
         return;
     if (QFile::exists(path))

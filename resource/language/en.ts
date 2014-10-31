@@ -101,15 +101,27 @@
     <context>
         <name>ide</name>
         <message>
-            <source>mbox_close_message</source>
+            <source>message_close</source>
             <translation>Any unsaved changes will be lost. Are you sure?</translation>
         </message>
         <message>
-            <source>mbox_close_title</source>
+            <source>title_close</source>
             <translation>Quit APK Studio</translation>
         </message>
         <message>
-            <source>window_title</source>
+            <source>title_open_apk</source>
+            <translation>Open APK file</translation>
+        </message>
+        <message>
+            <source>title_open_file</source>
+            <translation>Open files</translation>
+        </message>
+        <message>
+            <source>title_open_project</source>
+            <translation>Open project</translation>
+        </message>
+        <message>
+            <source>title_window</source>
             <translation>APK Studio | By Vaibhav Pandey a.k.a VPZ | www.vaibhavpandey.com/apkstudio</translation>
         </message>
     </context>
@@ -271,32 +283,8 @@
             <translation>Warning</translation>
         </message>
         <message>
-            <source>message_empty</source>
-            <translation>Nothing to save as logcat is empty</translation>
-        </message>
-        <message>
-            <source>message_overwrite</source>
-            <translation>File %1 already exists. Overwrite?</translation>
-        </message>
-        <message>
-            <source>message_write</source>
-            <translation>Unable to open %1 in write mode</translation>
-        </message>
-        <message>
             <source>title_open</source>
             <translation>Open file</translation>
-        </message>
-        <message>
-            <source>title_empty</source>
-            <translation>Skipping!</translation>
-        </message>
-        <message>
-            <source>title_overwrite</source>
-            <translation>Overwrite?</translation>
-        </message>
-        <message>
-            <source>title_write</source>
-            <translation>Failed!</translation>
         </message>
         <message>
             <source>title_save</source>

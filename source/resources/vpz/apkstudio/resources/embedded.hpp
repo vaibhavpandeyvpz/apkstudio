@@ -11,13 +11,13 @@ namespace Resources {
 class Embedded
 {
 public:
-    static QIcon icon(const char *);
+    static QIcon icon(const QString &);
 };
 
 } // namespace Resources
 } // namespace APKStudio
 } // namespace VPZ
 
-QIcon icon(const char *);
+QIcon icon(const QString &);
 
 #endif // VPZ_APKSTUDIO_RESOURCES_EMBEDDED_HPP

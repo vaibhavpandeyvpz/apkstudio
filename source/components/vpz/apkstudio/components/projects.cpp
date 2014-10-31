@@ -22,7 +22,7 @@ void Projects::createProjectTab()
     QWidget *tab = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(tab);
     current = new QComboBox(tab);
-    project = new QTreeWidget(tab);
+    project = new QTreeView(tab);
     project->header()->hide();
     project->setContextMenuPolicy(Qt::CustomContextMenu);
     project->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -41,7 +41,7 @@ void Projects::createProjectsTab()
 {
     QWidget *tab = new QWidget(this);
     QVBoxLayout *layout = new QVBoxLayout(tab);
-    projects = new QTreeWidget(this);
+    projects = new QTreeView(this);
     projects->header()->hide();
     projects->setContextMenuPolicy(Qt::CustomContextMenu);
     projects->setEditTriggers(QAbstractItemView::NoEditTriggers);

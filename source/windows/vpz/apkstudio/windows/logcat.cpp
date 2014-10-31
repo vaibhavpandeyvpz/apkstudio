@@ -93,6 +93,8 @@ void Logcat::createToolbar()
     connections.append(connect(info, &QAction::toggled, [ this ] (const bool checked) {
         this->info = checked;
     }));
+    connections.append(connect(open, &QAction::triggered, this, &Logcat::onOpen));
+    connections.append(connect(save, &QAction::triggered, this, &Logcat::onSave));
     connections.append(connect(scroll, &QAction::toggled, [ this ] (const bool checked) {
         this->scroll = checked;
     }));
@@ -135,6 +137,7 @@ void Logcat::createToolbar()
 
 void Logcat::createTree()
 {
+    QShortcut *shortcut = new QShortcut(QKeySequence::Copy, this);
     tree = new QTreeWidget(this);
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -151,13 +154,29 @@ void Logcat::createTree()
     labels << translate("header_tid");
     labels << translate("header_tag");
     labels << translate("header_message");
+    connections.append(connect(shortcut, &QShortcut::activated, this, &Logcat::onCopy));
+    layout()->addWidget(tree);
     tree->setHeaderLabels(labels);
     tree->setColumnWidth(0, 48);
     tree->setColumnWidth(1, 96);
     tree->setColumnWidth(2, 32);
     tree->setColumnWidth(3, 32);
     tree->setColumnWidth(4, 128);
-    layout()->addWidget(tree);
+}
+
+void Logcat::onCopy()
+{
+    if (tree->model()->rowCount() < 1)
+        return;
+    QStringList lines;
+    QModelIndex root = tree->rootIndex();
+    int rows = tree->model()->rowCount(root);
+    for (int row = 0; row < rows; ++row) {
+        QModelIndex line = tree->model()->index(row, 0, root);
+        lines << qvariant_cast<QString>(tree->model()->data(line, ROLE_TEXT));
+    }
+    QClipboard *clipboard = Application::clipboard();
+    clipboard->setText(lines.join("\n"));
 }
 
 void Logcat::onLineRead(const QString &line)
@@ -226,6 +245,66 @@ void Logcat::onLineRead(const QString &line)
     tree->addTopLevelItem(item);
     if (scroll)
         tree->scrollToBottom();
+}
+
+void Logcat::onOpen()
+{
+    QFileDialog dialog(this, translate("title_open"), Settings::previousDirectory(), "Logcat output (*.logcat)");
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty())
+        return;
+    Settings::previousDirectory(dialog.directory().absolutePath());
+    QFile file(files.first());
+    if (!file.open(QIODevice::Text | QIODevice::ReadOnly))
+        return;
+    if (tree->model()->hasChildren())
+        tree->model()->removeRows(0, tree->model()->rowCount());
+    QTextStream stream(&file);
+    QString line;
+    do {
+        line = stream.readLine();
+        if (line.isEmpty())
+            continue;
+        onLineRead(line);
+    } while (!line.isNull());
+    file.close();
+}
+
+void Logcat::onSave()
+{
+    if (tree->model()->rowCount() < 1)
+        return;
+    QString name = QString(Settings::previousDirectory());
+    name.append('/');
+    name.append(device);
+    name.append('_');
+    name.append(Format::timestamp(QDateTime::currentDateTime(), FORMAT_TIMESTAMP_FILE));
+    QFileDialog dialog(this, translate("title_save"), name, "Logcat output (*.logcat)");
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    dialog.setFileMode(QFileDialog::AnyFile);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty())
+        return;
+    Settings::previousDirectory(dialog.directory().absolutePath());
+    QFile file(files.first());
+    if (file.exists())
+        file.remove();
+    if (!file.open(QIODevice::Text | QIODevice::WriteOnly))
+        return;
+    QTextStream stream(&file);
+    QModelIndex root = tree->rootIndex();
+    int rows = tree->model()->rowCount(root);
+    for (int row = 0; row < rows; ++row) {
+        QModelIndex line = tree->model()->index(row, 0, root);
+        stream << qvariant_cast<QString>(tree->model()->data(line, ROLE_TEXT)) << endl;
+    }
+    file.close();
 }
 
 void Logcat::onStateChanged(const bool running)

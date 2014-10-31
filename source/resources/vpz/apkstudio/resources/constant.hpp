@@ -6,8 +6,8 @@
 #define APPLICATION_AUTHOR "Vaibhav Pandey"
 #define APPLICATION_NAME "APK Studio"
 
-#define ALLOWED_IMAGE_EXTENSIONS "bmp|jpg|jpeg|png"
-#define ALLOWED_TEXT_EXTENSIONS "java|smali|xml|yml"
+#define ALLOWED_IMAGE_EXTENSIONS "png"
+#define ALLOWED_TEXT_EXTENSIONS "java|smali|xml"
 
 #define FORMAT_TIMESTAMP_FILE "dd-MM-yyyy_hh_mm_ss"
 #define FORMAT_TIMESTAMP_GENERAL "dd/MM/yyyy hh:mm"
@@ -28,6 +28,7 @@
 #define ROLE_PATH 70552
 #define ROLE_STRUCT 43396
 #define ROLE_TEXT 60600
+#define ROLE_TYPE 25184
 
 #define SETTING_BINARY_PATH "binary_path"
 #define SETTING_CHARACTER_ENCODING "character_encoding"
@@ -56,6 +57,10 @@
 
 #define STYLESHEET_EDITORS "QPlainTextEdit { border: 1px solid %1; }"
 #define STYLESHEET_COMBOBOXES "QComboBox { max-height: 22px; min-height: 22px; }"
+
+#define TYPE_FILE 88004
+#define TYPE_DIRECTORY 85273
+#define TYPE_PROJECT 95999
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DONATE "https://pledgie.com/campaigns/26789"

@@ -4,7 +4,7 @@ namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-Editor::Editor(QWidget *parent) :
+Editor::Editor(QStandardItemModel *model, QWidget *parent) :
     QWidget(parent)
 {
     QSizePolicy left(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -15,13 +15,15 @@ Editor::Editor(QWidget *parent) :
     QVBoxLayout *layout = new QVBoxLayout(this);
     QToolBar *tool_bar = new QToolBar(this);
     files = new QComboBox(tool_bar);
-    stack = new QStackedWidget(this);
+    tabs = new QTabWidget(this);
+    tabs->setTabsClosable(true);
     this->symbols = new QComboBox(tool_bar);
     this->variants = new QComboBox(tool_bar);
+    files->setModel(model);
     files->setStyleSheet(STYLESHEET_COMBOBOXES);
     files->setSizePolicy(left);
     layout->addWidget(tool_bar);
-    layout->addWidget(stack);
+    layout->addWidget(tabs);
     layout->setContentsMargins(0, 1, 0, 2);
     layout->setSpacing(2);
     this->symbols->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -37,10 +39,14 @@ Editor::Editor(QWidget *parent) :
     variants->setVisible(false);
     setLayout(layout);
     setMinimumSize(64, 64);
+    connections.append(connect(tabs, static_cast<void(QTabWidget::*)(int)>(&QTabWidget::tabCloseRequested), [ this ] (int index) {
+        this->files->removeItem(index);
+        this->tabs->removeTab(index);
+    }));
     connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ symbols, variants, this ] (int index) {
-        this->stack->setCurrentIndex(index);
+        this->tabs->setCurrentIndex(index);
         emit selectionChanged(index);
-        QWidget *widget = this->stack->currentWidget();
+        QWidget *widget = this->tabs->currentWidget();
         if (!widget)
             return;
         if (widget->inherits(Viewer::staticMetaObject.className())) {
@@ -52,6 +58,15 @@ Editor::Editor(QWidget *parent) :
         }
         widget->setFocus();
     }));
+}
+
+void Editor::close()
+{
+    int index = files->currentIndex();
+    if (index < 0)
+        return;
+    files->removeItem(index);
+    tabs->removeTab(index);
 }
 
 void Editor::first()
@@ -71,9 +86,9 @@ void Editor::last()
 
 void Editor::next()
 {
-    int current = files->currentIndex();
+    int current = (files->currentIndex() + 1);
     if (current < files->count())
-        files->setCurrentIndex(current + 1);
+        files->setCurrentIndex(current);
 }
 
 void Editor::open(const QString &path)
@@ -83,23 +98,44 @@ void Editor::open(const QString &path)
         return;
     QWidget *widget;
     if (QString(ALLOWED_IMAGE_EXTENSIONS).contains(info.suffix())) {
-        Viewer *viewer = new Viewer(stack);
+        Viewer *viewer = new Viewer(tabs);
         viewer->open(info);
         widget = viewer;
     } else if (QString(ALLOWED_TEXT_EXTENSIONS).contains(info.suffix())) {
-        Coder *coder = new Coder(stack);
+        Coder *coder = new Coder(tabs);
         coder->open(info);
         widget = coder;
     } else
         return;
+    int inserted = tabs->addTab(widget, info.fileName());
     files->addItem(info.fileName(), QVariant(info.absoluteFilePath()));
-    files->setCurrentIndex(stack->addWidget(widget));
+    files->setCurrentIndex(inserted);
+    tabs->setTabToolTip(inserted, info.absoluteFilePath());
     widget->setFocus();
+    widget->setProperty("path", info.absoluteFilePath());
+}
+
+void Editor::save(const bool all)
+{
+    int index = all ? 0 : files->currentIndex();
+    if (index < 0)
+        return;
+    do {
+        Coder *coder = qobject_cast<Coder *>(tabs->widget(index));
+        if (coder != nullptr)
+            coder->save();
+        else {
+            Viewer *viewer = qobject_cast<Viewer *>(tabs->widget(index));
+            if (viewer != nullptr)
+                viewer->save();
+        }
+        index++;
+    } while (all && (index < files->count()));
 }
 
 void Editor::onSelectionChanged(int index)
 {
-    this->files->setCurrentIndex(index);
+    files->setCurrentIndex(index);
 }
 
 void Editor::previous()

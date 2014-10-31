@@ -4,7 +4,7 @@ namespace VPZ {
 namespace APKStudio {
 namespace Resources {
 
-QIcon Embedded::icon(const char *name)
+QIcon Embedded::icon(const QString &name)
 {
     return QIcon(QString(RESOURCE_PATH_ICON).append(name).append(".png"));
 }
@@ -13,7 +13,7 @@ QIcon Embedded::icon(const char *name)
 } // namespace APKStudio
 } // namespace VPZ
 
-QIcon icon(const char *name)
+QIcon icon(const QString &name)
 {
     return VPZ::APKStudio::Resources::Embedded::icon(name);
 }

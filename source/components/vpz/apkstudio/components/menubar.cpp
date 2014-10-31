@@ -1,9 +1,8 @@
 #include "menubar.hpp"
-#include "ide.hpp"
 
 namespace VPZ {
 namespace APKStudio {
-namespace Windows {
+namespace Components {
 
 MenuBar::MenuBar(QWidget *parent) :
     QMenuBar(parent)
@@ -105,12 +104,17 @@ MenuBar::MenuBar(QWidget *parent) :
     scripts->setEnabled(false);
 }
 
+void MenuBar::onViewToggled(const char *id, const bool visible)
+{
+    emit viewToggled(id, visible);
+}
+
 MenuBar::~MenuBar()
 {
     foreach (QMetaObject::Connection connection, connections)
         disconnect(connection);
 }
 
-} // namespace Windows
+} // namespace Components
 } // namespace APKStudio
 } // namespace VPZ

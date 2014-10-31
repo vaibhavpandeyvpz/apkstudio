@@ -1,5 +1,5 @@
-#ifndef VPZ_APKSTUDIO_WINDOWS_TOOLBAR_HPP
-#define VPZ_APKSTUDIO_WINDOWS_TOOLBAR_HPP
+#ifndef VPZ_APKSTUDIO_COMPONENTS_TOOLBAR_HPP
+#define VPZ_APKSTUDIO_COMPONENTS_TOOLBAR_HPP
 
 #include <QAction>
 #include <QToolBar>
@@ -10,21 +10,24 @@
 
 namespace VPZ {
 namespace APKStudio {
-namespace Windows {
+namespace Components {
 
 class ToolBar : public QToolBar
 {
     Q_OBJECT
 private:
+    QList<QMetaObject::Connection> connections;
+private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("toolbar", key);
     }
 public:
-    explicit ToolBar(QWidget *parent = 0);
+    explicit ToolBar(QWidget * = 0);
+    ~ToolBar();
 };
 
-} // namespace Windows
+} // namespace Components
 } // namespace APKStudio
 } // namespace VPZ
 
-#endif // VPZ_APKSTUDIO_WINDOWS_TOOLBAR_HPP
+#endif // VPZ_APKSTUDIO_COMPONENTS_TOOLBAR_HPP

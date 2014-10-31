@@ -4,7 +4,7 @@
 #include <QComboBox>
 #include <QHeaderView>
 #include <QTabWidget>
-#include <QTreeWidget>
+#include <QTreeView>
 #include <QVBoxLayout>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
@@ -19,8 +19,8 @@ class Projects : public Dockable
     Q_OBJECT
 private:
     QComboBox *current;
-    QTreeWidget *project;
-    QTreeWidget *projects;
+    QTreeView *project;
+    QTreeView *projects;
     QTabWidget *tabs;
 private:
     static QString translate(const char *key) {

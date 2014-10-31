@@ -2,7 +2,7 @@
 #define VPZ_APKSTUDIO_COMPONENTS_FILES_HPP
 
 #include <QListView>
-#include <QAbstractItemModel>
+#include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
@@ -22,8 +22,7 @@ private:
         return Helpers::Text::translate("files", key);
     }
 public:
-    explicit Files(QWidget * = 0);
-    void setModel(QAbstractItemModel *);
+    explicit Files(QStandardItemModel *, QWidget * = 0);
 public slots:
     void onSelectionChanged(int);
 signals:

@@ -9,34 +9,31 @@ namespace Windows {
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent), exit_code(0)
 {
-    devices = new Devices(this);
-    editor = new Editor(this);
-    files = new Files(this);
-    menu_bar = new MenuBar(this);
     opened = new QStandardItemModel(this);
+    devices = new Devices(this);
+    editor = new Editor(opened, this);
+    files = new Files(opened, this);
+    menu_bar = new MenuBar(this);
     outline = new Outline(this);
     output = new Output(this);
     projects = new Projects(this);
     tasks = new Tasks(this);
-    status_bar = new QStatusBar(this);
+    status_bar = new StatusBar(this);
     tool_bar = new ToolBar(this);
-    editor->setModel(opened);
-    files->setModel(opened);
     connections.append(connect(files, SIGNAL(selectionChanged(int)), editor, SLOT(onSelectionChanged(int))));
     connections.append(connect(editor, SIGNAL(selectionChanged(int)), files, SLOT(onSelectionChanged(int))));
+    connections.append(connect(this, SIGNAL(viewToggled(const char *, bool)), menu_bar, SLOT(onViewToggled(const char *, bool))));
     addToolBar(Qt::TopToolBarArea, tool_bar);
-    setMenuBar(menu_bar);
     setCentralWidget(editor);
+    setMenuBar(menu_bar);
     setStatusBar(status_bar);
-    setupDocks();
-    foreach (const QString &extension, QString("java|png|smali|xml").split('|'))
-        editor->open(QString("C:/Users/VPZ/Documents/apkstudio/sample/sample.").append(extension));
+    setDocks();
 }
 
 void IDE::closeEvent(QCloseEvent *event)
 {
     event->ignore();
-    if (QMessageBox::Yes != QMessageBox::question(this, translate("mbox_close_title"), translate("mbox_close_message"), QMessageBox::No | QMessageBox::Yes))
+    if (QMessageBox::Yes != QMessageBox::question(this, translate("title_close"), translate("message_close"), QMessageBox::No | QMessageBox::Yes))
         return;
     bool maximized = isMaximized();
     Helpers::Settings::dockState(saveState());
@@ -54,6 +51,11 @@ void IDE::onActionAdbKill()
 void IDE::onActionAdbStart()
 {
     Helpers::ADB::instance()->start();
+}
+
+void IDE::onActionCloseFile()
+{
+    editor->close();
 }
 
 void IDE::onActionContribute()
@@ -91,6 +93,53 @@ void IDE::onActionNext()
     editor->next();
 }
 
+void IDE::onActionOpenApk()
+{
+    QFileDialog dialog(this, translate("title_open_apk"), Helpers::Settings::previousDirectory(), "Android APK (*.apk)");
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty() || (files.size() != 1))
+        return;
+}
+
+void IDE::onActionOpenFile()
+{
+    QFileDialog dialog(this, translate("title_open_file"), Helpers::Settings::previousDirectory());
+    QStringList filters("All supported formats (*.java;*.png;*.smali;*.xml;)");
+    filters << "apktool (*.yml)";
+    filters << "Images (*.png)";
+    filters << "Java (Read-only) (*.java)";
+    filters << "Dex smali (*.smali)";
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.setNameFilters(filters);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty())
+        return;
+    foreach (const QString &file, files)
+        editor->open(file);
+}
+
+void IDE::onActionOpenProject()
+{
+    QFileDialog dialog(this, translate("title_open_project"), Helpers::Settings::previousDirectory(), "apktool (*.yml)");
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty() || (files.size() != 1))
+        return;
+}
+
 void IDE::onActionPrevious()
 {
     editor->previous();
@@ -106,6 +155,16 @@ void IDE::onActionRestart()
 {
     exit_code = EXIT_CODE_RESTART;
     close();
+}
+
+void IDE::onActionSave()
+{
+    editor->save();
+}
+
+void IDE::onActionSaveAll()
+{
+    editor->save(true);
 }
 
 void IDE::onActionSettings()
@@ -140,7 +199,7 @@ void IDE::onInitComplete()
     else
         resize(Helpers::Settings::windowSize());
     setDockOptions(AnimatedDocks);
-    setWindowTitle(translate("window_title"));
+    setWindowTitle(translate("title_window"));
 }
 
 void IDE::onShowExplorer(const QString &device)
@@ -161,7 +220,7 @@ void IDE::onShowLogcat(const QString &device)
     logcat->show();
 }
 
-void IDE::setupDocks()
+void IDE::setDocks()
 {
     addDockWidget(Qt::BottomDockWidgetArea, output);
     addDockWidget(Qt::LeftDockWidgetArea, projects);

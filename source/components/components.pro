@@ -22,7 +22,10 @@ HEADERS += \
     vpz/apkstudio/components/outline.hpp \
     vpz/apkstudio/components/tasks.hpp \
     vpz/apkstudio/components/terminal.hpp \
-    vpz/apkstudio/components/dockable.hpp
+    vpz/apkstudio/components/dockable.hpp \
+    vpz/apkstudio/components/toolbar.hpp \
+    vpz/apkstudio/components/menubar.hpp \
+    vpz/apkstudio/components/statusbar.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -38,7 +41,10 @@ SOURCES += \
     vpz/apkstudio/components/outline.cpp \
     vpz/apkstudio/components/tasks.cpp \
     vpz/apkstudio/components/terminal.cpp \
-    vpz/apkstudio/components/dockable.cpp
+    vpz/apkstudio/components/dockable.cpp \
+    vpz/apkstudio/components/toolbar.cpp \
+    vpz/apkstudio/components/menubar.cpp \
+    vpz/apkstudio/components/statusbar.cpp
 
 # Include referenced co-projects & libraries
 win32 {
