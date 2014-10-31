@@ -35,6 +35,7 @@ class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
+    QStringList brackets;
     Helpers::BracketMatcher *brackets_matcher;
     Helpers::Highlighter *highlighter;
     QList<QMetaObject::Connection> connections;

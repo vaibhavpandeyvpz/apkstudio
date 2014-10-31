@@ -26,7 +26,7 @@ void BracketMatcher::highlight(const int position)
 bool BracketMatcher::left(const QChar left, const QChar right, QTextBlock block, int start, int skip, bool first)
 {
     Block *data = static_cast<Block *>(block.userData());
-    QVector<Resources::Bracket *> brackets;
+    QList<Resources::Bracket *> brackets;
     int position;
     if (!data)
         goto loop;
@@ -59,7 +59,7 @@ void BracketMatcher::match(const QChar left, const QChar right)
     Block *data = static_cast<Block *>(block.userData());
     if (!data)
         return;
-    QVector<Resources::Bracket *> brackets = data->brackets;
+    QList<Resources::Bracket *> brackets = data->brackets;
     int position = block.position();
     int current = cursor.position() - block.position();
     for (int index = 0; index < brackets.size(); ++index) {
@@ -82,7 +82,7 @@ void BracketMatcher::match(const QChar left, const QChar right)
 bool BracketMatcher::right(const QChar left, const QChar right, QTextBlock block, int start, int skip, bool first)
 {
     Block *data = static_cast<Block *>(block.userData());
-    QVector<Resources::Bracket *> brackets;
+    QList<Resources::Bracket *> brackets;
     int position;
     if (!data)
         goto loop;

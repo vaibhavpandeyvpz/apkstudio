@@ -2,7 +2,6 @@
 <theme>
     <style bold="true" color="#D9E577" name="annotation" />
     <style color="#000000" name="background" />
-    <style color="#333333" name="border" />
     <style color="#730000" name="bracket" />
     <style color="#000000" name="command" />
     <style color="#CCDF32" name="commentml" />

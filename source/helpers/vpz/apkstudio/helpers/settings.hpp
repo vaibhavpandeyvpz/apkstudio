@@ -26,6 +26,7 @@ public:
     static QString binary(const QString &);
     static QString binaryPath();
     static void binaryPath(const QString &);
+    static QStringList brackets(const QString &);
     static int characterEncoding();
     static void characterEncoding(const int);
     static int cursorWidth();
@@ -47,7 +48,6 @@ public:
     static void javaHome(const QString &);
     static QString language();
     static void language(const QString &);
-    inline static QStringList brackets() { return QString("(),{},[]").split(','); }
     static bool maximized();
     static void maximized(const bool);
     static QString previousDirectory();

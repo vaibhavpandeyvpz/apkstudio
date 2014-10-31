@@ -584,7 +584,11 @@
         <name>projects</name>
         <message>
             <source>tab_active_project</source>
-            <translation>Active Project</translation>
+            <translation>%1 [Active]</translation>
+        </message>
+        <message>
+            <source>tab_no_project</source>
+            <translation>No Active Project</translation>
         </message>
         <message>
             <source>tab_projects</source>

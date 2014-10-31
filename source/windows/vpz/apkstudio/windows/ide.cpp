@@ -9,25 +9,27 @@ namespace Windows {
 IDE::IDE(QWidget *parent) :
     QMainWindow(parent), exit_code(0)
 {
-    opened = new QStandardItemModel(this);
+    editing = new QStandardItemModel(this);
     devices = new Devices(this);
-    editor = new Editor(opened, this);
-    files = new Files(opened, this);
+    editor = new Editor(editing, this);
+    files = new Files(editing, this);
     menu_bar = new MenuBar(this);
+    opened = new Helpers::Projects(this);
     outline = new Outline(this);
     output = new Output(this);
-    projects = new Projects(this);
+    projects = new Projects(opened, this);
     tasks = new Tasks(this);
     status_bar = new StatusBar(this);
     tool_bar = new ToolBar(this);
     connections.append(connect(files, SIGNAL(selectionChanged(int)), editor, SLOT(onSelectionChanged(int))));
     connections.append(connect(editor, SIGNAL(selectionChanged(int)), files, SLOT(onSelectionChanged(int))));
+    connections.append(connect(projects, SIGNAL(editFile(QString)), this, SLOT(onEditFile(QString))));
     connections.append(connect(this, SIGNAL(viewToggled(const char *, bool)), menu_bar, SLOT(onViewToggled(const char *, bool))));
     addToolBar(Qt::TopToolBarArea, tool_bar);
     setCentralWidget(editor);
+    setDocks();
     setMenuBar(menu_bar);
     setStatusBar(status_bar);
-    setDocks();
 }
 
 void IDE::closeEvent(QCloseEvent *event)
@@ -56,6 +58,14 @@ void IDE::onActionAdbStart()
 void IDE::onActionCloseFile()
 {
     editor->close();
+}
+
+void IDE::onActionCloseProject()
+{
+    QString path = projects->selected();
+    if (path.isEmpty())
+        return;
+    opened->close(path);
 }
 
 void IDE::onActionContribute()
@@ -102,7 +112,7 @@ void IDE::onActionOpenApk()
         return;
     Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
     QStringList files = dialog.selectedFiles();
-    if (files.isEmpty() || (files.size() != 1))
+    if (files.size() != 1)
         return;
 }
 
@@ -124,7 +134,7 @@ void IDE::onActionOpenFile()
     if (files.isEmpty())
         return;
     foreach (const QString &file, files)
-        editor->open(file);
+        onEditFile(file);
 }
 
 void IDE::onActionOpenProject()
@@ -136,8 +146,9 @@ void IDE::onActionOpenProject()
         return;
     Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
     QStringList files = dialog.selectedFiles();
-    if (files.isEmpty() || (files.size() != 1))
+    if (files.size() != 1)
         return;
+    opened->open(files.first());
 }
 
 void IDE::onActionPrevious()
@@ -190,6 +201,11 @@ void IDE::onActionToggle(QAction *toggle)
         tasks->setVisible(toggle->isChecked());
 }
 
+void IDE::onEditFile(const QString &path)
+{
+    editor->open(path);
+}
+
 void IDE::onInitComplete()
 {
     restoreState(Helpers::Settings::dockState());
@@ -200,24 +216,6 @@ void IDE::onInitComplete()
         resize(Helpers::Settings::windowSize());
     setDockOptions(AnimatedDocks);
     setWindowTitle(translate("title_window"));
-}
-
-void IDE::onShowExplorer(const QString &device)
-{
-    Explorer *explorer = new Explorer(device, this);
-    explorer->show();
-}
-
-void IDE::onShowInformation(const QString &device)
-{
-    Information *information = new Information(device, this);
-    information->show();
-}
-
-void IDE::onShowLogcat(const QString &device)
-{
-    Logcat *logcat = new Logcat(device, this);
-    logcat->show();
 }
 
 void IDE::setDocks()
@@ -246,6 +244,24 @@ void IDE::setDocks()
     connections.append(connect(tasks, &QDockWidget::visibilityChanged, [ this ] (bool visible) {
         emit viewToggled("views_tasks", visible);
     }));
+}
+
+void IDE::onShowExplorer(const QString &device)
+{
+    Explorer *explorer = new Explorer(device, this);
+    explorer->show();
+}
+
+void IDE::onShowInformation(const QString &device)
+{
+    Information *information = new Information(device, this);
+    information->show();
+}
+
+void IDE::onShowLogcat(const QString &device)
+{
+    Logcat *logcat = new Logcat(device, this);
+    logcat->show();
 }
 
 IDE::~IDE()

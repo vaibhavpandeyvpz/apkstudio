@@ -4,20 +4,8 @@
 #include <QIcon>
 #include "constant.hpp"
 
-namespace VPZ {
-namespace APKStudio {
-namespace Resources {
-
-class Embedded
-{
-public:
-    static QIcon icon(const QString &);
-};
-
-} // namespace Resources
-} // namespace APKStudio
-} // namespace VPZ
-
-QIcon icon(const QString &);
+extern "C" {
+    inline QIcon icon(const char *name) { return QIcon(QString(RESOURCE_PATH_ICON).append(name).append(".png")); }
+}
 
 #endif // VPZ_APKSTUDIO_RESOURCES_EMBEDDED_HPP

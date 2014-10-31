@@ -19,7 +19,7 @@ int main(int count, char *arguments[])
     do {
         QString theme(Helpers::Settings::theme());
         Helpers::Application qtApp(count, arguments);
-        qtApp.setWindowIcon(Resources::Embedded::icon("apkstudio"));
+        qtApp.setWindowIcon(::icon("apkstudio"));
         if ((QString::compare(theme, "default", Qt::CaseInsensitive) != 0)) {
             qtApp.setStyle(QStyleFactory::create("fusion"));
             if ((QString::compare(theme, "dark", Qt::CaseInsensitive) == 0)) {

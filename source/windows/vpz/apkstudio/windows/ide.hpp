@@ -18,6 +18,7 @@
 #include "components/toolbar.hpp"
 #include "helpers/adb.hpp"
 #include "helpers/settings.hpp"
+#include "helpers/projects.hpp"
 #include "helpers/text.hpp"
 #include "resources/constant.hpp"
 #include "explorer.hpp"
@@ -37,9 +38,10 @@ private:
     QList<QMetaObject::Connection> connections;
     Components::Devices *devices;
     Components::Editor *editor;
+    QStandardItemModel *editing;
     Components::Files *files;
     Components::MenuBar *menu_bar;
-    QStandardItemModel *opened;
+    Helpers::Projects *opened;
     Components::Outline *outline;
     Components::Output *output;
     Components::Projects *projects;
@@ -52,6 +54,8 @@ private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("ide", key);
     }
+private slots:
+    void onEditFile(const QString &);
 public:
     explicit IDE(QWidget * = 0);
     ~IDE();
@@ -59,6 +63,7 @@ public slots:
     void onActionAdbKill();
     void onActionAdbStart();
     void onActionCloseFile();
+    void onActionCloseProject();
     void onActionContribute();
     void onActionDonate();
     void onActionFeedbackIssues();

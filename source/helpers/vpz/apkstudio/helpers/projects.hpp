@@ -3,9 +3,7 @@
 
 #include <QDir>
 #include <QFileInfo>
-#include <QFileSystemWatcher>
 #include <QStandardItemModel>
-#include "resources/constant.hpp"
 #include "resources/embedded.hpp"
 
 namespace VPZ {
@@ -19,12 +17,8 @@ private:
     QList<QMetaObject::Connection> connections;
     QStringList directories;
     QStringList files;
-    QFileSystemWatcher *watcher;
-private slots:
-    void onDirectoryChanged(const QString &);
-    void onFileChanged(const QString &);
 public:
-    explicit Projects(QWidget * = 0);
+    explicit Projects(QObject * = 0);
     inline bool close(const QString &path) { return close(QFileInfo(path)); }
     bool close(const QFileInfo &);
     inline bool open(const QString &path) { return open(QFileInfo(path)); }

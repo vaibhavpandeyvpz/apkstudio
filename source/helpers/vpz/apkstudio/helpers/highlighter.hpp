@@ -26,7 +26,7 @@ namespace Helpers {
 class Block : public QTextBlockUserData
 {
 public:
-    QVector<Resources::Bracket *> brackets;
+    QList<Resources::Bracket *> brackets;
     QVector<QPair<int, int> > literals;
 public:
     Block() { }
@@ -39,8 +39,9 @@ class Highlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 private:
+    QStringList brackets;
+    QString definition;
     QHash<QString, QVector<Resources::Highlight> > definitions;
-    QString mode;
     QHash<QString, QTextCharFormat> theme;
 private:
     void initialize();
@@ -50,7 +51,8 @@ public:
     explicit Highlighter(QObject * = 0);
     explicit Highlighter(QTextDocument * = 0);
     void highlightBlock(const QString &);
-    inline void setMode(const QString &mode) { this->mode = mode; }
+    inline QString mode() { return this->definition; }
+    void mode(const QString &);
 };
 
 } // namespace Helpers

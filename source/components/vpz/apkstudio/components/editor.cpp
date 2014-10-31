@@ -17,7 +17,6 @@ Editor::Editor(QStandardItemModel *model, QWidget *parent) :
     files = new QComboBox(tool_bar);
     tabs = new QTabWidget(this);
     tabs->setTabsClosable(true);
-    this->symbols = new QComboBox(tool_bar);
     this->variants = new QComboBox(tool_bar);
     files->setModel(model);
     files->setStyleSheet(STYLESHEET_COMBOBOXES);
@@ -26,11 +25,7 @@ Editor::Editor(QStandardItemModel *model, QWidget *parent) :
     layout->addWidget(tabs);
     layout->setContentsMargins(0, 1, 0, 2);
     layout->setSpacing(2);
-    this->symbols->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    this->symbols->setStyleSheet(STYLESHEET_COMBOBOXES);
-    this->symbols->setSizePolicy(right);
     tool_bar->addWidget(files);
-    QAction *symbols = tool_bar->addWidget(this->symbols);
     tool_bar->layout()->setContentsMargins(0, 0, 0, 0);
     tool_bar->layout()->setSpacing(2);
     this->variants->setStyleSheet(STYLESHEET_COMBOBOXES);
@@ -43,19 +38,23 @@ Editor::Editor(QStandardItemModel *model, QWidget *parent) :
         this->files->removeItem(index);
         this->tabs->removeTab(index);
     }));
-    connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ symbols, variants, this ] (int index) {
+    connections.append(connect(tabs, static_cast<void(QTabWidget::*)(int)>(&QTabWidget::currentChanged), [ this ] (int index) {
+        if (index < -1)
+            return;
+        this->files->setCurrentIndex(index);
+    }));
+    connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ variants, this ] (int index) {
+        if (index < -1)
+            return;
         this->tabs->setCurrentIndex(index);
         emit selectionChanged(index);
         QWidget *widget = this->tabs->currentWidget();
         if (!widget)
             return;
-        if (widget->inherits(Viewer::staticMetaObject.className())) {
-            symbols->setVisible(false);
+        if (widget->inherits(Viewer::staticMetaObject.className()))
             variants->setVisible(true);
-        } else {
-            symbols->setVisible(true);
+        else
             variants->setVisible(false);
-        }
         widget->setFocus();
     }));
 }
@@ -91,11 +90,20 @@ void Editor::next()
         files->setCurrentIndex(current);
 }
 
-void Editor::open(const QString &path)
+void Editor::onSelectionChanged(int index)
 {
-    QFileInfo info(path);
+    files->setCurrentIndex(index);
+}
+
+void Editor::open(const QFileInfo &info)
+{
     if (!info.exists() || !info.isFile())
         return;
+    int index = files->findData(info.absoluteFilePath());
+    if (index >= 0) {
+        files->setCurrentIndex(index);
+        return;
+    }
     QWidget *widget;
     if (QString(ALLOWED_IMAGE_EXTENSIONS).contains(info.suffix())) {
         Viewer *viewer = new Viewer(tabs);
@@ -107,12 +115,19 @@ void Editor::open(const QString &path)
         widget = coder;
     } else
         return;
-    int inserted = tabs->addTab(widget, info.fileName());
-    files->addItem(info.fileName(), QVariant(info.absoluteFilePath()));
-    files->setCurrentIndex(inserted);
-    tabs->setTabToolTip(inserted, info.absoluteFilePath());
+    index = tabs->addTab(widget, info.fileName());
+    files->addItem(info.fileName(), info.absoluteFilePath());
+    files->setCurrentIndex(index);
+    tabs->setTabToolTip(index, info.absoluteFilePath());
     widget->setFocus();
     widget->setProperty("path", info.absoluteFilePath());
+}
+
+void Editor::previous()
+{
+    int current = files->currentIndex();
+    if (current > 0)
+        files->setCurrentIndex(current - 1);
 }
 
 void Editor::save(const bool all)
@@ -131,18 +146,6 @@ void Editor::save(const bool all)
         }
         index++;
     } while (all && (index < files->count()));
-}
-
-void Editor::onSelectionChanged(int index)
-{
-    files->setCurrentIndex(index);
-}
-
-void Editor::previous()
-{
-    int current = files->currentIndex();
-    if (current > 0)
-        files->setCurrentIndex(current - 1);
 }
 
 Editor::~Editor()

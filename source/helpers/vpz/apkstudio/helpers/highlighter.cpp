@@ -28,13 +28,13 @@ void Block::literal(int line, int column)
 }
 
 Highlighter::Highlighter(QObject *parent) :
-    QSyntaxHighlighter(parent), mode("java")
+    QSyntaxHighlighter(parent), definition("java")
 {
     initialize();
 }
 
 Highlighter::Highlighter(QTextDocument *parent) :
-    QSyntaxHighlighter(parent), mode("java")
+    QSyntaxHighlighter(parent), definition("java")
 {
     initialize();
 }
@@ -58,7 +58,7 @@ void Highlighter::highlight(Block *block, const QString &text, const QString &na
 void Highlighter::highlightBlock(const QString &text)
 {
     Block *block = new Block;
-    foreach (const Resources::Highlight &rule, definitions.value(mode)) {
+    foreach (const Resources::Highlight &rule, definitions.value(definition)) {
         if (rule.style == "commentml") {
             QTextCharFormat multiline = theme.value(rule.style);
             QStringList startstop = rule.regex.split('|');
@@ -84,7 +84,6 @@ void Highlighter::highlightBlock(const QString &text)
         }
         highlight(block, text, rule.style, rule.regex);
     }
-    QStringList brackets = Settings::brackets();
     foreach (const QString &pair, brackets) {
         foreach (const QChar &character, pair) {
             int position = text.indexOf(character);
@@ -124,6 +123,12 @@ void Highlighter::initialize()
         format.setForeground(QColor(style.color));
         theme.insert(iterator.key(), format);
     }
+}
+
+void Highlighter::mode(const QString &definition)
+{
+    brackets = Settings::brackets(definition);
+    this->definition = definition;
 }
 
 QVector<Resources::Highlight> Highlighter::parse(const QString &name)

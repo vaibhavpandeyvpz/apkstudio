@@ -19,7 +19,7 @@ Information::Information(const QString &device, QWidget *parent) :
     createSoftwareTab();
     createNetworkTab();
     setLayout(layout);
-    setWindowIcon(Embedded::icon("processor"));
+    setWindowIcon(::icon("processor"));
     setWindowTitle(translate("title_window").arg(device));
 }
 

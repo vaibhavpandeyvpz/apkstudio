@@ -3,6 +3,7 @@
 
 #include <QComboBox>
 #include <QHeaderView>
+#include <QStandardItemModel>
 #include <QTabWidget>
 #include <QTreeView>
 #include <QVBoxLayout>
@@ -26,10 +27,15 @@ private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("projects", key);
     }
-    void createProjectTab();
-    void createProjectsTab();
+    void createProjectTab(QStandardItemModel *);
+    void createProjectsTab(QStandardItemModel *);
+private slots:
+    void onNodeClicked(const QModelIndex &);
 public:
-    explicit Projects(QWidget *parent = 0);
+    explicit Projects(QStandardItemModel *, QWidget * = 0);
+    QString selected();
+signals:
+    void editFile(QString);
 };
 
 } // namespace Components

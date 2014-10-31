@@ -173,7 +173,7 @@ void Logcat::onCopy()
     int rows = tree->model()->rowCount(root);
     for (int row = 0; row < rows; ++row) {
         QModelIndex line = tree->model()->index(row, 0, root);
-        lines << qvariant_cast<QString>(tree->model()->data(line, ROLE_TEXT));
+        lines << tree->model()->data(line, ROLE_TEXT).value<QString>();
     }
     QClipboard *clipboard = Application::clipboard();
     clipboard->setText(lines.join("\n"));
@@ -302,7 +302,7 @@ void Logcat::onSave()
     int rows = tree->model()->rowCount(root);
     for (int row = 0; row < rows; ++row) {
         QModelIndex line = tree->model()->index(row, 0, root);
-        stream << qvariant_cast<QString>(tree->model()->data(line, ROLE_TEXT)) << endl;
+        stream << tree->model()->data(line, ROLE_TEXT).value<QString>() << endl;
     }
     file.close();
 }

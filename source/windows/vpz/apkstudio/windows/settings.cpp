@@ -97,11 +97,8 @@ void Settings::createApktoolTab()
         QStringList files = dialog.selectedFiles();
         if (files.isEmpty())
             return;
-        QString path = files.first();
-        if (path.isEmpty())
-            return;
         Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
-        certificate->setText(path);
+        certificate->setText(files.first());
     }));
     connections.append(connect(fbrowse, &QPushButton::clicked, [ framework, this ] () {
         QString path = QFileDialog::getExistingDirectory(this, translate("title_choose_directory"), Helpers::Settings::previousDirectory());
@@ -119,11 +116,8 @@ void Settings::createApktoolTab()
         QStringList files = dialog.selectedFiles();
         if (files.isEmpty())
             return;
-        QString path = files.first();
-        if (path.isEmpty())
-            return;
         Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
-        key->setText(path);
+        key->setText(files.first());
     }));
     connections.append(connect(this, &QDialog::accepted, [ certificate, framework, key ] () {
         Helpers::Settings::frameworkPath(framework->text());
@@ -187,10 +181,10 @@ void Settings::createEditorTab()
     layout->addRow(translate("label_wrap"), wrap);
     widget->setLayout(layout);
     connections.append(connect(this, &QDialog::accepted, [ cursor, encoding, font, size, spaces, tab, whitespace, wrap ] () {
-        Helpers::Settings::characterEncoding(qvariant_cast<int>(encoding->itemData(encoding->currentIndex())));
+        Helpers::Settings::characterEncoding(encoding->itemData(encoding->currentIndex()).value<int>());
         Helpers::Settings::cursorWidth(cursor->value());
-        Helpers::Settings::fontFamily(qvariant_cast<QString>(font->itemData(font->currentIndex())));
-        Helpers::Settings::fontSize(qvariant_cast<int>(size->itemData(size->currentIndex())));
+        Helpers::Settings::fontFamily(font->itemData(font->currentIndex()).value<QString>());
+        Helpers::Settings::fontSize(size->itemData(size->currentIndex()).value<int>());
         Helpers::Settings::showWhitespace(whitespace->isChecked());
         Helpers::Settings::spacesForTab(spaces->isChecked());
         Helpers::Settings::tabWidth(tab->value());
@@ -230,8 +224,8 @@ void Settings::createGeneralTab()
     }));
     connections.append(connect(this, &QDialog::accepted, [ binary, language, theme ] () {
         Helpers::Settings::binaryPath(binary->text());
-        Helpers::Settings::language(qvariant_cast<QString>(language->itemData(language->currentIndex())));
-        Helpers::Settings::theme(qvariant_cast<QString>(theme->itemData(theme->currentIndex())));
+        Helpers::Settings::language(language->itemData(language->currentIndex()).value<QString>());
+        Helpers::Settings::theme(theme->itemData(theme->currentIndex()).value<QString>());
     }));
     list->addItem(translate("item_general"));
     stack->addWidget(widget);
@@ -282,7 +276,7 @@ void Settings::createViewerTab()
     layout->addRow(translate("label_background"), background);
     widget->setLayout(layout);
     connections.append(connect(this, &QDialog::accepted, [ background ] () {
-        Helpers::Settings::imageBackground(qvariant_cast<QString>(background->itemData(background->currentIndex())));
+        Helpers::Settings::imageBackground(background->itemData(background->currentIndex()).value<QString>());
     }));
     list->addItem(translate("item_viewer"));
     stack->addWidget(widget);

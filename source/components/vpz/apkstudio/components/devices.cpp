@@ -65,25 +65,26 @@ Devices::Devices(QWidget *parent) :
     tree->setColumnWidth(0, 32);
     tree->setSortingEnabled(true);
     tree->sortByColumn(1, Qt::AscendingOrder);
-    connect(explore, SIGNAL(triggered()), this, SLOT(onExplore()));
-    connect(information, SIGNAL(triggered()), this, SLOT(onInformation()));
-    connections.append(connect(kill, &QAction::triggered, [] () {
+    connections.append(connect(explore, SIGNAL(triggered()), this, SLOT(onExplore())));
+    connections.append(connect(information, SIGNAL(triggered()), this, SLOT(onInformation())));
+    connections.append(connect(kill, &QAction::triggered, [ ] () {
         ADB::instance()->kill();
     }));
-    connect(logcat, SIGNAL(triggered()), this, SLOT(onLogcat()));
-    connect(refresh, SIGNAL(triggered()), this, SLOT(onRefresh()));
-    connections.append(connect(restart, &QAction::triggered, [] () {
+    connections.append(connect(logcat, SIGNAL(triggered()), this, SLOT(onLogcat())));
+    connections.append(connect(refresh, SIGNAL(triggered()), this, SLOT(onRefresh())));
+    connections.append(connect(restart, &QAction::triggered, [ ] () {
         ADB::instance()->kill();
         ADB::instance()->start();
     }));
-    connect(screenshot, SIGNAL(triggered()), this, SLOT(onScreenshot()));
-    connect(shell, SIGNAL(triggered()), this, SLOT(onShell()));
-    connections.append(connect(start, &QAction::triggered, [] () {
+    connections.append(connect(screenshot, SIGNAL(triggered()), this, SLOT(onScreenshot())));
+    connections.append(connect(shell, SIGNAL(triggered()), this, SLOT(onShell())));
+    connections.append(connect(start, &QAction::triggered, [ ] () {
         ADB::instance()->start();
     }));
     connections.append(connect(this, SIGNAL(showExplorer(QString)), this->parent(), SLOT(onShowExplorer(QString))));
     connections.append(connect(this, SIGNAL(showInformation(QString)), this->parent(), SLOT(onShowInformation(QString))));
     connections.append(connect(this, SIGNAL(showLogcat(QString)), this->parent(), SLOT(onShowLogcat(QString))));
+    connections.append(connect(tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClick(QModelIndex))));
     connections.append(connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, [ explore, information, logcat, screenshot, shell, this ] (const QItemSelection &/*current*/, const QItemSelection &/*previous*/) {
         bool enable = false;
         Device device = this->selected();
@@ -99,6 +100,11 @@ Devices::Devices(QWidget *parent) :
     widget->setMinimumSize(64, 64);
     setObjectName("devices");
     setWidget(widget);
+}
+
+void Devices::onDoubleClick(const QModelIndex &)
+{
+    onShell();
 }
 
 void Devices::onExplore()
@@ -157,9 +163,7 @@ void Devices::onRefresh()
             row->setText(2, translate("type_emulator"));
             break;
         }
-        QVariant data;
-        data.setValue(device);
-        row->setData(0, ROLE_STRUCT, data);
+        row->setData(0, ROLE_STRUCT, QVariant().fromValue(device));
         tree->addTopLevelItem(row);
     }
     tree->header()->resizeSections(QHeaderView::ResizeToContents);
@@ -199,7 +203,7 @@ Device Devices::selected() const
     Device device;
     QModelIndexList selection = this->tree->selectionModel()->selectedRows(0);
     if (selection.count() == 1)
-        device = qvariant_cast<Device>(selection.first().data(ROLE_STRUCT));
+        device = selection.first().data(ROLE_STRUCT).value<Device>();
     return device;
 }
 

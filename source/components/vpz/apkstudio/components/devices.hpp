@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QProcess>
+#include <QStandardItemModel>
 #include <QToolBar>
 #include <QToolButton>
 #include <QTreeWidget>
@@ -15,7 +16,6 @@
 #include "helpers/format.hpp"
 #include "helpers/settings.hpp"
 #include "helpers/text.hpp"
-#include "resources/constant.hpp"
 #include "resources/embedded.hpp"
 #include "resources/variant.hpp"
 #include "dockable.hpp"
@@ -35,6 +35,7 @@ private:
         return Helpers::Text::translate("devices", key);
     }
 private slots:
+    void onDoubleClick(const QModelIndex &);
     void onExplore();
     void onInformation();
     void onLogcat();

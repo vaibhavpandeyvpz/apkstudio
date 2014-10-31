@@ -50,5 +50,18 @@
         <file>icon/info_warning.png</file>
         <file>font/droid_sans_mono.ttf</file>
         <file>font/terminus_ttf.ttf</file>
+        <file>icon/apk.png</file>
+        <file>icon/db.png</file>
+        <file>icon/directory.png</file>
+        <file>icon/file.png</file>
+        <file>icon/java.png</file>
+        <file>icon/png.png</file>
+        <file>icon/project.png</file>
+        <file>icon/res.png</file>
+        <file>icon/smali.png</file>
+        <file>icon/txt.png</file>
+        <file>icon/wav.png</file>
+        <file>icon/xml.png</file>
+        <file>icon/yml.png</file>
     </qresource>
 </RCC>

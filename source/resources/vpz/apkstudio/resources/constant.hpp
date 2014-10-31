@@ -55,7 +55,6 @@
 #define SETTING_WORD_WRAP "word_wrap"
 #define SETTING_WINDOW_SIZE "window_size"
 
-#define STYLESHEET_EDITORS "QPlainTextEdit { border: 1px solid %1; }"
 #define STYLESHEET_COMBOBOXES "QComboBox { max-height: 22px; min-height: 22px; }"
 
 #define TYPE_FILE 88004

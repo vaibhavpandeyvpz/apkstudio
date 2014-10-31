@@ -31,7 +31,6 @@ Coder::Coder(QWidget *parent) :
     setFont(font);
     setFrameStyle(QFrame::NoFrame);
     setPalette(palette);
-    setStyleSheet(QString(STYLESHEET_EDITORS).arg(theme.value("border").color));
     setTabChangesFocus(false);
     setTabStopWidth(Settings::tabWidth() * metrics.width('8'));
     setWordWrapMode(Settings::wordWrap() ? QTextOption::WordWrap : QTextOption::NoWrap);
@@ -165,17 +164,16 @@ void Coder::keyPressEvent(QKeyEvent *event)
 
 bool Coder::open(const QFileInfo &info)
 {
+    brackets = Settings::brackets(info.suffix());
+    highlighter->mode(info.suffix());
     if (path.isNull() || path.isEmpty())
         path = info.absoluteFilePath();
-    QString extension = info.suffix();
-    highlighter->setMode(extension);
     QFile file(info.absoluteFilePath());
     if (!file.open(QFile::ReadOnly | QFile::Text))
         return false;
     setPlainText(file.readAll());
+    setReadOnly((QString::compare(info.suffix(), "java", Qt::CaseInsensitive) == 0));
     file.close();
-    if (QString::compare(extension, "java", Qt::CaseInsensitive) == 0)
-        setReadOnly(true);
     return true;
 }
 
@@ -200,7 +198,7 @@ void Coder::onCursorPositionChanged()
         selections.append(selection);
     }
     setExtraSelections(selections);
-    foreach (QString pair, Settings::brackets())
+    foreach (const QString &pair, brackets)
         brackets_matcher->match(pair[0], pair[1]);
 }
 

@@ -4,57 +4,54 @@ namespace VPZ {
 namespace APKStudio {
 namespace Helpers {
 
-Projects::Projects(QWidget *parent) :
+Projects::Projects(QObject *parent) :
     QStandardItemModel(parent)
 {
     directories << "res";
     files << "apk";
+    files << "db";
     files << "java";
     files << "png";
     files << "smali";
+    files << "txt";
+    files << "wav";
     files << "xml";
-    watcher = new QFileSystemWatcher(this);
-    connections.append(connect(watcher, static_cast<void(QFileSystemWatcher::*)(QString)>(QFileSystemWatcher::directoryChanged), this, &Projects::onDirectoryChanged));
-    connections.append(connect(watcher, static_cast<void(QFileSystemWatcher::*)(QString)>(QFileSystemWatcher::fileChanged), this, &Projects::onFileChanged));
+    files << "yml";
 }
 
 bool Projects::close(const QFileInfo &yml)
 {
-}
-
-bool Projects::onDirectoryChanged(const QString &path)
-{
-}
-
-bool Projects::onFileChanged(const QString &path)
-{
+    QStandardItem *root = invisibleRootItem();
+    for (int i = 0; i < root->rowCount(); ++i) {
+        QStandardItem *project = root->takeChild(i);
+        QString path = project->data(ROLE_PATH).value<QString>();
+        if (QString::compare(path, yml.absoluteFilePath()) != 0)
+            continue;
+        while (project->rowCount())
+            qDeleteAll(project->takeRow(0));
+        return removeRow(i, root->index());
+    }
+    return false;
 }
 
 bool Projects::open(const QFileInfo &yml)
 {
-    if (!yml.exists() || root.isFile() || (root.suffix() != "yml"))
-        return;
     QDir directory = yml.dir();
-    QStandardItem *node = new QStandardItem(icon("project"), directory.dirName());
+    QStandardItem *node = new QStandardItem(::icon("project"), directory.dirName());
     node->setData(QVariant(directory.absolutePath()), ROLE_PATH);
     node->setData(QVariant(TYPE_PROJECT), ROLE_TYPE);
     appendRow(node);
-    watcher->addPath(directory.absolutePath());
     refresh(node);
+    return true;
 }
 
-bool Projects::refresh(QStandardItem *node)
+void Projects::refresh(QStandardItem *node)
 {
     while (node->rowCount()) {
-        QList<QStandardItem* > children = node->takeRow(0);
+        QList<QStandardItem *> children = node->takeRow(0);
         qDeleteAll(children);
     }
-    QString path = qvariant_cast<QString>(node->data(ROLE_PATH));
-    if (path.isNull() || path.isEmpty())
-        return;
-    QDir directory(path);
-    if (!directory.exists())
-        return;
+    QDir directory(node->data(ROLE_PATH).value<QString>());
     QFileInfoList list = directory.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
     if (list.empty() || (list.count() < 1))
         return;
@@ -64,19 +61,18 @@ bool Projects::refresh(QStandardItem *node)
             child->setData(QVariant(TYPE_FILE), ROLE_TYPE);
             QString extension = info.suffix();
             if (files.contains(extension))
-                child->setIcon(icon(extension));
+                child->setIcon(::icon(extension.toLatin1().data()));
             else
-                child->setIcon(icon("file"));
+                child->setIcon(::icon("file"));
             child->setText(info.fileName());
         } else {
             child->setData(QVariant(TYPE_DIRECTORY), ROLE_TYPE);
             QString directory = info.baseName();
             if (directories.contains(directory))
-                child->setIcon(icon(directory));
+                child->setIcon(::icon(directory.toLatin1().data()));
             else
-                child->setIcon(icon("directory"));
+                child->setIcon(::icon("directory"));
             child->setText(info.baseName());
-            watcher->addPath(info.absolutePath());
         }
         child->setData(QVariant(info.absoluteFilePath()), ROLE_PATH);
         node->appendRow(child);

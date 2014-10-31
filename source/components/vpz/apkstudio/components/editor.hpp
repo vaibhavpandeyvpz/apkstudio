@@ -24,7 +24,6 @@ class Editor : public QWidget
 private:
     QList<QMetaObject::Connection> connections;
     QComboBox *files;
-    QComboBox *symbols;
     QComboBox *variants;
     QTabWidget *tabs;
 private:
@@ -37,7 +36,8 @@ public:
     void first();
     void last();
     void next();
-    void open(const QString &);
+    void open(const QString &path) { return open(QFileInfo(path)); }
+    void open(const QFileInfo &);
     void previous();
     void save(const bool = false);
     ~Editor();
