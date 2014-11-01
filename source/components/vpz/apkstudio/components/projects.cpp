@@ -79,12 +79,9 @@ void Projects::onNodeClicked(const QModelIndex &index)
     emit editFile(index.data(ROLE_PATH).value<QString>());
 }
 
-QString Projects::selected()
+QModelIndex Projects::selected()
 {
-    int index = current->currentIndex();
-    if (index < 0)
-        return "";
-    return current->itemData(index, ROLE_PATH).value<QString>();
+    return current->model()->index(current->currentIndex(), 0);
 }
 
 } // namespace Components

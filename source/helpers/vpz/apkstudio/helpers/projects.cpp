@@ -19,19 +19,14 @@ Projects::Projects(QObject *parent) :
     files << "yml";
 }
 
-bool Projects::close(const QFileInfo &yml)
+bool Projects::close(const QModelIndex &selected)
 {
-    QStandardItem *root = invisibleRootItem();
-    for (int i = 0; i < root->rowCount(); ++i) {
-        QStandardItem *project = root->takeChild(i);
-        QString path = project->data(ROLE_PATH).value<QString>();
-        if (QString::compare(path, yml.absoluteFilePath()) != 0)
-            continue;
-        while (project->rowCount())
-            qDeleteAll(project->takeRow(0));
-        return removeRow(i, root->index());
-    }
-    return false;
+    if (!selected.isValid())
+        return false;
+    QStandardItem *project = this->itemFromIndex(selected);
+    while (project->rowCount())
+        qDeleteAll(project->takeRow(0));
+    return removeRow(selected.row(), index(0, 0));
 }
 
 bool Projects::open(const QFileInfo &yml)

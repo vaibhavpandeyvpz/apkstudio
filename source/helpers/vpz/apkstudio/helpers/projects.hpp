@@ -19,8 +19,7 @@ private:
     QStringList files;
 public:
     explicit Projects(QObject * = 0);
-    inline bool close(const QString &path) { return close(QFileInfo(path)); }
-    bool close(const QFileInfo &);
+    bool close(const QModelIndex &);
     inline bool open(const QString &path) { return open(QFileInfo(path)); }
     bool open(const QFileInfo &);
     void refresh(QStandardItem *);

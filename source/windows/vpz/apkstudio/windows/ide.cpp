@@ -62,10 +62,7 @@ void IDE::onActionCloseFile()
 
 void IDE::onActionCloseProject()
 {
-    QString path = projects->selected();
-    if (path.isEmpty())
-        return;
-    opened->close(path);
+    opened->close(projects->selected());
 }
 
 void IDE::onActionContribute()

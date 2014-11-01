@@ -33,7 +33,7 @@ private slots:
     void onNodeClicked(const QModelIndex &);
 public:
     explicit Projects(QStandardItemModel *, QWidget * = 0);
-    QString selected();
+    QModelIndex selected();
 signals:
     void editFile(QString);
 };
