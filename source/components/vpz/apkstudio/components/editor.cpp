@@ -1,11 +1,13 @@
 #include "editor.hpp"
 
+using namespace VPZ::APKStudio::Helpers;
+
 namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
 Editor::Editor(QStandardItemModel *model, QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent), editables(Settings::fileIcons())
 {
     QSizePolicy left(QSizePolicy::Preferred, QSizePolicy::Preferred);
     QSizePolicy right(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -115,8 +117,9 @@ void Editor::open(const QFileInfo &info)
         widget = coder;
     } else
         return;
-    index = tabs->addTab(widget, info.fileName());
-    files->addItem(info.fileName(), info.absoluteFilePath());
+    QIcon icon = (editables.contains(info.suffix()) ? ::icon(info.suffix()) : ::icon("file"));
+    index = tabs->addTab(widget, icon, info.fileName());
+    files->addItem(icon, info.fileName(), info.absoluteFilePath());
     files->setCurrentIndex(index);
     tabs->setTabToolTip(index, info.absoluteFilePath());
     widget->setFocus();

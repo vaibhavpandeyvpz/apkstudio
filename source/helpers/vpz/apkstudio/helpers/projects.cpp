@@ -5,28 +5,18 @@ namespace APKStudio {
 namespace Helpers {
 
 Projects::Projects(QObject *parent) :
-    QStandardItemModel(parent)
+    QStandardItemModel(parent), editables(Settings::fileIcons()), directories(Settings::directoryIcons())
 {
-    directories << "res";
-    files << "apk";
-    files << "db";
-    files << "java";
-    files << "png";
-    files << "smali";
-    files << "txt";
-    files << "wav";
-    files << "xml";
-    files << "yml";
 }
 
 bool Projects::close(const QModelIndex &selected)
 {
     if (!selected.isValid())
         return false;
-    QStandardItem *project = this->itemFromIndex(selected);
+    QStandardItem *project = itemFromIndex(selected);
     while (project->rowCount())
         qDeleteAll(project->takeRow(0));
-    return removeRow(selected.row(), index(0, 0));
+    return removeRow(selected.row(), invisibleRootItem()->index());
 }
 
 bool Projects::open(const QFileInfo &yml)
@@ -36,43 +26,43 @@ bool Projects::open(const QFileInfo &yml)
     node->setData(QVariant(directory.absolutePath()), ROLE_PATH);
     node->setData(QVariant(TYPE_PROJECT), ROLE_TYPE);
     appendRow(node);
-    refresh(node);
+    traverse(node);
     return true;
 }
 
-void Projects::refresh(QStandardItem *node)
+void Projects::traverse(QStandardItem *node)
 {
     while (node->rowCount()) {
         QList<QStandardItem *> children = node->takeRow(0);
         qDeleteAll(children);
     }
     QDir directory(node->data(ROLE_PATH).value<QString>());
-    QFileInfoList list = directory.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
-    if (list.empty() || (list.count() < 1))
-        return;
-    foreach (const QFileInfo &info, list) {
+    directory.setFilter(QDir::Dirs | QDir::Files | QDir::NoSymLinks);
+    QFileInfoList files = directory.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
+    foreach (const QFileInfo &file, files) {
+        if (file.fileName().startsWith('.'))
+            continue;
         QStandardItem *child = new QStandardItem();
-        if (info.isFile()) {
+        if (file.isFile()) {
             child->setData(QVariant(TYPE_FILE), ROLE_TYPE);
-            QString extension = info.suffix();
-            if (files.contains(extension))
-                child->setIcon(::icon(extension.toLatin1().data()));
+            if (editables.contains(file.suffix()))
+                child->setIcon(::icon(file.suffix()));
             else
                 child->setIcon(::icon("file"));
-            child->setText(info.fileName());
+            child->setText(file.fileName());
         } else {
             child->setData(QVariant(TYPE_DIRECTORY), ROLE_TYPE);
-            QString directory = info.baseName();
+            QString directory = file.baseName();
             if (directories.contains(directory))
-                child->setIcon(::icon(directory.toLatin1().data()));
+                child->setIcon(::icon(directory));
             else
                 child->setIcon(::icon("directory"));
-            child->setText(info.baseName());
+            child->setText(file.baseName());
         }
-        child->setData(QVariant(info.absoluteFilePath()), ROLE_PATH);
+        child->setData(QVariant(file.absoluteFilePath()), ROLE_PATH);
         node->appendRow(child);
-        if (info.isDir())
-            refresh(child);
+        if (file.isDir())
+            traverse(child);
     }
 }
 

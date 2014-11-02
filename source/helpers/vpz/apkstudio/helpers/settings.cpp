@@ -6,50 +6,12 @@ namespace Helpers {
 
 void Settings::addRecentFile(const QString &path)
 {
-    if (!QFile::exists(path))
-        return;
     QStringList files = recentFiles();
-    if (files.contains(path))
-        return;
+    while (files.count() > 10)
+        files.removeFirst();
+    files.removeOne(path);
     files.push_front(path);
     set(SETTING_RECENT_FILES, files);
-}
-
-void Settings::addRecentFiles(const QStringList &paths)
-{
-    QStringList files = recentFiles();
-    foreach (const QString &path, paths) {
-        if (!QFile::exists(path))
-            continue;
-        if (files.contains(path))
-            return;
-        files.push_front(path);
-    }
-    set(SETTING_RECENT_FILES, files);
-}
-
-void Settings::addRecentProject(const QString &path)
-{
-    if (!QFile::exists(path))
-        return;
-    QStringList projects = recentProjects();
-    if (projects.contains(path))
-        return;
-    projects.push_front(path);
-    set(SETTING_RECENT_PROJECTS, projects);
-}
-
-void Settings::addRecentProjects(const QStringList &paths)
-{
-    QStringList projects = recentProjects();
-    foreach (const QString &path, paths) {
-        if (!QFile::exists(path))
-            continue;
-        if (projects.contains(path))
-            return;
-        projects.push_front(path);
-    }
-    set(SETTING_RECENT_PROJECTS, projects);
 }
 
 QString Settings::binary(const QString &executable)
@@ -103,6 +65,11 @@ void Settings::cursorWidth(const int pixels)
     set(SETTING_CURSOR_WIDTH, pixels);
 }
 
+QStringList Settings::directoryIcons()
+{
+    return QStringList() << "res";
+}
+
 QByteArray Settings::dockState()
 {
     return get(SETTING_DOCK_STATE, QByteArray()).value<QByteArray>();
@@ -111,6 +78,11 @@ QByteArray Settings::dockState()
 void Settings::dockState(const QByteArray &state)
 {
     set(SETTING_DOCK_STATE, state);
+}
+
+QStringList Settings::fileIcons()
+{
+    return QStringList() << "apk" << "db" << "java" << "png" << "smali" << "txt" << "wav" << "xml" << "yml";
 }
 
 QString Settings::fontFamily()
@@ -222,29 +194,6 @@ void Settings::previousDirectory(const QString &directory)
 QStringList Settings::recentFiles()
 {
     return get(SETTING_RECENT_FILES, QStringList()).value<QStringList>();
-}
-
-QStringList Settings::recentProjects()
-{
-    return get(SETTING_RECENT_PROJECTS, QStringList()).value<QStringList>();
-}
-
-void Settings::removeRecentFile(const QString &path)
-{
-    QStringList files = recentFiles();
-    if (!files.contains(path))
-        return;
-    files.removeAll(path);
-    set(SETTING_RECENT_FILES, files);
-}
-
-void Settings::removeRecentProject(const QString &path)
-{
-    QStringList projects = recentProjects();
-    if (!projects.contains(path))
-        return;
-    projects.removeAll(path);
-    set(SETTING_RECENT_PROJECTS, projects);
 }
 
 bool Settings::rootShell()

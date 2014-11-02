@@ -19,7 +19,7 @@ MenuBar::MenuBar(QWidget *parent) :
     QMenu *adb = new QMenu(translate("item_adb"), tools);
     QMenu *feedback = new QMenu(translate("item_feedback"), help);
     QMenu *open = new QMenu(translate("item_open"), file);
-    QMenu *recents = new Components::Recents(file);
+    QMenu *recents = new Components::Recents(parent, file);
     QMenu *views = new QMenu(translate("item_views"), window);
     APKS_MENUITEM(toggles, false, build, clean, Clean, 0);
     APKS_MENUITEM(toggles, false, build, clean_all, CleanAll, 0);
@@ -100,8 +100,6 @@ MenuBar::MenuBar(QWidget *parent) :
     addAction(help->menuAction());
     connect(toggles, SIGNAL(triggered(QAction *)), parent, SLOT(onActionToggle(QAction *)));
     toggles->setExclusive(false);
-    recents->setEnabled(false);
-    scripts->setEnabled(false);
 }
 
 void MenuBar::onViewToggled(const char *id, const bool visible)

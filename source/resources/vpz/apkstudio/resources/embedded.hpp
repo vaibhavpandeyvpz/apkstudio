@@ -5,7 +5,7 @@
 #include "constant.hpp"
 
 extern "C" {
-    inline QIcon icon(const char *name) { return QIcon(QString(RESOURCE_PATH_ICON).append(name).append(".png")); }
+    inline QIcon icon(const QString &name) { return QIcon(QString(RESOURCE_PATH_ICON).append(name).append(".png")); }
 }
 
 #endif // VPZ_APKSTUDIO_RESOURCES_EMBEDDED_HPP

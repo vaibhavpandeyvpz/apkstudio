@@ -5,6 +5,7 @@
 #include <QFileInfo>
 #include <QStandardItemModel>
 #include "resources/embedded.hpp"
+#include "settings.hpp"
 
 namespace VPZ {
 namespace APKStudio {
@@ -16,13 +17,13 @@ class Projects : public QStandardItemModel
 private:
     QList<QMetaObject::Connection> connections;
     QStringList directories;
-    QStringList files;
+    QStringList editables;
 public:
     explicit Projects(QObject * = 0);
     bool close(const QModelIndex &);
     inline bool open(const QString &path) { return open(QFileInfo(path)); }
     bool open(const QFileInfo &);
-    void refresh(QStandardItem *);
+    void traverse(QStandardItem *);
     ~Projects();
 };
 

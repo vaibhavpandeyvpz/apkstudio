@@ -20,9 +20,6 @@ class Settings
 {
 public:
     static void addRecentFile(const QString &);
-    static void addRecentFiles(const QStringList &);
-    static void addRecentProject(const QString &);
-    static void addRecentProjects(const QStringList &);
     static QString binary(const QString &);
     static QString binaryPath();
     static void binaryPath(const QString &);
@@ -31,8 +28,10 @@ public:
     static void characterEncoding(const int);
     static int cursorWidth();
     static void cursorWidth(const int);
+    static QStringList directoryIcons();
     static QByteArray dockState();
     static void dockState(const QByteArray &);
+    static QStringList fileIcons();
     static QString fontFamily();
     static void fontFamily(const QString &);
     static int fontSize();
@@ -53,9 +52,6 @@ public:
     static QString previousDirectory();
     static void previousDirectory(const QString &);
     static QStringList recentFiles();
-    static QStringList recentProjects();
-    static void removeRecentFile(const QString &);
-    static void removeRecentProject(const QString &);
     static bool rootShell();
     static void rootShell(const bool);
     static void set(const QString &, const QVariant &);

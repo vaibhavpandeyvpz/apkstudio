@@ -16,7 +16,7 @@ private:
         return Helpers::Text::translate("menubar", key);
     }
 public:
-    explicit Scripts(QWidget *parent = 0);
+    explicit Scripts(QWidget * = 0);
 };
 
 } // namespace Components

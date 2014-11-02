@@ -56,6 +56,7 @@ private:
     }
 private slots:
     void onEditFile(const QString &);
+    void onOpenProject(const QString &);
 public:
     explicit IDE(QWidget * = 0);
     ~IDE();
@@ -76,6 +77,7 @@ public slots:
     void onActionOpenProject();
     void onActionPrevious();
     void onActionQuit();
+    void onActionRecentSelected(const QFileInfo &);
     void onActionRestart();
     void onActionSave();
     void onActionSaveAll();

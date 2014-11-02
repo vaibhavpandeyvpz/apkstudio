@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 #include <QToolBar>
 #include <QTabWidget>
+#include "helpers/settings.hpp"
 #include "helpers/text.hpp"
 #include "coder.hpp"
 #include "viewer.hpp"
@@ -25,6 +26,7 @@ private:
     QList<QMetaObject::Connection> connections;
     QComboBox *files;
     QComboBox *variants;
+    QStringList editables;
     QTabWidget *tabs;
 private:
     static QString translate(const char *key) {

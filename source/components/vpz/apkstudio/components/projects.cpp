@@ -34,10 +34,7 @@ void Projects::createProjectTab(QStandardItemModel *model)
     project->setSortingEnabled(false);
     connections.append(connect(current, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ this ] (int index) {
         if (index < 0) {
-            if (this->current->count() < 1)
-                this->tabs->setTabText(1, translate("tab_no_project"));
-            else
-                this->current->setCurrentIndex(0);
+            this->tabs->setTabText(1, translate("tab_no_project"));
             return;
         }
         this->tabs->setTabText(1, translate("tab_active_project").arg(this->current->currentText()));

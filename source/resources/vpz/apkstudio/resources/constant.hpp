@@ -44,7 +44,6 @@
 #define SETTING_MAXIMIZED "maximized"
 #define SETTING_PREVIOUS_DIRECTORY "previous_directory"
 #define SETTING_RECENT_FILES "recent_files"
-#define SETTING_RECENT_PROJECTS "recent_projects"
 #define SETTING_ROOT_SHELL "root_shell"
 #define SETTING_SHOW_WHITESPACE "show_whitespace"
 #define SETTING_SIGNING_CERTIFICATE "signing_certificate"

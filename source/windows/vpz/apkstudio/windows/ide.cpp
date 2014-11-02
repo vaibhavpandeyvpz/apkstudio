@@ -1,4 +1,5 @@
 #include "ide.hpp"
+#include <QDebug>
 
 using namespace VPZ::APKStudio::Components;
 
@@ -145,7 +146,7 @@ void IDE::onActionOpenProject()
     QStringList files = dialog.selectedFiles();
     if (files.size() != 1)
         return;
-    opened->open(files.first());
+    onOpenProject(files.first());
 }
 
 void IDE::onActionPrevious()
@@ -157,6 +158,14 @@ void IDE::onActionQuit()
 {
     exit_code = 0;
     close();
+}
+
+void IDE::onActionRecentSelected(const QFileInfo &file)
+{
+    if (QString::compare(file.suffix(), "yml", Qt::CaseInsensitive) == 0)
+        onOpenProject(file.absoluteFilePath());
+    else
+        onEditFile(file.absoluteFilePath());
 }
 
 void IDE::onActionRestart()
@@ -200,6 +209,7 @@ void IDE::onActionToggle(QAction *toggle)
 
 void IDE::onEditFile(const QString &path)
 {
+    Helpers::Settings::addRecentFile(path);
     editor->open(path);
 }
 
@@ -213,6 +223,12 @@ void IDE::onInitComplete()
         resize(Helpers::Settings::windowSize());
     setDockOptions(AnimatedDocks);
     setWindowTitle(translate("title_window"));
+}
+
+void IDE::onOpenProject(const QString &path)
+{
+    Helpers::Settings::addRecentFile(path);
+    opened->open(path);
 }
 
 void IDE::setDocks()
