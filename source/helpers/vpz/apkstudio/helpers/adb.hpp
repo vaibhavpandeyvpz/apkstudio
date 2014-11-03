@@ -29,7 +29,9 @@ public:
     bool install(const QString &, const QString &) const;
     static ADB *instance();
     void kill();
+    QVector<Resources::Music> music(const QString &) const;
     QVector<Resources::Partition> partitions(const QString &) const;
+    QVector<Resources::Photo> photos(const QString &) const;
     QMap<QString, QString> properties(const QString &) const;
     bool pull(const QString &, const QString &, const QString &) const;
     bool push(const QString &, const QString &, const QString &) const;
@@ -41,6 +43,7 @@ public:
     void shell(const QString &);
     void start();
     bool uninstall(const QString &, const QString &) const;
+    QVector<Resources::Video> videos(const QString &) const;
 };
 
 } // namespace Helpers

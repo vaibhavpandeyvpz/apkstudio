@@ -43,12 +43,12 @@ void Highlighter::highlight(Block *block, const QString &text, const QString &na
 {
     QStringList literals = QString("commentml|commentsl|string|stringb|stringul").split('|');
     QRegularExpression expression(regex);
-    QRegularExpressionMatch matcher = expression.match(text);
-    while (matcher.hasMatch()) {
-        int index = matcher.capturedStart();
-        int length = matcher.capturedLength();
+    QRegularExpressionMatch match = expression.match(text);
+    while (match.hasMatch()) {
+        int index = match.capturedStart();
+        int length = match.capturedLength();
         setFormat(index, length, theme.value(name));
-        matcher = expression.match(text, index + length);
+        match = expression.match(text, index + length);
         if (!block && !literals.contains(name))
             continue;
         block->literal(index, (index + length));
@@ -69,14 +69,14 @@ void Highlighter::highlightBlock(const QString &text)
             if (previousBlockState() != 1)
                 start = begin.match(text).capturedStart();
             while (start >= 0) {
-                QRegularExpressionMatch matcher = end.match(text, start);
-                int stop = matcher.capturedStart();
+                QRegularExpressionMatch match = end.match(text, start);
+                int stop = match.capturedStart();
                 int length;
                 if (stop == -1) {
                     setCurrentBlockState(1);
                     length = (text.length() - start);
                 } else
-                    length = ((stop - start) + matcher.capturedLength());
+                    length = ((stop - start) + match.capturedLength());
                 setFormat(start, length, multiline);
                 start = begin.match(text, (start + length)).capturedStart();
             }

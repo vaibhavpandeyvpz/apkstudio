@@ -10,4 +10,5 @@ HEADERS += \
 
 SOURCES += \
     vpz/apkstudio/resources/embedded.cpp \
-    vpz/apkstudio/resources/constant.cpp
+    vpz/apkstudio/resources/constant.cpp \
+    vpz/apkstudio/resources/variant.cpp

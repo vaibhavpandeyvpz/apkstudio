@@ -18,6 +18,7 @@
 #define REGEX_IMEI "\\s=\\s"
 #define REGEX_LOGCAT "^(?<time>\\d\\d-\\d\\d\\s\\d\\d:\\d\\d:\\d\\d\\.\\d+)\\s*(?<pid>\\d+)\\s*(?<tid>\\d+)\\s(?<priority>[VDIWEAF])\\s(?<tag>.*?):\\s+(?<message>.*)$"
 #define REGEX_LS "^(?<permission>[bcdlsp-][-r][-w][-xsS][-r][-w][-xsS][-r][-w][-xstST])\\s+(?<owner>\\S+)\\s+(?<group>\\S+)\\s+(?<size>[\\d\\s,]*)\\s+(?<date>\\d{4}-\\d\\d-\\d\\d)\\s+(?<time>\\d\\d:\\d\\d)\\s+(?<name>.*)$"
+#define REGEX_PAIR "([0-9a-zA-Z_]+)=([0-9a-zA-Z\\-]+[^,\\s])"
 
 #define RESOURCE_PATH_FONT ":/font/"
 #define RESOURCE_PATH_HIGHLIGHT ":/highlight/"

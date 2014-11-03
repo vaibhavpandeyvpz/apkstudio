@@ -28,10 +28,10 @@ private:
     static QString translate(const char *key) {
         return Helpers::Text::translate("information", key);
     }
-protected:
-    void showEvent(QShowEvent *);
 public:
     explicit Information(const QString &, QWidget * = 0);
+public slots:
+    void onInitComplete();
 signals:
     void updateIMEI(QString);
     void updateInformation(QMap<QString, QString>);

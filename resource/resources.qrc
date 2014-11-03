@@ -63,5 +63,26 @@
         <file>icon/wav.png</file>
         <file>icon/xml.png</file>
         <file>icon/yml.png</file>
+        <file>icon/drive.png</file>
+        <file>icon/films.png</file>
+        <file>icon/music_beam.png</file>
+        <file>icon/photo_album.png</file>
+        <file>icon/sd_memory_card.png</file>
+        <file>icon/system_monitor.png</file>
+        <file>icon/board_game.png</file>
+        <file>icon/bookmark.png</file>
+        <file>icon/arrow_bottom_right.png</file>
+        <file>icon/details.png</file>
+        <file>icon/disc_arrow.png</file>
+        <file>icon/disc_minus.png</file>
+        <file>icon/drive_arrow.png</file>
+        <file>icon/drive_minus.png</file>
+        <file>icon/files.png</file>
+        <file>icon/folder_plus.png</file>
+        <file>icon/key_solid.png</file>
+        <file>icon/rename.png</file>
+        <file>icon/scissors.png</file>
+        <file>icon/tick.png</file>
+        <file>icon/arrow_top_left.png</file>
     </qresource>
 </RCC>

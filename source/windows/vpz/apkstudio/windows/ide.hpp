@@ -6,6 +6,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QStandardItemModel>
+#include <QTimer>
 #include "components/devices.hpp"
 #include "components/editor.hpp"
 #include "components/files.hpp"

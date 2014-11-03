@@ -41,12 +41,12 @@ Editor::Editor(QStandardItemModel *model, QWidget *parent) :
         this->tabs->removeTab(index);
     }));
     connections.append(connect(tabs, static_cast<void(QTabWidget::*)(int)>(&QTabWidget::currentChanged), [ this ] (int index) {
-        if (index < -1)
+        if (index < 0)
             return;
         this->files->setCurrentIndex(index);
     }));
     connections.append(connect(files, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), [ variants, this ] (int index) {
-        if (index < -1)
+        if (index < 0)
             return;
         this->tabs->setCurrentIndex(index);
         emit selectionChanged(index);

@@ -15,6 +15,7 @@ Output::Output(QWidget *parent) :
     createAPKStudioTab();
     createApktoolTab();
     createADBTab();
+    setFeatures(features() | QDockWidget::DockWidgetVerticalTitleBar);
     setObjectName("output");
     setWidget(tabs);
 }

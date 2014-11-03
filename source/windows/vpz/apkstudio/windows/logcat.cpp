@@ -183,11 +183,11 @@ void Logcat::onLineRead(const QString &line)
 {
     if (line.isEmpty())
         return;
-    QRegularExpressionMatch matcher = regex.match(line);
-    if (!matcher.hasMatch())
+    QRegularExpressionMatch match = regex.match(line);
+    if (!match.hasMatch())
         return;
     QColor color;
-    char priority = matcher.captured("priority").at(0).toLatin1();
+    char priority = match.captured("priority").at(0).toLatin1();
     switch (priority) {
     case 'D': {
         if (!debug)
@@ -234,12 +234,12 @@ void Logcat::onLineRead(const QString &line)
     item->setForeground(3, color);
     item->setForeground(4, color);
     item->setForeground(5, color);
-    item->setText(0, matcher.captured("priority").at(0));
-    item->setText(1, matcher.captured("time"));
-    item->setText(2, matcher.captured("pid"));
-    item->setText(3, matcher.captured("tid"));
-    item->setText(4, matcher.captured("tag"));
-    item->setText(5, matcher.captured("message"));
+    item->setText(0, match.captured("priority").at(0));
+    item->setText(1, match.captured("time"));
+    item->setText(2, match.captured("pid"));
+    item->setText(3, match.captured("tid"));
+    item->setText(4, match.captured("tag"));
+    item->setText(5, match.captured("message"));
     while (tree->model()->rowCount() >= 1000)
         tree->model()->removeRow(0);
     tree->addTopLevelItem(item);

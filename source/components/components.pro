@@ -25,7 +25,14 @@ HEADERS += \
     vpz/apkstudio/components/dockable.hpp \
     vpz/apkstudio/components/toolbar.hpp \
     vpz/apkstudio/components/menubar.hpp \
-    vpz/apkstudio/components/statusbar.hpp
+    vpz/apkstudio/components/statusbar.hpp \
+    vpz/apkstudio/components/storage.hpp \
+    vpz/apkstudio/components/applications.hpp \
+    vpz/apkstudio/components/music.hpp \
+    vpz/apkstudio/components/photos.hpp \
+    vpz/apkstudio/components/videos.hpp \
+    vpz/apkstudio/components/information.hpp \
+    vpz/apkstudio/components/partitions.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -44,7 +51,14 @@ SOURCES += \
     vpz/apkstudio/components/dockable.cpp \
     vpz/apkstudio/components/toolbar.cpp \
     vpz/apkstudio/components/menubar.cpp \
-    vpz/apkstudio/components/statusbar.cpp
+    vpz/apkstudio/components/statusbar.cpp \
+    vpz/apkstudio/components/storage.cpp \
+    vpz/apkstudio/components/applications.cpp \
+    vpz/apkstudio/components/music.cpp \
+    vpz/apkstudio/components/photos.cpp \
+    vpz/apkstudio/components/videos.cpp \
+    vpz/apkstudio/components/information.cpp \
+    vpz/apkstudio/components/partitions.cpp
 
 # Include referenced co-projects & libraries
 win32 {

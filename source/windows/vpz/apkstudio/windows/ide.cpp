@@ -1,5 +1,4 @@
 #include "ide.hpp"
-#include <QDebug>
 
 using namespace VPZ::APKStudio::Components;
 
@@ -118,10 +117,7 @@ void IDE::onActionOpenFile()
 {
     QFileDialog dialog(this, translate("title_open_file"), Helpers::Settings::previousDirectory());
     QStringList filters("All supported formats (*.java;*.png;*.smali;*.xml;)");
-    filters << "apktool (*.yml)";
-    filters << "Images (*.png)";
-    filters << "Java (Read-only) (*.java)";
-    filters << "Dex smali (*.smali)";
+    filters << "apktool (*.yml)" << "Images (*.png)" << "Java (Read-only) (*.java)" << "Dex smali (*.smali)";
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     dialog.setFileMode(QFileDialog::ExistingFiles);
     dialog.setNameFilters(filters);
@@ -263,12 +259,14 @@ void IDE::onShowExplorer(const QString &device)
 {
     Explorer *explorer = new Explorer(device, this);
     explorer->show();
+    QTimer::singleShot(0, explorer, SLOT(onInitComplete()));
 }
 
 void IDE::onShowInformation(const QString &device)
 {
     Information *information = new Information(device, this);
     information->show();
+    QTimer::singleShot(0, information, SLOT(onInitComplete()));
 }
 
 void IDE::onShowLogcat(const QString &device)

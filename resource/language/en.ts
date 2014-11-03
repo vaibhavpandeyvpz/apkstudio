@@ -2,6 +2,25 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_IN" sourcelanguage="en_IN">
     <context>
+        <name>applications</name>
+        <message>
+            <source>header_file</source>
+            <translation>File</translation>
+        </message>
+        <message>
+            <source>header_package</source>
+            <translation>Package</translation>
+        </message>
+        <message>
+            <source>header_system</source>
+            <translation>System</translation>
+        </message>
+        <message>
+            <source>header_status</source>
+            <translation>Status</translation>
+        </message>
+    </context>
+    <context>
         <name>devices</name>
         <message>
             <source>header_serial</source>
@@ -86,6 +105,106 @@
     </context>
     <context>
         <name>explorer</name>
+        <message>
+            <source>label_chmod</source>
+            <translation>CHMOD</translation>
+        </message>
+        <message>
+            <source>label_copy</source>
+            <translation>Copy</translation>
+        </message>
+        <message>
+            <source>label_create</source>
+            <translation>New Folder</translation>
+        </message>
+        <message>
+            <source>label_details</source>
+            <translation>Details</translation>
+        </message>
+        <message>
+            <source>label_disable</source>
+            <translation>Disable</translation>
+        </message>
+        <message>
+            <source>label_enable</source>
+            <translation>Enable</translation>
+        </message>
+        <message>
+            <source>label_install</source>
+            <translation>Install</translation>
+        </message>
+        <message>
+            <source>label_move</source>
+            <translation>Move</translation>
+        </message>
+        <message>
+            <source>label_pull</source>
+            <translation>Pull</translation>
+        </message>
+        <message>
+            <source>label_push</source>
+            <translation>Push</translation>
+        </message>
+        <message>
+            <source>label_refresh</source>
+            <translation>Refresh</translation>
+        </message>
+        <message>
+            <source>label_remount</source>
+            <translation>Remount</translation>
+        </message>
+        <message>
+            <source>label_remove</source>
+            <translation>Remove</translation>
+        </message>
+        <message>
+            <source>label_rename</source>
+            <translation>Rename</translation>
+        </message>
+        <message>
+            <source>label_uninstall</source>
+            <translation>Uninstall</translation>
+        </message>
+        <message>
+            <source>label_unmount</source>
+            <translation>Unmount</translation>
+        </message>
+        <message>
+            <source>navigation_applications</source>
+            <translation>Applications</translation>
+        </message>
+        <message>
+            <source>navigation_bookmarks</source>
+            <translation>Bookmarks</translation>
+        </message>
+        <message>
+            <source>navigation_information</source>
+            <translation>Information</translation>
+        </message>
+        <message>
+            <source>navigation_music</source>
+            <translation>Music</translation>
+        </message>
+        <message>
+            <source>navigation_partitions</source>
+            <translation>Partitions</translation>
+        </message>
+        <message>
+            <source>navigation_photos</source>
+            <translation>Photos</translation>
+        </message>
+        <message>
+            <source>navigation_storage</source>
+            <translation>Storage</translation>
+        </message>
+        <message>
+            <source>navigation_system</source>
+            <translation>System</translation>
+        </message>
+        <message>
+            <source>navigation_videos</source>
+            <translation>Videos</translation>
+        </message>
         <message>
             <source>title_window</source>
             <translation>Explorer [%1]</translation>
@@ -547,6 +666,25 @@
         </message>
     </context>
     <context>
+        <name>music</name>
+        <message>
+            <source>header_name</source>
+            <translation>Name</translation>
+        </message>
+        <message>
+            <source>header_duration</source>
+            <translation>Duration</translation>
+        </message>
+        <message>
+            <source>header_size</source>
+            <translation>Size</translation>
+        </message>
+        <message>
+            <source>header_time</source>
+            <translation>Time</translation>
+        </message>
+    </context>
+    <context>
         <name>outline</name>
         <message>
             <source>header_symbol</source>
@@ -578,6 +716,48 @@
         <message>
             <source>title_dock</source>
             <translation>Output</translation>
+        </message>
+    </context>
+    <context>
+        <name>partitions</name>
+        <message>
+            <source>header_device</source>
+            <translation>Device</translation>
+        </message>
+        <message>
+            <source>header_partition</source>
+            <translation>Partition</translation>
+        </message>
+        <message>
+            <source>header_flags</source>
+            <translation>Flags</translation>
+        </message>
+        <message>
+            <source>header_fs</source>
+            <translation>File-System</translation>
+        </message>
+        <message>
+            <source>header_rw</source>
+            <translation>Read-Write</translation>
+        </message>
+    </context>
+    <context>
+        <name>photos</name>
+        <message>
+            <source>header_name</source>
+            <translation>Name</translation>
+        </message>
+        <message>
+            <source>header_resolution</source>
+            <translation>Resolution</translation>
+        </message>
+        <message>
+            <source>header_size</source>
+            <translation>Size</translation>
+        </message>
+        <message>
+            <source>header_time</source>
+            <translation>Time</translation>
         </message>
     </context>
     <context>
@@ -751,6 +931,33 @@
         </message>
     </context>
     <context>
+        <name>storage</name>
+        <message>
+            <source>header_group</source>
+            <translation>Group</translation>
+        </message>
+        <message>
+            <source>header_modified</source>
+            <translation>Modified</translation>
+        </message>
+        <message>
+            <source>header_name</source>
+            <translation>Name</translation>
+        </message>
+        <message>
+            <source>header_owner</source>
+            <translation>Owner</translation>
+        </message>
+        <message>
+            <source>header_permissions</source>
+            <translation>Permissions</translation>
+        </message>
+        <message>
+            <source>header_size</source>
+            <translation>Size</translation>
+        </message>
+    </context>
+    <context>
         <name>toolbar</name>
         <message>
             <source>item_build</source>
@@ -810,6 +1017,29 @@
         <message>
             <source>title_dock</source>
             <translation>Tasks</translation>
+        </message>
+    </context>
+    <context>
+        <name>videos</name>
+        <message>
+            <source>header_name</source>
+            <translation>Name</translation>
+        </message>
+        <message>
+            <source>header_resolution</source>
+            <translation>Resolution</translation>
+        </message>
+        <message>
+            <source>header_duration</source>
+            <translation>Duration</translation>
+        </message>
+        <message>
+            <source>header_size</source>
+            <translation>Size</translation>
+        </message>
+        <message>
+            <source>header_time</source>
+            <translation>Time</translation>
         </message>
     </context>
     <context>

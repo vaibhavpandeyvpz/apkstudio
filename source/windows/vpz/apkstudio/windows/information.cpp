@@ -123,9 +123,8 @@ void Information::createSoftwareTab()
     tabs->addTab(tab, translate("tab_software"));
 }
 
-void Information::showEvent(QShowEvent *event)
+void Information::onInitComplete()
 {
-    Dialog::showEvent(event);
     emit updateIMEI(ADB::instance()->IMEI(device));
     emit updateInformation(ADB::instance()->properties(device));
 }

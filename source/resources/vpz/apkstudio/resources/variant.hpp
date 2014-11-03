@@ -74,9 +74,26 @@ struct File {
     } type;
 };
 
+struct Photo {
+    int height;
+    QString name;
+    QString path;
+    long size;
+    long time;
+    int width;
+};
+
 struct Highlight {
     QString regex;
     QString style;
+};
+
+struct Music {
+    int duration;
+    QString name;
+    QString path;
+    long size;
+    long time;
 };
 
 struct Partition {
@@ -101,6 +118,15 @@ struct Style {
     QString color;
     bool italic;
     bool underline;
+};
+
+struct Video {
+    int height;
+    int duration;
+    QString name;
+    QString path;
+    long time;
+    int width;
 };
 
 typedef QHash<QString, Style> Theme;
