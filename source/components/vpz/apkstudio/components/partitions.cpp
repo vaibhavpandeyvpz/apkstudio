@@ -71,9 +71,20 @@ void Partitions::onRemount()
     if (partitions.count() != 1)
         return;
     Partition partition = partitions.first();
-    if (ADB::instance()->remount(device, partition))
-        onRefresh();
-    else
+    if (ADB::instance()->remount(device, partition)) {
+        if (partition.flags.contains("ro"))
+            partition.flags.replace(partition.flags.indexOf("ro"), "rw");
+        else if (partition.flags.contains("rw"))
+            partition.flags.replace(partition.flags.indexOf("rw"), "ro");
+        QList<QTreeWidgetItem *> rows = findItems(partition.mount, Qt::MatchExactly, 0);
+        if (rows.count() != 1)
+            onRefresh();
+        bool rw = partition.flags.contains("rw");
+        for (int i = 0; i < 5; ++i)
+            rows.first()->setData(i, ROLE_STRUCT, QVariant::fromValue(partition));
+        rows.first()->setIcon(0, ::icon(rw ? "lock_unlock" : "lock_warning"));
+        rows.first()->setText(2, rw ? "Yes" : "No");
+    } else
         QMessageBox::critical(this, translate("title_failure"), translate("message_remount_failed").arg(partition.mount), QMessageBox::Close);
 }
 
@@ -83,16 +94,22 @@ void Partitions::onUnmount()
     if (partitions.count() != 1)
         return;
     Partition partition = partitions.first();
-    if (ADB::instance()->unmount(device, partition))
-        onRefresh();
-    else
+    int result =  QMessageBox::question(this, translate("title_unmount"), translate("message_unmount").arg(partition.mount), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
+        return;
+    if (ADB::instance()->unmount(device, partition)) {
+        QList<QTreeWidgetItem *> rows = findItems(partition.mount, Qt::MatchExactly, 0);
+        if (rows.count() != 1)
+            onRefresh();
+        delete rows.first();
+    } else
         QMessageBox::critical(this, translate("title_failure"), translate("message_unmount_failed").arg(partition.mount), QMessageBox::Close);
 }
 
 QVector<Partition> Partitions::selected()
 {
     QVector<Partition> partitions;
-    foreach (QTreeWidgetItem *item, this->selectedItems())
+    foreach (QTreeWidgetItem *item, selectedItems())
         partitions.append(item->data(0, ROLE_STRUCT).value<Partition>());
     return partitions;
 }

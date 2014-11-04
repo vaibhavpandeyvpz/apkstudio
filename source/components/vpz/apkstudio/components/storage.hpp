@@ -2,6 +2,10 @@
 #define VPZ_APKSTUDIO_COMPONENTS_STORAGE_HPP
 
 #include <QAction>
+#include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QShortcut>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 #include "helpers/adb.hpp"
@@ -14,7 +18,7 @@ namespace VPZ {
 namespace APKStudio {
 namespace Components {
 
-class Storage : public QTreeWidget
+class Storage : public QWidget
 {
     Q_OBJECT
 private:
@@ -24,20 +28,24 @@ private:
     QTreeWidget *tree;
 private:
     void onCHMOD();
-    void onCopy();
-    void onCreate();
     void onDetails();
-    void onMove();
     void onPull();
     void onPush();
-    void onRemove();
-    void onRename();
+    QVector<Resources::File> selected();
     static QString translate(const char *key) {
         return Helpers::Text::translate("storage", key);
     }
 private slots:
+    void onCreate();
+    void onCopy();
     void onDoubleClicked(const QModelIndex &);
+    void onEdit();
+    void onMove();
     void onRefresh();
+    void onRemove();
+    void onRename();
+    void onReturn();
+    void onUp();
 public:
     enum {
         ACTION_CHMOD = 1,

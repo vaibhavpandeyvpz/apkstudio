@@ -8,7 +8,7 @@ namespace APKStudio {
 namespace Components {
 
 Storage::Storage(const QString &device, QWidget *parent) :
-    QTreeWidget(parent), device(device)
+    QWidget(parent), device(device)
 {
     path = new Clearable(this);
     tree = new QTreeWidget(this);
@@ -24,7 +24,6 @@ Storage::Storage(const QString &device, QWidget *parent) :
     layout->addWidget(tree);
     layout->setContentsMargins(2, 2, 2, 2);
     layout->setSpacing(2);
-    connections.append(connect(path, &Clearable::returnPressed, this, &Storage::onRefresh));
     connections.append(connect(tree, &QTreeWidget::doubleClicked, this, &Storage::onDoubleClicked));
     tree->setHeaderLabels(labels);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -40,21 +39,16 @@ Storage::Storage(const QString &device, QWidget *parent) :
     tree->setColumnWidth(4, 96);
     tree->setColumnWidth(5, 128);
     setLayout(layout);
-}
-
-void Storage::onDoubleClicked(const QModelIndex &index)
-{
-    File file = index.data(ROLE_STRUCT).value<File>();
-    switch (file.type) {
-    case File::FOLDER:
-    case File::SYMLINK_FOLDER: {
-        path->setText(file.path);
-        onRefresh();
-        break;
-    }
-    default:
-        break;
-    }
+    // -- //
+    new QShortcut(QKeySequence::Copy, this, SLOT(onCopy()));
+    new QShortcut(QKeySequence::New, this, SLOT(onCreate()));
+    new QShortcut(QKeySequence(Qt::Key_F6), this, SLOT(onEdit()));
+    new QShortcut(QKeySequence::Cut, this, SLOT(onMove()));
+    new QShortcut(QKeySequence::Refresh, this, SLOT(onRefresh()));
+    new QShortcut(QKeySequence(Qt::Key_Delete), this, SLOT(onRemove()));
+    new QShortcut(QKeySequence(Qt::Key_F2), this, SLOT(onRename()));
+    new QShortcut(QKeySequence(Qt::Key_Return), this, SLOT(onReturn()));
+    new QShortcut(QKeySequence(Qt::Key_Backspace), this, SLOT(onUp()));
 }
 
 void Storage::onAction(QAction *action)
@@ -97,14 +91,51 @@ void Storage::onCHMOD()
 
 void Storage::onCopy()
 {
+    if (path->hasFocus())
+        return;
 }
 
 void Storage::onCreate()
 {
+    bool ok = false;
+    QString name = QInputDialog::getText(this, translate("title_create"), translate("label_create"), QLineEdit::Normal, "", &ok);
+    if (!ok || name.trimmed().isEmpty())
+        return;
+    QString path(this->path->text());
+    if (!path.endsWith('/'))
+        path.append('/');
+    path.append(name);
+    if (ADB::instance()->create(device, path))
+        onRefresh();
+    else
+        QMessageBox::critical(this, translate("title_failure"), translate("message_create_failed").arg(path), QMessageBox::Close);
 }
 
 void Storage::onDetails()
 {
+}
+
+void Storage::onDoubleClicked(const QModelIndex &index)
+{
+    File file = index.data(ROLE_STRUCT).value<File>();
+    switch (file.type) {
+    case File::FOLDER:
+    case File::SYMLINK_FOLDER: {
+        path->setText(file.path);
+        onRefresh();
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void Storage::onEdit()
+{
+    if (path->hasFocus())
+        return;
+    path->selectAll();
+    path->setFocus();
 }
 
 void Storage::onInitComplete()
@@ -114,14 +145,64 @@ void Storage::onInitComplete()
 
 void Storage::onMove()
 {
+    if (path->hasFocus())
+        return;
 }
 
 void Storage::onPull()
 {
+    QVector<File> files = selected();
+    if (files.isEmpty())
+        return;
+    QFileDialog dialog(this, translate("title_browse"), Helpers::Settings::previousDirectory());
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::Directory);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    QStringList folders = dialog.selectedFiles();
+    if (folders.count() != 1)
+        return;
+    QDir directory(folders.first());
+    int failed = 0;
+    int successful = 0;
+    foreach (const File &file, files) {
+        if ((file.type == File::FOLDER) ||(file.type == File::SYMLINK_FOLDER)) {
+            failed++;
+            continue;
+        }
+        if (ADB::instance()->pull(device, file.path, directory.absolutePath())) {
+            if (QFile::exists(directory.absoluteFilePath(file.name)))
+                successful++;
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Storage::onPush()
 {
+    const QString &path = this->path->text();
+    QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory());
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty())
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const QString &file, files) {
+        if (ADB::instance()->push(device, file, path))
+            successful++;
+        else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_push_failed").arg(successful).arg(failed), QMessageBox::Close);
+    if (successful >= 1)
+        onRefresh();
 }
 
 void Storage::onRefresh()
@@ -208,14 +289,96 @@ void Storage::onRefresh()
         tree->addTopLevelItem(row);
     }
     tree->scrollToTop();
+    tree->setFocus();
 }
 
 void Storage::onRemove()
 {
+    if (path->hasFocus())
+        return;
+    QVector<File> files = selected();
+    if (files.isEmpty())
+        return;
+    int result =  QMessageBox::question(this, translate("title_remove"), translate("message_remove").arg(files.count()), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const File &file, files) {
+        if (ADB::instance()->remove(device, file.path, ((file.type == File::FOLDER) ||(file.type == File::SYMLINK_FOLDER)))) {
+            successful++;
+            QList<QTreeWidgetItem *> rows = tree->findItems(file.name, Qt::MatchExactly, 0);
+            if (rows.count() != 1)
+                continue;
+            delete rows.first();
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_remove_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Storage::onRename()
 {
+    QVector<File> files = selected();
+    if (files.isEmpty())
+        return;
+    bool ok = false;
+    QString name = QInputDialog::getText(this, translate("title_rename"), translate("label_rename"), QLineEdit::Normal, files.first().name, &ok);
+    if (!ok || name.trimmed().isEmpty())
+        return;
+    bool multiple = (files.count() > 1);
+    int failed = 0;
+    int successful = 0;
+    for (int i = 0; i < files.length(); ++i) {
+        QString newname(name);
+        if (multiple)
+            newname.prepend(QString("(%1) ").arg(QString::number(i + 1)));
+        File file = files.at(i);
+        QString newpath(file.path.section('/', 0, -2));
+        newpath.append('/');
+        newpath.append(newname);
+        if (ADB::instance()->rename(device, file.path, newpath)) {
+            successful++;
+            QList<QTreeWidgetItem *> rows = tree->findItems(file.name, Qt::MatchExactly, 0);
+            if (rows.count() != 1)
+                continue;
+            file.name = newname;
+            file.path = newpath;
+            QTreeWidgetItem *row = rows.first();
+            for (int i = 0; i < 6; ++i)
+                row->setData(i, ROLE_STRUCT, QVariant::fromValue(file));
+            row->setText(0, newname);
+            row->setToolTip(0, newpath);
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_rename_failed").arg(successful).arg(failed), QMessageBox::Close);
+}
+
+void Storage::onReturn()
+{
+    if (path->hasFocus()) {
+        onRefresh();
+        return;
+    }
+    onDoubleClicked(tree->currentIndex());
+}
+
+void Storage::onUp()
+{
+    if (path->hasFocus())
+        return;
+    onDoubleClicked(tree->model()->index(0, 0, tree->rootIndex()));
+}
+
+QVector<File> Storage::selected()
+{
+    QVector<File> files;
+    foreach (QTreeWidgetItem *item, tree->selectedItems())
+        files.append(item->data(0, ROLE_STRUCT).value<File>());
+    return files;
 }
 
 Storage::~Storage()

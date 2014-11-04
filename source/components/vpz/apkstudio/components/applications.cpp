@@ -59,10 +59,44 @@ void Applications::onDetails()
 
 void Applications::onDisable()
 {
+    QVector<Application> applications = selected();
+    if (applications.isEmpty())
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const Application &application, applications) {
+        if (ADB::instance()->enable(device, application.package, false)) {
+            successful++;
+            QList<QTreeWidgetItem *> rows = findItems(application.package, Qt::MatchExactly, 1);
+            if (rows.count() != 1)
+                continue;
+            rows.first()->setIcon(0, ::icon("cross"));
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_disable_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Applications::onEnable()
 {
+    QVector<Application> applications = selected();
+    if (applications.isEmpty())
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const Application &application, applications) {
+        if (ADB::instance()->enable(device, application.package, true)) {
+            successful++;
+            QList<QTreeWidgetItem *> rows = findItems(application.package, Qt::MatchExactly, 1);
+            if (rows.count() != 1)
+                continue;
+            rows.first()->setIcon(0, ::icon("tick"));
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_enable_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Applications::onInitComplete()
@@ -72,14 +106,75 @@ void Applications::onInitComplete()
 
 void Applications::onInstall()
 {
+    QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory(), "Android APK (*.apk)");
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
+    QStringList files = dialog.selectedFiles();
+    if (files.isEmpty())
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const QString &apk, files) {
+        if (ADB::instance()->install(device, apk))
+            successful++;
+        else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_install_failed").arg(successful).arg(failed), QMessageBox::Close);
+    if (successful >= 1)
+        onRefresh();
 }
 
 void Applications::onPull()
 {
+    QVector<Application> applications = selected();
+    if (applications.isEmpty())
+        return;
+    QFileDialog dialog(this, translate("title_browse"), Helpers::Settings::previousDirectory());
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::Directory);
+    if (dialog.exec() != QFileDialog::Accepted)
+        return;
+    QStringList folders = dialog.selectedFiles();
+    if (folders.count() != 1)
+        return;
+    QDir directory(folders.first());
+    int failed = 0;
+    int successful = 0;
+    foreach (const Application &application, applications) {
+        if (ADB::instance()->pull(device, application.path, directory.absolutePath())) {
+            if (QFile::exists(directory.absoluteFilePath(application.name)))
+                successful++;
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Applications::onUninstall()
 {
+    QVector<Application> applications = selected();
+    if (applications.isEmpty())
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const Application &application, applications) {
+        if (ADB::instance()->uninstall(device, application.package)) {
+            successful++;
+            QList<QTreeWidgetItem *> rows = findItems(application.package, Qt::MatchExactly, 1);
+            if (rows.count() != 1)
+                continue;
+            delete rows.first();
+        } else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_uninstall_failed").arg(successful).arg(failed), QMessageBox::Close);
 }
 
 void Applications::onRefresh()
@@ -100,6 +195,14 @@ void Applications::onRefresh()
         addTopLevelItem(row);
     }
     scrollToTop();
+}
+
+QVector<Application> Applications::selected()
+{
+    QVector<Application> applications;
+    foreach (QTreeWidgetItem *item, selectedItems())
+        applications.append(item->data(0, ROLE_STRUCT).value<Application>());
+    return applications;
 }
 
 Applications::~Applications()

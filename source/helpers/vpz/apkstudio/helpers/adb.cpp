@@ -77,7 +77,7 @@ bool ADB::chmod(const QString &device, const QString &path, const QString &mode,
     return execute(arguments).isEmpty();
 }
 
-bool ADB::create(const QString &device, const QString &path, bool directory) const
+bool ADB::create(const QString &device, const QString &path) const
 {
     QStringList arguments("-s");
     arguments << device;
@@ -85,9 +85,11 @@ bool ADB::create(const QString &device, const QString &path, bool directory) con
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("mkdir %1").arg(path);
+    } else {
+        arguments << "mkdir";
+        arguments << path;
     }
-    arguments << (directory ? "mkdir" : "touch");
-    arguments << path;
     return execute(arguments).isEmpty();
 }
 
@@ -126,10 +128,12 @@ bool ADB::enable(const QString &device, const QString &package, bool enable) con
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("pm %1 %2").arg((enable ? "enable" : "disable")).arg(package);
+    } else {
+        arguments << "pm";
+        arguments << (enable ? "enable" : "disable");
+        arguments << package;
     }
-    arguments << "pm";
-    arguments << (enable ? "enable" : "disable");
-    arguments << package;
     QStringList lines = execute(arguments);
     if (lines.size() != 1)
         return false;
@@ -420,7 +424,7 @@ bool ADB::push(const QString &device, const QString &source, const QString &dest
 {
     QStringList arguments("-s");
     arguments << device;
-    arguments << "pull";
+    arguments << "push";
     arguments << source;
     arguments << destination;
     QStringList lines = execute(arguments);
@@ -516,11 +520,16 @@ bool ADB::remove(const QString &device, const QString &path, bool recurse) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        if (recurse)
+            arguments << QString("rm -R %1").arg(path);
+        else
+            arguments << QString("rm %1").arg(path);
+    } else {
+        arguments << "rm";
+        if (recurse)
+            arguments << "-R";
+        arguments << path;
     }
-    arguments << "rm";
-    if (recurse)
-        arguments << "-R";
-    arguments << path;
     return execute(arguments).isEmpty();
 }
 
@@ -532,10 +541,12 @@ bool ADB::rename(const QString &device, const QString &source, const QString &de
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("mv \"%1\" \"%2\"").arg(source).arg(destination);
+    } else {
+        arguments << "mv";
+        arguments << source;
+        arguments << destination;
     }
-    arguments << "mv";
-    arguments << source;
-    arguments << destination;
     return execute(arguments).isEmpty();
 }
 
@@ -589,10 +600,12 @@ bool ADB::uninstall(const QString &device, const QString &package) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("pm uninstall %1").arg(package);
+    } else {
+        arguments << "pm";
+        arguments << "uninstall";
+        arguments << package;
     }
-    arguments << "pm";
-    arguments << "uninstall";
-    arguments << package;
     QStringList lines = execute(arguments);
     if (lines.size() != 1)
         return false;
@@ -623,6 +636,7 @@ bool ADB::unmount(const QString &device, const Partition &partition) const
 
 QVector<Video> ADB::videos(const QString &device) const
 {
+    Q_UNUSED(device);
     QVector<Video> videos;
     return videos;
 }

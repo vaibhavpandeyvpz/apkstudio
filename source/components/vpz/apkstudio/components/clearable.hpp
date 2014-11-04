@@ -25,8 +25,6 @@ protected:
 public:
     Clearable(QWidget * = 0);
     ~Clearable();
-signals:
-    void textSubmit(QString);
 };
 
 } // namespace Components

@@ -2,6 +2,8 @@
 #define VPZ_APKSTUDIO_COMPONENTS_APPLICATIONS_HPP
 
 #include <QAction>
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QTreeWidget>
 #include "helpers/adb.hpp"
 #include "helpers/text.hpp"
@@ -25,6 +27,7 @@ private:
     void onInstall();
     void onPull();
     void onUninstall();
+    QVector<Resources::Application> selected();
     static QString translate(const char *key) {
         return Helpers::Text::translate("applications", key);
     }

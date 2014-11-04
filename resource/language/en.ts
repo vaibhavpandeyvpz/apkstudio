@@ -19,6 +19,38 @@
             <source>header_status</source>
             <translation>Status</translation>
         </message>
+        <message>
+            <source>message_disable_failed</source>
+            <translation>Successfully disabled: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_enable_failed</source>
+            <translation>Successfully enabled: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_install_failed</source>
+            <translation>Successfully installed: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_pull_failed</source>
+            <translation>Successfully pulled: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_uninstall_failed</source>
+            <translation>Successfully uninstalled: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>title_browse</source>
+            <translation>Select Folder</translation>
+        </message>
+        <message>
+            <source>title_failure</source>
+            <translation>Failure</translation>
+        </message>
+        <message>
+            <source>title_select</source>
+            <translation>Select Files</translation>
+        </message>
     </context>
     <context>
         <name>devices</name>
@@ -745,12 +777,20 @@
             <translation>Failed to remount %1</translation>
         </message>
         <message>
+            <source>message_unmount</source>
+            <translation>Do you really wish to unmount %1?</translation>
+        </message>
+        <message>
             <source>message_unmount_failed</source>
             <translation>Failed to unmount %1</translation>
         </message>
         <message>
             <source>title_failure</source>
             <translation>Failure</translation>
+        </message>
+        <message>
+            <source>title_unmount</source>
+            <translation>Unmount</translation>
         </message>
     </context>
     <context>
@@ -967,6 +1007,62 @@
         <message>
             <source>header_size</source>
             <translation>Size</translation>
+        </message>
+        <message>
+            <source>label_create</source>
+            <translation>Enter folder name</translation>
+        </message>
+        <message>
+            <source>label_rename</source>
+            <translation>Enter new file/folder name</translation>
+        </message>
+        <message>
+            <source>message_create_failed</source>
+            <translation>Failed to create %1</translation>
+        </message>
+        <message>
+            <source>message_pull_failed</source>
+            <translation>Successfully pulled: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_push_failed</source>
+            <translation>Successfully pushed: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_remove_failed</source>
+            <translation>Successfully removed: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>message_remove</source>
+            <translation>Do you really wish to remove %1 file(s)/folder(s)?</translation>
+        </message>
+        <message>
+            <source>message_rename_failed</source>
+            <translation>Successfully renamed: %1, failed: %2</translation>
+        </message>
+        <message>
+            <source>title_browse</source>
+            <translation>Select Folder</translation>
+        </message>
+        <message>
+            <source>title_create</source>
+            <translation>Craete New Folder</translation>
+        </message>
+        <message>
+            <source>title_remove</source>
+            <translation>Remove</translation>
+        </message>
+        <message>
+            <source>title_rename</source>
+            <translation>Rename File(s)/Folder(s)</translation>
+        </message>
+        <message>
+            <source>title_select</source>
+            <translation>Select Files</translation>
+        </message>
+        <message>
+            <source>title_failure</source>
+            <translation>Failure</translation>
         </message>
     </context>
     <context>

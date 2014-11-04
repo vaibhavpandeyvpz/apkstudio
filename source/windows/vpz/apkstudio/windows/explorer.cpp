@@ -10,11 +10,11 @@ namespace Windows {
 Explorer::Explorer(const QString &device, QWidget *parent) :
     Dialog(parent), device(device)
 {
-    QSplitter *splitter = new QSplitter(this);
+    splitter = new QSplitter(this);
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
-    createTree(splitter);
-    createTabs(splitter);
+    createTree();
+    createTabs();
     createToolbar();
     layout->addWidget(splitter);
     layout->setContentsMargins(2, 2, 2, 2);
@@ -27,11 +27,10 @@ Explorer::Explorer(const QString &device, QWidget *parent) :
     setWindowTitle(translate("title_window").arg(device));
 }
 
-void Explorer::createTabs(QSplitter *splitter)
+void Explorer::createTabs()
 {
     tabs = new QTabWidget(splitter);
     tabs->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
-    tabs->setMinimumWidth(width() - (tree->width() + 16));
     tabs->setTabsClosable(true);
     splitter->addWidget(tabs);
 }
@@ -46,13 +45,12 @@ void Explorer::createToolbar()
     QActionGroup *photos = new QActionGroup(tool_bar);
     QActionGroup *storage = new QActionGroup(tool_bar);
     QActionGroup *videos = new QActionGroup(tool_bar);
-    applications->addAction(::icon("details"), translate("label_details"));
-    applications->addAction(::icon("disc_arrow"), translate("label_install"));
-    applications->addAction(::icon("disc_minus"), translate("label_uninstall"));
-    applications->addAction(::icon("tick"), translate("label_enable"));
-    applications->addAction(::icon("cross"), translate("label_disable"));
-    applications->addAction(::icon("arrow_top_left"), translate("label_pull"));
-    applications->addAction(::icon("arrow_push"), translate("label_push"));
+    applications->addAction(::icon("details"), translate("label_details"))->setData(Applications::ACTION_DETAILS);
+    applications->addAction(::icon("disc_arrow"), translate("label_install"))->setData(Applications::ACTION_INSTALL);
+    applications->addAction(::icon("disc_minus"), translate("label_uninstall"))->setData(Applications::ACTION_UNINSTALL);
+    applications->addAction(::icon("tick"), translate("label_enable"))->setData(Applications::ACTION_ENABLE);
+    applications->addAction(::icon("cross"), translate("label_disable"))->setData(Applications::ACTION_DISABLE);
+    applications->addAction(::icon("arrow_top_left"), translate("label_pull"))->setData(Applications::ACTION_PULL);
     applications->setVisible(false);
     music->addAction(::icon("details"), translate("label_details"));
     music->addAction(::icon("scissors"), translate("label_move"));
@@ -71,15 +69,15 @@ void Explorer::createToolbar()
     photos->addAction(::icon("rename"), translate("label_rename"));
     photos->addAction(::icon("bin_empty"), translate("label_remove"));
     photos->setVisible(false);
-    storage->addAction(::icon("folder_plus"), translate("label_create"));
-    storage->addAction(::icon("details"), translate("label_details"));
-    storage->addAction(::icon("scissors"), translate("label_move"));
-    storage->addAction(::icon("files"), translate("label_copy"));
-    storage->addAction(::icon("arrow_top_left"), translate("label_pull"));
-    storage->addAction(::icon("arrow_bottom_right"), translate("label_push"));
-    storage->addAction(::icon("key_solid"), translate("label_chmod"));
-    storage->addAction(::icon("rename"), translate("label_rename"));
-    storage->addAction(::icon("bin_empty"), translate("label_remove"));
+    storage->addAction(::icon("folder_plus"), translate("label_create"))->setData(Storage::ACTION_CREATE);
+    storage->addAction(::icon("details"), translate("label_details"))->setData(Storage::ACTION_DETAILS);
+    storage->addAction(::icon("scissors"), translate("label_move"))->setData(Storage::ACTION_MOVE);
+    storage->addAction(::icon("files"), translate("label_copy"))->setData(Storage::ACTION_COPY);
+    storage->addAction(::icon("arrow_top_left"), translate("label_pull"))->setData(Storage::ACTION_PULL);
+    storage->addAction(::icon("arrow_bottom_right"), translate("label_push"))->setData(Storage::ACTION_PUSH);
+    storage->addAction(::icon("key_solid"), translate("label_chmod"))->setData(Storage::ACTION_CHMOD);
+    storage->addAction(::icon("rename"), translate("label_rename"))->setData(Storage::ACTION_RENAME);
+    storage->addAction(::icon("bin_empty"), translate("label_remove"))->setData(Storage::ACTION_REMOVE);
     storage->setVisible(false);
     videos->addAction(::icon("details"), translate("label_details"));
     videos->addAction(::icon("scissors"), translate("label_move"));
@@ -140,13 +138,12 @@ void Explorer::createToolbar()
     refresh->setEnabled(false);
 }
 
-void Explorer::createTree(QSplitter *splitter)
+void Explorer::createTree()
 {
-    tree = new QTreeWidget(splitter);
+    tree = new TreeWidget(splitter);
     tree->header()->hide();
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    tree->setMinimumWidth(160);
     tree->setSelectionBehavior(QAbstractItemView::SelectItems);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
     tree->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
@@ -164,6 +161,7 @@ void Explorer::onInitComplete()
     QTreeWidgetItem *music = new QTreeWidgetItem(bookmarks);
     QTreeWidgetItem *partitions = new QTreeWidgetItem(system);
     QTreeWidgetItem *photos = new QTreeWidgetItem(bookmarks);
+    QList<int> sizes;
     QTreeWidgetItem *storage = new QTreeWidgetItem(system);
     QTreeWidgetItem *videos = new QTreeWidgetItem(bookmarks);
     applications->setIcon(0, ::icon("apk"));
@@ -186,6 +184,8 @@ void Explorer::onInitComplete()
     photos->setIcon(0, ::icon("photo_album"));
     photos->setText(0, translate("navigation_photos"));
     photos->setData(0, ROLE_TYPE, NAVIGATION_PHOTOS);
+    sizes << 160;
+    sizes << (width() - (sizes.at(0) + 16));
     system->addChild(applications);
     system->addChild(information);
     system->addChild(partitions);
@@ -198,17 +198,18 @@ void Explorer::onInitComplete()
     videos->setIcon(0, ::icon("films"));
     videos->setText(0, translate("navigation_videos"));
     videos->setData(0, ROLE_TYPE, NAVIGATION_VIDEOS);
+    splitter->setSizes(sizes);
     tree->addTopLevelItem(bookmarks);
     tree->addTopLevelItem(system);
     tree->expandAll();
+    onNodeClicked(tree->index(storage));
 }
 
-void Explorer::onNodeClicked(const QModelIndex &)
+void Explorer::onNodeClicked(const QModelIndex &index)
 {
-    QList<QTreeWidgetItem *> items = tree->selectedItems();
-    if (items.count() != 1)
+    QTreeWidgetItem *item = tree->item(index);
+    if (!item)
         return;
-    QTreeWidgetItem *item = items.first();
     int type = item->data(0, ROLE_TYPE).value<int>();
     if (type < NAVIGATION_APPLICATIONS)
         return;
@@ -264,7 +265,8 @@ Explorer::~Explorer()
 {
     foreach (QMetaObject::Connection connection, connections)
         disconnect(connection);
-    disconnect(this->refresh);
+    disconnect(actions);
+    disconnect(refresh);
 }
 
 } // namespace Windows

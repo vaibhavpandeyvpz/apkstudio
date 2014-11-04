@@ -27,6 +27,19 @@ namespace VPZ {
 namespace APKStudio {
 namespace Windows {
 
+class TreeWidget : public QTreeWidget
+{
+public:
+    TreeWidget(QWidget *parent = 0) : QTreeWidget(parent) {
+    }
+    QModelIndex index(QTreeWidgetItem *item, int column = 0) {
+        return indexFromItem(item, column);
+    }
+    QTreeWidgetItem *item(QModelIndex index) {
+        return itemFromIndex(index);
+    }
+};
+
 class Explorer : public Dialog
 {
     Q_OBJECT
@@ -44,12 +57,13 @@ private:
     QList<QMetaObject::Connection> connections;
     QString device;
     QMetaObject::Connection refresh;
+    QSplitter *splitter;
     QTabWidget *tabs;
-    QTreeWidget *tree;
+    TreeWidget *tree;
 private:
-    void createTabs(QSplitter *);
+    void createTabs();
     void createToolbar();
-    void createTree(QSplitter *);
+    void createTree();
     static QString translate(const char *key) {
         return Helpers::Text::translate("explorer", key);
     }

@@ -19,7 +19,7 @@ QStringList CLI::execute(const QStringList &arguments, const QString &binary) co
     process.start((binary.isEmpty() ? this->binary : binary), arguments, QIODevice::ReadOnly);
     if (!process.waitForStarted(30 * 1000))
         goto finish;
-    process.waitForFinished(-1);
+    process.waitForFinished(60 * 1000);
     output = QString(process.readAll()).split(QRegularExpression("[\r\n]"), QString::SkipEmptyParts);
     foreach (const QString &line, output)
         result.append(line.trimmed());

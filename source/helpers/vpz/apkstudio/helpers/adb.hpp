@@ -21,7 +21,7 @@ public:
     explicit ADB(QObject * = 0);
     QVector<Resources::Application> applications(const QString &) const;
     bool chmod(const QString &, const QString &, const QString &, bool = false) const;
-    bool create(const QString &, const QString &, bool = false) const;
+    bool create(const QString &, const QString &) const;
     QVector<Resources::Device> devices() const;
     bool enable(const QString &, const QString &, bool) const;
     QVector<Resources::File> files(const QString &, const QString &) const;
