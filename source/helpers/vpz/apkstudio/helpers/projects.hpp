@@ -16,7 +16,7 @@ class Projects : public QStandardItemModel
     Q_OBJECT
 private:
     QList<QMetaObject::Connection> connections;
-    QStringList directories;
+    QStringList folders;
     QStringList editables;
 public:
     explicit Projects(QObject * = 0);

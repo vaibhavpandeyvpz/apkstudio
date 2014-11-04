@@ -10,6 +10,7 @@ namespace Resources {
 
 struct Application {
     bool enabled;
+    QString name;
     QString package;
     QString path;
     bool system;
@@ -63,14 +64,14 @@ struct File {
     enum Type {
         CHARACTER = 1,
         BLOCK,
-        DIRECTORY,
         FILE,
+        FOLDER,
         OTHER,
         PIPE,
         SOCKET,
         SYMLINK,
         SYMLINK_FILE,
-        SYMLINK_DIRECTORY
+        SYMLINK_FOLDER
     } type;
 };
 
@@ -140,9 +141,12 @@ Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Bracket)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Device)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::File)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Highlight)
+Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Music)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Partition)
+Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Photo)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Reboot)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Style)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Theme)
+Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Video)
 
 #endif // VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP

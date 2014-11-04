@@ -740,6 +740,18 @@
             <source>header_rw</source>
             <translation>Read-Write</translation>
         </message>
+        <message>
+            <source>message_remount_failed</source>
+            <translation>Failed to remount %1</translation>
+        </message>
+        <message>
+            <source>message_unmount_failed</source>
+            <translation>Failed to unmount %1</translation>
+        </message>
+        <message>
+            <source>title_failure</source>
+            <translation>Failure</translation>
+        </message>
     </context>
     <context>
         <name>photos</name>

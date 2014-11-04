@@ -41,6 +41,7 @@ QVector<Application> ADB::applications(const QString &device) const
         application.enabled = false;
         application.package = match.captured("package");
         application.path = match.captured("path");
+        application.name = application.path.section('/', -1, -1);
         application.system = application.path.startsWith("/system");
         applications.append(application);
     }
@@ -52,6 +53,7 @@ QVector<Application> ADB::applications(const QString &device) const
         application.enabled = true;
         application.package = match.captured("package");
         application.path = match.captured("path");
+        application.name = application.path.section('/', -1, -1);
         application.system = application.path.startsWith("/system");
         applications.append(application);
     }
@@ -142,10 +144,12 @@ QVector<File> ADB::files(const QString &device, const QString &path) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("ls -l \"%1\"").arg(path);
+    } else {
+        arguments << "ls";
+        arguments << "-l";
+        arguments << path;
     }
-    arguments << "ls";
-    arguments << "-l";
-    arguments << path;
     QVector<File> files;
     QStringList lines = execute(arguments);
     QRegularExpression regex = QRegularExpression(REGEX_LS);
@@ -179,7 +183,7 @@ QVector<File> ADB::files(const QString &device, const QString &path) const
         else if (first == 'c')
             file.type = File::CHARACTER;
         else if (first == 'd')
-            file.type = File::DIRECTORY;
+            file.type = File::FOLDER;
         else if (first == 'l')
             file.type = File::SYMLINK;
         else if (first == 'p')
@@ -194,13 +198,13 @@ QVector<File> ADB::files(const QString &device, const QString &path) const
                 file.link = parts.at(1);
                 file.name = parts.at(0);
                 QStringList linked = file.link.split('/');
-                file.type = ((linked.length() == 1) ? ((linked.at(0) == "..") ? File::SYMLINK_DIRECTORY : File::SYMLINK_FILE) : File::SYMLINK_DIRECTORY);
+                file.type = ((linked.length() == 1) ? ((linked.at(0) == "..") ? File::SYMLINK_FOLDER : File::SYMLINK_FILE) : File::SYMLINK_FOLDER);
             }
         }
         file.path.append(path);
         if (!file.path.endsWith('/'))
             file.path.append('/');
-        if ((file.type == File::SYMLINK_DIRECTORY) || (file.type == File::SYMLINK_FILE)) {
+        if ((file.type == File::SYMLINK_FOLDER) || (file.type == File::SYMLINK_FILE)) {
             file.path.clear();
             file.path.append(file.link);
             file.link.prepend("-> ");
@@ -308,9 +312,11 @@ QVector<Partition> ADB::partitions(const QString &device) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("cat /proc/mounts");
+    } else {
+        arguments << "cat";
+        arguments << "/proc/mounts";
     }
-    arguments << "cat";
-    arguments << "/proc/mounts";
     QVector<Partition> partitions;
     QStringList lines = execute(arguments);
     QRegularExpression whitespace = QRegularExpression("\\s+");
@@ -482,14 +488,16 @@ bool ADB::remount(const QString &device, const Partition &partition) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString("mount -t %1 -o remount,%2 %3 %4").arg(partition.fs).arg(mode).arg(partition.device).arg(partition.mount);
+    } else {
+        arguments << "mount";
+        arguments << "-t";
+        arguments << partition.fs;
+        arguments << "-o";
+        arguments << QString("remount,").append(mode);
+        arguments << partition.device;
+        arguments << partition.mount;
     }
-    arguments << "mount";
-    arguments << "-t";
-    arguments << partition.fs;
-    arguments << "-o";
-    arguments << QString("remount,").append(mode);
-    arguments << partition.device;
-    arguments << partition.mount;
     execute(arguments);
     QVector<Partition> partitions = this->partitions(device);
     foreach (const Partition &newpartition, partitions) {
@@ -589,6 +597,28 @@ bool ADB::uninstall(const QString &device, const QString &package) const
     if (lines.size() != 1)
         return false;
     return (lines.first().trimmed() == "Success");
+}
+
+bool ADB::unmount(const QString &device, const Partition &partition) const
+{
+    QStringList arguments("-s");
+    arguments << device;
+    arguments << "shell";
+    if (Settings::rootShell()) {
+        arguments << "su";
+        arguments << "-c";
+        arguments << QString("umount %1").arg(partition.mount);
+    } else {
+        arguments << "umount";
+        arguments << partition.mount;
+    }
+    execute(arguments);
+    QVector<Partition> partitions = this->partitions(device);
+    foreach (const Partition &newpartition, partitions) {
+        if (QString::compare(partition.mount, newpartition.mount) == 0)
+            return false;
+    }
+    return true;
 }
 
 QVector<Video> ADB::videos(const QString &device) const

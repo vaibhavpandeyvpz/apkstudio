@@ -4,12 +4,12 @@
 #include <QAction>
 #include <QActionGroup>
 #include <QHeaderView>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QSplitter>
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
 #include <QTreeWidget>
+#include <QVBoxLayout>
 #include "components/applications.hpp"
 #include "components/information.hpp"
 #include "components/music.hpp"
@@ -40,14 +40,16 @@ private:
         NAVIGATION_PHOTOS,
         NAVIGATION_VIDEOS
     };
+    QMetaObject::Connection actions;
     QList<QMetaObject::Connection> connections;
     QString device;
+    QMetaObject::Connection refresh;
     QTabWidget *tabs;
     QTreeWidget *tree;
 private:
-    void createTabs(QLayout *);
+    void createTabs(QSplitter *);
     void createToolbar();
-    void createTree(QLayout *);
+    void createTree(QSplitter *);
     static QString translate(const char *key) {
         return Helpers::Text::translate("explorer", key);
     }
@@ -58,6 +60,8 @@ public:
     ~Explorer();
 public slots:
     void onInitComplete();
+signals:
+    void refreshTriggered();
 };
 
 } // namespace Windows

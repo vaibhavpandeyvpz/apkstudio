@@ -5,7 +5,7 @@ namespace APKStudio {
 namespace Helpers {
 
 Projects::Projects(QObject *parent) :
-    QStandardItemModel(parent), editables(Settings::fileIcons()), directories(Settings::directoryIcons())
+    QStandardItemModel(parent), editables(Settings::fileIcons()), folders(Settings::directoryIcons())
 {
 }
 
@@ -22,7 +22,7 @@ bool Projects::close(const QModelIndex &selected)
 bool Projects::open(const QFileInfo &yml)
 {
     QDir directory = yml.dir();
-    QStandardItem *node = new QStandardItem(::icon("project"), directory.dirName());
+    QStandardItem *node = new QStandardItem(::icon("folders"), directory.dirName());
     node->setData(QVariant(directory.absolutePath()), ROLE_PATH);
     node->setData(QVariant(TYPE_PROJECT), ROLE_TYPE);
     appendRow(node);
@@ -51,12 +51,12 @@ void Projects::traverse(QStandardItem *node)
                 child->setIcon(::icon("file"));
             child->setText(file.fileName());
         } else {
-            child->setData(QVariant(TYPE_DIRECTORY), ROLE_TYPE);
-            QString directory = file.baseName();
-            if (directories.contains(directory))
-                child->setIcon(::icon(directory));
+            child->setData(QVariant(TYPE_FOLDER), ROLE_TYPE);
+            QString folder = file.baseName();
+            if (folders.contains(folder))
+                child->setIcon(::icon(folder));
             else
-                child->setIcon(::icon("directory"));
+                child->setIcon(::icon("folder"));
             child->setText(file.baseName());
         }
         child->setData(QVariant(file.absoluteFilePath()), ROLE_PATH);

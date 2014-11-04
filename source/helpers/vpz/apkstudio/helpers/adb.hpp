@@ -43,6 +43,7 @@ public:
     void shell(const QString &);
     void start();
     bool uninstall(const QString &, const QString &) const;
+    bool unmount(const QString &, const Resources::Partition &) const;
     QVector<Resources::Video> videos(const QString &) const;
 };
 

@@ -52,11 +52,9 @@
         <file>font/terminus_ttf.ttf</file>
         <file>icon/apk.png</file>
         <file>icon/db.png</file>
-        <file>icon/directory.png</file>
         <file>icon/file.png</file>
         <file>icon/java.png</file>
         <file>icon/png.png</file>
-        <file>icon/project.png</file>
         <file>icon/res.png</file>
         <file>icon/smali.png</file>
         <file>icon/txt.png</file>
@@ -84,5 +82,19 @@
         <file>icon/scissors.png</file>
         <file>icon/tick.png</file>
         <file>icon/arrow_top_left.png</file>
+        <file>icon/cross_white.png</file>
+        <file>icon/folder.png</file>
+        <file>icon/folders.png</file>
+        <file>icon/file_block.png</file>
+        <file>icon/file_character.png</file>
+        <file>icon/file_pipe.png</file>
+        <file>icon/file_socket.png</file>
+        <file>icon/file_symlink.png</file>
+        <file>icon/file_unknown.png</file>
+        <file>icon/folder_symlink.png</file>
+        <file>icon/folder_previous.png</file>
+        <file>icon/lock_unlock.png</file>
+        <file>icon/lock_warning.png</file>
+        <file>icon/music.png</file>
     </qresource>
 </RCC>

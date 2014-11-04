@@ -56,9 +56,10 @@
 #define SETTING_WINDOW_SIZE "window_size"
 
 #define STYLESHEET_COMBOBOXES "QComboBox { max-height: 22px; min-height: 22px; }"
+#define STYLESHEET_PREFIXED "QLineEdit { font-size: 12px; height: 22px; padding-right: %1px; } "
 
 #define TYPE_FILE 88004
-#define TYPE_DIRECTORY 85273
+#define TYPE_FOLDER 85273
 #define TYPE_PROJECT 95999
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"

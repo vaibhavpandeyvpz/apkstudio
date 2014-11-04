@@ -32,7 +32,8 @@ HEADERS += \
     vpz/apkstudio/components/photos.hpp \
     vpz/apkstudio/components/videos.hpp \
     vpz/apkstudio/components/information.hpp \
-    vpz/apkstudio/components/partitions.hpp
+    vpz/apkstudio/components/partitions.hpp \
+    vpz/apkstudio/components/clearable.hpp
 
 SOURCES += \
     vpz/apkstudio/components/coder.cpp \
@@ -58,7 +59,8 @@ SOURCES += \
     vpz/apkstudio/components/photos.cpp \
     vpz/apkstudio/components/videos.cpp \
     vpz/apkstudio/components/information.cpp \
-    vpz/apkstudio/components/partitions.cpp
+    vpz/apkstudio/components/partitions.cpp \
+    vpz/apkstudio/components/clearable.cpp
 
 # Include referenced co-projects & libraries
 win32 {

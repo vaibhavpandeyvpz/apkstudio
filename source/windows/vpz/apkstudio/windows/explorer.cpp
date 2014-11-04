@@ -10,29 +10,30 @@ namespace Windows {
 Explorer::Explorer(const QString &device, QWidget *parent) :
     Dialog(parent), device(device)
 {
-    QHBoxLayout *content = new QHBoxLayout();
+    QSplitter *splitter = new QSplitter(this);
     QVBoxLayout *layout = new QVBoxLayout(this);
-    content->setContentsMargins(0, 0, 0, 0);
-    content->setSpacing(2);
     setLayout(layout);
-    createTree(content);
-    createTabs(content);
+    createTree(splitter);
+    createTabs(splitter);
     createToolbar();
-    layout->addLayout(content);
+    layout->addWidget(splitter);
     layout->setContentsMargins(2, 2, 2, 2);
     layout->setSpacing(0);
+    splitter->setContentsMargins(0, 0, 0, 0);
+    splitter->setStretchFactor(0, 0);
+    splitter->setStretchFactor(1, 1);
+    setMinimumSize(640, 480);
     setWindowIcon(::icon("folder_stand"));
     setWindowTitle(translate("title_window").arg(device));
 }
 
-void Explorer::createTabs(QLayout *layout)
+void Explorer::createTabs(QSplitter *splitter)
 {
-    QSizePolicy size(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    tabs = new QTabWidget(this);
-    size.setHorizontalStretch(2);
-    tabs->setSizePolicy(size);
+    tabs = new QTabWidget(splitter);
+    tabs->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
+    tabs->setMinimumWidth(width() - (tree->width() + 16));
     tabs->setTabsClosable(true);
-    layout->addWidget(tabs);
+    splitter->addWidget(tabs);
 }
 
 void Explorer::createToolbar()
@@ -60,8 +61,8 @@ void Explorer::createToolbar()
     music->addAction(::icon("rename"), translate("label_rename"));
     music->addAction(::icon("bin_empty"), translate("label_remove"));
     music->setVisible(false);
-    partitions->addAction(::icon("drive_arrow"), translate("label_remount"));
-    partitions->addAction(::icon("drive_minus"), translate("label_unmount"));
+    partitions->addAction(::icon("drive_arrow"), translate("label_remount"))->setData(Partitions::ACTION_REMOUNT);
+    partitions->addAction(::icon("drive_minus"), translate("label_unmount"))->setData(Partitions::ACTION_UNMOUNT);
     partitions->setVisible(false);
     photos->addAction(::icon("details"), translate("label_details"));
     photos->addAction(::icon("scissors"), translate("label_move"));
@@ -109,20 +110,29 @@ void Explorer::createToolbar()
         QWidget *widget = this->tabs->currentWidget();
         if (!widget)
             return;
-        refresh->setEnabled(true);
-        if (widget->inherits(Applications::staticMetaObject.className()))
+        disconnect(this->actions);
+        disconnect(this->refresh);
+        if (widget->inherits(Applications::staticMetaObject.className())) {
+            this->actions = connect(applications, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             applications->setVisible(true);
-        else if (widget->inherits(Music::staticMetaObject.className()))
+        } else if (widget->inherits(Music::staticMetaObject.className())) {
+            this->actions = connect(music, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             music->setVisible(true);
-        else if (widget->inherits(Partitions::staticMetaObject.className()))
+        } else if (widget->inherits(Partitions::staticMetaObject.className())) {
+            this->actions = connect(partitions, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             partitions->setVisible(true);
-        else if (widget->inherits(Photos::staticMetaObject.className()))
+        } else if (widget->inherits(Photos::staticMetaObject.className())) {
+            this->actions = connect(photos, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             photos->setVisible(true);
-        else if (widget->inherits(Storage::staticMetaObject.className()))
+        } else if (widget->inherits(Storage::staticMetaObject.className())) {
+            this->actions = connect(storage, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             storage->setVisible(true);
-        else if (widget->inherits(Videos::staticMetaObject.className()))
+        } else if (widget->inherits(Videos::staticMetaObject.className())) {
+            this->actions = connect(videos, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             videos->setVisible(true);
-        widget->setFocus();
+        }
+        this->refresh = connect(refresh, SIGNAL(triggered()), widget, "1onRefresh()");
+        refresh->setEnabled(true);
     }));
     connections.append(connect(tabs, static_cast<void(QTabWidget::*)(int)>(&QTabWidget::tabCloseRequested), [ this ] (int index) {
         this->tabs->removeTab(index);
@@ -130,20 +140,19 @@ void Explorer::createToolbar()
     refresh->setEnabled(false);
 }
 
-void Explorer::createTree(QLayout *layout)
+void Explorer::createTree(QSplitter *splitter)
 {
-    QSizePolicy size(QSizePolicy::Preferred, QSizePolicy::Preferred);
-    tree = new QTreeWidget(this);
-    size.setHorizontalStretch(1);
+    tree = new QTreeWidget(splitter);
     tree->header()->hide();
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    tree->setMinimumWidth(160);
     tree->setSelectionBehavior(QAbstractItemView::SelectItems);
     tree->setSelectionMode(QAbstractItemView::SingleSelection);
+    tree->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred));
     tree->setSortingEnabled(false);
-    tree->setSizePolicy(size);
     connections.append(connect(tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onNodeClicked(QModelIndex))));
-    layout->addWidget(tree);
+    splitter->addWidget(tree);
 }
 
 void Explorer::onInitComplete()
@@ -206,43 +215,43 @@ void Explorer::onNodeClicked(const QModelIndex &)
     switch (type) {
     case NAVIGATION_APPLICATIONS: {
         Applications *application = new Applications(device, tabs);
-        tabs->addTab(application, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(application, item->icon(0), item->text(0)));
         QTimer::singleShot(0, application, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_INFORMATION: {
         Information *information = new Information(device, tabs);
-        tabs->addTab(information, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(information, item->icon(0), item->text(0)));
         QTimer::singleShot(0, information, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_MUSIC: {
         Music *music = new Music(device, tabs);
-        tabs->addTab(music, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(music, item->icon(0), item->text(0)));
         QTimer::singleShot(0, music, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_PARTITIONS: {
         Partitions *partitions = new Partitions(device, tabs);
-        tabs->addTab(partitions, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(partitions, item->icon(0), item->text(0)));
         QTimer::singleShot(0, partitions, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_PHOTOS: {
         Photos *photos = new Photos(device, tabs);
-        tabs->addTab(photos, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(photos, item->icon(0), item->text(0)));
         QTimer::singleShot(0, photos, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_STORAGE: {
         Storage *storage = new Storage(device, tabs);
-        tabs->addTab(storage, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(storage, item->icon(0), item->text(0)));
         QTimer::singleShot(0, storage, SLOT(onInitComplete()));
         break;
     }
     case NAVIGATION_VIDEOS: {
         Videos *videos = new Videos(device, tabs);
-        tabs->addTab(videos, item->icon(0), item->text(0));
+        tabs->setCurrentIndex(tabs->addTab(videos, item->icon(0), item->text(0)));
         QTimer::singleShot(0, videos, SLOT(onInitComplete()));
         break;
     }
@@ -255,6 +264,7 @@ Explorer::~Explorer()
 {
     foreach (QMetaObject::Connection connection, connections)
         disconnect(connection);
+    disconnect(this->refresh);
 }
 
 } // namespace Windows
