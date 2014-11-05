@@ -2,6 +2,7 @@
 
 using namespace VPZ::APKStudio::Components;
 using namespace VPZ::APKStudio::Helpers;
+using namespace VPZ::APKStudio::Resources;
 
 namespace VPZ {
 namespace APKStudio {
@@ -109,11 +110,12 @@ void Explorer::createToolbar()
         if (!widget)
             return;
         disconnect(this->actions);
+        disconnect(this->chmod);
         disconnect(this->refresh);
         if (widget->inherits(Applications::staticMetaObject.className())) {
             this->actions = connect(applications, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             applications->setVisible(true);
-        } else if (widget->inherits(Music::staticMetaObject.className())) {
+        } else if (widget->inherits(Components::Music::staticMetaObject.className())) {
             this->actions = connect(music, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
             music->setVisible(true);
         } else if (widget->inherits(Partitions::staticMetaObject.className())) {
@@ -124,6 +126,7 @@ void Explorer::createToolbar()
             photos->setVisible(true);
         } else if (widget->inherits(Storage::staticMetaObject.className())) {
             this->actions = connect(storage, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
+            this->chmod = connect(widget, "2showCHMOD(Resources::File)", this, "1onShowCHMOD(Resources::File)");
             storage->setVisible(true);
         } else if (widget->inherits(Videos::staticMetaObject.className())) {
             this->actions = connect(videos, SIGNAL(triggered(QAction*)), widget, "1onAction(QAction*)");
@@ -227,7 +230,7 @@ void Explorer::onNodeClicked(const QModelIndex &index)
         break;
     }
     case NAVIGATION_MUSIC: {
-        Music *music = new Music(device, tabs);
+        Components::Music *music = new Components::Music(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(music, item->icon(0), item->text(0)));
         QTimer::singleShot(0, music, SLOT(onInitComplete()));
         break;
@@ -261,11 +264,18 @@ void Explorer::onNodeClicked(const QModelIndex &index)
     }
 }
 
+void Explorer::onShowCHMOD(const File &file)
+{
+    CHMOD *chmod = new CHMOD(device, file, this);
+    chmod->open();
+}
+
 Explorer::~Explorer()
 {
     foreach (QMetaObject::Connection connection, connections)
         disconnect(connection);
     disconnect(actions);
+    disconnect(chmod);
     disconnect(refresh);
 }
 

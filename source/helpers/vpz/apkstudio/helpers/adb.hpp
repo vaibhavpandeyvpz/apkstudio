@@ -21,6 +21,7 @@ public:
     explicit ADB(QObject * = 0);
     QVector<Resources::Application> applications(const QString &) const;
     bool chmod(const QString &, const QString &, const QString &, bool = false) const;
+    bool chown(const QString &, const QString &, const QString &, const QString &, bool = false) const;
     bool create(const QString &, const QString &) const;
     QVector<Resources::Device> devices() const;
     bool enable(const QString &, const QString &, bool) const;
@@ -37,7 +38,7 @@ public:
     bool push(const QString &, const QString &, const QString &) const;
     void reboot(const QString &, const Resources::Reboot &);
     bool rename(const QString &, const QString &, const QString &) const;
-    bool remount(const QString &, const Resources::Partition &) const;
+    bool remount(const QString &, const Resources::Partition &);
     bool remove(const QString &, const QString &, bool = false) const;
     void screenshot(const QString &, const QString &);
     void shell(const QString &);

@@ -68,12 +68,33 @@ bool ADB::chmod(const QString &device, const QString &path, const QString &mode,
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
+        arguments << QString(recurse ? "chmod -R %1 \"%2\"" : "chmod %1 \"%2\"").arg(mode, path);
+    } else {
+        arguments << "chmod";
+        if (recurse)
+            arguments << "-R";
+        arguments << mode;
+        arguments << path;
     }
-    arguments << "chmod";
-    if (recurse)
-        arguments << "-R";
-    arguments << mode;
-    arguments << path;
+    return execute(arguments).isEmpty();
+}
+
+bool ADB::chown(const QString &device, const QString &path, const QString &owner, const QString &group, bool recurse) const
+{
+    QStringList arguments("-s");
+    arguments << device;
+    arguments << "shell";
+    if (Settings::rootShell()) {
+        arguments << "su";
+        arguments << "-c";
+        arguments << QString(recurse ? "chown -R %2 \"%3\"" : "chmod %2 \"%3\"").arg(QString("%1:%2").arg(owner, group), path);
+    } else {
+        arguments << "chown";
+        if (recurse)
+            arguments << "-R";
+        arguments << QString("%1:%2").arg(owner, group);
+        arguments << path;
+    }
     return execute(arguments).isEmpty();
 }
 
@@ -128,7 +149,7 @@ bool ADB::enable(const QString &device, const QString &package, bool enable) con
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
-        arguments << QString("pm %1 %2").arg((enable ? "enable" : "disable")).arg(package);
+        arguments << QString("pm %1 %2").arg((enable ? "enable" : "disable"), package);
     } else {
         arguments << "pm";
         arguments << (enable ? "enable" : "disable");
@@ -299,7 +320,7 @@ QVector<Music> ADB::music(const QString &device) const
             else if (QString::compare("date_modified", column, Qt::CaseInsensitive) == 0)
                 music.time = value.toLong();
         }
-        music.path = file.split("_data=").at(1).trimmed();
+        music.path = file.split(", _data=").at(1).trimmed();
         if (music.path.startsWith("/data") || music.path.startsWith("/system"))
             continue;
         music.name = music.path.section('/', -1, -1);
@@ -316,7 +337,7 @@ QVector<Partition> ADB::partitions(const QString &device) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
-        arguments << QString("cat /proc/mounts");
+        arguments << "cat /proc/mounts";
     } else {
         arguments << "cat";
         arguments << "/proc/mounts";
@@ -374,7 +395,7 @@ QVector<Photo> ADB::photos(const QString &device) const
             else if (QString::compare("width", column, Qt::CaseInsensitive) == 0)
                 photo.width = value.toInt();
         }
-        photo.path = file.split("_data=").at(1).trimmed();
+        photo.path = file.split(", _data=").at(1).trimmed();
         if (photo.path.startsWith("/data") || photo.path.startsWith("/system"))
             continue;
         photo.name = photo.path.section('/', -1, -1);
@@ -483,7 +504,7 @@ void ADB::reboot(const QString &device, const Reboot &mode)
     execute(arguments);
 }
 
-bool ADB::remount(const QString &device, const Partition &partition) const
+bool ADB::remount(const QString &device, const Partition &partition)
 {
     QString mode = partition.flags.contains("rw") ? "ro" : "rw";
     QStringList arguments("-s");
@@ -492,7 +513,7 @@ bool ADB::remount(const QString &device, const Partition &partition) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
-        arguments << QString("mount -t %1 -o remount,%2 %3 %4").arg(partition.fs).arg(mode).arg(partition.device).arg(partition.mount);
+        arguments << QString("mount -t %1 -o remount,%2 %3 %4").arg(partition.fs, mode, partition.device, partition.mount);
     } else {
         arguments << "mount";
         arguments << "-t";
@@ -503,7 +524,9 @@ bool ADB::remount(const QString &device, const Partition &partition) const
         arguments << partition.mount;
     }
     execute(arguments);
+    blockSignals(true);
     QVector<Partition> partitions = this->partitions(device);
+    blockSignals(false);
     foreach (const Partition &newpartition, partitions) {
         if (partition.mount != newpartition.mount)
             continue;
@@ -520,10 +543,7 @@ bool ADB::remove(const QString &device, const QString &path, bool recurse) const
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
-        if (recurse)
-            arguments << QString("rm -R %1").arg(path);
-        else
-            arguments << QString("rm %1").arg(path);
+        arguments << QString(recurse ? "rm -R \"%1\"" : "rm \"%1\"").arg(path);
     } else {
         arguments << "rm";
         if (recurse)
@@ -541,7 +561,7 @@ bool ADB::rename(const QString &device, const QString &source, const QString &de
     if (Settings::rootShell()) {
         arguments << "su";
         arguments << "-c";
-        arguments << QString("mv \"%1\" \"%2\"").arg(source).arg(destination);
+        arguments << QString("mv \"%1\" \"%2\"").arg(source, destination);
     } else {
         arguments << "mv";
         arguments << source;

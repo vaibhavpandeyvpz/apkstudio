@@ -87,6 +87,10 @@ void Storage::onAction(QAction *action)
 
 void Storage::onCHMOD()
 {
+    QVector<File> files = selected();
+    if (files.isEmpty() || files.count() != 1)
+        return;
+    emit showCHMOD(files.first());
 }
 
 void Storage::onCopy()
@@ -177,7 +181,7 @@ void Storage::onPull()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Storage::onPush()
@@ -200,7 +204,7 @@ void Storage::onPush()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_push_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_push_failed").arg(successful, failed), QMessageBox::Close);
     if (successful >= 1)
         onRefresh();
 }
@@ -315,7 +319,7 @@ void Storage::onRemove()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_remove_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_remove_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Storage::onRename()
@@ -354,7 +358,7 @@ void Storage::onRename()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_rename_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_rename_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Storage::onReturn()

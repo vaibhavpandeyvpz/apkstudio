@@ -75,7 +75,7 @@ void Applications::onDisable()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_disable_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_disable_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Applications::onEnable()
@@ -96,7 +96,7 @@ void Applications::onEnable()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_enable_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_enable_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Applications::onInitComplete()
@@ -124,7 +124,7 @@ void Applications::onInstall()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_install_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_install_failed").arg(successful, failed), QMessageBox::Close);
     if (successful >= 1)
         onRefresh();
 }
@@ -153,7 +153,7 @@ void Applications::onPull()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Applications::onUninstall()
@@ -174,7 +174,7 @@ void Applications::onUninstall()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_uninstall_failed").arg(successful).arg(failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_uninstall_failed").arg(successful, failed), QMessageBox::Close);
 }
 
 void Applications::onRefresh()

@@ -53,6 +53,53 @@
         </message>
     </context>
     <context>
+        <name>chmod</name>
+        <message>
+            <source>label_execute</source>
+            <translation>Execute</translation>
+        </message>
+        <message>
+            <source>label_group</source>
+            <translation>Group</translation>
+        </message>
+        <message>
+            <source>label_owner</source>
+            <translation>Owner</translation>
+        </message>
+        <message>
+            <source>label_read</source>
+            <translation>Read</translation>
+        </message>
+        <message>
+            <source>label_recursive</source>
+            <translation>Recursive</translation>
+        </message>
+        <message>
+            <source>label_world</source>
+            <translation>World</translation>
+        </message>
+        <message>
+            <source>label_write</source>
+            <translation>Write</translation>
+        </message>
+        <message>
+            <source>message_chmod_failure</source>
+            <translation>Failed to set permissions of %1 to %2</translation>
+        </message>
+        <message>
+            <source>message_chown_failure</source>
+            <translation>Failed to change ownership of %1 to %2:%3</translation>
+        </message>
+        <message>
+            <source>title_failure</source>
+            <translation>Failure</translation>
+        </message>
+        <message>
+            <source>title_window</source>
+            <translation>CHMOD [%1]</translation>
+        </message>
+    </context>
+    <context>
         <name>devices</name>
         <message>
             <source>header_serial</source>

@@ -21,6 +21,7 @@
 #include "helpers/text.hpp"
 #include "resources/embedded.hpp"
 #include "resources/variant.hpp"
+#include "chmod.hpp"
 #include "dialog.hpp"
 
 namespace VPZ {
@@ -54,6 +55,7 @@ private:
         NAVIGATION_VIDEOS
     };
     QMetaObject::Connection actions;
+    QMetaObject::Connection chmod;
     QList<QMetaObject::Connection> connections;
     QString device;
     QMetaObject::Connection refresh;
@@ -69,6 +71,7 @@ private:
     }
 private slots:
     void onNodeClicked(const QModelIndex &);
+    void onShowCHMOD(const Resources::File &);
 public:
     explicit Explorer(const QString &, QWidget * = 0);
     ~Explorer();

@@ -63,6 +63,8 @@ public:
 public slots:
     void onAction(QAction *);
     void onInitComplete();
+signals:
+    void showCHMOD(Resources::File);
 };
 
 } // namespace Components
