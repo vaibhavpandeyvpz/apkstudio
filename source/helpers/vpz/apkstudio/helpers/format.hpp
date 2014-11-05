@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QDateTime>
+#include <QStringList>
 #include "resources/constant.hpp"
 
 namespace VPZ {
