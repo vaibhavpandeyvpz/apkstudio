@@ -11,6 +11,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QTreeWidget>
+#include <QUrl>
 #include <QVBoxLayout>
 #include "helpers/adb.hpp"
 #include "helpers/format.hpp"
