@@ -385,7 +385,7 @@ void Storage::onRename()
     bool multiple = (files.count() > 1);
     int failed = 0;
     int successful = 0;
-    for (int i = 0; i < files.length(); ++i) {
+    for (int i = 0; i < files.count(); ++i) {
         QString newname(name);
         if (multiple)
             newname.prepend(QString("(%1) ").arg(QString::number(i + 1)));
