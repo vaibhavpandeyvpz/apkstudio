@@ -1,4 +1,5 @@
 #include "storage.hpp"
+#include <QDebug>
 
 using namespace VPZ::APKStudio::Helpers;
 using namespace VPZ::APKStudio::Resources;
@@ -11,7 +12,7 @@ Storage::Storage(const QString &device, QWidget *parent) :
     QWidget(parent), device(device)
 {
     path = new Clearable(this);
-    tree = new QTreeWidget(this);
+    tree = new TreeWidget(true, true, this);
     QLayout *layout = new QVBoxLayout(this);
     QStringList labels;
     labels << translate("header_name");
@@ -24,12 +25,14 @@ Storage::Storage(const QString &device, QWidget *parent) :
     layout->addWidget(tree);
     layout->setContentsMargins(2, 2, 2, 2);
     layout->setSpacing(2);
-    connections.append(connect(tree, &QTreeWidget::doubleClicked, this, &Storage::onDoubleClicked));
+    connections.append(connect(tree, &TreeWidget::doubleClicked, this, &Storage::onDoubleClicked));
+    connections.append(connect(tree, &TreeWidget::itemsDropped, this, &Storage::onItemsDropped));
+    connections.append(connect(tree, &TreeWidget::filesDropped, this, &Storage::onFilesDropped));
     tree->setHeaderLabels(labels);
     tree->setEditTriggers(QAbstractItemView::NoEditTriggers);
     tree->setRootIsDecorated(false);
     tree->setSelectionBehavior(QAbstractItemView::SelectRows);
-    tree->setSelectionMode(QAbstractItemView::MultiSelection);
+    tree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     tree->setSortingEnabled(false);
     tree->setUniformRowHeights(true);
     tree->setColumnWidth(0, 160);
@@ -142,15 +145,73 @@ void Storage::onEdit()
     path->setFocus();
 }
 
-void Storage::onInitComplete()
+void Storage::onFilesDropped(const QStringList &files, const QModelIndex &at)
 {
-    onRefresh();
+    if (files.count() <= 0)
+        return;
+    QString path;
+    if (at.isValid()) {
+        File file = at.data(ROLE_STRUCT).value<File>();
+        if ((file.type == File::FOLDER) || (file.type == File::SYMLINK_FOLDER))
+            path = file.path;
+    }
+    if (path.isEmpty())
+        path = this->path->text();
+    int result =  QMessageBox::question(this, translate("title_push"), translate("message_push").arg(QString::number(files.count()), path), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const QString &file, files) {
+        if (ADB::instance()->push(device, file, path))
+            successful++;
+        else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_push_failed").arg(successful, failed), QMessageBox::Close);
+    if (successful >= 1)
+        onRefresh();
+}
+
+void Storage::onItemsDropped(const QModelIndexList &rows, const QModelIndex &at, Qt::DropAction action)
+{
+    if (action == Qt::MoveAction) {
+        qDebug() << "Dropped:";
+        foreach (const QModelIndex &index, rows)
+            qDebug() << index.data(ROLE_STRUCT).value<File>().name;
+        qDebug() << "To:";
+        qDebug() << at.data(ROLE_STRUCT).value<File>().name;
+    } else {
+        qDebug() << "Dropped:";
+        foreach (const QModelIndex &index, rows)
+            qDebug() << index.data(ROLE_STRUCT).value<File>().name;
+        qDebug() << "To:";
+        qDebug() << at.data(ROLE_STRUCT).value<File>().name;
+    }
 }
 
 void Storage::onMove()
 {
     if (path->hasFocus())
         return;
+    QVector<File> files = selected();
+    if (files.isEmpty())
+        return;
+    QStringList sources;
+    foreach (const File &file, files)
+        sources.append(file.path);
+    bool ok = false;
+    QString destination = QInputDialog::getText(this, translate("title_move"), translate("label_move"), QLineEdit::Normal, path->text(), &ok);
+    if (!ok || destination.trimmed().isEmpty())
+        return;
+    int result =  QMessageBox::question(this, translate("title_move"), translate("message_move").arg(QString::number(files.count()), destination), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
+        return;
+    if (ADB::instance()->move(device, sources, destination))
+        onRefresh();
+    else
+        QMessageBox::critical(this, translate("title_failure"), translate("message_move_failed").arg(destination), QMessageBox::Close);
 }
 
 void Storage::onPull()
@@ -167,16 +228,17 @@ void Storage::onPull()
     if (folders.count() != 1)
         return;
     QDir directory(folders.first());
+    Helpers::Settings::previousDirectory(directory.absolutePath());
     int failed = 0;
     int successful = 0;
     foreach (const File &file, files) {
-        if ((file.type == File::FOLDER) ||(file.type == File::SYMLINK_FOLDER)) {
-            failed++;
-            continue;
-        }
         if (ADB::instance()->pull(device, file.path, directory.absolutePath())) {
-            if (QFile::exists(directory.absoluteFilePath(file.name)))
+            if ((file.type == File::FOLDER) ||(file.type == File::SYMLINK_FOLDER))
                 successful++;
+            else if (directory.exists(file.name))
+                successful++;
+            else
+                failed++;
         } else
             failed++;
     }
@@ -186,7 +248,6 @@ void Storage::onPull()
 
 void Storage::onPush()
 {
-    const QString &path = this->path->text();
     QFileDialog dialog(this, translate("title_select"), Helpers::Settings::previousDirectory());
     dialog.setAcceptMode(QFileDialog::AcceptOpen);
     dialog.setFileMode(QFileDialog::ExistingFiles);
@@ -195,18 +256,8 @@ void Storage::onPush()
     QStringList files = dialog.selectedFiles();
     if (files.isEmpty())
         return;
-    int failed = 0;
-    int successful = 0;
-    foreach (const QString &file, files) {
-        if (ADB::instance()->push(device, file, path))
-            successful++;
-        else
-            failed++;
-    }
-    if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_push_failed").arg(successful, failed), QMessageBox::Close);
-    if (successful >= 1)
-        onRefresh();
+    Helpers::Settings::previousDirectory(dialog.directory().absolutePath());
+    onFilesDropped(files, QModelIndex());
 }
 
 void Storage::onRefresh()
@@ -303,7 +354,7 @@ void Storage::onRemove()
     QVector<File> files = selected();
     if (files.isEmpty())
         return;
-    int result =  QMessageBox::question(this, translate("title_remove"), translate("message_remove").arg(files.count()), QMessageBox::No | QMessageBox::Yes);
+    int result =  QMessageBox::question(this, translate("title_remove"), translate("message_remove").arg(QString::number(files.count())), QMessageBox::No | QMessageBox::Yes);
     if (result != QMessageBox::Yes)
         return;
     int failed = 0;

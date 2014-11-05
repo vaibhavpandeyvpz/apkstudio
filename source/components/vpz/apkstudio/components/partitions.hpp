@@ -35,7 +35,6 @@ public:
     ~Partitions();
 public slots:
     void onAction(QAction *);
-    void onInitComplete();
     void onRefresh();
 };
 

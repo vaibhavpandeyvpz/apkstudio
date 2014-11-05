@@ -47,25 +47,9 @@ Settings::Settings(QWidget *parent) :
     createEditorTab();
     createViewerTab();
     createJavaTab();
-    createADBTab();
     createApktoolTab();
     setLayout(hlayout);
     setWindowTitle(translate("title_window"));
-}
-
-void Settings::createADBTab()
-{
-    QWidget *widget = new QWidget(stack);
-    QFormLayout *layout = new QFormLayout(widget);
-    QCheckBox *root = new QCheckBox(widget);
-    layout->addRow(translate("label_root"), root);
-    root->setChecked(Helpers::Settings::rootShell());
-    widget->setLayout(layout);
-    connections.append(connect(this, &QDialog::accepted, [ root ] () {
-        Helpers::Settings::rootShell(root->isChecked());
-    }));
-    list->addItem(translate("item_adb"));
-    stack->addWidget(widget);
 }
 
 void Settings::createApktoolTab()
@@ -202,6 +186,7 @@ void Settings::createGeneralTab()
     QLineEdit *binary = new QLineEdit(widget);
     QPushButton *browse = new QPushButton(translate("button_browse"), widget);
     QComboBox *language = new QComboBox(widget);
+    QCheckBox *root = new QCheckBox(widget);
     QComboBox *theme = new QComboBox(widget);
     binary->setText(Helpers::Settings::binaryPath());
     language->addItem(translate("language_english"), "en");
@@ -210,6 +195,8 @@ void Settings::createGeneralTab()
     layout->addRow(translate("label_language"), language);
     layout->addRow(translate("label_binary"), binary);
     layout->addRow("", browse);
+    layout->addRow(translate("label_root"), root);
+    root->setChecked(Helpers::Settings::rootShell());
     theme->addItem(translate("theme_default"), "default");
     theme->addItem(translate("theme_light"), "light");
     theme->addItem(translate("theme_dark"), "dark");
@@ -222,9 +209,10 @@ void Settings::createGeneralTab()
         Helpers::Settings::previousDirectory(path);
         binary->setText(path);
     }));
-    connections.append(connect(this, &QDialog::accepted, [ binary, language, theme ] () {
+    connections.append(connect(this, &QDialog::accepted, [ binary, language, root, theme ] () {
         Helpers::Settings::binaryPath(binary->text());
         Helpers::Settings::language(language->itemData(language->currentIndex()).value<QString>());
+        Helpers::Settings::rootShell(root->isChecked());
         Helpers::Settings::theme(theme->itemData(theme->currentIndex()).value<QString>());
     }));
     list->addItem(translate("item_general"));

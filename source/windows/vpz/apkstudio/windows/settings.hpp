@@ -32,7 +32,6 @@ private:
     QStackedWidget *stack;
     QListWidget *list;
 private:
-    void createADBTab();
     void createApktoolTab();
     void createEditorTab();
     void createGeneralTab();

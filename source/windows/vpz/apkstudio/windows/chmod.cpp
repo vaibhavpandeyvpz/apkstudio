@@ -107,6 +107,7 @@ CHMOD::CHMOD(const QString &device, const File &file, QWidget *parent) :
     }));
     form->addRow(translate("label_owner"), ownere);
     form->addRow(translate("label_group"), groupe);
+    form->addRow("", recursive);
     groupr->setChecked(file.permission.group.read);
     groupw->setChecked(file.permission.group.write);
     groupx->setChecked(file.permission.group.execute);
@@ -136,7 +137,6 @@ CHMOD::CHMOD(const QString &device, const File &file, QWidget *parent) :
     permissions->addWidget(world);
     layout->addLayout(permissions);
     layout->addLayout(form);
-    layout->addWidget(recursive);
     layout->addWidget(buttons);
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(4);

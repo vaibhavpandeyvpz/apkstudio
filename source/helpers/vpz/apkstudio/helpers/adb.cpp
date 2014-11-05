@@ -286,6 +286,23 @@ void ADB::kill()
     execute(QStringList("kill-server"));
 }
 
+bool ADB::move(const QString &device, const QStringList &source, const QString &destination) const
+{
+    QStringList arguments("-s");
+    arguments << device;
+    arguments << "shell";
+    if (Settings::rootShell()) {
+        arguments << "su";
+        arguments << "-c";
+        arguments << QString("mv %1 %2").arg(source.join(' '), destination);
+    } else {
+        arguments << "mv";
+        arguments << source;
+        arguments << destination;
+    }
+    return execute(arguments).isEmpty();
+}
+
 QVector<Music> ADB::music(const QString &device) const
 {
     QVector<Music> musics;

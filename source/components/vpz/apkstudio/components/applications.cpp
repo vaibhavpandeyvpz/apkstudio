@@ -8,13 +8,14 @@ namespace APKStudio {
 namespace Components {
 
 Applications::Applications(const QString &device, QWidget *parent) :
-    QTreeWidget(parent), device(device)
+    TreeWidget(false, true, parent), device(device)
 {
     QStringList labels;
     labels << translate("header_file");
     labels << translate("header_package");
     labels << translate("header_system");
     labels << translate("header_status");
+    connections.append(connect(this, &Applications::filesDropped, this, &Applications::onFilesDropped));
     setHeaderLabels(labels);
     setColumnWidth(0, 160);
     setColumnWidth(1, 160);
@@ -23,9 +24,12 @@ Applications::Applications(const QString &device, QWidget *parent) :
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setRootIsDecorated(false);
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::MultiSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSortingEnabled(true);
     sortByColumn(0, Qt::AscendingOrder);
+    // -- //
+    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_I), this, SLOT(onInstall()));
+    new QShortcut(QKeySequence(Qt::Key_Delete), this, SLOT(onUninstall()));
 }
 
 void Applications::onAction(QAction *action)
@@ -75,7 +79,7 @@ void Applications::onDisable()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_disable_failed").arg(successful, failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_disable_failed").arg(QString::number(successful), QString::number(failed)), QMessageBox::Close);
 }
 
 void Applications::onEnable()
@@ -96,12 +100,35 @@ void Applications::onEnable()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_enable_failed").arg(successful, failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_enable_failed").arg(QString::number(successful), QString::number(failed)), QMessageBox::Close);
 }
 
-void Applications::onInitComplete()
+void Applications::onFilesDropped(const QStringList &files, const QModelIndex &at)
 {
-    onRefresh();
+    Q_UNUSED(at)
+    QStringList apks;
+    foreach (const QString &file, files) {
+        QFileInfo apk(file);
+        if (apk.exists() && (QString::compare(apk.suffix(), "apk", Qt::CaseInsensitive) == 0))
+            apks.append(apk.absoluteFilePath());
+    }
+    if (apks.count() <= 0)
+        return;
+    int result =  QMessageBox::question(this, translate("title_install"), translate("message_install").arg(QString::number(apks.count())), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
+        return;
+    int failed = 0;
+    int successful = 0;
+    foreach (const QString &apk, apks) {
+        if (ADB::instance()->install(device, apk))
+            successful++;
+        else
+            failed++;
+    }
+    if (failed >= 1)
+        QMessageBox::critical(this, translate("title_failure"), translate("message_install_failed").arg(QString::number(successful), QString::number(failed)), QMessageBox::Close);
+    if (successful >= 1)
+        onRefresh();
 }
 
 void Applications::onInstall()
@@ -115,18 +142,7 @@ void Applications::onInstall()
     QStringList files = dialog.selectedFiles();
     if (files.isEmpty())
         return;
-    int failed = 0;
-    int successful = 0;
-    foreach (const QString &apk, files) {
-        if (ADB::instance()->install(device, apk))
-            successful++;
-        else
-            failed++;
-    }
-    if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_install_failed").arg(successful, failed), QMessageBox::Close);
-    if (successful >= 1)
-        onRefresh();
+    onFilesDropped(files, QModelIndex());
 }
 
 void Applications::onPull()
@@ -153,13 +169,16 @@ void Applications::onPull()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(successful, failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_pull_failed").arg(QString::number(successful), QString::number(failed)), QMessageBox::Close);
 }
 
 void Applications::onUninstall()
 {
     QVector<Application> applications = selected();
     if (applications.isEmpty())
+        return;
+    int result =  QMessageBox::question(this, translate("title_uninstall"), translate("message_uninstall").arg(QString::number(applications.count())), QMessageBox::No | QMessageBox::Yes);
+    if (result != QMessageBox::Yes)
         return;
     int failed = 0;
     int successful = 0;
@@ -174,7 +193,7 @@ void Applications::onUninstall()
             failed++;
     }
     if (failed >= 1)
-        QMessageBox::critical(this, translate("title_failure"), translate("message_uninstall_failed").arg(successful, failed), QMessageBox::Close);
+        QMessageBox::critical(this, translate("title_failure"), translate("message_uninstall_failed").arg(QString::number(successful), QString::number(failed)), QMessageBox::Close);
 }
 
 void Applications::onRefresh()
@@ -203,12 +222,6 @@ QVector<Application> Applications::selected()
     foreach (QTreeWidgetItem *item, selectedItems())
         applications.append(item->data(0, ROLE_STRUCT).value<Application>());
     return applications;
-}
-
-Applications::~Applications()
-{
-    foreach (QMetaObject::Connection connection, connections)
-        disconnect(connection);
 }
 
 } // namespace Components

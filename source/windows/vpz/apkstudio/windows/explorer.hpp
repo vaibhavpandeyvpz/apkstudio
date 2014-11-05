@@ -8,7 +8,6 @@
 #include <QTabWidget>
 #include <QTimer>
 #include <QToolBar>
-#include <QTreeWidget>
 #include <QVBoxLayout>
 #include "components/applications.hpp"
 #include "components/information.hpp"
@@ -16,6 +15,7 @@
 #include "components/partitions.hpp"
 #include "components/photos.hpp"
 #include "components/storage.hpp"
+#include "components/treewidget.hpp"
 #include "components/videos.hpp"
 #include "helpers/format.hpp"
 #include "helpers/text.hpp"
@@ -27,19 +27,6 @@
 namespace VPZ {
 namespace APKStudio {
 namespace Windows {
-
-class TreeWidget : public QTreeWidget
-{
-public:
-    TreeWidget(QWidget *parent = 0) : QTreeWidget(parent) {
-    }
-    QModelIndex index(QTreeWidgetItem *item, int column = 0) {
-        return indexFromItem(item, column);
-    }
-    QTreeWidgetItem *item(QModelIndex index) {
-        return itemFromIndex(index);
-    }
-};
 
 class Explorer : public Dialog
 {
@@ -61,7 +48,7 @@ private:
     QMetaObject::Connection refresh;
     QSplitter *splitter;
     QTabWidget *tabs;
-    TreeWidget *tree;
+    Components::TreeWidget *tree;
 private:
     void createTabs();
     void createToolbar();

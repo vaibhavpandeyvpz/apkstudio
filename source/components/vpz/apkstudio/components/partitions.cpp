@@ -38,11 +38,6 @@ void Partitions::onAction(QAction *action)
     }
 }
 
-void Partitions::onInitComplete()
-{
-    onRefresh();
-}
-
 void Partitions::onRefresh()
 {
     if (model()->hasChildren())

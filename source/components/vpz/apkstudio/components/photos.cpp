@@ -23,7 +23,7 @@ Photos::Photos(const QString &device, QWidget *parent) :
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setRootIsDecorated(false);
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::MultiSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSortingEnabled(true);
     sortByColumn(3, Qt::DescendingOrder);
 }
@@ -59,11 +59,6 @@ void Photos::onCopy()
 
 void Photos::onDetails()
 {
-}
-
-void Photos::onInitComplete()
-{
-    onRefresh();
 }
 
 void Photos::onMove()

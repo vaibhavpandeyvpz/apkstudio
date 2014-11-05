@@ -177,8 +177,9 @@ bool Coder::open(const QFileInfo &info)
     return true;
 }
 
-void Coder::onBlockCountChanged(const int /* count */)
+void Coder::onBlockCountChanged(const int count)
 {
+    Q_UNUSED(count)
     setViewportMargins(line_numbers->sizeHint().width(), 0, 0, 0);
 }
 

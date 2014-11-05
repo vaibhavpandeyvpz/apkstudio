@@ -42,7 +42,6 @@ public:
     ~Photos();
 public slots:
     void onAction(QAction *);
-    void onInitComplete();
     void onRefresh();
 };
 

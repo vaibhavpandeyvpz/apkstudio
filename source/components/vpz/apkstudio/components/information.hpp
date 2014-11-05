@@ -22,7 +22,7 @@ public:
     explicit Information(const QString &, QWidget * = 0);
     ~Information();
 public slots:
-    void onInitComplete();
+    void onRefresh();
 };
 
 } // namespace Components

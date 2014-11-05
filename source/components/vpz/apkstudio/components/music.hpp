@@ -42,7 +42,6 @@ public:
     ~Music();
 public slots:
     void onAction(QAction *);
-    void onInitComplete();
     void onRefresh();
 };
 

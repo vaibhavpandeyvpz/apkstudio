@@ -30,6 +30,8 @@ IDE::IDE(QWidget *parent) :
     setDocks();
     setMenuBar(menu_bar);
     setStatusBar(status_bar);
+    // -- //
+    qRegisterMetaTypeStreamOperators<VPZ::APKStudio::Resources::File>("VPZ::APKStudio::Resources::File");
 }
 
 void IDE::closeEvent(QCloseEvent *event)

@@ -220,43 +220,43 @@ void Explorer::onNodeClicked(const QModelIndex &index)
     case NAVIGATION_APPLICATIONS: {
         Applications *application = new Applications(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(application, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, application, SLOT(onInitComplete()));
+        QTimer::singleShot(0, application, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_INFORMATION: {
         Information *information = new Information(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(information, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, information, SLOT(onInitComplete()));
+        QTimer::singleShot(0, information, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_MUSIC: {
         Components::Music *music = new Components::Music(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(music, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, music, SLOT(onInitComplete()));
+        QTimer::singleShot(0, music, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_PARTITIONS: {
         Partitions *partitions = new Partitions(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(partitions, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, partitions, SLOT(onInitComplete()));
+        QTimer::singleShot(0, partitions, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_PHOTOS: {
         Photos *photos = new Photos(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(photos, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, photos, SLOT(onInitComplete()));
+        QTimer::singleShot(0, photos, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_STORAGE: {
         Storage *storage = new Storage(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(storage, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, storage, SLOT(onInitComplete()));
+        QTimer::singleShot(0, storage, SLOT(onRefresh()));
         break;
     }
     case NAVIGATION_VIDEOS: {
         Videos *videos = new Videos(device, tabs);
         tabs->setCurrentIndex(tabs->addTab(videos, item->icon(0), item->text(0)));
-        QTimer::singleShot(0, videos, SLOT(onInitComplete()));
+        QTimer::singleShot(0, videos, SLOT(onRefresh()));
         break;
     }
     default:
@@ -266,8 +266,7 @@ void Explorer::onNodeClicked(const QModelIndex &index)
 
 void Explorer::onShowCHMOD(const File &file)
 {
-    CHMOD *chmod = new CHMOD(device, file, this);
-    chmod->open();
+    (new CHMOD(device, file, this))->exec();
 }
 
 Explorer::~Explorer()

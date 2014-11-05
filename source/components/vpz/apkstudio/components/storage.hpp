@@ -13,6 +13,7 @@
 #include "helpers/text.hpp"
 #include "resources/variant.hpp"
 #include "clearable.hpp"
+#include "treewidget.hpp"
 
 namespace VPZ {
 namespace APKStudio {
@@ -25,7 +26,7 @@ private:
     QList<QMetaObject::Connection> connections;
     QString device;
     Clearable *path;
-    QTreeWidget *tree;
+    TreeWidget *tree;
 private:
     void onCHMOD();
     void onDetails();
@@ -40,6 +41,8 @@ private slots:
     void onCopy();
     void onDoubleClicked(const QModelIndex &);
     void onEdit();
+    void onFilesDropped(const QStringList &, const QModelIndex &);
+    void onItemsDropped(const QModelIndexList &, const QModelIndex &, Qt::DropAction);
     void onMove();
     void onRefresh();
     void onRemove();
@@ -62,7 +65,6 @@ public:
     ~Storage();
 public slots:
     void onAction(QAction *);
-    void onInitComplete();
 signals:
     void showCHMOD(Resources::File);
 };

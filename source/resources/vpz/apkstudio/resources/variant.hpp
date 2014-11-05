@@ -1,6 +1,7 @@
 #ifndef VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP
 #define VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP
 
+#include <QDataStream>
 #include <QHash>
 #include <QStringList>
 
@@ -148,5 +149,8 @@ Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Reboot)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Style)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Theme)
 Q_DECLARE_METATYPE(VPZ::APKStudio::Resources::Video)
+
+QDataStream &operator <<(QDataStream &, const VPZ::APKStudio::Resources::File &);
+QDataStream &operator >>(QDataStream &, VPZ::APKStudio::Resources::File &);
 
 #endif // VPZ_APKSTUDIO_RESOURCES_VARIANT_HPP

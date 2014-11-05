@@ -85,7 +85,9 @@ Devices::Devices(QWidget *parent) :
     connections.append(connect(this, SIGNAL(showInformation(QString)), this->parent(), SLOT(onShowInformation(QString))));
     connections.append(connect(this, SIGNAL(showLogcat(QString)), this->parent(), SLOT(onShowLogcat(QString))));
     connections.append(connect(tree, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClick(QModelIndex))));
-    connections.append(connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, [ explore, information, logcat, screenshot, shell, this ] (const QItemSelection &/*current*/, const QItemSelection &/*previous*/) {
+    connections.append(connect(tree->selectionModel(), &QItemSelectionModel::selectionChanged, [ explore, information, logcat, screenshot, shell, this ] (const QItemSelection &current, const QItemSelection &previous) {
+        Q_UNUSED(current)
+        Q_UNUSED(previous)
         bool enable = false;
         Device device = this->selected();
         if (!device.serial.isEmpty())

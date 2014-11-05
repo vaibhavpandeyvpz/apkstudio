@@ -9,7 +9,7 @@ Information::Information(const QString &device, QWidget *parent) :
 {
 }
 
-void Information::onInitComplete()
+void Information::onRefresh()
 {
 }
 

@@ -17,7 +17,7 @@ Videos::Videos(const QString &device, QWidget *parent) :
     setEditTriggers(QAbstractItemView::NoEditTriggers);
     setRootIsDecorated(false);
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::MultiSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setSortingEnabled(true);
     sortByColumn(3, Qt::DescendingOrder);
 }
@@ -53,11 +53,6 @@ void Videos::onCopy()
 
 void Videos::onDetails()
 {
-}
-
-void Videos::onInitComplete()
-{
-    onRefresh();
 }
 
 void Videos::onMove()
