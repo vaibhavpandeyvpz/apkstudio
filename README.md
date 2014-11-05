@@ -34,3 +34,7 @@ Screenshots:
 Support:
 -------------
 [![Donate](https://pledgie.com/campaigns/26789.png?skin_name=chrome "Donate")](https://pledgie.com/campaigns/26789)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/vaibhavpandeyvpz/apkstudio/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
