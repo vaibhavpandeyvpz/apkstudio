@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
+#include "constants.h"
 #include "pathutils.h"
 #include "preferences.h"
 #include "textutils.h"
@@ -23,7 +24,7 @@ QString PathUtils::find(const QString &exe)
         return binary;
     }
     QString relative;
-    if (QFile::exists(relative = PathUtils::combine(QCoreApplication::applicationDirPath(), PathUtils::combine("bin", exe))))
+    if (QFile::exists(relative = PathUtils::combine(QCoreApplication::applicationDirPath(), PathUtils::combine(FOLDER_BINARIES, exe))))
     {
         return relative;
     }

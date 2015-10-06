@@ -17,6 +17,8 @@
 
 #define ENCODING_DEFAULT "UTF-8"
 
+#define FOLDER_BINARIES "binaries"
+
 #define HIGHLIGHTER_THEME "default.theme"
 #define HIGHLIGHTER_STYLE_WHITESPACES "whitespaces"
 

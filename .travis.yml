@@ -12,8 +12,10 @@ install:
  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 99
 
 script:
- - lsb_release -s -d
- - g++ --version
+ # No more needed
+ # - lsb_release -s -d
+ # - g++ --version
+ # No more needed
  - source /opt/qt55/bin/qt55-env.sh
  - qmake apkstudio.pro CONFIG+=release
  - make
