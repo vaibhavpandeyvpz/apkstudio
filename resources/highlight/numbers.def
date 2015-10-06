@@ -1,0 +1,2 @@
+numbers [-+]?\b\d+\b
+numbers \b0[xX][0-9a-fA-F]+\b

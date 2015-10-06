@@ -1,0 +1,6 @@
+@include numbers.def
+variables \b[pv][0-9]+\b
+namespace (?<=L)([a-zA-Z0-9/]+)(?=;)
+keywords [.][a-z\-]+\b
+@include strings.def
+comments #[^\n]*
