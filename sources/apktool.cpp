@@ -47,8 +47,8 @@ QString ApkTool::getVersion()
     QRegularExpression rgx(REGEX_APKTOOL_VERSION);
     for (const QString &l : r.output)
     {
-        QRegularExpressionMatch m;
-        if ((m = rgx.match(l)).hasMatch())
+        QRegularExpressionMatch m = rgx.match(l);
+        if (m.hasMatch())
         {
             QString v("%1.%2.%3");
             for (int i = 1; i <= 3; i++)
