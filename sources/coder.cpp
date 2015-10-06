@@ -29,10 +29,10 @@ Coder::Coder(QWidget *parent) :
             updateMargins();
         }
     });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_U, this), QShortcut::activated, [=] { transformTo(false); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Up, this), QShortcut::activated, [=] { pushPullLine(true); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Down, this), QShortcut::activated, [=] { pushPullLine(false); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::Key_U, this), QShortcut::activated, [=] { transformTo(); });
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_U, this), &QShortcut::activated, [=] { transformTo(false); });
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Up, this), &QShortcut::activated, [=] { pushPullLine(true); });
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Down, this), &QShortcut::activated, [=] { pushPullLine(false); });
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::Key_U, this), &QShortcut::activated, [=] { transformTo(); });
     _sidebar = new CoderSidebar(this);
     auto pr = Preferences::get();
     _spacesForTabs = pr->useSpacesForTabs();
