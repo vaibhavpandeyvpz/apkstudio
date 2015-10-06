@@ -14,7 +14,6 @@ install:
 script:
  - lsb_release -s -d
  - g++ --version
- - cd src
- - /opt/qt55/bin/qt55-env.sh
+ - source /opt/qt55/bin/qt55-env.sh
  - qmake apkstudio.pro CONFIG+=release
  - make
