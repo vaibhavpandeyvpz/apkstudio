@@ -29,4 +29,4 @@ TODO:
 
 Screenshot:
 -------------
-![Windows Screenshot #1](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/screenshots/1.png "Windows Screenshot #1")
+![Windows Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/screenshots/1.png "Windows Screenshot")
