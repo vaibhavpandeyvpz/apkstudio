@@ -111,6 +111,10 @@ TARGET = apkstudio
 
 TEMPLATE = app
 
+unix {
+    QMAKE_CXXFLAGS += -std=c++11
+}
+
 win32 {
     RC_FILE = resources/win32.rc
 }
