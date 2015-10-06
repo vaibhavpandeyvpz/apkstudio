@@ -244,11 +244,6 @@ void Ide::onMenuBarHelpDocumentation()
     QDesktopServices::openUrl(QUrl(URL_DOCUMENTATION));
 }
 
-void Ide::onMenuBarHelpDonate()
-{
-    QDesktopServices::openUrl(QUrl(URL_DONATE));
-}
-
 void Ide::onMenuBarHelpFeedbackIssues()
 {
     QDesktopServices::openUrl(QUrl(URL_ISSUES));

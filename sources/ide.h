@@ -56,7 +56,6 @@ public slots:
     void onMenuBarHelpAbout();
     void onMenuBarHelpContribute();
     void onMenuBarHelpDocumentation();
-    void onMenuBarHelpDonate();
     void onMenuBarHelpFeedbackIssues();
     void onMenuBarHelpFeedbackThanks();
     void onMenuBarProjectBuild();

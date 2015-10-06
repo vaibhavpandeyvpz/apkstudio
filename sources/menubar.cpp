@@ -80,7 +80,6 @@ void MenuBar::addHelpMenu()
     f->addAction(Qrc::text("menubar.help.feedback.issues"), parent(), SLOT(onMenuBarHelpFeedbackIssues()));
     m->addAction(f->menuAction());
     m->addAction(Qrc::text("menubar.help.contribute"), parent(), SLOT(onMenuBarHelpContribute()));
-    m->addAction(Qrc::text("menubar.help.donate"), parent(), SLOT(onMenuBarHelpDonate()));
     m->addSeparator();
     addAction(m->menuAction());
 }

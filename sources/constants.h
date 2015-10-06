@@ -61,7 +61,6 @@
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "http://github.vaibhavpandey.com/apkstudio"
-#define URL_DONATE "https://pledgie.com/campaigns/26789"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"
 

@@ -356,10 +356,6 @@
     <translation>Documentation</translation>
 </message>
 <message>
-    <source>menubar.help.donate</source>
-    <translation>Donate</translation>
-</message>
-<message>
     <source>menubar.help.feedback</source>
     <translation>Feedback</translation>
 </message>
