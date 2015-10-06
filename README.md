@@ -22,12 +22,9 @@ Syntax Highlighting:
 -   XML (*.xml)
 -   YML (*.yml)
 
-Code Completion:
+TODO:
 -------------
--   Batch Install APKs
--   Pull/Disable/Enable/Uninstall Applications
--   File Browser With CHMOD
--   Partition/Mounts Manager
+-   Code Completion
 
 Screenshots:
 -------------

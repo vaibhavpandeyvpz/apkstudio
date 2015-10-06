@@ -7,7 +7,6 @@ before_install:
 language: cpp
 
 script:
- - lrelease resource/language/en.ts
  - cd source
  - qmake apkstudio.pro
  - make

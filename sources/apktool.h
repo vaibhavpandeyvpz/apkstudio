@@ -1,6 +1,7 @@
 #ifndef APKTOOL_H
 #define APKTOOL_H
 
+#include <QStringList>
 #include "macros.h"
 #include "java.h"
 

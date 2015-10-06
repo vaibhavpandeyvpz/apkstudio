@@ -55,7 +55,8 @@ OTHER_FILES += \
     resources/html/about.html \
     resources/lang/en.ts \
     resources/styles/default.qss \
-    resources/win32.rc
+    resources/win32.rc \
+    README.md
 
 QMAKE_POST_LINK = $(QTDIR)/bin/lrelease $$_PRO_FILE_PWD_/resources/lang/en.ts
 
