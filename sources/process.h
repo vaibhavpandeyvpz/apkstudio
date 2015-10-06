@@ -2,6 +2,7 @@
 #define PROCESS_H
 
 #include <QRegularExpression>
+#include <QStringList>
 #include "macros.h"
 
 AS_NAMESPACE_START
