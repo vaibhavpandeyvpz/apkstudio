@@ -46,7 +46,7 @@ StatusBar::StatusBar(QWidget *parent)
     {
         java->setText(QString("Java: %1").arg(Qrc::text("statusbar.version.unknown")));
     }
-    _connections << connect(this, QStatusBar::messageChanged, this, StatusBar::onMessageChanged);
+    _connections << connect(this, &QStatusBar::messageChanged, this, &StatusBar::onMessageChanged);
     _message->setText(Qrc::text("statusbar.message.ready"));
 }
 
