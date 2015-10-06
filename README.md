@@ -25,9 +25,8 @@ Syntax Highlighting:
 TODO:
 -------------
 -   Code Completion
+-   Frameworks Support
 
-Screenshots:
+Screenshot:
 -------------
-**IDE**
-<br/>
 ![Windows Screenshot #1](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/screenshots/1.png "Windows Screenshot #1")
