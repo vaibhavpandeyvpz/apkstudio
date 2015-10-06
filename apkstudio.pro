@@ -58,8 +58,6 @@ OTHER_FILES += \
     resources/win32.rc \
     README.md
 
-QMAKE_PRE_LINK = $(QTDIR)/bin/lrelease $$_PRO_FILE_PWD_/resources/lang/en.ts
-
 QT += core gui widgets
 
 RESOURCES += \
