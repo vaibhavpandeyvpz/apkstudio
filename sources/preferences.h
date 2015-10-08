@@ -29,6 +29,7 @@ public:
     QString signKeystore();
     QString signKeystorePass();
     int tabStopWidth();
+    int textEncoding();
     bool useSpacesForTabs();
     bool wasWindowMaximized();
     QSize windowSize();
@@ -44,6 +45,7 @@ public:
     Preferences *setSignKeystore(const QString &keystore);
     Preferences *setSignKeystorePass(const QString &pass);
     Preferences *setTabStopWidth(const int width);
+    Preferences *setTextEncoding(const int codec);
     Preferences *setUseSpacesForTabs(const bool use);
     Preferences *setWindowMaximized(const bool maximized);
     Preferences *setWindowSize(const QSize &size);

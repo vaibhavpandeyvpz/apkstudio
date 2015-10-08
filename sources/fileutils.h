@@ -4,13 +4,14 @@
 #include <QIcon>
 #include "constants.h"
 #include "macros.h"
+#include "qrc.h"
 
 AS_NAMESPACE_START
 
 class FileUtils
 {
 public:
-    static QString read(const QString &path, const char *enc = ENCODING_DEFAULT);
+    static QString read(const QString &path);
     static bool rimraf(const QString &dir);
     static void show(const QString &p);
 };

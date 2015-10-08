@@ -1,13 +1,15 @@
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QTabBar>
+#include <QTextCodec>
 #include <QTextStream>
+#include "coder.h"
 #include "coderhighlighter.h"
 #include "constants.h"
 #include "editortabs.h"
 #include "fileutils.h"
 #include "findreplace.h"
-#include "coder.h"
+#include "preferences.h"
 #include "qrc.h"
 #include "runner.h"
 #include "viewer.h"
@@ -258,8 +260,8 @@ void EditorTabs::onFileSave(const int i)
             if (f.open(QIODevice::Text | QIODevice::Truncate | QIODevice::WriteOnly))
             {
                 QTextStream s(&f);
+                s.setCodec(QTextCodec::codecForMib(Preferences::get()->textEncoding()));
                 s.setGenerateByteOrderMark(false);
-                s.setCodec(ENCODING_DEFAULT);
                 s << c->toPlainText();
                 f.close();
             }

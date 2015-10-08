@@ -1,4 +1,3 @@
-keywords \b(true|false)\b
 @include numbers.def
 @include strings.def
 comments #[^\n]*

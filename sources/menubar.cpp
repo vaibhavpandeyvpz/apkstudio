@@ -13,7 +13,7 @@ MenuBar::MenuBar(QWidget *p)
     addEditMenu();
     addProjectMenu();
     addHelpMenu();
-    _connections << connect(this, SIGNAL(projectOpen(QString)), p, SLOT(onMenuBarProjectOpen(QString)));
+    _connections << connect(this, SIGNAL(projectOpen(QString)), p, SLOT(onMenuBarFileOpenDirProxy(QString)));
 }
 
 void MenuBar::addEditMenu()

@@ -16,7 +16,7 @@ private:
     explicit ApkTool(QObject *parent = 0);
 public:
     Result build(const QString &src, const QString &dest);
-    Result decode(const QString &src, const QString &dest);
+    Result decode(const QString &src, const QString &dest, const QString &framework);
     inline Result exec(const QString &arg) { return exec(QStringList(arg)); }
     Result exec(const QStringList &args = QStringList());
     static ApkTool *get();

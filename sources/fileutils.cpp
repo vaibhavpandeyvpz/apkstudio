@@ -6,20 +6,21 @@
 #include <QTextStream>
 #include <QUrl>
 #include "fileutils.h"
+#include "preferences.h"
 
 AS_NAMESPACE_START
 
-QString FileUtils::read(const QString &p, const char *enc)
+QString FileUtils::read(const QString &p)
 {
     QString c;
     QFile file(p);
     if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        QTextStream in(&file);
-        in.setCodec(enc);
-        while (!in.atEnd())
+        QTextStream s(&file);
+        s.setCodec(QTextCodec::codecForMib(Preferences::get()->textEncoding()));
+        while (!s.atEnd())
         {
-            c.append(in.readLine());
+            c.append(s.readLine());
             c.append("\n");
         }
         file.close();

@@ -22,9 +22,15 @@ Process::Result ApkTool::build(const QString &s, const QString &d)
     return exec(QStringList("-f") << "b" << s << "-o" << d);
 }
 
-Process::Result ApkTool::decode(const QString &s, const QString &d)
+Process::Result ApkTool::decode(const QString &s, const QString &d, const QString &f)
 {
-    return exec(QStringList("-f") << "d" << s << "-o" << d);
+    QStringList args("-f");
+    args << "d" << s << "-o" << d;
+    if (!f.isNull() && !f.isEmpty())
+    {
+        args << "-t" << f;
+    }
+    return exec(args);
 }
 
 Process::Result ApkTool::exec(const QStringList &a)

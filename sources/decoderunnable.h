@@ -10,10 +10,11 @@ class DecodeRunnable : public Runnable
 {
     Q_OBJECT
 private:
-    QString _src;
     QString _dest;
+    QString _framework;
+    QString _src;
 public:
-    explicit DecodeRunnable(const QString &src, const QString &dest, QObject *parent = 0);
+    explicit DecodeRunnable(const QString &src, const QString &dest, const QString &framework, QObject *parent = 0);
     void run();
 signals:
     void decodeFailure(const QString &apk);

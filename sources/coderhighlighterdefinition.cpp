@@ -1,37 +1,28 @@
 #include <QFile>
-#include <QTextStream>
 #include "constants.h"
 #include "coderhighlighterdefinition.h"
+#include "fileutils.h"
 
 AS_NAMESPACE_START
 
 CoderHighlighterDefinition::CoderHighlighterDefinition(const QString &p)
 {
-    QFile file(p);
-    if (file.exists() && file.open(QIODevice::ReadOnly | QIODevice::Text))
+    QString contents = FileUtils::read(p);
+    QStringList lines = contents.split(QRegularExpression(REGEX_LF), QString::SkipEmptyParts);
+    for (const QString l : lines)
     {
-        QTextStream in(&file);
-        in.setCodec(ENCODING_DEFAULT);
-        while (!in.atEnd())
+        QStringList p = l.split(QRegularExpression(REGEX_WHITESPACE), QString::SkipEmptyParts);
+        if (p.size() == 2)
         {
-            QString l = in.readLine();
-            if (!l.isNull() && !l.isEmpty())
+            if (QString::compare(p[0], "@include") == 0)
             {
-                QStringList p = l.split(QRegularExpression(REGEX_WHITESPACE), QString::SkipEmptyParts);
-                if (p.size() == 2)
-                {
-                    if (QString::compare(p[0], "@include") == 0)
-                    {
-                        *this << CoderHighlighterDefinition(QString(QRC_HIGHLIGHT).arg(p[1]));
-                    }
-                    else
-                    {
-                        *this << parse(p[0], p[1]);
-                    }
-                }
+                *this << CoderHighlighterDefinition(QString(QRC_HIGHLIGHT).arg(p[1]));
+            }
+            else
+            {
+                *this << parse(p[0], p[1]);
             }
         }
-        file.close();
     }
 }
 

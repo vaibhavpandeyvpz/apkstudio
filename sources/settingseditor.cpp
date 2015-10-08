@@ -3,6 +3,7 @@
 #include <QFormLayout>
 #include <QIcon>
 #include <QPushButton>
+#include <QTextCodec>
 #include "qrc.h"
 #include "preferences.h"
 #include "settingseditor.h"
@@ -22,19 +23,25 @@ SettingsEditor::SettingsEditor(QWidget *p)
     row->addWidget(_binariesPath = new QLineEdit(pr->binariesPath(), this));
     row->addWidget(browse);
     form->addRow(Qrc::text("dialog.settings.form.binaries_path"), row);
-    _javaHeap = new QSpinBox(this);
+    form->addRow(Qrc::text("dialog.settings.form.java_heap"), _javaHeap = new QSpinBox(this));
     _javaHeap->setMinimum(16);
     _javaHeap->setMaximum(4096);
     _javaHeap->setSingleStep(4);
     _javaHeap->setValue(pr->javaHeap());
-    form->addRow(Qrc::text("dialog.settings.form.java_heap"), _javaHeap);
     form->addRow(Qrc::text("dialog.settings.form.show_whitespaces"), _showWhitespaces = new QCheckBox(this));
-    _tabStopWidth = new QSpinBox(this);
+    form->addRow(Qrc::text("dialog.settings.form.tab_stop_width"), _tabStopWidth = new QSpinBox(this));
     _tabStopWidth->setMinimum(1);
     _tabStopWidth->setMaximum(99);
     _tabStopWidth->setSingleStep(1);
     _tabStopWidth->setValue(pr->tabStopWidth());
-    form->addRow(Qrc::text("dialog.settings.form.tab_stop_width"), _tabStopWidth);
+    form->addRow(Qrc::text("dialog.settings.form.text_encoding"), _textEncoding = new QComboBox(this));
+    QList<int> mibs = QTextCodec::availableMibs();
+    for (const int mib : mibs)
+    {
+        QTextCodec *codec = QTextCodec::codecForMib(mib);
+        _textEncoding->addItem(codec->name(), codec->mibEnum());
+    }
+    _textEncoding->setCurrentIndex(_textEncoding->findData(pr->textEncoding()));
     form->addRow(Qrc::text("dialog.settings.form.spaces_for_tabs"), _useSpacesForTabs = new QCheckBox(this));
     _showWhitespaces->setChecked(pr->showWhitespaces());
     _useSpacesForTabs->setChecked(pr->useSpacesForTabs());
@@ -71,6 +78,7 @@ void SettingsEditor::onSaveClicked()
             ->setJavaHeap(_javaHeap->value())
             ->setShowWhitespaces(_showWhitespaces->isChecked())
             ->setTabStopWidth(_tabStopWidth->value())
+            ->setTextEncoding(_textEncoding->itemData(_textEncoding->currentIndex()).toInt())
             ->setUseSpacesForTabs(_useSpacesForTabs->isChecked())
             ->save();
     close();

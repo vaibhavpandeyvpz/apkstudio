@@ -2,6 +2,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QProcess>
 #include <QProgressBar>
 #include <QTimer>
@@ -20,6 +21,7 @@
 #include "menubar.h"
 #include "pathutils.h"
 #include "preferences.h"
+#include "preopenapk.h"
 #include "process.h"
 #include "projectdock.h"
 #include "qrc.h"
@@ -38,6 +40,7 @@ Ide::Ide(QWidget *parent)
     : QMainWindow(parent), _progressDialog(nullptr)
 {
     addToolBar(Qt::TopToolBarArea, new ToolBar(this));
+    setAcceptDrops(true);
     setCentralWidget(new EditorTabs(this));
     setDockOptions(AllowTabbedDocks | AnimatedDocks);
     setMenuBar(new MenuBar(this));
@@ -70,6 +73,36 @@ void Ide::closeEvent(QCloseEvent *e)
     }
 }
 
+void Ide::dropEvent(QDropEvent *e)
+{
+    bool accepted = false;
+    const QMimeData* data = e->mimeData();
+    if (data->hasUrls())
+    {
+        QList<QUrl> urls = data->urls();
+        for (int i = 0; i < urls.size(); i++)
+        {
+            QString p = urls.at(i).toLocalFile();
+            QString suffix = QFileInfo(p).suffix();
+            if (QString::compare(suffix, "apk", Qt::CaseInsensitive) == 0)
+            {
+                onOpenApk(p);
+                accepted = true;
+                break;
+            }
+            else if (QString(EDITOR_EXT_CODER).contains(suffix, Qt::CaseInsensitive) || QString(EDITOR_EXT_VIEWER).contains(suffix, Qt::CaseInsensitive))
+            {
+                onFileOpen(p);
+                accepted = true;
+            }
+        }
+    }
+    if (accepted)
+    {
+        e->acceptProposedAction();
+    }
+}
+
 void Ide::onBuildFailure(const QString &p)
 {
     _statusBar->showMessage(Qrc::text("statusbar.message.build_failure").arg(p));
@@ -88,8 +121,8 @@ void Ide::onDecodeFailure(const QString &a)
 
 void Ide::onDecodeSuccess(const QString &p)
 {
-    emit onMenuBarProjectOpen(p);
     _statusBar->showMessage(Qrc::text("statusbar.message.decode_success").arg(p));
+    onOpenDir(p);
 }
 
 void Ide::onFileChanged(const QString &p)
@@ -168,8 +201,7 @@ void Ide::onMenuBarFileOpenApk()
         {
             QDir dir = d.directory();
             Preferences::get()->setPreviousDir(dir.absolutePath())->save();
-            QString dest = PathUtils::combine(dir.absolutePath(), QFileInfo(files.first()).completeBaseName());
-            Runner::get()->add(new DecodeRunnable(files.first(), dest, this));
+            onOpenApk(files.first());
         }
     }
 }
@@ -186,9 +218,14 @@ void Ide::onMenuBarFileOpenDir()
         {
             QString dir = d.directory().absolutePath();
             Preferences::get()->setPreviousDir(dir)->save();
-            emit onMenuBarProjectOpen(dir);
+            onOpenDir(dir);
         }
     }
+}
+
+void Ide::onMenuBarFileOpenDirProxy(const QString &p)
+{
+    onOpenDir(p);
 }
 
 void Ide::onMenuBarFileOpenFile()
@@ -279,7 +316,7 @@ void Ide::onMenuBarProjectInstall()
     }
 }
 
-void Ide::onMenuBarProjectOpen(const QString &p)
+void Ide::onOpenDir(const QString &p)
 {
     _project = p;
     emit projectOpen(p);
@@ -288,6 +325,16 @@ void Ide::onMenuBarProjectOpen(const QString &p)
     {
         emit fileOpen(manifest);
     }
+}
+
+void Ide::onOpenApk(const QString &p)
+{
+    PreOpenApk *d = new PreOpenApk(p, this);
+    if (d->exec() == QDialog::Accepted)
+    {
+        Runner::get()->add(new DecodeRunnable(d->apk(), d->project(), d->framework(), this));
+    }
+    delete d;
 }
 
 void Ide::onMenuBarProjectReload()

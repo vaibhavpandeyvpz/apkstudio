@@ -6,7 +6,7 @@ AS_NAMESPACE_START
 
 QString Qrc::text(const char *t)
 {
-    return QApplication::translate(TRANSLATION_DOMAIN, t);
+    return QApplication::translate(TRANSLATION_CONTEXT, t);
 }
 
 QIcon Qrc::icon(const QString &n)

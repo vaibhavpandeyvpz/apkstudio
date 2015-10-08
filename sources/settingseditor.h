@@ -2,6 +2,7 @@
 #define SETTINGSEDITOR_H
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include "dialog.h"
@@ -16,6 +17,7 @@ private:
     QSpinBox *_javaHeap;
     QCheckBox *_showWhitespaces;
     QSpinBox *_tabStopWidth;
+    QComboBox *_textEncoding;
     QCheckBox *_useSpacesForTabs;
 private slots:
     void onSaveClicked();

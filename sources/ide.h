@@ -1,6 +1,7 @@
 #ifndef IDE_H
 #define IDE_H
 
+#include <QDropEvent>
 #include <QMainWindow>
 #include <QPointer>
 #include <QProgressDialog>
@@ -20,7 +21,11 @@ private:
     QString _project;
     StatusBar *_statusBar;
 protected:
-    void closeEvent(QCloseEvent *e);
+    void closeEvent(QCloseEvent *event);
+    void dropEvent(QDropEvent* event);
+    inline void dragEnterEvent(QDragEnterEvent *event) { event->acceptProposedAction(); }
+    inline void dragLeaveEvent(QDragLeaveEvent *event) { event->accept(); }
+    inline void dragMoveEvent(QDragMoveEvent *event) { event->acceptProposedAction(); }
 public:
     explicit Ide(QWidget *parent = 0);
     ~Ide();
@@ -48,6 +53,7 @@ public slots:
     inline void onMenuBarFileCloseAll() { emit fileCloseAll(); }
     void onMenuBarFileOpenApk();
     void onMenuBarFileOpenDir();
+    void onMenuBarFileOpenDirProxy(const QString &path);
     void onMenuBarFileOpenFile();
     inline void onMenuBarFileQuit() { close(); }
     inline void onMenuBarFileSave() { emit fileSave(); }
@@ -60,9 +66,10 @@ public slots:
     void onMenuBarHelpFeedbackThanks();
     void onMenuBarProjectBuild();
     void onMenuBarProjectInstall();
-    void onMenuBarProjectOpen(const QString &project);
     void onMenuBarProjectReload();
     void onMenuBarProjectSignExport();
+    void onOpenApk(const QString &apk);
+    void onOpenDir(const QString &project);
     void onRunnableStarted();
     void onRunnableStopped();
     void onSignFailure(const QString &apk);

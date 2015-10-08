@@ -3,9 +3,9 @@
 
 #define APP_NAME "apkstudio/qt5"
 #define APP_ORGANIZATION "vaibhavpandeyvpz"
-#define APP_VERSION "3.0.0-b1"
+#define APP_VERSION "3.0.0-b2"
 
-#define CLI_TIMEOUT 30 * 1000
+#define CLI_TIMEOUT 5 * 60 * 1000
 
 #define COLOR_CODE 0x2ad2c9
 #define COLOR_COMMAND 0xd0d2d3
@@ -15,8 +15,6 @@
 #define EDITOR_EXT_CODER "java|smali|xml|yml"
 #define EDITOR_EXT_VIEWER "gif|jpg|jpeg|png"
 
-#define ENCODING_DEFAULT "UTF-8"
-
 #define FOLDER_BINARIES "binaries"
 
 #define HIGHLIGHTER_THEME "default.theme"
@@ -24,6 +22,7 @@
 
 #define PREF_DEFAULT_JAVA_HEAP 128
 #define PREF_DEFAULT_TAB_STOP_WIDTH 4
+#define PREF_DEFAULT_TEXT_ENCODING "UTF-8"
 
 #define PREF_BIN_PATH "BinPath"
 #define PREF_DOCKS_STATE "DocksState"
@@ -37,6 +36,7 @@
 #define PREF_SIGN_KEYSTORE_PASS "SignKeyStorePass"
 #define PREF_SPACES_FOR_TABS "SpacesForTabs"
 #define PREF_TAB_STOP_WIDTH "TabStopWidth"
+#define PREF_TEXT_ENCODING "TextEncoding"
 #define PREF_WINDOW_MAXIMIZED "WindowMaximized"
 #define PREF_WINDOW_SIZE "WindowSize"
 
@@ -57,7 +57,7 @@
 
 #define TAB_PROPERTY_PATH "SrcPath"
 
-#define TRANSLATION_DOMAIN "apkstudio"
+#define TRANSLATION_CONTEXT "apkstudio"
 
 #define THREADS_MAX 1
 

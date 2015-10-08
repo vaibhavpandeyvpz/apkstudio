@@ -41,7 +41,8 @@ HEADERS += \
     sources/buildrunnable.h \
     sources/installrunnable.h \
     sources/decoderunnable.h \
-    sources/signrunnable.h
+    sources/signrunnable.h \
+    sources/preopenapk.h
 
 OTHER_FILES += \
     .travis.yml \
@@ -52,7 +53,7 @@ OTHER_FILES += \
     resources/highlight/strings.def \
     resources/highlight/xml.def \
     resources/highlight/yml.def \
-    resources/html/about.html \
+    resources/html/about.html \ \
     resources/lang/en.ts \
     resources/styles/default.qss \
     resources/win32.rc \
@@ -103,11 +104,15 @@ SOURCES += \
     sources/signrunnable.cpp \
     sources/runnable.cpp \
     sources/installrunnable.cpp \
-    sources/runner.cpp
+    sources/runner.cpp \
+    sources/preopenapk.cpp
 
 TARGET = apkstudio
 
 TEMPLATE = app
+
+TRANSLATIONS += \
+    resources/lang/en.ts
 
 win32 {
     RC_FILE = resources/win32.rc

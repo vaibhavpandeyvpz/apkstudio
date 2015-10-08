@@ -1,6 +1,7 @@
 #include <QDir>
 #include <QFile>
 #include <QSize>
+#include <QTextCodec>
 #include "constants.h"
 #include "preferences.h"
 
@@ -99,6 +100,12 @@ int Preferences::tabStopWidth()
     return get(PREF_TAB_STOP_WIDTH, PREF_DEFAULT_TAB_STOP_WIDTH).toInt();
 }
 
+int Preferences::textEncoding()
+{
+    int e = get(PREF_TEXT_ENCODING, -1).toInt();
+    return (e < 0) ? QTextCodec::codecForName(PREF_DEFAULT_TEXT_ENCODING)->mibEnum() : e;
+}
+
 bool Preferences::useSpacesForTabs()
 {
     return get(PREF_SPACES_FOR_TABS, false).toBool();
@@ -170,6 +177,11 @@ Preferences *Preferences::setSignKeystorePass(const QString &p)
 Preferences *Preferences::setTabStopWidth(const int w)
 {
     return set(PREF_TAB_STOP_WIDTH, w);
+}
+
+Preferences *Preferences::setTextEncoding(const int c)
+{
+    return set(PREF_TEXT_ENCODING, c);
 }
 
 Preferences *Preferences::setUseSpacesForTabs(const bool u)
