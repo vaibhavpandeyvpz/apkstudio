@@ -1,0 +1,11 @@
+annotations = foreground: #999999, bold: true, underline: true
+attributes = foreground: #000066
+comments = foreground: #bbbbbb
+constants = foreground: #00aa34, bold: true
+keywords = foreground: #000066, bold: true
+namespace = foreground: #000066
+numbers = foreground: #552200
+resources = foreground: #007524, bold: true
+strings = foreground: #007524
+variables = foreground: #0000ff
+whitespaces = foreground: #dedede

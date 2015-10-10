@@ -1,8 +1,0 @@
-@include numbers.def
-keywords \b[A-Za-z0-9_]+(?=[\s/>])
-keywords \b(/?)[A-Za-z0-9_]+-([A-Za-z0-9_]+/?)+(?=[\s/>])
-attributes \b[A-Za-z0-9_]+(?=\=)
-attributes \b(/?)[A-Za-z0-9_]+:([A-Za-z0-9_]+/?)+(?=\=)
-@include strings.def
-resources @([a-zA-Z])+(?=/)
-comments#multiline <!--|[^-]*-([^-][^-]*-)*->
