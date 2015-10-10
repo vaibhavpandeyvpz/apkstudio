@@ -50,7 +50,6 @@ INCLUDEPATH += include
 OTHER_FILES += \
     .gitignore \
     .travis.yml \
-    external/binaries.json \
     res/highlight/default.theme \
     res/highlight/java.def \
     res/highlight/numbers.def \
@@ -121,3 +120,6 @@ TRANSLATIONS += \
     res/lang/en.ts
 
 win32:RC_FILE = res/win32.rc
+
+DISTFILES += \
+    external/updates.json
