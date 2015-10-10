@@ -48,6 +48,7 @@ HEADERS += \
 INCLUDEPATH += include
 
 OTHER_FILES += \
+    .gitignore \
     .travis.yml \
     external/binaries.json \
     res/highlight/default.theme \
