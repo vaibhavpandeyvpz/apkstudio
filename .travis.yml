@@ -17,6 +17,6 @@ script:
  # - g++ --version
  # No more needed
  - source /opt/qt55/bin/qt55-env.sh
- - lrelease resources/lang/en.ts
+ - lrelease res/lang/en.ts
  - qmake apkstudio.pro CONFIG+=release
  - make
