@@ -28,6 +28,7 @@ HEADERS += \
     include/macros.h \
     include/menubar.h \
     include/pathutils.h \
+    include/pleasewait.h \
     include/preferences.h \
     include/preopenapk.h \
     include/process.h \
@@ -97,6 +98,7 @@ SOURCES += \
     src/main.cpp \
     src/menubar.cpp \
     src/pathutils.cpp \
+    src/pleasewait.cpp \
     src/preferences.cpp \
     src/preopenapk.cpp \
     src/process.cpp \
