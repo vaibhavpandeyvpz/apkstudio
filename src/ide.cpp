@@ -258,7 +258,7 @@ void Ide::onMenuBarFileTerminal()
     a << QString("cd /d %1").arg(Preferences::get()->vendorPath());
 #else
     QString c("gnome-terminal");
-    QStringList a(QString("--working-directory=%1").arg(Preferences::get()->binariesPath()));
+    QStringList a(QString("--working-directory=%1").arg(Preferences::get()->vendorPath()));
 #endif
     QProcess::startDetached(c, a);
 }
