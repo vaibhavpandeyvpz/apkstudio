@@ -1,5 +1,5 @@
-#include "dex2jar.h"
-#include "pathutils.h"
+#include "include/dex2jar.h"
+#include "include/pathutils.h"
 
 APP_NAMESPACE_START
 

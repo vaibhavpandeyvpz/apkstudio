@@ -1,8 +1,8 @@
 #include <QDir>
-#include "menubar.h"
-#include "preferences.h"
-#include "qrc.h"
-#include "runner.h"
+#include "include/menubar.h"
+#include "include/preferences.h"
+#include "include/qrc.h"
+#include "include/runner.h"
 
 APP_NAMESPACE_START
 
@@ -18,37 +18,37 @@ MenuBar::MenuBar(QWidget *p)
 
 void MenuBar::addEditMenu()
 {
-    QMenu *m = new QMenu(Qrc::text("menubar.edit"), this);
-    m->addAction(Qrc::text("menubar.edit.undo"), parent(), SLOT(onMenuBarEditUndo()), QKeySequence::Undo);
-    m->addAction(Qrc::text("menubar.edit.redo"), parent(), SLOT(onMenuBarEditRedo()), QKeySequence::Redo);
+    QMenu *m = new QMenu(__("edit", "menubar"), this);
+    m->addAction(__("undo", "menubar"), parent(), SLOT(onMenuBarEditUndo()), QKeySequence::Undo);
+    m->addAction(__("redo", "menubar"), parent(), SLOT(onMenuBarEditRedo()), QKeySequence::Redo);
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.edit.cut"), parent(), SLOT(onMenuBarEditCut()), QKeySequence::Cut);
-    m->addAction(Qrc::text("menubar.edit.copy"), parent(), SLOT(onMenuBarEditCopy()), QKeySequence::Copy);
-    m->addAction(Qrc::text("menubar.edit.paste"), parent(), SLOT(onMenuBarEditPaste()), QKeySequence::Paste);
+    m->addAction(__("cut", "menubar"), parent(), SLOT(onMenuBarEditCut()), QKeySequence::Cut);
+    m->addAction(__("copy", "menubar"), parent(), SLOT(onMenuBarEditCopy()), QKeySequence::Copy);
+    m->addAction(__("paste", "menubar"), parent(), SLOT(onMenuBarEditPaste()), QKeySequence::Paste);
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.edit.find"), parent(), SLOT(onMenuBarEditFind()), QKeySequence::Find);
-    m->addAction(Qrc::text("menubar.edit.replace"), parent(), SLOT(onMenuBarEditReplace()), QKeySequence::Replace);
-    m->addAction(Qrc::text("menubar.edit.goto"), parent(), SLOT(onMenuBarEditGoto()));
+    m->addAction(__("find", "menubar"), parent(), SLOT(onMenuBarEditFind()), QKeySequence::Find);
+    m->addAction(__("replace", "menubar"), parent(), SLOT(onMenuBarEditReplace()), QKeySequence::Replace);
+    m->addAction(__("goto", "menubar"), parent(), SLOT(onMenuBarEditGoto()));
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.edit.settings"), parent(), SLOT(onMenuBarEditSettings()), QKeySequence::Preferences);
+    m->addAction(__("settings", "menubar"), parent(), SLOT(onMenuBarEditSettings()), QKeySequence::Preferences);
     addAction(m->menuAction());
 }
 
 void MenuBar::addFileMenu()
 {
-    QMenu *m = new QMenu(Qrc::text("menubar.file"), this);
-    QMenu *o = new QMenu(Qrc::text("menubar.file.open"), m);
-    o->addAction(Qrc::text("menubar.file.open.apk"), parent(), SLOT(onMenuBarFileOpenApk()), QKeySequence::New);
-    o->addAction(Qrc::text("menubar.file.open.dir"), parent(), SLOT(onMenuBarFileOpenDir()), QKeySequence::Open);
+    QMenu *m = new QMenu(__("file", "menubar"), this);
+    QMenu *o = new QMenu(__("open", "menubar"), m);
+    o->addAction(__("apk", "menubar"), parent(), SLOT(onMenuBarFileOpenApk()), QKeySequence::New);
+    o->addAction(__("directory", "menubar"), parent(), SLOT(onMenuBarFileOpenDir()), QKeySequence::Open);
     o->addSeparator();
-    o->addAction(Qrc::text("menubar.file.open.file"), parent(), SLOT(onMenuBarFileOpenFile()));
+    o->addAction(__("file", "menubar"), parent(), SLOT(onMenuBarFileOpenFile()));
     m->addAction(o->menuAction());
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.file.close"), parent(), SLOT(onMenuBarFileClose()), QKeySequence::Close);
-    m->addAction(Qrc::text("menubar.file.close_all"), parent(), SLOT(onMenuBarFileCloseAll()));
+    m->addAction(__("close", "menubar"), parent(), SLOT(onMenuBarFileClose()), QKeySequence::Close);
+    m->addAction(__("close_all", "menubar"), parent(), SLOT(onMenuBarFileCloseAll()));
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.file.save"), parent(), SLOT(onMenuBarFileSave()), QKeySequence::Save);
-    m->addAction(Qrc::text("menubar.file.save_all"), parent(), SLOT(onMenuBarFileSaveAll()));
+    m->addAction(__("save", "menubar"), parent(), SLOT(onMenuBarFileSave()), QKeySequence::Save);
+    m->addAction(__("save_all", "menubar"), parent(), SLOT(onMenuBarFileSaveAll()));
     m->addSeparator();
     QDir dir(Preferences::get()->previousProject());
     if (dir.exists() && dir.exists("apktool.yml"))
@@ -60,45 +60,46 @@ void MenuBar::addFileMenu()
     }
     else
     {
-        m->addAction(Qrc::text("menubar.file.recent_none"))->setEnabled(false);
+        m->addAction(__("no_recent_project", "menubar"))->setEnabled(false);
     }
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.file.terminal"), parent(), SLOT(onMenuBarFileTerminal()));
+    m->addAction(__("terminal", "menubar"), parent(), SLOT(onMenuBarFileTerminal()));
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.file.quit"), parent(), SLOT(onMenuBarFileQuit()), QKeySequence::Quit);
+    m->addAction(__("quit", "menubar"), parent(), SLOT(onMenuBarFileQuit()), QKeySequence::Quit);
     addAction(m->menuAction());
 }
 
 void MenuBar::addHelpMenu()
 {
-    QMenu *m = new QMenu(Qrc::text("menubar.help"), this);
-    m->addAction(Qrc::text("menubar.help.about"), parent(), SLOT(onMenuBarHelpAbout()));
-    m->addAction(Qrc::text("menubar.help.documentation"), parent(), SLOT(onMenuBarHelpDocumentation()));
+    QMenu *m = new QMenu(__("help", "menubar"), this);
+    m->addAction(__("about", "menubar"), parent(), SLOT(onMenuBarHelpAbout()));
+    m->addAction(__("documentation", "menubar"), parent(), SLOT(onMenuBarHelpDocumentation()));
     m->addSeparator();
-    QMenu *f = new QMenu(Qrc::text("menubar.help.feedback"), m);
-    f->addAction(Qrc::text("menubar.help.feedback.thanks"), parent(), SLOT(onMenuBarHelpFeedbackThanks()));
-    f->addAction(Qrc::text("menubar.help.feedback.issues"), parent(), SLOT(onMenuBarHelpFeedbackIssues()));
+    QMenu *f = new QMenu(__("feedback", "menubar"), m);
+    f->addAction(__("say_thanks", "menubar"), parent(), SLOT(onMenuBarHelpFeedbackThanks()));
+    f->addAction(__("report_issues", "menubar"), parent(), SLOT(onMenuBarHelpFeedbackIssues()));
     m->addAction(f->menuAction());
-    m->addAction(Qrc::text("menubar.help.contribute"), parent(), SLOT(onMenuBarHelpContribute()));
+    m->addAction(__("contribute", "menubar"), parent(), SLOT(onMenuBarHelpContribute()));
     m->addSeparator();
+    m->addAction(__("update", "menubar"), parent(), SLOT(onMenuBarHelpUpdate()));
     addAction(m->menuAction());
 }
 
 void MenuBar::addProjectMenu()
 {
-    QMenu *m = new QMenu(Qrc::text("menubar.project"), this);
-    m->addAction(Qrc::text("menubar.project.reload"), parent(), SLOT(onMenuBarProjectReload()));
+    QMenu *m = new QMenu(__("project", "menubar"), this);
+    m->addAction(__("reload", "menubar"), parent(), SLOT(onMenuBarProjectReload()));
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.project.build"), parent(), SLOT(onMenuBarProjectBuild()), Qt::Key_F5);
+    m->addAction(__("build", "menubar"), parent(), SLOT(onMenuBarProjectBuild()), Qt::Key_F5);
     m->addSeparator();
-    m->addAction(Qrc::text("menubar.project.sign_export"), parent(), SLOT(onMenuBarProjectSignExport()));
-    m->addAction(Qrc::text("menubar.project.install"), parent(), SLOT(onMenuBarProjectInstall()));
+    m->addAction(__("sign_export", "menubar"), parent(), SLOT(onMenuBarProjectSignExport()));
+    m->addAction(__("install", "menubar"), parent(), SLOT(onMenuBarProjectInstall()));
     addAction(m->menuAction());
 }
 
 MenuBar::~MenuBar()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

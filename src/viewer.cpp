@@ -1,5 +1,5 @@
-#include "flickcharm.h"
-#include "viewer.h"
+#include "include/flickcharm.h"
+#include "include/viewer.h"
 
 APP_NAMESPACE_START
 
@@ -57,7 +57,7 @@ void Viewer::zoomReset()
 
 Viewer::~Viewer()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

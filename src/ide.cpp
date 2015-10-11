@@ -6,33 +6,32 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QTimer>
-#include "adbdock.h"
-#include "buildrunnable.h"
-#include "constants.h"
-#include "editortabs.h"
-#include "coderhighlighterdefinition.h"
-#include "coderhighlightertheme.h"
-#include "decoderunnable.h"
-#include "ide.h"
-#include "fileutils.h"
-#include "installrunnable.h"
-#include "jarsignerdock.h"
-#include "javadock.h"
-#include "menubar.h"
-#include "pathutils.h"
-#include "preferences.h"
-#include "preopenapk.h"
-#include "process.h"
-#include "projectdock.h"
-#include "qrc.h"
-#include "runner.h"
-#include "settingseditor.h"
-#include "signexportapk.h"
-#include "signrunnable.h"
-#include "statusbar.h"
-#include "textutils.h"
-#include "toolbar.h"
-#include "zipaligndock.h"
+#include "include/adbdock.h"
+#include "include/buildrunnable.h"
+#include "include/constants.h"
+#include "include/editortabs.h"
+#include "include/decoderunnable.h"
+#include "include/ide.h"
+#include "include/fileutils.h"
+#include "include/installrunnable.h"
+#include "include/jarsignerdock.h"
+#include "include/javadock.h"
+#include "include/menubar.h"
+#include "include/pathutils.h"
+#include "include/preferences.h"
+#include "include/preopenapk.h"
+#include "include/process.h"
+#include "include/projectdock.h"
+#include "include/qrc.h"
+#include "include/runner.h"
+#include "include/settingseditor.h"
+#include "include/signexportapk.h"
+#include "include/signrunnable.h"
+#include "include/statusbar.h"
+#include "include/textutils.h"
+#include "include/toolbar.h"
+#include "include/updatevendorbinaries.h"
+#include "include/zipaligndock.h"
 
 APP_NAMESPACE_START
 
@@ -46,15 +45,13 @@ Ide::Ide(QWidget *parent)
     setMenuBar(new MenuBar(this));
     setMinimumSize(800, 600);
     setStatusBar(_statusBar = new StatusBar(this));
-#ifdef Q_OS_LINUX
     setWindowIcon(QIcon(Qrc::image("logo")));
-#endif
-    setWindowTitle(Qrc::text("ide.title"));
+    setWindowTitle(__("ide", "titles"));
 }
 
 void Ide::closeEvent(QCloseEvent *e)
 {
-    QMessageBox mb(QMessageBox::Question, Qrc::text("dialog.quit.title"), Qrc::text("dialog.quit.message"));
+    QMessageBox mb(QMessageBox::Question, __("quit", "titles"), __("quit", "messages"));
     mb.addButton(QMessageBox::Yes);
     mb.addButton(QMessageBox::No);
     mb.setWindowIcon(Qrc::icon("dialog_quit"));
@@ -108,36 +105,35 @@ void Ide::dropEvent(QDropEvent *e)
 
 void Ide::onBuildFailure(const QString &p)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.build_failure").arg(p));
+    _statusBar->showMessage(__("build_failure", "messages", p));
 }
 
 void Ide::onBuildSuccess(const QString &a)
 {
     _apk = a;
-    _statusBar->showMessage(Qrc::text("statusbar.message.build_success").arg(a));
+    _statusBar->showMessage(__("build_success", "messages", a));
 }
 
 void Ide::onDecodeFailure(const QString &a)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.decode_failure").arg(a));
+    _statusBar->showMessage(__("decode_failure", "messages", a));
 }
 
 void Ide::onDecodeSuccess(const QString &p)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.decode_success").arg(p));
     onOpenDir(p);
+    _statusBar->showMessage(__("decode_success", "messages", p));
 }
 
 void Ide::onFileChanged(const QString &p)
 {
     if (p.isEmpty())
     {
-        setWindowTitle(Qrc::text("ide.title"));
+        setWindowTitle(__("ide", "titles"));
     }
     else
     {
-        QFileInfo fi(p);
-        setWindowTitle(Qrc::text("ide.title.alt").arg(fi.fileName()));
+        setWindowTitle(__("ide_alt", "titles", QFileInfo(p).fileName()));
     }
 }
 
@@ -148,7 +144,7 @@ void Ide::onFileOpen(const QString &p)
 
 void Ide::onFileSaved(const QString &p)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.file_saved").arg(p));
+    _statusBar->showMessage(__("file_saved", "messages", p));
 }
 
 void Ide::onInit()
@@ -175,16 +171,20 @@ void Ide::onInit()
     addDockWidget(Qt::BottomDockWidgetArea, adb);
     tabifyDockWidget(jarSigner, adb);
     restoreState(p->docksState());
+    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
+    {
+        onMenuBarHelpUpdate();
+    }
 }
 
 void Ide::onInstallFailure(const QString &a)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.install_failure").arg(a));
+    _statusBar->showMessage(__("install_failure", "messages", a));
 }
 
 void Ide::onInstallSuccess(const QString &a)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.install_success").arg(a));
+    _statusBar->showMessage(__("install_success", "messages", a));
 }
 
 void Ide::onMenuBarEditSettings()
@@ -194,7 +194,7 @@ void Ide::onMenuBarEditSettings()
 
 void Ide::onMenuBarFileOpenApk()
 {
-    QFileDialog d(this, Qrc::text("dialog.open.apk.title"), Preferences::get()->previousDir(), Qrc::text("dialog.open.apk.filter"));
+    QFileDialog d(this, __("choose_apk", "titles"), Preferences::get()->previousDir(), __("apk", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFile);
     if (d.exec() == QFileDialog::Accepted)
@@ -211,7 +211,7 @@ void Ide::onMenuBarFileOpenApk()
 
 void Ide::onMenuBarFileOpenDir()
 {
-    QFileDialog d(this, Qrc::text("dialog.open.dir.title"), Preferences::get()->previousDir(), Qrc::text("dialog.open.dir.filter"));
+    QFileDialog d(this, __("choose_exiting_project", "titles"), Preferences::get()->previousDir(), __("apktool_yml", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFile);
     if (d.exec() == QFileDialog::Accepted)
@@ -233,7 +233,7 @@ void Ide::onMenuBarFileOpenDirProxy(const QString &p)
 
 void Ide::onMenuBarFileOpenFile()
 {
-    QFileDialog d(this, Qrc::text("dialog.open.file.title"), Preferences::get()->previousDir(), Qrc::text("dialog.open.file.filter"));
+    QFileDialog d(this, __("choose_editable_files", "titles"), Preferences::get()->previousDir(), __("editable", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFiles);
     if (d.exec() == QFileDialog::Accepted)
@@ -255,7 +255,7 @@ void Ide::onMenuBarFileTerminal()
 #ifdef Q_OS_WIN
     QString c("cmd.exe");
     QStringList a("/k");
-    a << QString("cd /d %1").arg(Preferences::get()->binariesPath());
+    a << QString("cd /d %1").arg(Preferences::get()->vendorPath());
 #else
     QString c("gnome-terminal");
     QStringList a(QString("--working-directory=%1").arg(Preferences::get()->binariesPath()));
@@ -268,9 +268,9 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(Qrc::text("dialog.about.version").arg(APP_VERSION));
+    box.setText(__("app_version", "messages", APP_VERSION));
     box.setWindowIcon(Qrc::icon("dialog_about"));
-    box.setWindowTitle(Qrc::text("dialog.about.title"));
+    box.setWindowTitle(__("about", "titles"));
     box.exec();
 }
 
@@ -294,11 +294,16 @@ void Ide::onMenuBarHelpFeedbackThanks()
     QDesktopServices::openUrl(QUrl(URL_THANKS));
 }
 
+void Ide::onMenuBarHelpUpdate()
+{
+    (new UpdateVendorBinaries(this))->exec();
+}
+
 void Ide::onMenuBarProjectBuild()
 {
     if (_project.isNull() || _project.isEmpty())
     {
-        QMessageBox::warning(this, Qrc::text("dialog.warning.no_project.title"), Qrc::text("dialog.warning.no_project.message"), QMessageBox::Close);
+        QMessageBox::warning(this, __("no_project", "titles"), __("no_project", "messages"), QMessageBox::Close);
     }
     else
     {
@@ -311,7 +316,7 @@ void Ide::onMenuBarProjectInstall()
 
     if (_apk.isNull() || _apk.isEmpty())
     {
-        QMessageBox::warning(this, Qrc::text("dialog.warning.no_apk.title"), Qrc::text("dialog.warning.no_apk.message"), QMessageBox::Close);
+        QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
     }
     else
     {
@@ -319,14 +324,26 @@ void Ide::onMenuBarProjectInstall()
     }
 }
 
-void Ide::onOpenDir(const QString &p)
+void Ide::onMenuBarProjectReload()
 {
-    _project = p;
-    emit projectOpen(p);
-    QString manifest;
-    if (QFile::exists(manifest = PathUtils::combine(p, "AndroidManifest.xml")))
+    emit projectReload();
+}
+
+void Ide::onMenuBarProjectSignExport()
+{
+
+    if (_apk.isNull() || _apk.isEmpty())
     {
-        emit fileOpen(manifest);
+        QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
+    }
+    else
+    {
+        SignExportApk *s = new SignExportApk(this);
+        if (s->exec() == Dialog::Accepted)
+        {
+            Runner::get()->add(new SignRunnable(_apk, s->keystore(), s->keystorePass(), s->key(), s->keyPass(), this));
+        }
+        delete s;
     }
 }
 
@@ -340,26 +357,14 @@ void Ide::onOpenApk(const QString &p)
     delete d;
 }
 
-void Ide::onMenuBarProjectReload()
+void Ide::onOpenDir(const QString &p)
 {
-    emit projectReload();
-}
-
-void Ide::onMenuBarProjectSignExport()
-{
-
-    if (_apk.isNull() || _apk.isEmpty())
+    _project = p;
+    emit projectOpen(p);
+    QString manifest;
+    if (QFile::exists(manifest = PathUtils::combine(p, "AndroidManifest.xml")))
     {
-        QMessageBox::warning(this, Qrc::text("dialog.warning.no_apk.title"), Qrc::text("dialog.warning.no_apk.message"), QMessageBox::Close);
-    }
-    else
-    {
-        SignExportApk *s = new SignExportApk(this);
-        if (s->exec() == Dialog::Accepted)
-        {
-            Runner::get()->add(new SignRunnable(_apk, s->keystore(), s->keystorePass(), s->key(), s->keyPass(), this));
-        }
-        delete s;
+        emit fileOpen(manifest);
     }
 }
 
@@ -370,7 +375,7 @@ void Ide::onRunnableStarted()
     _progressDialog = new QProgressDialog(this, Qt::CustomizeWindowHint);
     _progressDialog->setBar(bar = new QProgressBar(_progressDialog));
     _progressDialog->setCancelButton(nullptr);
-    _progressDialog->setLabelText(Qrc::text("dialog.waiting.message"));
+    _progressDialog->setLabelText(__("please_wait", "messages"));
     _progressDialog->setRange(0, 0);
     _progressDialog->setWindowModality(Qt::WindowModal);
     _progressDialog->show();
@@ -388,26 +393,26 @@ void Ide::onRunnableStopped()
 
 void Ide::onSignFailure(const QString &a)
 {
-    _statusBar->showMessage(Qrc::text("statusbar.message.sign_failure").arg(a));
+    _statusBar->showMessage(__("sign_failure", "messages", a));
 }
 
 void Ide::onSignSuccess(const QString &a)
 {
     QMessageBox mb;
-    mb.addButton(Qrc::text("dialog.sign.success.open_folder"), QMessageBox::AcceptRole);
+    mb.addButton(__("open_folder", "buttons"), QMessageBox::AcceptRole);
     mb.addButton(QMessageBox::Close);
-    mb.setText(Qrc::text("dialog.sign.success.message"));
-    mb.setWindowTitle(Qrc::text("dialog.sign.success.title"));
+    mb.setText(__("apk_signed", "messages"));
+    mb.setWindowTitle(__("apk_signed", "titles"));
     if (mb.exec() != QMessageBox::Close)
     {
         FileUtils::show(a);
     }
-    _statusBar->showMessage(Qrc::text("statusbar.message.sign_success").arg(a));
+    _statusBar->showMessage(__("sign_success", "messages", a));
 }
 
 Ide::~Ide()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

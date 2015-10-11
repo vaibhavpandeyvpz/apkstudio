@@ -1,12 +1,7 @@
 {
-    "common": {
-        "apktool.jar": {
-            "url": "https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.0.1.jar",
-            "version": "2.0.0"
-        },
-        "dex2jar.zip": {
-            "url": "https://bitbucket.org/pxb1988/dex2jar/downloads/dex2jar-2.0.zip",
-            "version": "2.0.0"
-        }
-    }
+    "binpack": [{
+        "platform": "any",
+        "url": "https://dl.bintray.com/vaibhavpandeyvpz/generic/apkstudio/1.0.0/binpack.zip",
+        "version": "1.0.0"
+    }]
 }

@@ -2,13 +2,16 @@
 #include <QFile>
 #include <QSize>
 #include <QTextCodec>
-#include "constants.h"
-#include "preferences.h"
+#include "include/constants.h"
+#include "include/pathutils.h"
+#include "include/preferences.h"
+
+APP_NAMESPACE_START
 
 Preferences* Preferences::_self = nullptr;
 
-Preferences::Preferences(QSettings *settings)
-    : _settings(settings)
+Preferences::Preferences(const QString &p)
+    : _appPath(p), _settings(new QSettings(PathUtils::combine(p, FILE_PREFERENCES), QSettings::IniFormat))
 {
 }
 
@@ -16,7 +19,7 @@ Preferences *Preferences::get()
 {
     if (!_self)
     {
-        _self = new Preferences(new QSettings(QSettings::IniFormat, QSettings::UserScope, APP_ORGANIZATION, APP_NAME));
+        _self = new Preferences(PathUtils::combine(QDir::homePath(), FOLDER_APP));
     }
     return _self;
 }
@@ -40,9 +43,9 @@ Preferences *Preferences::set(const QString &k, const QVariant &v)
 /**
  * @brief Getters
  */
-QString Preferences::binariesPath()
+QString Preferences::appPath()
 {
-    return get(PREF_BIN_PATH).toString();
+    return _appPath;
 }
 
 QByteArray Preferences::docksState()
@@ -111,6 +114,16 @@ bool Preferences::useSpacesForTabs()
     return get(PREF_SPACES_FOR_TABS, false).toBool();
 }
 
+QString Preferences::vendorPath()
+{
+    QString pref = get(PREF_VENDOR_PATH).toString();
+    if (pref.isNull() || pref.isEmpty())
+    {
+        return PathUtils::combine(appPath(), FOLDER_VENDOR);
+    }
+    return pref;
+}
+
 bool Preferences::wasWindowMaximized()
 {
     return get(PREF_WINDOW_MAXIMIZED).toBool();
@@ -124,11 +137,6 @@ QSize Preferences::windowSize()
 /**
  * @brief Setters
  */
-Preferences *Preferences::setBinariesPath(const QString &p)
-{
-    return set(PREF_BIN_PATH, p);
-}
-
 Preferences *Preferences::setDocksState(const QByteArray &s)
 {
     return set(PREF_DOCKS_STATE, s);
@@ -188,6 +196,10 @@ Preferences *Preferences::setUseSpacesForTabs(const bool u)
 {
     return set(PREF_SPACES_FOR_TABS, u);
 }
+Preferences *Preferences::setVendorPath(const QString &p)
+{
+    return set(PREF_VENDOR_PATH, p);
+}
 
 Preferences *Preferences::setWindowMaximized(bool m)
 {
@@ -198,3 +210,5 @@ Preferences *Preferences::setWindowSize(const QSize &s)
 {
     return set(PREF_WINDOW_SIZE, s);
 }
+
+APP_NAMESPACE_END

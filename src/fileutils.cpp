@@ -5,8 +5,8 @@
 #include <QTextCodec>
 #include <QTextStream>
 #include <QUrl>
-#include "fileutils.h"
-#include "preferences.h"
+#include "include/fileutils.h"
+#include "include/preferences.h"
 
 APP_NAMESPACE_START
 

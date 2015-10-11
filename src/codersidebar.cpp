@@ -1,7 +1,7 @@
 #include <QPainter>
-#include "coder.h"
-#include "codersidebar.h"
-#include "constants.h"
+#include "include/coder.h"
+#include "include/codersidebar.h"
+#include "include/constants.h"
 
 APP_NAMESPACE_START
 

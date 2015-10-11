@@ -1,7 +1,7 @@
 #include <QFile>
-#include "constants.h"
-#include "coderhighlighterdefinition.h"
-#include "fileutils.h"
+#include "include/constants.h"
+#include "include/coderhighlighterdefinition.h"
+#include "include/fileutils.h"
 
 APP_NAMESPACE_START
 

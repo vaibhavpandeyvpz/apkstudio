@@ -1,5 +1,5 @@
-#include "buildrunnable.h"
-#include "apktool.h"
+#include "include/buildrunnable.h"
+#include "include/apktool.h"
 
 APP_NAMESPACE_START
 

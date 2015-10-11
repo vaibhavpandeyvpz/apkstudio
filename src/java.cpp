@@ -1,6 +1,6 @@
-#include "constants.h"
-#include "java.h"
-#include "preferences.h"
+#include "include/constants.h"
+#include "include/java.h"
+#include "include/preferences.h"
 
 APP_NAMESPACE_START
 

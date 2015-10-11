@@ -1,14 +1,14 @@
 #include <QDir>
 #include <QFileIconProvider>
 #include <QHeaderView>
-#include "preferences.h"
-#include "projectdock.h"
-#include "qrc.h"
+#include "include/preferences.h"
+#include "include/projectdock.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 ProjectDock::ProjectDock(QWidget *p)
-    : QDockWidget(Qrc::text("dock.project.title"), p)
+    : QDockWidget(__("project", "docks"), p)
 {
     _connections << connect(this, SIGNAL(fileOpen(QString)), p, SLOT(onFileOpen(QString)));
     _connections << connect(p, SIGNAL(projectOpen(QString)), this, SLOT(onProjectOpen(QString)));
@@ -95,7 +95,7 @@ void ProjectDock::onProjectReload()
 
 ProjectDock::~ProjectDock()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

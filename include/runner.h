@@ -11,8 +11,7 @@ class Runner : public QObject
 {
     Q_OBJECT
 protected:
-    AS_CONNECTIONS_LIST
-private:
+    APP_CONNECTIONS_LIST
     QThreadPool *_pool;
     static Runner *_self;
 public:

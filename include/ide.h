@@ -15,7 +15,7 @@ class Ide : public QMainWindow
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     QString _apk;
     QPointer<QProgressDialog> _progressDialog;
     QString _project;
@@ -64,6 +64,7 @@ public slots:
     void onMenuBarHelpDocumentation();
     void onMenuBarHelpFeedbackIssues();
     void onMenuBarHelpFeedbackThanks();
+    void onMenuBarHelpUpdate();
     void onMenuBarProjectBuild();
     void onMenuBarProjectInstall();
     void onMenuBarProjectReload();

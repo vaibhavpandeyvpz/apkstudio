@@ -1,8 +1,8 @@
 #include <QFile>
-#include "jarsigner.h"
-#include "pathutils.h"
-#include "signrunnable.h"
-#include "zipalign.h"
+#include "include/jarsigner.h"
+#include "include/pathutils.h"
+#include "include/signrunnable.h"
+#include "include/zipalign.h"
 
 APP_NAMESPACE_START
 

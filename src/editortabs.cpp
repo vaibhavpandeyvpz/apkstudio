@@ -3,16 +3,16 @@
 #include <QTabBar>
 #include <QTextCodec>
 #include <QTextStream>
-#include "coder.h"
-#include "coderhighlighter.h"
-#include "constants.h"
-#include "editortabs.h"
-#include "fileutils.h"
-#include "findreplace.h"
-#include "preferences.h"
-#include "qrc.h"
-#include "runner.h"
-#include "viewer.h"
+#include "include/coder.h"
+#include "include/coderhighlighter.h"
+#include "include/constants.h"
+#include "include/editortabs.h"
+#include "include/fileutils.h"
+#include "include/findreplace.h"
+#include "include/preferences.h"
+#include "include/qrc.h"
+#include "include/runner.h"
+#include "include/viewer.h"
 
 APP_NAMESPACE_START
 
@@ -113,7 +113,7 @@ void EditorTabs::onEditGoto()
         if (w && (c = dynamic_cast<Coder *>(w)))
         {
             bool ok;
-            int r = QInputDialog::getInt(this, Qrc::text("dialog.goto.title"), Qrc::text("dialog.goto.message"), 1, 1, c->document()->blockCount(), 1, &ok);
+            int r = QInputDialog::getInt(this, __("goto", "titles"), __("line_no", "forms"), 1, 1, c->document()->blockCount(), 1, &ok);
             if (ok)
             {
                 c->setTextCursor(QTextCursor(c->document()->findBlockByLineNumber(r - 1)));
@@ -299,7 +299,7 @@ void EditorTabs::onTabMoved(const int from, const int to)
 
 EditorTabs::~EditorTabs()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

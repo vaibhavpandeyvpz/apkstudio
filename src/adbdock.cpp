@@ -1,11 +1,11 @@
-#include "adb.h"
-#include "adbdock.h"
-#include "qrc.h"
+#include "include/adb.h"
+#include "include/adbdock.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 AdbDock::AdbDock(QWidget *parent)
-    : ConsoleDock(Qrc::text("dock.adb.title"), "adb", parent)
+    : ConsoleDock(__("adb", "docks"), "adb", parent)
 {
     setContentsMargins(2, 2, 2, 2);
     setObjectName("AdbDock");

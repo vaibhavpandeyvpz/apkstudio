@@ -1,4 +1,4 @@
-#include "dialog.h"
+#include "include/dialog.h"
 
 APP_NAMESPACE_START
 
@@ -15,7 +15,7 @@ Dialog::Dialog(const QString &t, QWidget *p)
 
 Dialog::~Dialog()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

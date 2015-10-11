@@ -1,22 +1,22 @@
 #include <QIcon>
-#include "qrc.h"
-#include "toolbar.h"
+#include "include/qrc.h"
+#include "include/toolbar.h"
 
 APP_NAMESPACE_START
 
 ToolBar::ToolBar(QWidget *p)
     : QToolBar(p)
 {
-    addAction(Qrc::icon("toolbar_apk"), Qrc::text("toolbar.item.apk"), p, SLOT(onMenuBarFileOpenApk()));
-    addAction(Qrc::icon("toolbar_dir"), Qrc::text("toolbar.item.dir"), p, SLOT(onMenuBarFileOpenDir()));
+    addAction(Qrc::icon("toolbar_apk"), __("apk", "toolbar"), p, SLOT(onMenuBarFileOpenApk()));
+    addAction(Qrc::icon("toolbar_dir"), __("directory", "toolbar"), p, SLOT(onMenuBarFileOpenDir()));
     addSeparator();
-    addAction(Qrc::icon("toolbar_save"), Qrc::text("toolbar.item.save"), p, SLOT(onMenuBarFileSave()));
+    addAction(Qrc::icon("toolbar_save"), __("save", "toolbar"), p, SLOT(onMenuBarFileSave()));
     addSeparator();
-    addAction(Qrc::icon("toolbar_build"), Qrc::text("toolbar.item.build"), p, SLOT(onMenuBarProjectBuild()));
-    addAction(Qrc::icon("toolbar_sign"), Qrc::text("toolbar.item.sign"), p, SLOT(onMenuBarProjectSignExport()));
+    addAction(Qrc::icon("toolbar_build"), __("build", "toolbar"), p, SLOT(onMenuBarProjectBuild()));
+    addAction(Qrc::icon("toolbar_sign"), __("sign", "toolbar"), p, SLOT(onMenuBarProjectSignExport()));
     addSeparator();
-    addAction(Qrc::icon("toolbar_terminal"), Qrc::text("toolbar.item.terminal"), p, SLOT(onMenuBarFileTerminal()));
-    addAction(Qrc::icon("toolbar_settings"), Qrc::text("toolbar.item.settings"), p, SLOT(onMenuBarEditSettings()));
+    addAction(Qrc::icon("toolbar_terminal"), __("terminal", "toolbar"), p, SLOT(onMenuBarFileTerminal()));
+    addAction(Qrc::icon("toolbar_settings"), __("settings", "toolbar"), p, SLOT(onMenuBarEditSettings()));
     setObjectName("ToolBar");
 }
 

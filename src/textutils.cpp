@@ -1,4 +1,4 @@
-#include "textutils.h"
+#include "include/textutils.h"
 
 QString TextUtils::ltrim(const QString& str, const QChar &chr)
 {

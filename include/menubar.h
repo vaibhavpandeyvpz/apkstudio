@@ -10,7 +10,7 @@ class MenuBar : public QMenuBar
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
 private:
     void addEditMenu();
     void addFileMenu();

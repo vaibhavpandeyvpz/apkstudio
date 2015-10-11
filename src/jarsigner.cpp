@@ -1,5 +1,5 @@
-#include "jarsigner.h"
-#include "constants.h"
+#include "include/constants.h"
+#include "include/jarsigner.h"
 
 APP_NAMESPACE_START
 

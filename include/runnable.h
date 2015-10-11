@@ -11,7 +11,7 @@ class Runnable : public QObject, public QRunnable
 {
     Q_OBJECT
 protected:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
 public:
     explicit Runnable(QObject *parent = 0);
     ~Runnable();

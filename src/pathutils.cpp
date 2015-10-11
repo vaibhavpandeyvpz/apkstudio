@@ -1,13 +1,9 @@
-#include <QCoreApplication>
 #include <QDir>
 #include <QStandardPaths>
-#include "constants.h"
-#include "pathutils.h"
-#include "preferences.h"
-#include "textutils.h"
-#ifdef Q_OS_WIN
-//#include "windows.h"
-#endif
+#include "include/constants.h"
+#include "include/pathutils.h"
+#include "include/preferences.h"
+#include "include/textutils.h"
 
 APP_NAMESPACE_START
 
@@ -18,15 +14,10 @@ QString PathUtils::combine(const QString &l, const QString &r)
 
 QString PathUtils::find(const QString &exe)
 {
-    QString binary;
-    if (QFile::exists(binary = PathUtils::combine(Preferences::get()->binariesPath(), exe)))
+    QString vendor;
+    if (QFile::exists(vendor = PathUtils::combine(Preferences::get()->vendorPath(), exe)))
     {
-        return binary;
-    }
-    QString relative;
-    if (QFile::exists(relative = PathUtils::combine(QCoreApplication::applicationDirPath(), PathUtils::combine(FOLDER_BINARIES, exe))))
-    {
-        return relative;
+        return vendor;
     }
     if (QFile::exists(exe))
     {
@@ -38,18 +29,6 @@ QString PathUtils::find(const QString &exe)
         return bin;
     }
     QDir tmp;
-#ifdef Q_OS_WIN
-//    WCHAR b[MAX_PATH];
-//    GetSystemDirectory(b, MAX_PATH);
-//    QString sys = QString::fromWCharArray(b);
-//    if (!sys.isEmpty() && (tmp = QDir(sys)).exists())
-//    {
-//        if (QFile::exists(bin = tmp.absoluteFilePath(exec)))
-//        {
-//            return bin;
-//        }
-//    }
-#endif
     QString jdk(qgetenv("JAVA_HOME"));
     if (!jdk.isEmpty() && (tmp = QDir(PathUtils::combine(jdk, "bin"))).exists())
     {

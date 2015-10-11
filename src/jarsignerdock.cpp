@@ -1,11 +1,11 @@
-#include "jarsigner.h"
-#include "jarsignerdock.h"
-#include "qrc.h"
+#include "include/jarsigner.h"
+#include "include/jarsignerdock.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 JarSignerDock::JarSignerDock(QWidget *parent)
-    : ConsoleDock(Qrc::text("dock.jarsigner.title"), "jarsigner", parent)
+    : ConsoleDock(__("jar_signer", "docks"), "jarsigner", parent)
 {
     setContentsMargins(2, 2, 2, 2);
     setObjectName("JarSignerDock");

@@ -6,12 +6,20 @@
 #include <QList>
 #include <QMouseEvent>
 #include <QScrollBar>
-#include "flickcharm.h"
+#include "include/flickcharm.h"
 
 APP_NAMESPACE_START
 
-struct FlickData {
-    typedef enum { Steady, Pressed, ManualScroll, AutoScroll, Stop } State;
+struct FlickData
+{
+    typedef enum
+    {
+        Steady,
+        Pressed,
+        ManualScroll,
+        AutoScroll,
+        Stop
+    } State;
     State state;
     QWidget *widget;
     QPoint pressPos;

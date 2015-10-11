@@ -1,12 +1,11 @@
 #include <QIcon>
-#include "constants.h"
-#include "qrc.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
-QString Qrc::text(const char *t)
+QString Qrc::text(const char *t, const char* c)
 {
-    return QApplication::translate(TRANSLATION_CONTEXT, t);
+    return QApplication::translate(c, t);
 }
 
 QIcon Qrc::icon(const QString &n)

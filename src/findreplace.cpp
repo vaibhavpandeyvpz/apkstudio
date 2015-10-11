@@ -5,28 +5,28 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
-#include "findreplace.h"
-#include "qrc.h"
+#include "include/findreplace.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 FindReplace::FindReplace(const bool r, QWidget *p)
-    : Dialog(Qrc::text(r ? "dialog.replace.title" : "dialog.find.title"), p), _editor(nullptr), _replace(r)
+    : Dialog(__(r ? "find_replace" : "find", "titles"), p), _editor(nullptr), _replace(r)
 {
     resize(QSize(360, 256));
     setMinimumSize(QSize(320, 192));
     setMaximumSize(QSize(480, 320));
     // Form : Start
     auto buttons = new QDialogButtonBox(this);
-    auto find = new QPushButton(Qrc::text("dialog.find.buttons.find"), buttons);
-    auto replace = new QPushButton(Qrc::text("dialog.find.buttons.replace"), buttons);
-    auto replaceAll = new QPushButton(Qrc::text("dialog.find.buttons.replace_all"), buttons);
-    auto groupDirection = new QGroupBox(Qrc::text("dialog.find.group.direction"), this);
-    auto groupFlags = new QGroupBox(Qrc::text("dialog.find.group.flags"), this);
+    auto find = new QPushButton(__("find", "buttons"), buttons);
+    auto replace = new QPushButton(__("replace", "buttons"), buttons);
+    auto replaceAll = new QPushButton(__("replace_all", "buttons"), buttons);
+    auto groupDirection = new QGroupBox(__("direction", "forms"), this);
+    auto groupFlags = new QGroupBox(__("flags", "forms"), this);
     _replaceWith = new QLineEdit(this);
     _searchFor = new QLineEdit(this);
     // Direction
-    auto directionUp = new QRadioButton(Qrc::text("dialog.find.radio.up"), this);
+    auto directionUp = new QRadioButton(__("up", "forms"), this);
     // Layout
     auto content = new QVBoxLayout;
     auto directions = new QVBoxLayout;
@@ -39,12 +39,12 @@ FindReplace::FindReplace(const bool r, QWidget *p)
     buttons->addButton(replace, QDialogButtonBox::ActionRole);
     buttons->addButton(replaceAll, QDialogButtonBox::ActionRole);
     directions->addWidget(directionUp);
-    directions->addWidget(_directionDown = new QRadioButton(Qrc::text("dialog.find.radio.down"), this));
-    flags->addWidget(_caseSensitive = new QCheckBox(Qrc::text("dialog.find.check.case_sensitive"), this));
-    flags->addWidget(_wholeText = new QCheckBox(Qrc::text("dialog.find.check.whole_text"), this));
-    flags->addWidget(_useRegex = new QCheckBox(Qrc::text("dialog.find.check.use_regex"), this));
-    form->addRow(Qrc::text("dialog.find.form.search_for"), _searchFor);
-    form->addRow(Qrc::text("dialog.find.form.replace_with"), _replaceWith);
+    directions->addWidget(_directionDown = new QRadioButton(__("down", "forms"), this));
+    flags->addWidget(_caseSensitive = new QCheckBox(__("case_sensitive", "forms"), this));
+    flags->addWidget(_wholeText = new QCheckBox(__("whole_text", "forms"), this));
+    flags->addWidget(_useRegex = new QCheckBox(__("use_regex", "forms"), this));
+    form->addRow(__("search_for", "forms"), _searchFor);
+    form->addRow(__("replace_with", "forms"), _replaceWith);
     content->addLayout(form);
     content->addLayout(options);
     groupDirection->setLayout(directions);
