@@ -1,6 +1,6 @@
 APK Studio is a **cross-platform** IDE for reverse-engineering (decompiling/editing) & recompiling of android application binaries within a single user-interface. It features a friendly IDE like layout, with a code editor which support syntax highlighting for Android SMALI (*.smali) code files.
 
-[![Build Status](https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg?branch=master)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio)
+[![Current Release](https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio.svg)](https://github.com/vaibhavpandeyvpz/apkstudio/releases) [![Build Status](https://img.shields.io/travis/vaibhavpandeyvpz/apkstudio.svg?style=flat-square)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio) [![Downloads](https://img.shields.io/github/downloads/vaibhavpandeyvpz/apkstudio/latest/total.svg?style=flat-square)](https://github.com/vaibhavpandeyvpz/apkstudio/releases) [![GPL v3](https://img.shields.io/github/license/vaibhavpandeyvpz/apkstudio.svg?style=flat-square)](https://github.com/vaibhavpandeyvpz/apkstudio/blob/master/LICENSE.md)
 
 Instructions
 --------

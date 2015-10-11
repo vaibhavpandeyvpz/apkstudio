@@ -3,15 +3,15 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "preferences.h"
-#include "runner.h"
-#include "signexportapk.h"
-#include "qrc.h"
+#include "include/preferences.h"
+#include "include/runner.h"
+#include "include/signexportapk.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 SignExportApk::SignExportApk(QWidget *p)
-    : Dialog(Qrc::text("dialog.sign_apk.title"), p)
+    : Dialog(__("sign_export", "titles"), p)
 {
     setAttribute(Qt::WA_DeleteOnClose, false);
     setFixedSize(360, 180);
@@ -19,19 +19,19 @@ SignExportApk::SignExportApk(QWidget *p)
     auto pr = Preferences::get();
     // Form : Start
     QFormLayout *form = new QFormLayout;
-    QPushButton *browse = new QPushButton(Qrc::text("dialog.sign_apk.buttons.browse"), this);
+    QPushButton *browse = new QPushButton(__("browse", "buttons"), this);
     QLayout *row = new QHBoxLayout;
     row->addWidget(_keystore = new QLineEdit(pr->signKeystore(), this));
     row->addWidget(browse);
-    form->addRow(Qrc::text("dialog.sign_apk.form.keystore"), row);
-    form->addRow(Qrc::text("dialog.sign_apk.form.keystore_pass"), _keystorePass = new QLineEdit(pr->signKeystorePass(), this));
-    form->addRow(Qrc::text("dialog.sign_apk.form.key"), _key = new QLineEdit(pr->signKey(), this));
-    form->addRow(Qrc::text("dialog.sign_apk.form.key_pass"), _keyPass = new QLineEdit(pr->signKeyPass(), this));
+    form->addRow(__("keystore", "forms"), row);
+    form->addRow(__("keystore_pass", "forms"), _keystorePass = new QLineEdit(pr->signKeystorePass(), this));
+    form->addRow(__("key", "forms"), _key = new QLineEdit(pr->signKey(), this));
+    form->addRow(__("key_pass", "forms"), _keyPass = new QLineEdit(pr->signKeyPass(), this));
     // Form : End
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttons = new QDialogButtonBox(this);
-    buttons->addButton(new QPushButton(Qrc::text("dialog.sign_apk.buttons.cancel"), buttons), QDialogButtonBox::RejectRole);
-    buttons->addButton(new QPushButton(Qrc::text("dialog.sign_apk.buttons.sign"), buttons), QDialogButtonBox::AcceptRole);
+    buttons->addButton(new QPushButton(__("cancel", "buttons"), buttons), QDialogButtonBox::RejectRole);
+    buttons->addButton(new QPushButton(__("sign", "buttons"), buttons), QDialogButtonBox::AcceptRole);
     layout->addLayout(form);
     layout->addWidget(buttons);
     _connections << connect(browse, &QPushButton::clicked, [=]
@@ -42,7 +42,7 @@ SignExportApk::SignExportApk(QWidget *p)
         {
             dir = fi.absolutePath();
         }
-        QFileDialog d(this, Qrc::text("dialog.open.keystore.title"), dir);
+        QFileDialog d(this, __("choose_keystore", "titles"), dir);
         d.setAcceptMode(QFileDialog::AcceptOpen);
         d.setFileMode(QFileDialog::ExistingFile);
         if (d.exec() == QFileDialog::Accepted)

@@ -10,7 +10,7 @@ class Dialog : public QDialog
 {
     Q_OBJECT
 protected:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
 public:
     explicit Dialog(const QString &title, QWidget *parent = 0);
     ~Dialog();

@@ -1,8 +1,8 @@
-#include "adb.h"
-#include "apktool.h"
-#include "java.h"
-#include "statusbar.h"
-#include "qrc.h"
+#include "include/adb.h"
+#include "include/apktool.h"
+#include "include/java.h"
+#include "include/statusbar.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
@@ -24,30 +24,30 @@ StatusBar::StatusBar(QWidget *parent)
     QString v;
     if ((v = Adb::get()->getVersion()).isEmpty() == false)
     {
-        adb->setText(QString("ADB: %1").arg(v));
+        adb->setText(__("version_adb", "statusbar", v));
     }
     else
     {
-        adb->setText(QString("ADB: %1").arg(Qrc::text("statusbar.version.unknown")));
+        adb->setText(__("version_adb", "statusbar", "n/a"));
     }
     if ((v = ApkTool::get()->getVersion()).isEmpty() == false)
     {
-        apkTool->setText(QString("APK Tool: %1").arg(v));
+        apkTool->setText(__("version_apktool", "statusbar", v));
     }
     else
     {
-        apkTool->setText(QString("APK Tool: %1").arg(Qrc::text("statusbar.version.unknown")));
+        apkTool->setText(__("version_apktool", "statusbar", "n/a"));
     }
     if ((v = Java::get()->getVersion()).isEmpty() == false)
     {
-        java->setText(QString("Java: %1").arg(v));
+        java->setText(__("version_java", "statusbar", v));
     }
     else
     {
-        java->setText(QString("Java: %1").arg(Qrc::text("statusbar.version.unknown")));
+        java->setText(__("version_java", "statusbar", "n/a"));
     }
     _connections << connect(this, &QStatusBar::messageChanged, this, &StatusBar::onMessageChanged);
-    _message->setText(Qrc::text("statusbar.message.ready"));
+    _message->setText(__("ready", "statusbar"));
 }
 
 void StatusBar::onMessageChanged(const QString &text)
@@ -57,7 +57,7 @@ void StatusBar::onMessageChanged(const QString &text)
 
 StatusBar::~StatusBar()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 StatusBarSeparator::StatusBarSeparator(QWidget *parent)

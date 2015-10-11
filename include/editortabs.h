@@ -15,7 +15,7 @@ class EditorTabs : public QTabWidget
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     QMap<QString, int> _files;
     QPointer<FindReplace> _finder;
     QFileIconProvider _provider;

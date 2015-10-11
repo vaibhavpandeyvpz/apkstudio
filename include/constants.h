@@ -15,7 +15,10 @@
 #define EDITOR_EXT_CODER "java|smali|xml|yml"
 #define EDITOR_EXT_VIEWER "gif|jpg|jpeg|png"
 
-#define FOLDER_BINARIES "binaries"
+#define FILE_PREFERENCES "preferences.ini"
+
+#define FOLDER_APP ".apkstudio"
+#define FOLDER_VENDOR "vendor"
 
 #define HIGHLIGHTER_THEME "default.theme"
 #define HIGHLIGHTER_STYLE_WHITESPACES "whitespaces"
@@ -24,7 +27,6 @@
 #define PREF_DEFAULT_TAB_STOP_WIDTH 4
 #define PREF_DEFAULT_TEXT_ENCODING "UTF-8"
 
-#define PREF_BIN_PATH "BinPath"
 #define PREF_DOCKS_STATE "DocksState"
 #define PREF_JAVA_HEAP "JavaHeap"
 #define PREF_PREVIOUS_DIR "PreviousDir"
@@ -37,6 +39,7 @@
 #define PREF_SPACES_FOR_TABS "SpacesForTabs"
 #define PREF_TAB_STOP_WIDTH "TabStopWidth"
 #define PREF_TEXT_ENCODING "TextEncoding"
+#define PREF_VENDOR_PATH "VendorPath"
 #define PREF_WINDOW_MAXIMIZED "WindowMaximized"
 #define PREF_WINDOW_SIZE "WindowSize"
 

@@ -1,6 +1,6 @@
-#include "coderhighlighter.h"
-#include "constants.h"
-#include "preferences.h"
+#include "include/coderhighlighter.h"
+#include "include/constants.h"
+#include "include/preferences.h"
 
 APP_NAMESPACE_START
 

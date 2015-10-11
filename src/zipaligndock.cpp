@@ -1,11 +1,11 @@
-#include "zipalign.h"
-#include "zipaligndock.h"
-#include "qrc.h"
+#include "include/zipalign.h"
+#include "include/zipaligndock.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 ZipAlignDock::ZipAlignDock(QWidget *parent)
-    : ConsoleDock(Qrc::text("dock.zipalign.title"), "zipalign", parent)
+    : ConsoleDock(__("zip_align", "docks"), "zipalign", parent)
 {
     setContentsMargins(2, 2, 2, 2);
     setObjectName("ZipAlignDock");

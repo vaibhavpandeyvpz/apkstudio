@@ -18,7 +18,7 @@ class Coder : public QPlainTextEdit
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     CoderSidebar *_sidebar;
     bool _spacesForTabs;
     int _tabStopWidth;

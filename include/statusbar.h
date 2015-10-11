@@ -11,7 +11,7 @@ class StatusBar : public QStatusBar
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     QLabel *_message;
 private slots:
     void onMessageChanged(const QString &text);

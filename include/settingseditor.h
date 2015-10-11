@@ -13,7 +13,7 @@ class SettingsEditor : public Dialog
 {
     Q_OBJECT
 private:
-    QLineEdit *_binariesPath;
+    QLineEdit *_vendorPath;
     QSpinBox *_javaHeap;
     QCheckBox *_showWhitespaces;
     QSpinBox *_tabStopWidth;

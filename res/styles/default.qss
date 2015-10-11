@@ -1,4 +1,4 @@
-As--Coder {
+ApkStudio--Coder {
     alternate-background-color: #ced7df;
     background-color: #fff;
     color: #222;
@@ -8,19 +8,19 @@ As--Coder {
     selection-color: #205081;
 }
 
-As--CoderSidebar {
+ApkStudio--CoderSidebar {
     background-color: #eff3f6;
     color: #59626a;
     selection-background-color: #ced7df;
     selection-color: #323b43;
 }
 
-As--Viewer {
+ApkStudio--Viewer {
     background-color: #ccc;
     background-position: top left;
     background-repeat: repeat-xy;
 }
 
-As--Viewer:corner {
+ApkStudio--Viewer:corner {
     background-color: #cccccc;
 }

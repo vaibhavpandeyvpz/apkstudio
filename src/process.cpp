@@ -1,7 +1,7 @@
 #include <QProcess>
-#include "constants.h"
-#include "pathutils.h"
-#include "process.h"
+#include "include/constants.h"
+#include "include/pathutils.h"
+#include "include/process.h"
 
 APP_NAMESPACE_START
 

@@ -1,8 +1,8 @@
 #include <QFile>
 #include <QRegularExpression>
-#include "constants.h"
-#include "coderhighlightertheme.h"
-#include "fileutils.h"
+#include "include/constants.h"
+#include "include/coderhighlightertheme.h"
+#include "include/fileutils.h"
 
 APP_NAMESPACE_START
 

@@ -1,5 +1,5 @@
-#include "installrunnable.h"
-#include "adb.h"
+#include "include/adb.h"
+#include "include/installrunnable.h"
 
 APP_NAMESPACE_START
 

@@ -5,10 +5,10 @@
 #include <QScrollBar>
 #include <QShortcut>
 #include <QToolTip>
-#include "coder.h"
-#include "codersidebar.h"
-#include "fileutils.h"
-#include "preferences.h"
+#include "include/coder.h"
+#include "include/codersidebar.h"
+#include "include/fileutils.h"
+#include "include/preferences.h"
 
 APP_NAMESPACE_START
 
@@ -567,7 +567,7 @@ void Coder::wheelEvent(QWheelEvent *event)
 
 Coder::~Coder()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

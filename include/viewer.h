@@ -21,7 +21,7 @@ class Viewer : public QScrollArea
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     FlickCharm *_flickCharm;
     QLabel *_image;
     double _scale;

@@ -10,8 +10,8 @@ APP_NAMESPACE_START
 class ApkTool : public Java
 {
 private:
-    static ApkTool *_self;
     QString _jar;
+    static ApkTool *_self;
 private:
     explicit ApkTool(QObject *parent = 0);
 public:

@@ -41,15 +41,15 @@ HEADERS += \
     include/statusbar.h \
     include/textutils.h \
     include/toolbar.h \
+    include/updatevendorbinaries.h \
     include/viewer.h \
     include/zipalign.h \
     include/zipaligndock.h
 
-INCLUDEPATH += include
-
 OTHER_FILES += \
     .gitignore \
     .travis.yml \
+    external/updates.json \
     res/highlight/default.theme \
     res/highlight/java.def \
     res/highlight/numbers.def \
@@ -64,6 +64,8 @@ OTHER_FILES += \
     README.md
 
 QT += core gui widgets
+
+win32:RC_FILE = res/win32.rc
 
 RESOURCES += \
     res/all.qrc
@@ -108,6 +110,7 @@ SOURCES += \
     src/statusbar.cpp \
     src/textutils.cpp \
     src/toolbar.cpp \
+    src/updatevendorbinaries.cpp \
     src/viewer.cpp \
     src/zipalign.cpp \
     src/zipaligndock.cpp
@@ -118,8 +121,3 @@ TEMPLATE = app
 
 TRANSLATIONS += \
     res/lang/en.ts
-
-win32:RC_FILE = res/win32.rc
-
-DISTFILES += \
-    external/updates.json

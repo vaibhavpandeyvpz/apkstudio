@@ -13,7 +13,7 @@ class ProjectDock : public QDockWidget
 {
     Q_OBJECT
 private:
-    AS_CONNECTIONS_LIST
+    APP_CONNECTIONS_LIST
     QFileIconProvider _fip;
     QTreeWidget *_tree;
 private:

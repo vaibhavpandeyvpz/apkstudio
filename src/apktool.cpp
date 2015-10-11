@@ -1,7 +1,7 @@
-#include "apktool.h"
-#include "constants.h"
-#include "pathutils.h"
-#include "textutils.h"
+#include "include/apktool.h"
+#include "include/constants.h"
+#include "include/pathutils.h"
+#include "include/textutils.h"
 
 APP_NAMESPACE_START
 

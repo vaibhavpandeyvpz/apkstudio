@@ -5,36 +5,36 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include "pathutils.h"
-#include "preopenapk.h"
-#include "qrc.h"
+#include "include/pathutils.h"
+#include "include/preopenapk.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
-    : Dialog("", p)
+    : Dialog(QString(), p)
 {
     QFileInfo fi(a);
     QString project = PathUtils::combine(fi.absolutePath(), fi.completeBaseName());
     setAttribute(Qt::WA_DeleteOnClose, false);
     setFixedSize(360, 180);
     setWindowIcon(Qrc::icon("toolbar_apk"));
-    setWindowTitle(Qrc::text("dialog.open_apk.title").arg(fi.fileName()));
+    setWindowTitle(__("decode_apk", "titles", fi.fileName()));
     // Form : Start
     QFormLayout *form = new QFormLayout;
-    form->addRow(Qrc::text("dialog.open_apk.form.apk_path"), _apk = new QLineEdit(a, this));
-    QPushButton *browse = new QPushButton(Qrc::text("dialog.open_apk.buttons.browse"), this);
+    form->addRow(__("apk_path", "forms"), _apk = new QLineEdit(a, this));
+    QPushButton *browse = new QPushButton(__("browse", "buttons"), this);
     QLayout *row = new QHBoxLayout;
     row->addWidget(_project = new QLineEdit(project, this));
     row->addWidget(browse);
-    form->addRow(Qrc::text("dialog.open_apk.form.project_path"), row);
-    form->addRow(Qrc::text("dialog.open_apk.form.framework_tag"), _framework = new QComboBox(this));
-    form->addRow(Qrc::text("dialog.open_apk.form.decompile_sources"), _sources = new QCheckBox(this));
+    form->addRow(__("project_path", "forms"), row);
+    form->addRow(__("framework_tag", "forms"), _framework = new QComboBox(this));
+    form->addRow(__("decompile_sources", "forms"), _sources = new QCheckBox(this));
     // Form : End
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttons = new QDialogButtonBox(this);
-    buttons->addButton(new QPushButton(Qrc::text("dialog.open_apk.buttons.cancel"), buttons), QDialogButtonBox::RejectRole);
-    buttons->addButton(new QPushButton(Qrc::text("dialog.open_apk.buttons.decode"), buttons), QDialogButtonBox::AcceptRole);
+    buttons->addButton(new QPushButton(__("cancel", "buttons"), buttons), QDialogButtonBox::RejectRole);
+    buttons->addButton(new QPushButton(__("decode", "buttons"), buttons), QDialogButtonBox::AcceptRole);
     layout->addLayout(form);
     layout->addWidget(buttons);
     setLayout(layout);
@@ -47,7 +47,7 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
         {
             dir = fi.absolutePath();
         }
-        QFileDialog d(this, Qrc::text("dialog.open_apk_project.title"), dir);
+        QFileDialog d(this, __("choose_project_directory", "titles"), dir);
         d.setFileMode(QFileDialog::Directory);
         d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
         if (d.exec() == QFileDialog::Accepted)

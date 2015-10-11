@@ -1,5 +1,5 @@
-#include "constants.h"
-#include "runner.h"
+#include "include/constants.h"
+#include "include/runner.h"
 
 APP_NAMESPACE_START
 
@@ -28,7 +28,7 @@ Runner *Runner::get()
 
 Runner::~Runner()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

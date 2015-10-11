@@ -4,20 +4,24 @@
 #include <QSettings>
 #include "macros.h"
 
+APP_NAMESPACE_START
+
 class Preferences
 {
 private:
+    QString _appPath;
     static Preferences *_self;
     QSettings *_settings;
 private:
-    Preferences(QSettings *settings);
+    Preferences(const QString &path);
 public:
     static Preferences *get();
     QVariant get(const QString &key, const QVariant &fallback = QVariant());
     void save();
     Preferences *set(const QString &key, const QVariant &value);
     // Getters
-    QString binariesPath();
+    QString appPath();
+    QString vendorPath();
     QByteArray docksState();
     int javaHeap();
     QString previousApk();
@@ -34,7 +38,7 @@ public:
     bool wasWindowMaximized();
     QSize windowSize();
     // Setters
-    Preferences *setBinariesPath(const QString &path);
+    Preferences *setVendorPath(const QString &path);
     Preferences *setDocksState(const QByteArray &state);
     Preferences *setJavaHeap(const int mb);
     Preferences *setPreviousDir(const QString &dir);
@@ -50,5 +54,7 @@ public:
     Preferences *setWindowMaximized(const bool maximized);
     Preferences *setWindowSize(const QSize &size);
 };
+
+APP_NAMESPACE_END
 
 #endif // PREFERENCES_H

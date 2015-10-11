@@ -1,4 +1,4 @@
-#include "runnable.h"
+#include "include/runnable.h"
 
 APP_NAMESPACE_START
 
@@ -12,7 +12,7 @@ Runnable::Runnable(QObject *p)
 
 Runnable::~Runnable()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END

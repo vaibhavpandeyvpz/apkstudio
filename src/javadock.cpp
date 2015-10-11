@@ -1,12 +1,12 @@
-#include "apktool.h"
-#include "java.h"
-#include "javadock.h"
-#include "qrc.h"
+#include "include/apktool.h"
+#include "include/java.h"
+#include "include/javadock.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
 JavaDock::JavaDock(QWidget *parent)
-    : ConsoleDock(Qrc::text("dock.java.title"), "java", parent)
+    : ConsoleDock(__("java", "docks"), "java", parent)
 {
     setContentsMargins(2, 2, 2, 2);
     setObjectName("JavaDock");

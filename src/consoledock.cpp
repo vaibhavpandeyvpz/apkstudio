@@ -1,7 +1,7 @@
 #include <QLayout>
-#include "consoledock.h"
-#include "constants.h"
-#include "qrc.h"
+#include "include/consoledock.h"
+#include "include/constants.h"
+#include "include/qrc.h"
 
 APP_NAMESPACE_START
 
@@ -47,7 +47,7 @@ void ConsoleDock::onExecuted(const Process::Result &r)
         }
     }
     _edit->setTextColor(QColor(COLOR_CODE));
-    _edit->append(QString(Qrc::text("dock.console.exit_code")).arg(r.code));
+    _edit->append(__("exit_code", "console", QString::number(r.code)));
     _edit->append(QString());
 }
 
@@ -78,7 +78,7 @@ void ConsoleDock::onExecuting(const QStringList &cs)
 
 ConsoleDock::~ConsoleDock()
 {
-    AS_CONNECTIONS_DISCONNECT
+    APP_CONNECTIONS_DISCONNECT
 }
 
 APP_NAMESPACE_END
