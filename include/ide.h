@@ -4,10 +4,11 @@
 #include <QDropEvent>
 #include <QMainWindow>
 #include <QPointer>
-#include <QProgressDialog>
 #include "macros.h"
 
 APP_NAMESPACE_START
+
+class PleaseWait;
 
 class StatusBar;
 
@@ -17,7 +18,7 @@ class Ide : public QMainWindow
 private:
     APP_CONNECTIONS_LIST
     QString _apk;
-    QPointer<QProgressDialog> _progressDialog;
+    QPointer<PleaseWait> _pleaseWait;
     QString _project;
     StatusBar *_statusBar;
 protected:

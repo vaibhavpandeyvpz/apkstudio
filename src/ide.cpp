@@ -18,6 +18,7 @@
 #include "include/javadock.h"
 #include "include/menubar.h"
 #include "include/pathutils.h"
+#include "include/pleasewait.h"
 #include "include/preferences.h"
 #include "include/preopenapk.h"
 #include "include/process.h"
@@ -36,7 +37,7 @@
 APP_NAMESPACE_START
 
 Ide::Ide(QWidget *parent)
-    : QMainWindow(parent), _progressDialog(nullptr)
+    : QMainWindow(parent)
 {
     addToolBar(Qt::TopToolBarArea, new ToolBar(this));
     setAcceptDrops(true);
@@ -371,23 +372,15 @@ void Ide::onOpenDir(const QString &p)
 void Ide::onRunnableStarted()
 {
     onRunnableStopped();
-    QProgressBar *bar;
-    _progressDialog = new QProgressDialog(this, Qt::CustomizeWindowHint);
-    _progressDialog->setBar(bar = new QProgressBar(_progressDialog));
-    _progressDialog->setCancelButton(nullptr);
-    _progressDialog->setLabelText(__("please_wait", "messages"));
-    _progressDialog->setRange(0, 0);
-    _progressDialog->setWindowModality(Qt::WindowModal);
-    _progressDialog->show();
-    bar->setTextVisible(false);
+    _pleaseWait = new PleaseWait(this);
+    _pleaseWait->show();
 }
 
 void Ide::onRunnableStopped()
 {
-    if (_progressDialog)
+    if (_pleaseWait)
     {
-        _progressDialog->close();
-        delete _progressDialog;
+        _pleaseWait->finish();
     }
 }
 

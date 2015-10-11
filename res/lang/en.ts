@@ -381,10 +381,6 @@
         <source>no_project</source>
         <translation>There is no project open at this time. Choose File &gt; Open &gt; APK to create new project.</translation>
     </message>
-    <message>
-        <source>please_wait</source>
-        <translation>Please wait...</translation>
-    </message>
 </context>
 <context>
     <name>statusbar</name>
@@ -462,6 +458,10 @@
     <message>
         <source>ide_alt</source>
         <translation>%1 - APK Studio - http://git.io/vcZx0</translation>
+    </message>
+    <message>
+        <source>please_wait</source>
+        <translation>Please wait...</translation>
     </message>
     <message>
         <source>settings</source>
