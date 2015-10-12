@@ -318,10 +318,6 @@
         <source>install</source>
         <translation>Install</translation>
     </message>
-    <message>
-        <source>update</source>
-        <translation>Update</translation>
-    </message>
 </context>
 <context>
     <name>messages</name>
@@ -332,6 +328,10 @@
     <message>
         <source>quit</source>
         <translation>Any unsaved changed will be lost. Quit?</translation>
+    </message>
+    <message>
+        <source>download_vendor</source>
+        <translation><![CDATA[You need to download some 3rd-party applications/files from <a href="%1">here</a> and place them in <strong>%2</strong> for APK Studio to work.]]></translation>
     </message>
     <message>
         <source>decode_failure</source>
@@ -404,6 +404,10 @@
 <context>
     <name>titles</name>
     <message>
+        <source>action_required</source>
+        <translation>Action Required</translation>
+    </message>
+    <message>
         <source>decode_apk</source>
         <translation>Decode %1</translation>
     </message>
@@ -470,10 +474,6 @@
     <message>
         <source>sign_export</source>
         <translation>Sign/Export APK</translation>
-    </message>
-    <message>
-        <source>update</source>
-        <translation>Check For Updates</translation>
     </message>
     <message>
         <source>quit</source>

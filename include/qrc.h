@@ -25,6 +25,11 @@ inline QString __(const char* text, const char* context, const QString arg1)
     return __(text, context).arg(arg1);
 }
 
+inline QString __(const char* text, const char* context, const QString arg1, const QString arg2)
+{
+    return __(text, context, arg1).arg(arg2);
+}
+
 APP_NAMESPACE_END
 
 #endif // QRC_H
