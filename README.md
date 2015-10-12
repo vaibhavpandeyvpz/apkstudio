@@ -14,6 +14,7 @@ Download
 --------
 -   Please check **Releases** tab for Windows binaries
 -   Linux users are required to build from source atm
+-   You will also need to download [this](https://dl.bintray.com/vaibhavpandeyvpz/generic/apkstudio/1.0.0/binpack.zip) and unpack its contents to ~/.apkstudio/vendor
 
 Building (Linux)
 --------

@@ -198,6 +198,9 @@ void Ide::onMenuBarFileOpenApk()
     QFileDialog d(this, __("choose_apk", "titles"), Preferences::get()->previousDir(), __("apk", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFile);
+#ifndef USE_NATIVE_FILEDIALOGS
+    d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
     if (d.exec() == QFileDialog::Accepted)
     {
         QStringList files;
@@ -215,6 +218,9 @@ void Ide::onMenuBarFileOpenDir()
     QFileDialog d(this, __("choose_exiting_project", "titles"), Preferences::get()->previousDir(), __("apktool_yml", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFile);
+#ifndef USE_NATIVE_FILEDIALOGS
+    d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
     if (d.exec() == QFileDialog::Accepted)
     {
         QStringList files;
@@ -237,6 +243,9 @@ void Ide::onMenuBarFileOpenFile()
     QFileDialog d(this, __("choose_editable_files", "titles"), Preferences::get()->previousDir(), __("editable", "filters"));
     d.setAcceptMode(QFileDialog::AcceptOpen);
     d.setFileMode(QFileDialog::ExistingFiles);
+#ifndef USE_NATIVE_FILEDIALOGS
+    d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
     if (d.exec() == QFileDialog::Accepted)
     {
         QStringList files;
