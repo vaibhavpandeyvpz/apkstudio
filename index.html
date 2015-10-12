@@ -41,16 +41,15 @@
       <section>
         <p>APK Studio is a <strong>cross-platform</strong> IDE for reverse-engineering (decompiling/editing) &amp; recompiling of android application binaries within a single user-interface. It features a friendly IDE like layout, with a code editor which support syntax highlighting for Android SMALI (*.smali) code files.</p>
 
-<p><a href="https://travis-ci.org/vaibhavpandeyvpz/apkstudio"><img src="https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg?branch=master" alt="Build Status"></a></p>
-
 <h2>
 <a id="instructions" class="anchor" href="#instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions</h2>
 
 <ul>
-<li>Make sure <strong>JAVA_HOME</strong> point to a valid <strong>JDK</strong> (<em>JRE</em> will not work)</li>
-<li>Point the <strong>Binaries Path</strong> in <em>Edit</em> &gt; <em>Settings</em> to a valid folder having <em>ADB</em>, <em>Zipalign</em> &amp; <em>apktool</em>
+<li>Make sure <strong>JAVA_HOME</strong> point to a valid <strong>JDK</strong> (<em>JRE</em> may not work)</li>
+<li>Point the <strong>Vendor Path</strong> in <em>Edit</em> &gt; <em>Settings</em> to a valid folder having contents of <a href="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/vendor.zip">this</a> archive</li>
+<li>A recommended location to extract above archive might be <strong>~/.apkstudio/vendor</strong>
 </li>
-<li>Start re-building.</li>
+<li>You can now start de/re-compiling</li>
 </ul>
 
 <p><strong>Note</strong>: If you encounter any problems, make sure to check <strong>Console Output</strong> at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio <a href="https://github.com/vaibhavpandeyvpz/apkstudio/issues">here</a> on Github. Please note, an issue with <a href="http://ibotpeaches.github.io/Apktool/">apktool</a> is not an issue with <strong>APK Studio</strong>. Please verify the context of issue before opening a ticket.</p>
@@ -67,42 +66,49 @@
 <a id="building-linux" class="anchor" href="#building-linux" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building (Linux)</h2>
 
 <ul>
-<li>  Make sure you have <strong>GCC 4.8+</strong>, <strong>QT 5.4+</strong>
+<li>Make sure you have <strong>GCC 4.8+</strong>, <strong>QT 5.4+</strong>
 </li>
-<li>  Run below commands in a writable directory</li>
+<li>Run below commands in a writable directory</li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre><span class="pl-c"># Run these commands in sequence</span>
+<div class="highlight highlight-source-shell"><pre><span class="pl-c"># Check your GCC version (g++ --version) &amp; Qt version (qmake --version) to match with above</span>
 git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
 <span class="pl-c1">cd</span> apkstudio
 lrelease resources/lang/en.ts
 qmake apkstudio.pro CONFIG+=release
 make</pre></div>
 
+<ul>
+<li>More information on building from source is provided in the <a href="https://github.com/vaibhavpandeyvpz/apkstudio/wiki">Wiki</a>
+</li>
+</ul>
+
 <h2>
 <a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features:</h2>
 
 <ul>
-<li>  Decompile/Recompile APK</li>
-<li>  Flexible Keystore &amp; Key-Alias Chooser</li>
-<li>  Automatic Zip-align</li>
-<li>  Image Viewer For Resources</li>
-<li>  One-click <strong>Install</strong> To Device</li>
-<li>  Syntax Highlighting (*java; *.smali; *.xml; *.yml)</li>
+<li>Decompile/Recompile APK</li>
+<li>Flexible Keystore &amp; Key-Alias Chooser</li>
+<li>Automatic Zip-align</li>
+<li>Syntax Highlighting (*java; *.smali; *.xml; *.yml)</li>
+<li>Image Viewer For Resources</li>
+<li>One-click <strong>Install</strong> To Device</li>
+<li>Frameworks Support</li>
 </ul>
 
 <h2>
 <a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO:</h2>
 
 <ul>
-<li>  Code Completion</li>
-<li>  Frameworks Support</li>
+<li>Code Completion</li>
 </ul>
 
 <h2>
-<a id="screenshot" class="anchor" href="#screenshot" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshot:</h2>
+<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshots:</h2>
 
-<p><img src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/screenshots/1.png" alt="Windows Screenshot" title="Windows Screenshot"></p>
+<p><img src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/windows-1.png" alt="Windows Screenshot #1" title="Windows Screenshot #1"></p>
+
+<p><img src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/linux-1.png" alt="Linux Screenshot #1" title="Linux Screenshot #1"></p>
       </section>
       <footer>
         <p>Project maintained by <a href="https://github.com/vaibhavpandeyvpz">vaibhavpandeyvpz</a></p>
