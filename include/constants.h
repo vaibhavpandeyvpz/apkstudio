@@ -66,11 +66,12 @@
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "http://github.vaibhavpandey.com/apkstudio"
+#define URL_DOCUMENTATION_VENDOR "http://github.vaibhavpandey.com/apkstudio#vendor"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"
 
 #ifdef Q_OS_WIN
-#define USE_NATIVE_DIALOGS
+#define USE_NATIVE_FILEDIALOGS
 #endif
 
 #endif // CONSTANTS_H

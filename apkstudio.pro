@@ -42,7 +42,6 @@ HEADERS += \
     include/statusbar.h \
     include/textutils.h \
     include/toolbar.h \
-    include/updatevendorbinaries.h \
     include/viewer.h \
     include/zipalign.h \
     include/zipaligndock.h
@@ -50,7 +49,6 @@ HEADERS += \
 OTHER_FILES += \
     .gitignore \
     .travis.yml \
-    external/updates.json \
     res/highlight/default.theme \
     res/highlight/java.def \
     res/highlight/numbers.def \
@@ -112,7 +110,6 @@ SOURCES += \
     src/statusbar.cpp \
     src/textutils.cpp \
     src/toolbar.cpp \
-    src/updatevendorbinaries.cpp \
     src/viewer.cpp \
     src/zipalign.cpp \
     src/zipaligndock.cpp

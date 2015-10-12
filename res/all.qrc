@@ -13,7 +13,6 @@
         <file>icons/apkstudio.ico</file>
         <file>icons/dialog_about.png</file>
         <file>icons/dialog_quit.png</file>
-        <file>icons/dialog_update.png</file>
         <file>icons/toolbar_apk.png</file>
         <file>icons/toolbar_build.png</file>
         <file>icons/toolbar_dir.png</file>

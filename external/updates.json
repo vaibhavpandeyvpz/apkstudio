@@ -1,7 +1,0 @@
-{
-    "binpack": [{
-        "platform": "any",
-        "url": "https://dl.bintray.com/vaibhavpandeyvpz/generic/apkstudio/1.0.0/binpack.zip",
-        "version": "1.0.0"
-    }]
-}

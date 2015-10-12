@@ -80,8 +80,6 @@ void MenuBar::addHelpMenu()
     f->addAction(__("report_issues", "menubar"), parent(), SLOT(onMenuBarHelpFeedbackIssues()));
     m->addAction(f->menuAction());
     m->addAction(__("contribute", "menubar"), parent(), SLOT(onMenuBarHelpContribute()));
-    m->addSeparator();
-    m->addAction(__("update", "menubar"), parent(), SLOT(onMenuBarHelpUpdate()));
     addAction(m->menuAction());
 }
 

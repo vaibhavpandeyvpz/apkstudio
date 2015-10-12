@@ -31,7 +31,6 @@
 #include "include/statusbar.h"
 #include "include/textutils.h"
 #include "include/toolbar.h"
-#include "include/updatevendorbinaries.h"
 #include "include/zipaligndock.h"
 
 APP_NAMESPACE_START
@@ -44,7 +43,7 @@ Ide::Ide(QWidget *parent)
     setCentralWidget(new EditorTabs(this));
     setDockOptions(AllowTabbedDocks | AnimatedDocks);
     setMenuBar(new MenuBar(this));
-    setMinimumSize(800, 600);
+    setMinimumSize(784, 600);
     setStatusBar(_statusBar = new StatusBar(this));
     setWindowIcon(QIcon(Qrc::image("logo")));
     setWindowTitle(__("ide", "titles"));
@@ -174,7 +173,7 @@ void Ide::onInit()
     restoreState(p->docksState());
     if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
     {
-        onMenuBarHelpUpdate();
+        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION_VENDOR, p->vendorPath()), QMessageBox::Close);
     }
 }
 
@@ -302,11 +301,6 @@ void Ide::onMenuBarHelpFeedbackIssues()
 void Ide::onMenuBarHelpFeedbackThanks()
 {
     QDesktopServices::openUrl(QUrl(URL_THANKS));
-}
-
-void Ide::onMenuBarHelpUpdate()
-{
-    (new UpdateVendorBinaries(this))->exec();
 }
 
 void Ide::onMenuBarProjectBuild()
