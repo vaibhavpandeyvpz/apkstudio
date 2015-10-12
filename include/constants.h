@@ -69,4 +69,8 @@
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"
 
+#ifdef Q_OS_WIN
+#define USE_NATIVE_DIALOGS
+#endif
+
 #endif // CONSTANTS_H

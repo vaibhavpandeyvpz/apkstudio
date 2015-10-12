@@ -45,6 +45,9 @@ SignExportApk::SignExportApk(QWidget *p)
         QFileDialog d(this, __("choose_keystore", "titles"), dir);
         d.setAcceptMode(QFileDialog::AcceptOpen);
         d.setFileMode(QFileDialog::ExistingFile);
+#ifndef USE_NATIVE_FILEDIALOGS
+        d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
         if (d.exec() == QFileDialog::Accepted)
         {
             QStringList files;

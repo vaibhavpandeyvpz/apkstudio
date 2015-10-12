@@ -62,6 +62,9 @@ SettingsEditor::SettingsEditor(QWidget *p)
         d.setAcceptMode(QFileDialog::AcceptOpen);
         d.setFileMode(QFileDialog::Directory);
         d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+#ifndef USE_NATIVE_FILEDIALOGS
+        d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
         if (d.exec() == QFileDialog::Accepted)
         {
             QStringList files;

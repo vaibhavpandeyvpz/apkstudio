@@ -371,7 +371,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation>>&lt;h3&gt;APK Studio &lt;small&gt;%1&lt;/small&gt;&lt;/h3&gt;</translation>
+        <translation><![CDATA[<h3>APK Studio <small>%1</small></h3>]]></translation>
     </message>
     <message>
         <source>no_apk</source>

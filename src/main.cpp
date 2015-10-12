@@ -20,9 +20,6 @@ int main(int argc, char *argv[])
     QFontDatabase::addApplicationFont(QString(QRC_FONTS).append("scp_regular.ttf"));
     QFontDatabase::addApplicationFont(QString(QRC_FONTS).append("scp_bold.ttf"));
     QApplication app(argc, argv);
-#ifdef Q_OS_WIN
-    // app.setStyle(QStyleFactory::create("fusion"));
-#endif
     QTranslator translator;
     translator.load("en", QRC_LANG);
     app.installTranslator(&translator);

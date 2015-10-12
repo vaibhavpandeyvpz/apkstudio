@@ -50,6 +50,9 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
         QFileDialog d(this, __("choose_project_directory", "titles"), dir);
         d.setFileMode(QFileDialog::Directory);
         d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+#ifndef USE_NATIVE_FILEDIALOGS
+        d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
         if (d.exec() == QFileDialog::Accepted)
         {
             QStringList files;
