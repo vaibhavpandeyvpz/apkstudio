@@ -39,10 +39,10 @@
         <ul></ul>
       </nav>
       <section>
-        <p>APK Studio is a <strong>cross-platform</strong> IDE for reverse-engineering (decompiling/editing) &amp; recompiling of android application binaries within a single user-interface. It features a friendly IDE like layout, with a code editor which support syntax highlighting for Android SMALI (*.smali) code files.</p>
+        <p><a href="https://github.com/vaibhavpandeyvpz/apkstudio">APK Studio</a> is a <strong>cross-platform</strong> IDE for reverse-engineering (decompiling/editing) &amp; recompiling of android application binaries within a single user-interface. It features a friendly IDE like layout, with a code editor which support syntax highlighting for Android SMALI (*.smali) code files.</p>
 
 <h2>
-<a id="instructions" class="anchor" href="#instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions</h2>
+<a id="instructions" class="anchor" href="#instructions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Instructions:</h2>
 
 <ul>
 <li>Make sure <strong>JAVA_HOME</strong> point to a valid <strong>JDK</strong> (<em>JRE</em> may not work)</li>
@@ -55,7 +55,7 @@
 <p><strong>Note</strong>: If you encounter any problems, make sure to check <strong>Console Output</strong> at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio <a href="https://github.com/vaibhavpandeyvpz/apkstudio/issues">here</a> on Github. Please note, an issue with <a href="http://ibotpeaches.github.io/Apktool/">apktool</a> is not an issue with <strong>APK Studio</strong>. Please verify the context of issue before opening a ticket.</p>
 
 <h2>
-<a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download:</h2>
 
 <ul>
 <li>  Please check <strong>Releases</strong> tab for Windows binaries</li>
@@ -63,7 +63,7 @@
 </ul>
 
 <h2>
-<a id="building-linux" class="anchor" href="#building-linux" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building (Linux)</h2>
+<a id="building-linux" class="anchor" href="#building-linux" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building (Linux):</h2>
 
 <ul>
 <li>Make sure you have <strong>GCC 4.8+</strong>, <strong>QT 5.4+</strong>
@@ -71,11 +71,13 @@
 <li>Run below commands in a writable directory</li>
 </ul>
 
-<div class="highlight highlight-source-shell"><pre><span class="pl-c"># Check your GCC version (g++ --version) &amp; Qt version (qmake --version) to match with above</span>
-git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
 <span class="pl-c1">cd</span> apkstudio
 lrelease resources/lang/en.ts
 qmake apkstudio.pro CONFIG+=release
+<span class="pl-c"># {IF} On KDE 5.x</span>
+<span class="pl-k">export</span> CXXFLAGS=<span class="pl-s"><span class="pl-pds">"</span><span class="pl-smi">$CXXFLAGS</span> -DNO_NATIVE_DIALOG<span class="pl-pds">"</span></span>
+<span class="pl-c"># {/IF}</span>
 make</pre></div>
 
 <ul>
