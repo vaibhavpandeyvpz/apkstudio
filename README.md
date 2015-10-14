@@ -21,11 +21,13 @@ Building (Linux):
 - Make sure you have **GCC 4.8+**, **QT 5.4+**
 - Run below commands in a writable directory
 ```bash
-# Check your GCC version (g++ --version) & Qt version (qmake --version) to match with above
 git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
 cd apkstudio
 lrelease resources/lang/en.ts
 qmake apkstudio.pro CONFIG+=release
+# {IF} On KDE 5.x
+export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
+# {/IF}
 make
 ```
 - More information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki)

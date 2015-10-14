@@ -62,7 +62,7 @@ SettingsEditor::SettingsEditor(QWidget *p)
         d.setAcceptMode(QFileDialog::AcceptOpen);
         d.setFileMode(QFileDialog::Directory);
         d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-#ifndef USE_NATIVE_FILEDIALOGS
+#ifdef NO_NATIVE_DIALOG
         d.setOption(QFileDialog::DontUseNativeDialog);
 #endif
         if (d.exec() == QFileDialog::Accepted)

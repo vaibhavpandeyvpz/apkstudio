@@ -50,20 +50,17 @@ void ProjectDock::onItemRefresh(QTreeWidgetItem *item)
         if (dir.exists())
         {
             QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
-            if (!files.isEmpty())
+            for (QFileInfo fi : files)
             {
-                for (QFileInfo fi : files)
+                QTreeWidgetItem *child = new QTreeWidgetItem(item);
+                child->setData(0, RoleType, QVariant::fromValue(fi.isDir() ? TypeDir : TypeFile));
+                child->setData(0, RolePath, QVariant::fromValue(fi.absoluteFilePath()));
+                child->setIcon(0, _fip.icon(fi));
+                child->setText(0, fi.fileName());
+                item->addChild(child);
+                if (fi.isDir())
                 {
-                    QTreeWidgetItem *child = new QTreeWidgetItem(item);
-                    child->setData(0, RoleType, QVariant::fromValue(fi.isDir() ? TypeDir : TypeFile));
-                    child->setData(0, RolePath, QVariant::fromValue(fi.absoluteFilePath()));
-                    child->setIcon(0, _fip.icon(fi));
-                    child->setText(0, fi.fileName());
-                    item->addChild(child);
-                    if (fi.isDir())
-                    {
-                        onItemRefresh(child);
-                    }
+                    onItemRefresh(child);
                 }
             }
         }

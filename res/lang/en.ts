@@ -117,7 +117,7 @@
     </message>
     <message>
         <source>decompile_sources</source>
-        <translation>Decompile Sources</translation>
+        <translation>Decompile Sources [TODO]</translation>
     </message>
     <message>
         <source>line_no</source>
