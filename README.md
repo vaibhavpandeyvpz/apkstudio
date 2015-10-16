@@ -1,6 +1,6 @@
 [APK Studio](https://github.com/vaibhavpandeyvpz/apkstudio) is a **cross-platform** IDE for reverse-engineering (decompiling/editing) & recompiling of android application binaries within a single user-interface. It features a friendly IDE like layout, with a code editor which support syntax highlighting for Android SMALI (*.smali) code files.
 
-[![Build Status](https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio)
+[![Build Status](https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio) [![Project Status](https://stillmaintained.com/vaibhavpandeyvpz/apkstudio.png)]
 
 Instructions:
 --------
@@ -29,6 +29,10 @@ qmake apkstudio.pro CONFIG+=release
 export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
 # {/IF}
 make
+```
+- Before using **APK Studio**, you also need to install **ADB**. This can be done on debian{-based} distros as follows:
+```bash
+sudo apt-get install android-tools-adb
 ```
 - More information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki)
 
