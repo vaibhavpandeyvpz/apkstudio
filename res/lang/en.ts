@@ -259,10 +259,6 @@
         <translation>Quit</translation>
     </message>
     <message>
-        <source>no_recent_project</source>
-        <translation>No Recent Project</translation>
-    </message>
-    <message>
         <source>save</source>
         <translation>Save</translation>
     </message>

@@ -68,9 +68,14 @@ QString Preferences::previousDir()
     return d;
 }
 
-QString Preferences::previousProject()
+QStringList Preferences::sessionFiles()
 {
-    return get(PREF_PREVIOUS_PROJECT).toString();
+    return get(PREF_SESSION_FILES).toStringList();
+}
+
+QString Preferences::sessionProject()
+{
+    return get(PREF_SESSION_PROJECT).toString();
 }
 
 bool Preferences::showWhitespaces()
@@ -163,9 +168,14 @@ Preferences *Preferences::setPreviousDir(const QString &d)
     return set(PREF_PREVIOUS_DIR, d);
 }
 
-Preferences *Preferences::setPreviousProject(const QString &p)
+Preferences *Preferences::setSessionFiles(const QStringList &f)
 {
-    return set(PREF_PREVIOUS_PROJECT, p);
+    return set(PREF_SESSION_FILES, f);
+}
+
+Preferences *Preferences::setSessionProject(const QString &p)
+{
+    return set(PREF_SESSION_PROJECT, p);
 }
 
 Preferences *Preferences::setShowWhitespaces(const bool s)

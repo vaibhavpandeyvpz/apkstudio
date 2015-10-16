@@ -54,7 +54,6 @@ public slots:
     inline void onMenuBarFileCloseAll() { emit fileCloseAll(); }
     void onMenuBarFileOpenApk();
     void onMenuBarFileOpenDir();
-    void onMenuBarFileOpenDirProxy(const QString &path);
     void onMenuBarFileOpenFile();
     inline void onMenuBarFileQuit() { close(); }
     inline void onMenuBarFileSave() { emit fileSave(); }

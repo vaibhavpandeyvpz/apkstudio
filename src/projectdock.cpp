@@ -82,7 +82,6 @@ void ProjectDock::onProjectOpen(const QString &p)
     onItemRefresh(item);
     _tree->addTopLevelItem(item);
     _tree->expandItem(item);
-    Preferences::get()->setPreviousProject(p)->save();
 }
 
 void ProjectDock::onProjectReload()

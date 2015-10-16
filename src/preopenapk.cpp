@@ -17,7 +17,11 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     QFileInfo fi(a);
     QString project = PathUtils::combine(fi.absolutePath(), fi.completeBaseName());
     setAttribute(Qt::WA_DeleteOnClose, false);
+#ifdef Q_OS_LINUX
+    setFixedSize(480, 192);
+#else
     setFixedSize(360, 180);
+#endif
     setWindowIcon(Qrc::icon("toolbar_apk"));
     setWindowTitle(__("decode_apk", "titles", fi.fileName()));
     // Form : Start

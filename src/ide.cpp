@@ -47,6 +47,20 @@ Ide::Ide(QWidget *parent)
     setStatusBar(_statusBar = new StatusBar(this));
     setWindowIcon(QIcon(Qrc::image("logo")));
     setWindowTitle(__("ide", "titles"));
+    // Docks : Begin
+    addDockWidget(Qt::LeftDockWidgetArea, new ProjectDock(this));
+    auto java = new JavaDock(this);
+    addDockWidget(Qt::BottomDockWidgetArea, java);
+    auto zipAlign = new ZipAlignDock(this);
+    addDockWidget(Qt::BottomDockWidgetArea, zipAlign);
+    tabifyDockWidget(java, zipAlign);
+    auto jarSigner = new JarSignerDock(this);
+    addDockWidget(Qt::BottomDockWidgetArea, jarSigner);
+    tabifyDockWidget(zipAlign, jarSigner);
+    auto adb = new AdbDock(this);
+    addDockWidget(Qt::BottomDockWidgetArea, adb);
+    tabifyDockWidget(jarSigner, adb);
+    // Docks : End
 }
 
 void Ide::closeEvent(QCloseEvent *e)
@@ -158,22 +172,23 @@ void Ide::onInit()
     {
         resize(p->windowSize());
     }
-    addDockWidget(Qt::LeftDockWidgetArea, new ProjectDock(this));
-    auto java = new JavaDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, java);
-    auto zipAlign = new ZipAlignDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, zipAlign);
-    tabifyDockWidget(java, zipAlign);
-    auto jarSigner = new JarSignerDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, jarSigner);
-    tabifyDockWidget(zipAlign, jarSigner);
-    auto adb = new AdbDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, adb);
-    tabifyDockWidget(jarSigner, adb);
     restoreState(p->docksState());
     if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
     {
-        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION_VENDOR, p->vendorPath()), QMessageBox::Close);
+        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
+    }
+    auto f = p->sessionFiles();
+    for (QString p : f)
+    {
+        if (QFile::exists(p))
+        {
+            emit fileOpen(p);
+        }
+    }
+    QDir dir(Preferences::get()->sessionProject());
+    if (dir.exists() && dir.exists("apktool.yml"))
+    {
+        emit onOpenDir(dir.absolutePath());
     }
 }
 
@@ -230,11 +245,6 @@ void Ide::onMenuBarFileOpenDir()
             onOpenDir(dir);
         }
     }
-}
-
-void Ide::onMenuBarFileOpenDirProxy(const QString &p)
-{
-    onOpenDir(p);
 }
 
 void Ide::onMenuBarFileOpenFile()
@@ -408,6 +418,9 @@ void Ide::onSignSuccess(const QString &a)
 
 Ide::~Ide()
 {
+    Preferences::get()
+            ->setSessionProject(_project)
+            ->save();
     APP_CONNECTIONS_DISCONNECT
 }
 

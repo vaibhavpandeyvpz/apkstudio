@@ -26,7 +26,8 @@ public:
     int javaHeap();
     QString previousApk();
     QString previousDir();
-    QString previousProject();
+    QStringList sessionFiles();
+    QString sessionProject();
     bool showWhitespaces();
     QString signKey();
     QString signKeyPass();
@@ -42,7 +43,8 @@ public:
     Preferences *setDocksState(const QByteArray &state);
     Preferences *setJavaHeap(const int mb);
     Preferences *setPreviousDir(const QString &dir);
-    Preferences *setPreviousProject(const QString &project);
+    Preferences *setSessionFiles(const QStringList &files);
+    Preferences *setSessionProject(const QString &project);
     Preferences *setShowWhitespaces(const bool show);
     Preferences *setSignKey(const QString &name);
     Preferences *setSignKeyPass(const QString &pass);

@@ -3,7 +3,7 @@
 
 #define APP_NAME "apkstudio/qt5"
 #define APP_ORGANIZATION "vaibhavpandeyvpz"
-#define APP_VERSION "3.0.0-b4"
+#define APP_VERSION "3.0.0-b5"
 
 #define CLI_TIMEOUT 5 * 60 * 1000
 
@@ -30,7 +30,8 @@
 #define PREF_DOCKS_STATE "DocksState"
 #define PREF_JAVA_HEAP "JavaHeap"
 #define PREF_PREVIOUS_DIR "PreviousDir"
-#define PREF_PREVIOUS_PROJECT "PreviousProject"
+#define PREF_SESSION_PROJECT "SessionProject"
+#define PREF_SESSION_FILES "SessionFiles"
 #define PREF_SHOW_WHITESPACES "ShowWhitespaces"
 #define PREF_SIGN_KEY "SignKey"
 #define PREF_SIGN_KEY_PASS "SignKeyPass"
@@ -66,7 +67,6 @@
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "http://github.vaibhavpandey.com/apkstudio"
-#define URL_DOCUMENTATION_VENDOR "http://github.vaibhavpandey.com/apkstudio#vendor"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"
 
