@@ -41,7 +41,7 @@ Features:
 - Decompile/Recompile APK
 - Flexible Keystore & Key-Alias Chooser
 - Automatic Zip-align
-- Syntax Highlighting (*java; *.smali; *.xml; *.yml)
+- Syntax Highlighting (*.java; *.smali; *.xml; *.yml)
 - Image Viewer For Resources
 - One-click **Install** To Device
 - Frameworks Support
