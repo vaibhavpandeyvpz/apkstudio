@@ -6,16 +6,14 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QTimer>
-#include "include/adbdock.h"
 #include "include/buildrunnable.h"
+#include "include/consoledock.h"
 #include "include/constants.h"
 #include "include/editortabs.h"
 #include "include/decoderunnable.h"
 #include "include/ide.h"
 #include "include/fileutils.h"
 #include "include/installrunnable.h"
-#include "include/jarsignerdock.h"
-#include "include/javadock.h"
 #include "include/menubar.h"
 #include "include/pathutils.h"
 #include "include/pleasewait.h"
@@ -31,7 +29,6 @@
 #include "include/statusbar.h"
 #include "include/textutils.h"
 #include "include/toolbar.h"
-#include "include/zipaligndock.h"
 
 APP_NAMESPACE_START
 
@@ -49,17 +46,7 @@ Ide::Ide(QWidget *parent)
     setWindowTitle(__("ide", "titles"));
     // Docks : Begin
     addDockWidget(Qt::LeftDockWidgetArea, new ProjectDock(this));
-    auto java = new JavaDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, java);
-    auto zipAlign = new ZipAlignDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, zipAlign);
-    tabifyDockWidget(java, zipAlign);
-    auto jarSigner = new JarSignerDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, jarSigner);
-    tabifyDockWidget(zipAlign, jarSigner);
-    auto adb = new AdbDock(this);
-    addDockWidget(Qt::BottomDockWidgetArea, adb);
-    tabifyDockWidget(jarSigner, adb);
+    addDockWidget(Qt::BottomDockWidgetArea, new ConsoleDock(this));
     // Docks : End
 }
 

@@ -1,14 +1,17 @@
 #include <QLayout>
+#include "include/adb.h"
+#include "include/apktool.h"
 #include "include/consoledock.h"
 #include "include/constants.h"
+#include "include/jarsigner.h"
 #include "include/qrc.h"
+#include "include/zipalign.h"
 
 APP_NAMESPACE_START
 
-ConsoleDock::ConsoleDock(const QString &title, const QString &binary, QWidget *parent)
-    : QDockWidget(title, parent), _binary(binary)
+ConsoleDock::ConsoleDock(QWidget *parent)
+    : QDockWidget(__("console", "docks"), parent)
 {
-    setContentsMargins(2, 2, 2, 2);
     _edit = new QTextEdit(this);
     QFont font;
     font.setFamily("Courier New");
@@ -25,7 +28,19 @@ ConsoleDock::ConsoleDock(const QString &title, const QString &binary, QWidget *p
     _edit->setReadOnly(true);
     _edit->setTabStopWidth(4 * metrics.width('8'));
     _edit->setWordWrapMode(QTextOption::NoWrap);
+    setContentsMargins(2, 2, 2, 2);
+    setObjectName("ConsoleDock");
     setWidget(_edit);
+    _connections << connect(Adb::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(Adb::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+    _connections << connect(ApkTool::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(ApkTool::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+    _connections << connect(JarSigner::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(JarSigner::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+    _connections << connect(Java::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(Java::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+    _connections << connect(ZipAlign::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(ZipAlign::get(), &Process::executing, this, &ConsoleDock::onExecuting);
 }
 
 void ConsoleDock::onExecuted(const Process::Result &r)
@@ -51,26 +66,18 @@ void ConsoleDock::onExecuted(const Process::Result &r)
     _edit->append(QString());
 }
 
-void ConsoleDock::onExecuting(const QStringList &cs)
+void ConsoleDock::onExecuting(const QString &c, const QStringList &a)
 {
-    QString line = QString("$ %1 ")
-#ifdef Q_OS_WIN
-            .arg(_binary + ".exe");
-#else
-            .arg(_binary);
-#endif
-    foreach (const QString &c, cs)
+    QString line = "$ " + c;
+    foreach (const QString &i, a)
     {
-        if (c.contains(' '))
+        QString arg(i);
+        if (i.contains(' '))
         {
-            line.append('\"');
+            arg.prepend('\"');
+            arg.append('\"');
         }
-        line.append(c);
-        if (c.contains(' '))
-        {
-            line.append('\"');
-        }
-        line.append(' ');
+        line.append(' ' + arg);
     }
     _edit->setTextColor(QColor(COLOR_COMMAND));
     _edit->append(line.trimmed());

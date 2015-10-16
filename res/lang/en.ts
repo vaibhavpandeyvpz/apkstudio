@@ -50,24 +50,12 @@
 <context>
     <name>docks</name>
     <message>
-        <source>adb</source>
-        <translation>ADB</translation>
-    </message>
-    <message>
-        <source>jar_signer</source>
-        <translation>Jar Signer</translation>
-    </message>
-    <message>
-        <source>java</source>
-        <translation>Java</translation>
+        <source>console</source>
+        <translation>Console</translation>
     </message>
     <message>
         <source>project</source>
         <translation>Project</translation>
-    </message>
-    <message>
-        <source>zip_align</source>
-        <translation>Zip-Align</translation>
     </message>
 </context>
 <context>

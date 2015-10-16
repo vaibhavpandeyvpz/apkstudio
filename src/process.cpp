@@ -1,3 +1,4 @@
+#include <QFileInfo>
 #include <QProcess>
 #include "include/constants.h"
 #include "include/pathutils.h"
@@ -12,7 +13,7 @@ Process::Process(const QString &exe, QObject *parent)
 
 Process::Result Process::exec(const QStringList &args)
 {
-    emit executing(args);
+    emit executing(QFileInfo(_exe).completeBaseName(), args);
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
     // process.setProcessEnvironment(QProcessEnvironment::systemEnvironment());

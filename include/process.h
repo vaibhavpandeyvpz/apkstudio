@@ -27,7 +27,7 @@ public:
     virtual Result exec(const QStringList &args = QStringList());
 signals:
     void executed(Result);
-    void executing(QStringList);
+    void executing(QString, QStringList);
 };
 
 APP_NAMESPACE_END
