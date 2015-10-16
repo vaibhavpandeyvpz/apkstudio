@@ -13,7 +13,6 @@ MenuBar::MenuBar(QWidget *p)
     addEditMenu();
     addProjectMenu();
     addHelpMenu();
-    _connections << connect(this, SIGNAL(projectOpen(QString)), p, SLOT(onMenuBarFileOpenDirProxy(QString)));
 }
 
 void MenuBar::addEditMenu()
@@ -49,19 +48,6 @@ void MenuBar::addFileMenu()
     m->addSeparator();
     m->addAction(__("save", "menubar"), parent(), SLOT(onMenuBarFileSave()), QKeySequence::Save);
     m->addAction(__("save_all", "menubar"), parent(), SLOT(onMenuBarFileSaveAll()));
-    m->addSeparator();
-    QDir dir(Preferences::get()->previousProject());
-    if (dir.exists() && dir.exists("apktool.yml"))
-    {
-        _connections << connect(m->addAction(dir.dirName()), &QAction::triggered, [=]
-        {
-            emit projectOpen(dir.absolutePath());
-        });
-    }
-    else
-    {
-        m->addAction(__("no_recent_project", "menubar"))->setEnabled(false);
-    }
     m->addSeparator();
     m->addAction(__("terminal", "menubar"), parent(), SLOT(onMenuBarFileTerminal()));
     m->addSeparator();

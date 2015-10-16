@@ -299,6 +299,9 @@ void EditorTabs::onTabMoved(const int from, const int to)
 
 EditorTabs::~EditorTabs()
 {
+    Preferences::get()
+            ->setSessionFiles(_files.keys())
+            ->save();
     APP_CONNECTIONS_DISCONNECT
 }
 

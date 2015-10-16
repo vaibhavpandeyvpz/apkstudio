@@ -19,8 +19,6 @@ private:
 public:
     explicit MenuBar(QWidget *parent = 0);
     ~MenuBar();
-signals:
-    void projectOpen(QString);
 };
 
 APP_NAMESPACE_END
