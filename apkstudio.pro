@@ -2,7 +2,6 @@ CONFIG += c++11
 
 HEADERS += \
     include/adb.h \
-    include/adbdock.h \
     include/apktool.h \
     include/buildrunnable.h \
     include/coder.h \
@@ -22,9 +21,7 @@ HEADERS += \
     include/ide.h \
     include/installrunnable.h \
     include/jarsigner.h \
-    include/jarsignerdock.h \
     include/java.h \
-    include/javadock.h \
     include/macros.h \
     include/menubar.h \
     include/pathutils.h \
@@ -43,8 +40,7 @@ HEADERS += \
     include/textutils.h \
     include/toolbar.h \
     include/viewer.h \
-    include/zipalign.h \
-    include/zipaligndock.h
+    include/zipalign.h
 
 OTHER_FILES += \
     .gitignore \
@@ -71,7 +67,6 @@ RESOURCES += \
 
 SOURCES += \
     src/adb.cpp \
-    src/adbdock.cpp \
     src/apktool.cpp \
     src/buildrunnable.cpp \
     src/coder.cpp \
@@ -90,9 +85,7 @@ SOURCES += \
     src/ide.cpp \
     src/installrunnable.cpp \
     src/jarsigner.cpp \
-    src/jarsignerdock.cpp \
     src/java.cpp \
-    src/javadock.cpp \
     src/main.cpp \
     src/menubar.cpp \
     src/pathutils.cpp \
@@ -111,8 +104,7 @@ SOURCES += \
     src/textutils.cpp \
     src/toolbar.cpp \
     src/viewer.cpp \
-    src/zipalign.cpp \
-    src/zipaligndock.cpp
+    src/zipalign.cpp
 
 TARGET = apkstudio
 
