@@ -12,7 +12,6 @@ HEADERS += \
     include/consoledock.h \
     include/constants.h \
     include/decoderunnable.h \
-    include/dex2jar.h \
     include/dialog.h \
     include/editortabs.h \
     include/fileutils.h \
@@ -76,7 +75,6 @@ SOURCES += \
     src/codersidebar.cpp \
     src/consoledock.cpp \
     src/decoderunnable.cpp \
-    src/dex2jar.cpp \
     src/dialog.cpp \
     src/editortabs.cpp \
     src/fileutils.cpp \
