@@ -27,6 +27,8 @@ SignExportApk::SignExportApk(QWidget *p)
     form->addRow(__("keystore_pass", "forms"), _keystorePass = new QLineEdit(pr->signKeystorePass(), this));
     form->addRow(__("key", "forms"), _key = new QLineEdit(pr->signKey(), this));
     form->addRow(__("key_pass", "forms"), _keyPass = new QLineEdit(pr->signKeyPass(), this));
+    _keyPass->setEchoMode(QLineEdit::Password);
+    _keystorePass->setEchoMode(QLineEdit::Password);
     // Form : End
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttons = new QDialogButtonBox(this);
