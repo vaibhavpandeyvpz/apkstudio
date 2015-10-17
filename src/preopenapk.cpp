@@ -33,7 +33,6 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     row->addWidget(browse);
     form->addRow(__("project_path", "forms"), row);
     form->addRow(__("framework_tag", "forms"), _framework = new QComboBox(this));
-    form->addRow(__("decompile_sources", "forms"), _sources = new QCheckBox(this));
     // Form : End
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttons = new QDialogButtonBox(this);
