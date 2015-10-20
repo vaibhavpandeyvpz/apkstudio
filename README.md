@@ -23,7 +23,7 @@ Building (Linux):
 ```bash
 git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
 cd apkstudio
-lrelease resources/lang/en.ts
+lrelease res/lang/en.ts
 qmake apkstudio.pro CONFIG+=release
 # {IF} On KDE 5.x
 export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
