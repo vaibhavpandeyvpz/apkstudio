@@ -20,6 +20,7 @@ private:
     QString _apk;
     QPointer<PleaseWait> _pleaseWait;
     QString _project;
+    bool _quit;
     StatusBar *_statusBar;
 protected:
     void closeEvent(QCloseEvent *event);

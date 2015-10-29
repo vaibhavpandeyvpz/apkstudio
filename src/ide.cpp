@@ -29,6 +29,7 @@
 #include "include/statusbar.h"
 #include "include/textutils.h"
 #include "include/toolbar.h"
+#include "include/updatedownloader.h"
 
 APP_NAMESPACE_START
 
@@ -52,25 +53,28 @@ Ide::Ide(QWidget *parent)
 
 void Ide::closeEvent(QCloseEvent *e)
 {
-    QMessageBox mb(QMessageBox::Question, __("quit", "titles"), __("quit", "messages"));
-    mb.addButton(QMessageBox::Yes);
-    mb.addButton(QMessageBox::No);
-    mb.setWindowIcon(Qrc::icon("dialog_quit"));
-    if (QMessageBox::Yes == mb.exec())
+    if (!_quit)
     {
-        auto p = Preferences::get();
-        bool m = isMaximized();
-        p->setWindowMaximized(m);
-        if (!m)
+        QMessageBox mb(QMessageBox::Question, __("quit", "titles"), __("quit", "messages"));
+        mb.addButton(QMessageBox::Yes);
+        mb.addButton(QMessageBox::No);
+        mb.setWindowIcon(Qrc::icon("dialog_quit"));
+        if (QMessageBox::Yes == mb.exec())
         {
-            p->setWindowSize(size());
+            auto p = Preferences::get();
+            bool m = isMaximized();
+            p->setWindowMaximized(m);
+            if (!m)
+            {
+                p->setWindowSize(size());
+            }
+            p->setDocksState(saveState());
+            p->save();
         }
-        p->setDocksState(saveState());
-        p->save();
-    }
-    else
-    {
-        e->ignore();
+        else
+        {
+            e->ignore();
+        }
     }
 }
 
@@ -162,7 +166,12 @@ void Ide::onInit()
     restoreState(p->docksState());
     if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
     {
-        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
+        UpdateDownloader *ud = new UpdateDownloader(this);
+        if (QDialog::Accepted != ud->exec())
+        {
+            _quit = true;
+            close();
+        }
     }
     auto f = p->sessionFiles();
     for (QString p : f)

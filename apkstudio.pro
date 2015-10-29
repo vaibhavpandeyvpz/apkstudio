@@ -38,6 +38,7 @@ HEADERS += \
     include/statusbar.h \
     include/textutils.h \
     include/toolbar.h \
+    include/updatedownloader.h \
     include/viewer.h \
     include/zipalign.h
 
@@ -57,12 +58,18 @@ OTHER_FILES += \
     res/win32.rc \
     README.md
 
-QT += core gui widgets
-
-win32:RC_FILE = res/win32.rc
+QT += core gui network widgets
 
 RESOURCES += \
     res/all.qrc
+
+win32 {
+    INCLUDEPATH += C:/OpenSSL-Win32/include
+
+    LIBS += -LC:/OpenSSL-Win32/lib -lubsec
+
+    RC_FILE = res/win32.rc
+}
 
 SOURCES += \
     src/adb.cpp \
@@ -101,6 +108,7 @@ SOURCES += \
     src/statusbar.cpp \
     src/textutils.cpp \
     src/toolbar.cpp \
+    src/updatedownloader.cpp \
     src/viewer.cpp \
     src/zipalign.cpp
 

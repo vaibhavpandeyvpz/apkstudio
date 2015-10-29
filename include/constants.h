@@ -3,7 +3,7 @@
 
 #define APP_NAME "apkstudio/qt5"
 #define APP_ORGANIZATION "vaibhavpandeyvpz"
-#define APP_VERSION "3.0.0-b6"
+#define APP_VERSION "master"
 
 #define CLI_TIMEOUT 5 * 60 * 1000
 
@@ -66,6 +66,7 @@
 #define THREADS_MAX 1
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
+#define URL_DOWNLOADS "https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/%1/external/downloads.json"
 #define URL_DOCUMENTATION "http://github.vaibhavpandey.com/apkstudio"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "http://forum.xda-developers.com/showthread.php?t=2493107"

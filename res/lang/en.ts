@@ -302,6 +302,14 @@
 <context>
     <name>messages</name>
     <message>
+        <source>network_error_download</source>
+        <translation>Network error occurred while downloading %1</translation>
+    </message>
+    <message>
+        <source>network_error_fetch</source>
+        <translation>Network error occurred while fetching %1</translation>
+    </message>
+    <message>
         <source>apk_signed</source>
         <translation>APK has been successfully signed. What next?</translation>
     </message>
@@ -310,8 +318,8 @@
         <translation>Any unsaved changed will be lost. Quit?</translation>
     </message>
     <message>
-        <source>download_vendor</source>
-        <translation><![CDATA[You need to download some 3rd-party applications/files from <a href="%1">here</a> and place them in <strong>%2</strong> for APK Studio to work.]]></translation>
+        <source>update_reason</source>
+        <translation><![CDATA[APK Studio needs to download some 3rd-party applications/files from <a href="%1">here</a> and place them in <strong>%2</strong> before start working.]]></translation>
     </message>
     <message>
         <source>decode_failure</source>
@@ -384,8 +392,12 @@
 <context>
     <name>titles</name>
     <message>
-        <source>action_required</source>
-        <translation>Action Required</translation>
+        <source>download_failed</source>
+        <translation>Download Failed</translation>
+    </message>
+    <message>
+        <source>download_updates</source>
+        <translation>Download Updates</translation>
     </message>
     <message>
         <source>decode_apk</source>
