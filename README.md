@@ -5,7 +5,7 @@
 Instructions:
 --------
 - Make sure **JAVA_HOME** point to a valid **JDK** (*JRE* may not work)
-- Point the **Vendor Path** in *Edit* > *Settings* to a valid folder having contents of [this](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/vendor.zip) archive
+- Point the **Vendor Path** in *Edit* > *Settings* to a valid folder having contents of [this](https://bintray.com/artifact/download/vaibhavpandeyvpz/generic/2015.10.29/vendor.zip) archive
 - A recommended location to extract above archive might be **~/.apkstudio/vendor**
 - You can now start de/re-compiling
 
