@@ -29,7 +29,6 @@
 #include "include/statusbar.h"
 #include "include/textutils.h"
 #include "include/toolbar.h"
-#include "include/updatedownloader.h"
 
 APP_NAMESPACE_START
 
@@ -53,28 +52,25 @@ Ide::Ide(QWidget *parent)
 
 void Ide::closeEvent(QCloseEvent *e)
 {
-    if (!_quit)
+    QMessageBox mb(QMessageBox::Question, __("quit", "titles"), __("quit", "messages"));
+    mb.addButton(QMessageBox::Yes);
+    mb.addButton(QMessageBox::No);
+    mb.setWindowIcon(Qrc::icon("dialog_quit"));
+    if (QMessageBox::Yes == mb.exec())
     {
-        QMessageBox mb(QMessageBox::Question, __("quit", "titles"), __("quit", "messages"));
-        mb.addButton(QMessageBox::Yes);
-        mb.addButton(QMessageBox::No);
-        mb.setWindowIcon(Qrc::icon("dialog_quit"));
-        if (QMessageBox::Yes == mb.exec())
+        auto p = Preferences::get();
+        bool m = isMaximized();
+        p->setWindowMaximized(m);
+        if (!m)
         {
-            auto p = Preferences::get();
-            bool m = isMaximized();
-            p->setWindowMaximized(m);
-            if (!m)
-            {
-                p->setWindowSize(size());
-            }
-            p->setDocksState(saveState());
-            p->save();
+            p->setWindowSize(size());
         }
-        else
-        {
-            e->ignore();
-        }
+        p->setDocksState(saveState());
+        p->save();
+    }
+    else
+    {
+        e->ignore();
     }
 }
 
@@ -166,12 +162,7 @@ void Ide::onInit()
     restoreState(p->docksState());
     if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
     {
-        UpdateDownloader *ud = new UpdateDownloader(this);
-        if (QDialog::Accepted != ud->exec())
-        {
-            _quit = true;
-            close();
-        }
+        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
     }
     auto f = p->sessionFiles();
     for (QString p : f)
@@ -283,7 +274,7 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(__("app_version", "messages", APP_VERSION));
+    box.setText(__("app_version", "messages", APP_VERSION, APP_TAG_DATE));
     box.setWindowIcon(Qrc::icon("dialog_about"));
     box.setWindowTitle(__("about", "titles"));
     box.exec();

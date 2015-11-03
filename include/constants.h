@@ -3,7 +3,6 @@
 
 #define APP_NAME "apkstudio/qt5"
 #define APP_ORGANIZATION "vaibhavpandeyvpz"
-#define APP_VERSION "master"
 
 #define CLI_TIMEOUT 5 * 60 * 1000
 

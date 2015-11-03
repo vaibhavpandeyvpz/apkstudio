@@ -1,5 +1,11 @@
 CONFIG += c++11
 
+GIT_TAG = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD rev-list --tags --max-count=1)
+GIT_DATE = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD show -s --date=local --format=\\\"%ci\\\" $$GIT_TAG)
+GIT_VERSION = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD describe --always --long --tags $$GIT_TAG)
+DEFINES += APP_TAG_DATE=\\\"$$GIT_DATE\\\"
+DEFINES += APP_VERSION=\\\"$$GIT_VERSION\\\"
+
 HEADERS += \
     include/adb.h \
     include/apktool.h \
@@ -38,7 +44,6 @@ HEADERS += \
     include/statusbar.h \
     include/textutils.h \
     include/toolbar.h \
-    include/updatedownloader.h \
     include/viewer.h \
     include/zipalign.h
 
@@ -58,18 +63,10 @@ OTHER_FILES += \
     res/win32.rc \
     README.md
 
-QT += core gui network widgets
+QT += core gui widgets
 
 RESOURCES += \
     res/all.qrc
-
-win32 {
-    INCLUDEPATH += C:/OpenSSL-Win32/include
-
-    LIBS += -LC:/OpenSSL-Win32/lib -lubsec
-
-    RC_FILE = res/win32.rc
-}
 
 SOURCES += \
     src/adb.cpp \
@@ -108,7 +105,6 @@ SOURCES += \
     src/statusbar.cpp \
     src/textutils.cpp \
     src/toolbar.cpp \
-    src/updatedownloader.cpp \
     src/viewer.cpp \
     src/zipalign.cpp
 
