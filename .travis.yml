@@ -12,10 +12,9 @@ install:
  - sudo apt-get -qq update
  - sudo apt-get -qq install g++-4.9 qt55base qt55tools
  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 99
- - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 99
 
 before_script:
- - git fetch --unshallow
+ - git fetch --depth=999
 
 script:
  - source /opt/qt55/bin/qt55-env.sh
