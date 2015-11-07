@@ -1,6 +1,3 @@
-For clarifications, visit [http://www.qt.io/qt-licensing-terms/](http://www.qt.io/qt-licensing-terms/)
----
-
                    GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
