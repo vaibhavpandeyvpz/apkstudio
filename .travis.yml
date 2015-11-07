@@ -3,6 +3,9 @@ os:
 
 language: cpp
 
+git:
+  depth: 1
+
 install:
  - sudo add-apt-repository -y ppa:beineri/opt-qt55
  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -12,10 +15,7 @@ install:
  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 99
 
 script:
- # No more needed
- # - lsb_release -s -d
- # - g++ --version
- # No more needed
+ - git fetch --unshallow
  - source /opt/qt55/bin/qt55-env.sh
  - lrelease res/lang/en.ts
  - qmake apkstudio.pro CONFIG+=release
