@@ -13,6 +13,7 @@ os:
 language: cpp
 
 script:
+ - qmake --version
  - lrelease res/lang/en.ts
  - qmake apkstudio.pro CONFIG+=release
  - make
