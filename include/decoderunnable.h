@@ -16,7 +16,7 @@ private:
 public:
     explicit DecodeRunnable(const QString &src, const QString &dest, const QString &framework, QObject *parent = 0);
     void run();
-signals:
+Q_SIGNALS:
     void decodeFailure(const QString &apk);
     void decodeSuccess(const QString &dir);
 };

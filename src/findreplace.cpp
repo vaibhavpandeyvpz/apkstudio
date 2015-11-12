@@ -11,29 +11,29 @@
 APP_NAMESPACE_START
 
 FindReplace::FindReplace(const bool r, QWidget *p)
-    : Dialog(__(r ? "find_replace" : "find", "titles"), p), _editor(nullptr), _replace(r)
+    : Dialog(__(r ? "find_replace" : "find", "titles"), p), _replace(r)
 {
     resize(QSize(360, 256));
     setMinimumSize(QSize(320, 192));
     setMaximumSize(QSize(480, 320));
     // Form : Start
-    auto buttons = new QDialogButtonBox(this);
-    auto find = new QPushButton(__("find", "buttons"), buttons);
-    auto replace = new QPushButton(__("replace", "buttons"), buttons);
-    auto replaceAll = new QPushButton(__("replace_all", "buttons"), buttons);
-    auto groupDirection = new QGroupBox(__("direction", "forms"), this);
-    auto groupFlags = new QGroupBox(__("flags", "forms"), this);
+    QDialogButtonBox *buttons = new QDialogButtonBox(this);
+    QPushButton *find = new QPushButton(__("find", "buttons"), buttons);
+    QPushButton *replace = new QPushButton(__("replace", "buttons"), buttons);
+    QPushButton *replaceAll = new QPushButton(__("replace_all", "buttons"), buttons);
+    QGroupBox *groupDirection = new QGroupBox(__("direction", "forms"), this);
+    QGroupBox *groupFlags = new QGroupBox(__("flags", "forms"), this);
     _replaceWith = new QLineEdit(this);
     _searchFor = new QLineEdit(this);
     // Direction
-    auto directionUp = new QRadioButton(__("up", "forms"), this);
+    QRadioButton *directionUp = new QRadioButton(__("up", "forms"), this);
     // Layout
-    auto content = new QVBoxLayout;
-    auto directions = new QVBoxLayout;
-    auto flags = new QVBoxLayout;
-    auto form = new QFormLayout;
-    auto widget = new QVBoxLayout(this);
-    auto options = new QHBoxLayout;
+    QVBoxLayout *content = new QVBoxLayout;
+    QVBoxLayout *directions = new QVBoxLayout;
+    QVBoxLayout *flags = new QVBoxLayout;
+    QFormLayout *form = new QFormLayout;
+    QVBoxLayout *widget = new QVBoxLayout(this);
+    QHBoxLayout *options = new QHBoxLayout;
     // Form : End
     buttons->addButton(find, QDialogButtonBox::AcceptRole);
     buttons->addButton(replace, QDialogButtonBox::ActionRole);
@@ -54,12 +54,9 @@ FindReplace::FindReplace(const bool r, QWidget *p)
     widget->addLayout(content);
     widget->addWidget(buttons);
     setLayout(widget);
-    _connections << connect(find, &QPushButton::clicked, [=]
-    {
-        findInEditor(_directionDown->isChecked());
-    });
-    _connections << connect(replace, &QPushButton::clicked, this, &FindReplace::replaceWith);
-    _connections << connect(replaceAll, &QPushButton::clicked, this, &FindReplace::replaceAllWith);
+    _connections << connect(find, SIGNAL(clicked()), this, SLOT(onFindClick()));
+    _connections << connect(replace, SIGNAL(clicked()), this, SLOT(onReplaceWithClick()));
+    _connections << connect(replaceAll, SIGNAL(clicked()), this, SLOT(onReplaceAllWithClick()));
     _directionDown->setChecked(true);
     _searchFor->setFocus();
     if (!r)
@@ -74,7 +71,7 @@ void FindReplace::findInEditor(const bool n)
 {
     if (_editor)
     {
-        const QString &searchFor = _searchFor->text();
+        const QString &term = _searchFor->text();
         QTextDocument::FindFlags flags;
         if (!n)
         {
@@ -89,24 +86,30 @@ void FindReplace::findInEditor(const bool n)
             flags |= QTextDocument::FindWholeWords;
         }
         bool r;
+        QTextCursor cursor;
         if (_useRegex->isChecked())
         {
-            r = _editor->find(QRegExp(searchFor, (_caseSensitive->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive)), flags);
+            QRegExp regex(term, (_caseSensitive->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive));
+            cursor = _editor->document()->find(regex, cursor, flags);
+            _editor->setTextCursor(cursor);
+            r = !cursor.isNull();
         }
         else
-        {
-            r = _editor->find(searchFor, flags);
-        }
+        { r = _editor->find(term, flags); }
         if (!r)
         {
-            QTextCursor c = _editor->textCursor();
-            c.setPosition(QTextCursor::Start);
-            _editor->setTextCursor(c);
+            cursor.setPosition(QTextCursor::Start);
+            _editor->setTextCursor(cursor);
         }
     }
 }
 
-void FindReplace::replaceWith()
+void FindReplace::onFindClick()
+{
+    findInEditor(_directionDown->isChecked());
+}
+
+void FindReplace::onReplaceWithClick()
 {
     if (_editor && !_editor->isReadOnly())
     {
@@ -122,7 +125,7 @@ void FindReplace::replaceWith()
     }
 }
 
-void FindReplace::replaceAllWith()
+void FindReplace::onReplaceAllWithClick()
 {
     if (_editor && !_editor->isReadOnly())
     {

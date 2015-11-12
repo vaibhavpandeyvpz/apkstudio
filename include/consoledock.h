@@ -18,7 +18,7 @@ protected:
 public:
     explicit ConsoleDock(QWidget *parent = 0);
     ~ConsoleDock();
-public slots:
+public Q_SLOTS:
     void onExecuted(const Process::Result &result);
     void onExecuting(const QString &command, const QStringList &args);
 };

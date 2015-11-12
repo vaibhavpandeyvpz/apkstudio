@@ -14,7 +14,7 @@ private:
 public:
     explicit InstallRunnable(const QString &apk, QObject *parent = 0);
     void run();
-signals:
+Q_SIGNALS:
     void installFailure(const QString &apk);
     void installSuccess(const QString &apk);
 };

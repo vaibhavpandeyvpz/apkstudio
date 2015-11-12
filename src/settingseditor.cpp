@@ -19,7 +19,7 @@ SettingsEditor::SettingsEditor(QWidget *p)
     setFixedSize(480, 240);
 #endif
     setWindowIcon(Qrc::icon("toolbar_settings"));
-    auto pr = Preferences::get();
+    Preferences *pr = Preferences::get();
     // Form : Start
     QFormLayout *form = new QFormLayout;
     QPushButton *browse = new QPushButton(__("browse", "buttons"), this);
@@ -40,7 +40,7 @@ SettingsEditor::SettingsEditor(QWidget *p)
     _tabStopWidth->setValue(pr->tabStopWidth());
     form->addRow(__("text_encoding", "forms"), _textEncoding = new QComboBox(this));
     QList<int> mibs = QTextCodec::availableMibs();
-    for (const int mib : mibs)
+    foreach (const int mib, mibs)
     {
         QTextCodec *codec = QTextCodec::codecForMib(mib);
         _textEncoding->addItem(codec->name(), codec->mibEnum());
@@ -56,26 +56,28 @@ SettingsEditor::SettingsEditor(QWidget *p)
     buttons->addButton(new QPushButton(__("save", "buttons"), buttons), QDialogButtonBox::AcceptRole);
     layout->addLayout(form);
     layout->addWidget(buttons);
-    _connections << connect(browse, &QPushButton::clicked, [=]
-    {
-        QFileDialog d(this, __("choose_vendor_path", "titles"), pr->vendorPath());
-        d.setAcceptMode(QFileDialog::AcceptOpen);
-        d.setFileMode(QFileDialog::Directory);
-        d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+    _connections << connect(browse, SIGNAL(clicked()), this, SLOT(onBrowseVendor()));
+    _connections << connect(buttons, SIGNAL(accepted()), this, SLOT(onSaveClicked()));
+    _connections << connect(buttons, SIGNAL(rejected()), this, SLOT(close()));
+}
+
+void SettingsEditor::onBrowseVendor()
+{
+    QFileDialog d(this, __("choose_vendor_path", "titles"), _vendorPath->text());
+    d.setAcceptMode(QFileDialog::AcceptOpen);
+    d.setFileMode(QFileDialog::Directory);
+    d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
 #ifdef NO_NATIVE_DIALOG
-        d.setOption(QFileDialog::DontUseNativeDialog);
+    d.setOption(QFileDialog::DontUseNativeDialog);
 #endif
-        if (d.exec() == QFileDialog::Accepted)
+    if (d.exec() == QFileDialog::Accepted)
+    {
+        QStringList files;
+        if ((files = d.selectedFiles()).isEmpty() == false)
         {
-            QStringList files;
-            if ((files = d.selectedFiles()).isEmpty() == false)
-            {
-                _vendorPath->setText(files.first());
-            }
+            _vendorPath->setText(files.first());
         }
-    });
-    _connections << connect(buttons, &QDialogButtonBox::accepted, this, &SettingsEditor::onSaveClicked);
-    _connections << connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::close);
+    }
 }
 
 void SettingsEditor::onSaveClicked()

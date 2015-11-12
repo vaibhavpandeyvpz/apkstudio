@@ -3,7 +3,7 @@
 
 APP_NAMESPACE_START
 
-ZipAlign* ZipAlign::_self = nullptr;
+ZipAlign* ZipAlign::_self = NULL;
 
 ZipAlign::ZipAlign(QObject *parent)
 #ifdef Q_OS_WIN

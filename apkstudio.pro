@@ -1,5 +1,3 @@
-CONFIG += c++11
-
 GIT_TAG = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD rev-list --tags --max-count=1)
 GIT_DATE = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD show -s --date=local --format=\\\"%ci\\\" $$GIT_TAG)
 GIT_VERSION = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD describe --always --long --tags $$GIT_TAG)

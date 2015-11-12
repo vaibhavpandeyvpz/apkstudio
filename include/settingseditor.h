@@ -19,7 +19,8 @@ private:
     QSpinBox *_tabStopWidth;
     QComboBox *_textEncoding;
     QCheckBox *_useSpacesForTabs;
-private slots:
+private Q_SLOTS:
+    void onBrowseVendor();
     void onSaveClicked();
 public:
     explicit SettingsEditor(QWidget *parent = 0);

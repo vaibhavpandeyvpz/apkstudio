@@ -12,10 +12,10 @@ PleaseWait::PleaseWait(QWidget *p)
     setMinimumSize(0, 0);
     setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint & ~Qt::WindowMinMaxButtonsHint);
     setWindowModality(Qt::WindowModal);
-    auto pb = new QProgressBar(this);
+    QProgressBar *pb = new QProgressBar(this);
     pb->setRange(0, 0);
     pb->setTextVisible(false);
-    auto l = new QVBoxLayout(this);
+    QVBoxLayout *l = new QVBoxLayout(this);
     l->addWidget(pb);
     setLayout(l);
     adjustSize();

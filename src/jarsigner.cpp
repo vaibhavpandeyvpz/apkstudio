@@ -3,7 +3,7 @@
 
 APP_NAMESPACE_START
 
-JarSigner* JarSigner::_self = nullptr;
+JarSigner* JarSigner::_self = NULL;
 
 JarSigner::JarSigner(QObject *parent)
 #ifdef Q_OS_WIN

@@ -33,11 +33,11 @@ public:
 public:
     explicit ProjectDock(QWidget *parent = 0);
     ~ProjectDock();
-private slots:
+private Q_SLOTS:
     void onDoubleClicked(const QModelIndex &index);
     void onProjectOpen(const QString &path);
     void onProjectReload();
-signals:
+Q_SIGNALS:
     void fileOpen(QString);
 };
 

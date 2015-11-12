@@ -18,7 +18,7 @@ private:
 public:
     explicit SignRunnable(const QString &src, const QString &keyStore, const QString &keyStorePass, const QString &key, const QString &keyPass, QObject *parent = 0);
     void run();
-signals:
+Q_SIGNALS:
     void signFailure(const QString &apk);
     void signSuccess(const QString &apk);
 };

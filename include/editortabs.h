@@ -22,7 +22,7 @@ private:
 public:
     explicit EditorTabs(QWidget *parent = 0);
     ~EditorTabs();
-private slots:
+private Q_SLOTS:
     void onCurrentChanged(const int index);
     void onFileClose();
     void onFileCloseAll();
@@ -40,7 +40,7 @@ private slots:
     void onFileSaveAll();
     void onTabCloseRequested(const int index);
     void onTabMoved(const int from, const int to);
-signals:
+Q_SIGNALS:
     void fileChanged(QString);
     void fileSaved(QString);
 };

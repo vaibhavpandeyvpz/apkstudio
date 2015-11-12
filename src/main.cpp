@@ -26,6 +26,6 @@ int main(int argc, char *argv[])
     app.setStyleSheet(FileUtils::read(QString(QRC_STYLES).arg("default")));
     Ide ide;
     ide.show();
-    QTimer::singleShot(0, &ide, &Ide::onInit);
+    QTimer::singleShot(0, &ide, SLOT(onInit()));
     return app.exec();
 }

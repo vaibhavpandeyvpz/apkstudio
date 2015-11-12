@@ -14,6 +14,8 @@ private:
     QLineEdit *_apk;
     QLineEdit *_project;
     QComboBox *_framework;
+private Q_SLOTS:
+    void onBrowseProject();
 public:
     explicit PreOpenApk(const QString &apk, QWidget *parent);
 public:

@@ -9,7 +9,7 @@ CoderHighlighterDefinition::CoderHighlighterDefinition(const QString &p)
 {
     QString contents = FileUtils::read(p);
     QStringList lines = contents.split(QRegularExpression(REGEX_LF), QString::SkipEmptyParts);
-    for (const QString l : lines)
+    foreach (const QString l, lines)
     {
         QStringList p = l.split(QRegularExpression(REGEX_WHITESPACE), QString::SkipEmptyParts);
         if (p.size() == 2)

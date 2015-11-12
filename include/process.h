@@ -25,7 +25,7 @@ public:
 public:
     inline Result exec(const QString &arg) { return exec(QStringList(arg)); }
     virtual Result exec(const QStringList &args = QStringList());
-signals:
+Q_SIGNALS:
     void executed(Result);
     void executing(QString, QStringList);
 };

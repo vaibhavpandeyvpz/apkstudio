@@ -50,7 +50,7 @@ void ProjectDock::onItemRefresh(QTreeWidgetItem *item)
         if (dir.exists())
         {
             QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
-            for (QFileInfo fi : files)
+            foreach (QFileInfo fi, files)
             {
                 QTreeWidgetItem *child = new QTreeWidgetItem(item);
                 child->setData(0, RoleType, QVariant::fromValue(fi.isDir() ? TypeDir : TypeFile));

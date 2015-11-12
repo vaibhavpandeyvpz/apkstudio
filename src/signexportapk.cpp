@@ -16,7 +16,7 @@ SignExportApk::SignExportApk(QWidget *p)
     setAttribute(Qt::WA_DeleteOnClose, false);
     setFixedSize(360, 180);
     setWindowIcon(Qrc::icon("toolbar_sign"));
-    auto pr = Preferences::get();
+    Preferences *pr = Preferences::get();
     // Form : Start
     QFormLayout *form = new QFormLayout;
     QPushButton *browse = new QPushButton(__("browse", "buttons"), this);
@@ -36,31 +36,33 @@ SignExportApk::SignExportApk(QWidget *p)
     buttons->addButton(new QPushButton(__("sign", "buttons"), buttons), QDialogButtonBox::AcceptRole);
     layout->addLayout(form);
     layout->addWidget(buttons);
-    _connections << connect(browse, &QPushButton::clicked, [=]
+    _connections << connect(browse, SIGNAL(clicked()), this, SLOT(onBrowseKeystore()));
+    _connections << connect(buttons, SIGNAL(accepted()), this, SLOT(onSignClicked()));
+    _connections << connect(buttons, SIGNAL(rejected()), this, SLOT(close()));
+}
+
+void SignExportApk::onBrowseKeystore()
+{
+    QString dir;
+    QFileInfo fi(_keystore->text());
+    if (fi.exists() && fi.isFile())
     {
-        QString dir;
-        QFileInfo fi(pr->signKeystore());
-        if (fi.exists() && fi.isFile())
-        {
-            dir = fi.absolutePath();
-        }
-        QFileDialog d(this, __("choose_keystore", "titles"), dir);
-        d.setAcceptMode(QFileDialog::AcceptOpen);
-        d.setFileMode(QFileDialog::ExistingFile);
+        dir = fi.absolutePath();
+    }
+    QFileDialog d(this, __("choose_keystore", "titles"), dir);
+    d.setAcceptMode(QFileDialog::AcceptOpen);
+    d.setFileMode(QFileDialog::ExistingFile);
 #ifdef NO_NATIVE_DIALOG
-        d.setOption(QFileDialog::DontUseNativeDialog);
+    d.setOption(QFileDialog::DontUseNativeDialog);
 #endif
-        if (d.exec() == QFileDialog::Accepted)
+    if (d.exec() == QFileDialog::Accepted)
+    {
+        QStringList files;
+        if ((files = d.selectedFiles()).isEmpty() == false)
         {
-            QStringList files;
-            if ((files = d.selectedFiles()).isEmpty() == false)
-            {
-                _keystore->setText(files.first());
-            }
+            _keystore->setText(files.first());
         }
-    });
-    _connections << connect(buttons, &QDialogButtonBox::accepted, this, &SignExportApk::onSignClicked);
-    _connections << connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::close);
+    }
 }
 
 void SignExportApk::onSignClicked()

@@ -22,7 +22,8 @@ public:
     inline QString keyPass() { return _keyPass->text(); }
     inline QString keystore() { return _keystore->text(); }
     inline QString keystorePass() { return _keystorePass->text(); }
-private slots:
+private Q_SLOTS:
+    void onBrowseKeystore();
     void onSignClicked();
 };
 

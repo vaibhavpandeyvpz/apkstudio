@@ -17,7 +17,7 @@
 APP_NAMESPACE_START
 
 EditorTabs::EditorTabs(QWidget *parent)
-    : QTabWidget(parent), _finder(nullptr)
+    : QTabWidget(parent)
 {
     _connections << connect(parent, SIGNAL(editCopy()), this, SLOT(onEditCopy()));
     _connections << connect(parent, SIGNAL(editCut()), this, SLOT(onEditCut()));

@@ -13,7 +13,7 @@ class StatusBar : public QStatusBar
 private:
     APP_CONNECTIONS_LIST
     QLabel *_message;
-private slots:
+private Q_SLOTS:
     void onMessageChanged(const QString &text);
 public:
     explicit StatusBar(QWidget *parent);

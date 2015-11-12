@@ -48,7 +48,7 @@ void ConsoleDock::onExecuted(const Process::Result &r)
     if (!r.error.isEmpty())
     {
         _edit->setTextColor(QColor(COLOR_ERROR));
-        for (const QString &l : r.error)
+        foreach (const QString &l, r.error)
         {
             _edit->append(l);
         }
@@ -56,7 +56,7 @@ void ConsoleDock::onExecuted(const Process::Result &r)
     if (!r.output.isEmpty())
     {
         _edit->setTextColor(QColor(COLOR_OUTPUT));
-        for (const QString &l : r.output)
+        foreach (const QString &l, r.output)
         {
             _edit->append(l);
         }

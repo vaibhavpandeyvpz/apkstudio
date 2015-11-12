@@ -5,7 +5,7 @@
 
 APP_NAMESPACE_START
 
-ApkTool* ApkTool::_self = nullptr;
+ApkTool* ApkTool::_self = NULL;
 
 ApkTool::ApkTool(QObject *parent)
     : Java(parent)
@@ -47,7 +47,7 @@ QString ApkTool::getVersion()
 {
     Process::Result r = exec("-version");
     QRegularExpression rgx(REGEX_APKTOOL_VERSION);
-    for (const QString &l : r.output)
+    foreach (const QString &l, r.output)
     {
         QRegularExpressionMatch m = rgx.match(l);
         if (m.hasMatch())

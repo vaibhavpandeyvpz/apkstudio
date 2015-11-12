@@ -37,7 +37,7 @@ bool FileUtils::rimraf(const QString &d)
         QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
         if (!files.isEmpty())
         {
-            for (QFileInfo fi : files)
+            foreach (QFileInfo fi, files)
             {
                 if (fi.isDir())
                 {

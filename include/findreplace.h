@@ -25,11 +25,12 @@ private:
     QCheckBox *_wholeText;
 private:
     void findInEditor(const bool next);
-private slots:
-    void replaceWith();
-    void replaceAllWith();
+private Q_SLOTS:
+    void onFindClick();
+    void onReplaceWithClick();
+    void onReplaceAllWithClick();
 public:
-    explicit FindReplace(const bool replaceWith, QWidget *parent = 0);
+    explicit FindReplace(const bool replace, QWidget *parent = 0);
     inline void setEditor(QPlainTextEdit *editor) { _editor = editor; }
 };
 

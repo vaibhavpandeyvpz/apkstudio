@@ -8,7 +8,7 @@
 
 APP_NAMESPACE_START
 
-Preferences* Preferences::_self = nullptr;
+Preferences* Preferences::_self = NULL;
 
 Preferences::Preferences(const QString &p)
     : _appPath(p), _settings(new QSettings(PathUtils::combine(p, FILE_PREFERENCES), QSettings::IniFormat))

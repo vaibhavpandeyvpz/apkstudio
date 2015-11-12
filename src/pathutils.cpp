@@ -51,10 +51,10 @@ QString PathUtils::find(const QString &exe)
 QString PathUtils::temp(const QString &n, const QString &d)
 {
     QString prefix;
-    auto generator = [] (const QString &chars) -> QChar { return chars.at(rand() % chars.length()); };
+    const QString &chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     for (int i = 0; i < 8; i++)
     {
-        prefix += generator("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        prefix += chars.at(rand() % chars.length());
     }
     return combine(d.isEmpty() ? QDir::tempPath() : d, prefix + '-' + n);
 }

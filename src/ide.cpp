@@ -69,7 +69,7 @@ void Ide::closeEvent(QCloseEvent *e)
     mb.setWindowIcon(Qrc::icon("dialog_quit"));
     if (QMessageBox::Yes == mb.exec())
     {
-        auto p = Preferences::get();
+        Preferences *p = Preferences::get();
         bool m = isMaximized();
         p->setWindowMaximized(m);
         if (!m)
@@ -157,7 +157,7 @@ void Ide::onFileSaved(const QString &p)
 
 void Ide::onInit()
 {
-    auto p = Preferences::get();
+    Preferences *p = Preferences::get();
     if (p->wasWindowMaximized())
     {
         showMaximized();
@@ -171,8 +171,8 @@ void Ide::onInit()
     {
         QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
     }
-    auto f = p->sessionFiles();
-    for (QString p : f)
+    QStringList f = p->sessionFiles();
+    foreach (QString p, f)
     {
         if (QFile::exists(p))
         {
@@ -255,7 +255,7 @@ void Ide::onMenuBarFileOpenFile()
         if ((files = d.selectedFiles()).isEmpty() == false)
         {
             Preferences::get()->setPreviousDir(d.directory().absolutePath())->save();
-            for (const QString &f : files)
+            foreach (const QString &f, files)
             {
                 emit fileOpen(f);
             }
@@ -265,13 +265,18 @@ void Ide::onMenuBarFileOpenFile()
 
 void Ide::onMenuBarFileTerminal()
 {
+    QStringList a;
+    QString wd;
+    if (!_project.isNull() && !_project.isEmpty())
+    { wd = _project; }
+    else
+    { wd = Preferences::get()->vendorPath(); }
 #ifdef Q_OS_WIN
     QString c("cmd.exe");
-    QStringList a("/k");
-    a << QString("cd /d %1").arg(Preferences::get()->vendorPath());
+    a << "/k" << QString("cd /d %1").arg(wd);
 #else
     QString c("gnome-terminal");
-    QStringList a(QString("--working-directory=%1").arg(Preferences::get()->vendorPath()));
+    a << QString("--working-directory=").append(wd);
 #endif
     QProcess::startDetached(c, a);
 }

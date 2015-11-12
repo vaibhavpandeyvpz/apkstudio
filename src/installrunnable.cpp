@@ -17,7 +17,7 @@ void InstallRunnable::run()
     if (r.code == 0)
     {
         bool s = false;
-        for (const QString &l : r.output)
+        foreach (const QString &l, r.output)
         {
             if (l.startsWith("Success"))
             {

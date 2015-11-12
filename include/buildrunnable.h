@@ -15,7 +15,7 @@ private:
 public:
     explicit BuildRunnable(const QString &src, const QString &dest, QObject *parent);
     void run();
-signals:
+Q_SIGNALS:
     void buildFailure(const QString &dir);
     void buildSuccess(const QString &apk);
 };

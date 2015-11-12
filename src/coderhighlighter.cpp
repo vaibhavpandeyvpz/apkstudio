@@ -20,7 +20,7 @@ CoderHighlighter::CoderHighlighter(const QString &d, const QString &t, QTextDocu
 
 void CoderHighlighter::highlightBlock(const QString &t)
 {
-    for (const CoderHighlighterDefinitionEntry &d : _definition->entries())
+    foreach (const CoderHighlighterDefinitionEntry &d, _definition->entries())
     {
         if (!d.regex.isNull() && !d.regex.isEmpty())
         {

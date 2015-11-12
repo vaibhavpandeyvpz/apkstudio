@@ -3,7 +3,7 @@
 
 APP_NAMESPACE_START
 
-Adb* Adb::_self = nullptr;
+Adb* Adb::_self = NULL;
 
 Adb::Adb(QObject *parent)
 #ifdef Q_OS_WIN
@@ -27,7 +27,7 @@ QString Adb::getVersion()
 {
     Process::Result r = exec("version");
     QRegularExpression rgx(REGEX_ADB_VERSION);
-    for (const QString &l : r.output)
+    foreach (const QString &l, r.output)
     {
         QRegularExpressionMatch m = rgx.match(l);
         if (m.hasMatch())

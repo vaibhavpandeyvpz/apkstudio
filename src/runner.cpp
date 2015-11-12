@@ -3,7 +3,7 @@
 
 APP_NAMESPACE_START
 
-Runner* Runner::_self = nullptr;
+Runner* Runner::_self = NULL;
 
 Runner::Runner(QObject *p)
     : QObject(p), _pool(new QThreadPool(this))

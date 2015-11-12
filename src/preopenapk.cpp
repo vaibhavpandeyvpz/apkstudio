@@ -42,31 +42,9 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     layout->addWidget(buttons);
     setLayout(layout);
     _apk->setReadOnly(true);
-    _connections << connect(browse, &QPushButton::clicked, [=]
-    {
-        QString dir;
-        QFileInfo fi(project);
-        if (fi.exists() && fi.isFile())
-        {
-            dir = fi.absolutePath();
-        }
-        QFileDialog d(this, __("choose_project_directory", "titles"), dir);
-        d.setFileMode(QFileDialog::Directory);
-        d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
-#ifdef NO_NATIVE_DIALOG
-        d.setOption(QFileDialog::DontUseNativeDialog);
-#endif
-        if (d.exec() == QFileDialog::Accepted)
-        {
-            QStringList files;
-            if ((files = d.selectedFiles()).isEmpty() == false)
-            {
-                _project->setText(files.first());
-            }
-        }
-    });
-    _connections << connect(buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    _connections << connect(buttons, &QDialogButtonBox::rejected, this, &QDialog::close);
+    _connections << connect(browse, SIGNAL(clicked()), this, SLOT(onBrowseProject()));
+    _connections << connect(buttons, SIGNAL(accepted()), this, SLOT(accept()));
+    _connections << connect(buttons, SIGNAL(rejected()), this, SLOT(close()));
     // List Frameworks
     _framework->addItem("Default");
     QDirIterator iterator(PathUtils::combine(QDir::homePath(), "apktool/framework"), QDirIterator::Subdirectories);
@@ -89,6 +67,30 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
 QString PreOpenApk::framework()
 {
     return _framework->currentData().toString();
+}
+
+void PreOpenApk::onBrowseProject()
+{
+    QString dir;
+    QFileInfo fi(_project->text());
+    if (fi.exists() && fi.isFile())
+    {
+        dir = fi.absolutePath();
+    }
+    QFileDialog d(this, __("choose_project_directory", "titles"), dir);
+    d.setFileMode(QFileDialog::Directory);
+    d.setOptions(QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+#ifdef NO_NATIVE_DIALOG
+    d.setOption(QFileDialog::DontUseNativeDialog);
+#endif
+    if (d.exec() == QFileDialog::Accepted)
+    {
+        QStringList files;
+        if ((files = d.selectedFiles()).isEmpty() == false)
+        {
+            _project->setText(files.first());
+        }
+    }
 }
 
 APP_NAMESPACE_END

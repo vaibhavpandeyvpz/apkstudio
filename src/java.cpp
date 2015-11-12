@@ -4,7 +4,7 @@
 
 APP_NAMESPACE_START
 
-Java* Java::_self = nullptr;
+Java* Java::_self = NULL;
 
 Java::Java(QObject *parent)
 #ifdef Q_OS_WIN
@@ -35,7 +35,7 @@ QString Java::getVersion()
 {
     Process::Result r = exec("-version");
     QRegularExpression rgx(REGEX_JAVA_VERSION);
-    for (const QString &l : r.output)
+    foreach (const QString &l, r.output)
     {
         QRegularExpressionMatch m = rgx.match(l);
         if (m.hasMatch())

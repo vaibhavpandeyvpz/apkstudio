@@ -15,26 +15,15 @@ APP_NAMESPACE_START
 Coder::Coder(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    _connections << connect(this, &QPlainTextEdit::blockCountChanged, [=] (const int count) { Q_UNUSED(count) updateMargins(); });
-    _connections << connect(this, &QPlainTextEdit::cursorPositionChanged, this, &Coder::onCursorPositionChanged);
-    _connections << connect(this, &QPlainTextEdit::updateRequest, [=] (const QRect &rect, const int column)
-    {
-        if (column)
-        {
-            _sidebar->scroll(0, column);
-        }
-        _sidebar->update(0, rect.y(), _sidebar->width(), rect.height());
-        if (rect.contains(viewport()->rect()))
-        {
-            updateMargins();
-        }
-    });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_U, this), &QShortcut::activated, [=] { transformTo(false); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Up, this), &QShortcut::activated, [=] { pushPullLine(true); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Down, this), &QShortcut::activated, [=] { pushPullLine(false); });
-    _connections << connect(new QShortcut(Qt::CTRL | Qt::Key_U, this), &QShortcut::activated, [=] { transformTo(); });
+    _connections << connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(onUpdateMargins(int)));
+    _connections << connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
+    _connections << connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateRequest(QRect, int)));
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_U, this), SIGNAL(activated()), this, SLOT(onTransformToLower()));
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Up, this), SIGNAL(activated()), this, SLOT(onMoveLineUp()));
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Down, this), SIGNAL(activated()), this, SLOT(onMoveLineDown()));
+    _connections << connect(new QShortcut(Qt::CTRL | Qt::Key_U, this), SIGNAL(activated()), this, SLOT(onTransformToUpper()));
     _sidebar = new CoderSidebar(this);
-    auto pr = Preferences::get();
+    Preferences *pr = Preferences::get();
     _spacesForTabs = pr->useSpacesForTabs();
     setCursorWidth(2);
     if(pr->showWhitespaces())
@@ -49,11 +38,7 @@ Coder::Coder(QWidget *parent) :
     setTabChangesFocus(false);
     setTabStopWidth(pr->tabStopWidth());
     setWordWrapMode(QTextOption::NoWrap);
-    QTimer::singleShot(0, [=]
-    {
-        onCursorPositionChanged();
-        updateMargins();
-    });
+    QTimer::singleShot(0, this, SLOT(onInit()));
 }
 
 QString Coder::addIndent(QString text, int count)
@@ -252,6 +237,25 @@ void Coder::onCursorPositionChanged()
     setExtraSelections(selections);
 }
 
+void Coder::onInit()
+{
+    onCursorPositionChanged();
+    onUpdateMargins(0);
+}
+
+void Coder::onUpdateRequest(const QRect &rect, const int column)
+{
+    if (column)
+    {
+        _sidebar->scroll(0, column);
+    }
+    _sidebar->update(0, rect.y(), _sidebar->width(), rect.height());
+    if (rect.contains(viewport()->rect()))
+    {
+        onUpdateMargins(0);
+    }
+}
+
 bool Coder::indentText(const bool forward)
 {
     QTextCursor cursor = textCursor();
@@ -440,7 +444,7 @@ void Coder::paintEvent(QPaintEvent *event)
     QPlainTextEdit::paintEvent(event);
 }
 
-void Coder::pushPullLine(const bool pull)
+void Coder::moveLine(const bool up)
 {
     QTextCursor original = textCursor();
     QTextCursor moved = original;
@@ -462,7 +466,7 @@ void Coder::pushPullLine(const bool pull)
     QString text = moved.selectedText();
     moved.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
     moved.removeSelectedText();
-    if (pull)
+    if (up)
     {
         moved.movePosition(QTextCursor::PreviousBlock);
         moved.insertBlock();
@@ -493,6 +497,16 @@ void Coder::pushPullLine(const bool pull)
     }
     moved.endEditBlock();
     setTextCursor(moved);
+}
+
+void Coder::onMoveLineDown()
+{
+    moveLine(false);
+}
+
+void Coder::onMoveLineUp()
+{
+    moveLine(true);
 }
 
 void Coder::resizeEvent(QResizeEvent *event)
@@ -540,8 +554,19 @@ void Coder::transformTo(const bool upper)
     }
 }
 
-void Coder::updateMargins()
+void Coder::onTransformToLower()
 {
+    transformTo(false);
+}
+
+void Coder::onTransformToUpper()
+{
+    transformTo(true);
+}
+
+void Coder::onUpdateMargins(const int count)
+{
+    Q_UNUSED(count)
     setViewportMargins(_sidebar->sizeHint().width(), 0, 0, 0);
 }
 

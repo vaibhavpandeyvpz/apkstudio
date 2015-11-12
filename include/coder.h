@@ -26,11 +26,17 @@ private:
     QString addIndent(QString text, int count);
     int indentSize(const QString &text);
     bool indentText(const bool forward = true);
-    void pushPullLine(const bool pull = true);
-    void transformTo(const bool upper = true);
-    void updateMargins();
-private slots:
+    void moveLine(const bool up);
+    void transformTo(const bool upper);
+private Q_SLOTS:
+    void onMoveLineDown();
+    void onMoveLineUp();
     void onCursorPositionChanged();
+    void onInit();
+    void onUpdateRequest(const QRect &rect, const int column);
+    void onUpdateMargins(const int count);
+    void onTransformToLower();
+    void onTransformToUpper();
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);
@@ -69,7 +75,7 @@ public:
     void setFont(const QFont &font);
     void setTabStopWidth(const int width);
     ~Coder();
-signals:
+Q_SIGNALS:
     void fileDropped(const QString &path);
     void tooltipRequested(const QPoint &position);
 };

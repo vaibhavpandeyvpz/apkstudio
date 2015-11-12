@@ -33,7 +33,7 @@ protected:
 public:
     explicit Ide(QWidget *parent = 0);
     ~Ide();
-public slots:
+public Q_SLOTS:
     void onBuildFailure(const QString &project);
     void onBuildSuccess(const QString &apk);
     void onDecodeFailure(const QString &apk);
@@ -77,7 +77,7 @@ public slots:
     void onRunnableStopped();
     void onSignFailure(const QString &apk);
     void onSignSuccess(const QString &apk);
-signals:
+Q_SIGNALS:
     void editCopy();
     void editCut();
     void editFind();
