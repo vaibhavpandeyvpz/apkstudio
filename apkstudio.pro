@@ -66,6 +66,8 @@ OTHER_FILES += \
 
 QT += core gui widgets
 
+win32:RC_FILE = res/win32.rc
+
 RESOURCES += \
     res/all.qrc
 
