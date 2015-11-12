@@ -16,6 +16,12 @@ Download:
 -   Please check **Releases** tab for Windows binaries
 -   Linux users are required to build from source atm
 
+Credit:
+--------
+Many thanks to [BitRock](http://bitrock.com/) for donating license for [InstallBuilder](http://installbuilder.bitrock.com/).
+![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Installers by BitRock")
+
+
 Building (Linux):
 --------
 - Make sure you have **GCC 4.8+**, **QT 5.4+**
