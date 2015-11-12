@@ -7,7 +7,6 @@
 #include <QProgressBar>
 #include <QTimer>
 #include "include/buildrunnable.h"
-#include "include/consoledock.h"
 #include "include/constants.h"
 #include "include/editortabs.h"
 #include "include/decoderunnable.h"
@@ -20,7 +19,6 @@
 #include "include/preferences.h"
 #include "include/preopenapk.h"
 #include "include/process.h"
-#include "include/projectdock.h"
 #include "include/qrc.h"
 #include "include/runner.h"
 #include "include/settingseditor.h"
@@ -29,6 +27,7 @@
 #include "include/statusbar.h"
 #include "include/textutils.h"
 #include "include/toolbar.h"
+#include "include/widgetbar.h"
 
 APP_NAMESPACE_START
 
@@ -45,9 +44,21 @@ Ide::Ide(QWidget *parent)
     setWindowIcon(QIcon(Qrc::image("logo")));
     setWindowTitle(__("ide", "titles"));
     // Docks : Begin
-    addDockWidget(Qt::LeftDockWidgetArea, new ProjectDock(this));
-    addDockWidget(Qt::BottomDockWidgetArea, new ConsoleDock(this));
+    QDockWidget *console;
+    QDockWidget *project;
+    addDockWidget(Qt::BottomDockWidgetArea, console = new ConsoleDock(this));
+    addDockWidget(Qt::LeftDockWidgetArea, project = new ProjectDock(this));
     // Docks : End
+    // Widgets : Begin
+    WidgetBar *bottom = new WidgetBar(this);
+    WidgetBar *left = new WidgetBar(this);
+    bottom->addWidget(Qrc::icon("dock_console"), console);
+    bottom->setObjectName("BottomWidgetBar");
+    left->addWidget(Qrc::icon("dock_project"), project);
+    left->setObjectName("LeftWidgetBar");
+    addToolBar(Qt::BottomToolBarArea, bottom);
+    addToolBar(Qt::LeftToolBarArea, left);
+    // Widgets : End
 }
 
 void Ide::closeEvent(QCloseEvent *e)
@@ -129,13 +140,9 @@ void Ide::onDecodeSuccess(const QString &p)
 void Ide::onFileChanged(const QString &p)
 {
     if (p.isEmpty())
-    {
-        setWindowTitle(__("ide", "titles"));
-    }
+    { setWindowTitle(__("ide", "titles")); }
     else
-    {
-        setWindowTitle(__("ide_alt", "titles", QFileInfo(p).fileName()));
-    }
+    { setWindowTitle(__("ide_alt", "titles", QFileInfo(p).fileName())); }
 }
 
 void Ide::onFileOpen(const QString &p)

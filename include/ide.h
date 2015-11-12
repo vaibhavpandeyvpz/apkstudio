@@ -4,6 +4,8 @@
 #include <QDropEvent>
 #include <QMainWindow>
 #include <QPointer>
+#include "include/consoledock.h"
+#include "include/projectdock.h"
 #include "macros.h"
 
 APP_NAMESPACE_START

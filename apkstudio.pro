@@ -45,6 +45,7 @@ HEADERS += \
     include/textutils.h \
     include/toolbar.h \
     include/viewer.h \
+    include/widgetbar.h \
     include/zipalign.h
 
 OTHER_FILES += \
@@ -106,6 +107,7 @@ SOURCES += \
     src/textutils.cpp \
     src/toolbar.cpp \
     src/viewer.cpp \
+    src/widgetbar.cpp \
     src/zipalign.cpp
 
 TARGET = apkstudio
