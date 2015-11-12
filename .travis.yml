@@ -1,13 +1,20 @@
+addons:
+  apt:
+    packages:
+    - qt5-default
+    - qt5-qmake
+    - qtbase5-dev-tools
+    sources:
+    - ubuntu-sdk-team
+
 os:
   - linux
 
 language: cpp
 
-install:
- - sudo apt-get -qq update
- - sudo apt-get -qq install qt5-default qt5-qmake
-
 script:
  - lrelease res/lang/en.ts
  - qmake apkstudio.pro CONFIG+=release
  - make
+
+sudo: false
