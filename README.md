@@ -16,10 +16,11 @@ Download:
 -   Please check **Releases** tab for Windows binaries
 -   Linux users are required to build from source atm
 
-Credit:
+Installers:
 --------
-Many thanks to [BitRock](http://bitrock.com/) for donating license for [InstallBuilder](http://installbuilder.bitrock.com/).
-![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Installers by BitRock")
+-   Installer(s) for **Windows** are available [here](https://github.com/vaibhavpandeyvpz/apkstudio/releases).
+-   Native installers for other platforms are planned.
+[![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Many thanks to BitRock for donating license for InstallBuilder.")](http://installbuilder.bitrock.com/)
 
 
 Building (Linux):
