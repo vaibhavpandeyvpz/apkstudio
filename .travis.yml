@@ -1,12 +1,10 @@
 addons:
   apt:
     packages:
-    - qt5-default
-    - qt5-qmake
-    - qtbase5-dev-tools
+    - qt52base
+    - qt52tools
     sources:
-    - "deb http://archive.ubuntu.com/ubuntu trusty main"
-    - "deb http://archive.ubuntu.com/ubuntu trusty universe"
+    - beineri/opt-qt52
 
 os:
   - linux
@@ -14,7 +12,7 @@ os:
 language: cpp
 
 script:
- - qmake --version
+ - source /opt/qt52/bin/qt52-env.sh
  - lrelease res/lang/en.ts
  - qmake apkstudio.pro CONFIG+=release
  - make
