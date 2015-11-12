@@ -5,7 +5,8 @@ addons:
     - qt5-qmake
     - qtbase5-dev-tools
     sources:
-    - ubuntu-sdk-team
+    - "deb http://archive.ubuntu.com/ubuntu trusty main"
+    - "deb http://archive.ubuntu.com/ubuntu trusty universe"
 
 os:
   - linux
