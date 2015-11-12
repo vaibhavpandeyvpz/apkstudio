@@ -26,7 +26,7 @@ Installers:
 
 Building (Linux):
 --------
-- Make sure you have **GCC 4.8+**, **QT 5.4+**
+- Make sure you have **GCC 4.6+**, **QT 5.2+**
 - Run below commands in a writable directory
 ```bash
 git clone https://github.com/vaibhavpandeyvpz/apkstudio.git
