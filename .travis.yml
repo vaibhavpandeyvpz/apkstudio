@@ -7,7 +7,7 @@ install:
  - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu trusty universe"
  - sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu trusty main"
  - sudo apt-get -qy update
- - sudo apt-get -qy qt5-default qt5-qmake qtbase5-dev-tools qtchooser
+ - sudo apt-get -qy install qt5-default qt5-qmake qtbase5-dev-tools qtchooser
 
 script:
  - qmake --version
