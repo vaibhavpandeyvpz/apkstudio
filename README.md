@@ -18,8 +18,7 @@ Download:
 
 Installers:
 --------
--   Installer(s) for **Windows** are available [here](https://github.com/vaibhavpandeyvpz/apkstudio/releases).
--   Native installers for other platforms are planned.
+-   Native installers for supported platforms are [here](https://github.com/vaibhavpandeyvpz/apkstudio/releases).
 <br>
 [![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Many thanks to BitRock for donating license for InstallBuilder.")](http://installbuilder.bitrock.com/)
 
@@ -38,7 +37,7 @@ export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
 # {/IF}
 make
 ```
-- Before using **APK Studio**, you also need to install **ADB**. This can be done on debian{-based} distros as follows:
+- Before using **APK Studio**, you also need to either install or have **ADB** in *PATH*. This can be done on debian{-based} distros as follows:
 ```bash
 sudo apt-get install android-tools-adb
 ```
@@ -63,6 +62,8 @@ Screenshots:
 ![Windows Screenshot #1](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/windows-1.png "Windows Screenshot #1")
 
 ![Linux Screenshot #1](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/linux-1.png "Linux Screenshot #1")
+
+![Linux Screenshot #2](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/linux-2.png "Linux Screenshot #2")
 
 Disclaimer:
 -------------
