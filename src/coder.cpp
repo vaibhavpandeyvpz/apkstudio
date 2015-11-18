@@ -17,7 +17,7 @@ Coder::Coder(QWidget *parent) :
 {
     _connections << connect(this, SIGNAL(blockCountChanged(int)), this, SLOT(onUpdateMargins(int)));
     _connections << connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(onCursorPositionChanged()));
-    _connections << connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(updateRequest(QRect, int)));
+    _connections << connect(this, SIGNAL(updateRequest(QRect, int)), this, SLOT(onUpdateRequest(QRect, int)));
     _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_U, this), SIGNAL(activated()), this, SLOT(onTransformToLower()));
     _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Up, this), SIGNAL(activated()), this, SLOT(onMoveLineUp()));
     _connections << connect(new QShortcut(Qt::CTRL | Qt::SHIFT | Qt::Key_Down, this), SIGNAL(activated()), this, SLOT(onMoveLineDown()));
@@ -44,16 +44,12 @@ Coder::Coder(QWidget *parent) :
 QString Coder::addIndent(QString text, int count)
 {
     if (text.isEmpty())
-    {
-        return text;
-    }
+    { return text; }
     while ((text.at(0) == ' ') || (text.at(0) == '\t'))
     {
         text.remove(0, 1);
         if (text.isEmpty())
-        {
-            break;
-        }
+        { break; }
     }
     while (count != 0)
     {
@@ -67,9 +63,7 @@ QTextCursor Coder::currentTextCursor() const
 {
     QTextCursor c = textCursor();
     if (!c.hasSelection())
-    {
-        c.select(QTextCursor::WordUnderCursor);
-    }
+    { c.select(QTextCursor::WordUnderCursor); }
     return c;
 }
 
@@ -87,25 +81,17 @@ int Coder::currentRow() const
 void Coder::dragEnterEvent(QDragEnterEvent *event)
 {
     if (event->mimeData()->hasUrls())
-    {
-        event->acceptProposedAction();
-    }
+    { event->acceptProposedAction(); }
     else
-    {
-        QPlainTextEdit::dragEnterEvent(event);
-    }
+    { QPlainTextEdit::dragEnterEvent(event); }
 }
 
 void Coder::dragMoveEvent(QDragMoveEvent *event)
 {
     if (event->mimeData()->hasUrls())
-    {
-        event->acceptProposedAction();
-    }
+    { event->acceptProposedAction(); }
     else
-    {
-        QPlainTextEdit::dragMoveEvent(event);
-    }
+    { QPlainTextEdit::dragMoveEvent(event); }
 }
 
 void Coder::dropEvent(QDropEvent *event)
@@ -116,9 +102,7 @@ void Coder::dropEvent(QDropEvent *event)
         emit fileDropped(event->mimeData()->urls().at(0).toLocalFile());
     }
     else
-    {
-        QPlainTextEdit::dropEvent(event);
-    }
+    { QPlainTextEdit::dropEvent(event); }
 }
 
 bool Coder::event(QEvent *event)
@@ -128,21 +112,10 @@ bool Coder::event(QEvent *event)
     case QEvent::ToolTip:
     {
         QHelpEvent *help = static_cast<QHelpEvent*>(event);
-        if (QApplication::keyboardModifiers() & Qt::ControlModifier) {
-            return true;
-        }
+        if (QApplication::keyboardModifiers() & Qt::ControlModifier)
+        { return true; }
         emit tooltipRequested(help->pos());
         return true;
-    }
-    case QEvent::MouseButtonPress:
-    {
-        QMouseEvent *mouse = static_cast<QMouseEvent*>(event);
-        if ((mouse->modifiers() & Qt::ControlModifier) && (mouse->button() == Qt::MidButton))
-        {
-            // TODO: Reset zoom
-            // return true;
-        }
-        break;
     }
     default:
         break;
@@ -164,9 +137,7 @@ void Coder::gotoLineEnd()
         int original  = cursor.position();
         QTextCursor::MoveMode mode = QTextCursor::MoveAnchor;
         if (QApplication::keyboardModifiers().testFlag(Qt::ShiftModifier))
-        {
-            mode = QTextCursor::KeepAnchor;
-        }
+        { mode = QTextCursor::KeepAnchor; }
         cursor.movePosition(QTextCursor::StartOfLine, mode);
         int start = cursor.position();
         cursor.movePosition(QTextCursor::EndOfLine, mode);
@@ -181,9 +152,7 @@ void Coder::gotoLineEnd()
             }
         }
         if ((original == start) || ((start + i) != original))
-        {
-            cursor.setPosition(start + i, mode);
-        }
+        { cursor.setPosition(start + i, mode); }
         setTextCursor(cursor);
     }
 }
@@ -197,9 +166,7 @@ void Coder::gotoLineStart()
         int original  = c.position();
         QTextCursor::MoveMode mode = QTextCursor::MoveAnchor;
         if (QApplication::keyboardModifiers().testFlag(Qt::ShiftModifier))
-        {
-            mode = QTextCursor::KeepAnchor;
-        }
+        { mode = QTextCursor::KeepAnchor; }
         c.movePosition(QTextCursor::StartOfLine, mode);
         int start = c.position();
         int i = 0;
@@ -213,9 +180,7 @@ void Coder::gotoLineStart()
             }
         }
         if ((original == start) || ((start + i) != original))
-        {
-            c.setPosition(start + i, mode);
-        }
+        { c.setPosition(start + i, mode); }
         setTextCursor(c);
     }
 }
@@ -246,14 +211,10 @@ void Coder::onInit()
 void Coder::onUpdateRequest(const QRect &rect, const int column)
 {
     if (column)
-    {
-        _sidebar->scroll(0, column);
-    }
+    { _sidebar->scroll(0, column); }
     _sidebar->update(0, rect.y(), _sidebar->width(), rect.height());
     if (rect.contains(viewport()->rect()))
-    {
-        onUpdateMargins(0);
-    }
+    { onUpdateMargins(0); }
 }
 
 bool Coder::indentText(const bool forward)
@@ -261,9 +222,7 @@ bool Coder::indentText(const bool forward)
     QTextCursor cursor = textCursor();
     QTextCursor clone = cursor;
     if (!cursor.hasSelection())
-    {
-        return false;
-    }
+    { return false; }
     int start = cursor.selectionStart();
     cursor.setPosition(cursor.selectionStart());
     clone.setPosition(clone.selectionEnd());
@@ -275,35 +234,23 @@ bool Coder::indentText(const bool forward)
         QString text = cursor.block().text();
         int count = indentSize(text);
         if (forward)
-        {
-            count++;
-        }
+        { count++; }
         else if (count > 0)
-        {
-            count--;
-        }
+        { count--; }
         cursor.select(QTextCursor::LineUnderCursor);
         if (forward)
-        {
-            cursor.insertText(_spacesForTabs ? QString(_tabStopWidth, ' ') + text : QChar('\t') + text);
-        }
+        { cursor.insertText(_spacesForTabs ? QString(_tabStopWidth, ' ') + text : QChar('\t') + text); }
         else
-        {
-            cursor.insertText(addIndent(text, count));
-        }
+        { cursor.insertText(addIndent(text, count)); }
         cursor.setPosition(position);
         if (!cursor.movePosition(QTextCursor::NextBlock))
-        {
-            break;
-        }
+        { break; }
     }
     while(cursor.blockNumber() <= stop);
     cursor.setPosition(start, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::StartOfBlock, QTextCursor::MoveAnchor);
     while (cursor.block().blockNumber() < stop)
-    {
-        cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor);
-    }
+    { cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor); }
     cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
     cursor.endEditBlock();
     setTextCursor(cursor);
@@ -316,9 +263,7 @@ int Coder::indentSize(const QString &text)
     int i = 0;
     int length = text.length();
     if (length == 0)
-    {
-        return 0;
-    }
+    { return 0; }
     QChar current = text.at(i);
     while ((i < length) && ((current == ' ') || (current == QChar('\t'))))
     {
@@ -331,16 +276,12 @@ int Coder::indentSize(const QString &text)
         {
             int j = 0;
             while ((i + j < length) && (text.at(i + j) == ' '))
-            {
-                j++;
-            }
+            { j++; }
             i += j;
             count += j / _tabStopWidth;
         }
         if (i < length)
-        {
-            current = text.at(i);
-        }
+        { current = text.at(i); }
     }
     return count;
 }
@@ -355,9 +296,7 @@ void Coder::keyPressEvent(QKeyEvent *event)
     {
         bool forward = !QApplication::keyboardModifiers().testFlag(Qt::ShiftModifier);
         if (indentText(forward))
-        {
-            return;
-        }
+        { return; }
         else if (forward)
         {
             QString text = _spacesForTabs ? QString(_tabStopWidth, ' ') : QChar('\t');
@@ -376,13 +315,9 @@ void Coder::keyPressEvent(QKeyEvent *event)
         if (QApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
         {
             if (event->key() == Qt::Key_Down)
-            {
-                verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepAdd);
-            }
+            { verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepAdd); }
             else
-            {
-                verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepSub);
-            }
+            { verticalScrollBar()->triggerAction(QAbstractSlider::SliderSingleStepSub); }
             event->accept();
         }
         break;
@@ -399,13 +334,9 @@ void Coder::keyPressEvent(QKeyEvent *event)
         if (!QApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
         {
             if (event->key() == Qt::Key_Home)
-            {
-                gotoLineStart();
-            }
+            { gotoLineStart(); }
             else
-            {
-                gotoLineEnd();
-            }
+            { gotoLineEnd(); }
             event->accept();
         }
         return;
@@ -414,13 +345,9 @@ void Coder::keyPressEvent(QKeyEvent *event)
         if (QApplication::keyboardModifiers().testFlag(Qt::ControlModifier))
         {
             if (event->key() == Qt::Key_Down)
-            {
-                verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd);
-            }
+            { verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepAdd); }
             else
-            {
-                verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub);
-            }
+            { verticalScrollBar()->triggerAction(QAbstractSlider::SliderPageStepSub); }
             event->accept();
         }
         break;
@@ -482,9 +409,7 @@ void Coder::moveLine(const bool up)
             moved.movePosition(QTextCursor::Left);
         }
         else
-        {
-            moved.insertBlock();
-        }
+        { moved.insertBlock(); }
     }
     int start = moved.position();
     moved.clearSelection();
@@ -576,18 +501,12 @@ void Coder::wheelEvent(QWheelEvent *event)
     {
         const int delta = event->delta();
         if (delta > 0)
-        {
-            zoomIn();
-        }
+        { zoomIn();  }
         else if (delta < 0)
-        {
-            zoomOut();
-        }
+        { zoomOut(); }
     }
     else
-    {
-        QPlainTextEdit::wheelEvent(event);
-    }
+    { QPlainTextEdit::wheelEvent(event); }
 }
 
 Coder::~Coder()

@@ -17,9 +17,7 @@ Adb::Adb(QObject *parent)
 Adb *Adb::get()
 {
     if (!_self)
-    {
-        _self = new Adb();
-    }
+    { _self = new Adb(); }
     return _self;
 }
 
@@ -34,9 +32,7 @@ QString Adb::getVersion()
         {
             QString v("%1.%2.%3");
             for (int i = 1; i <= 3; i++)
-            {
-                v = v.arg(m.captured(i));
-            }
+            { v = v.arg(m.captured(i)); }
             return v;
         }
     }

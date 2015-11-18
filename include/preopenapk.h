@@ -1,6 +1,7 @@
 #ifndef PREOPENAPK_H
 #define PREOPENAPK_H
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QLineEdit>
 #include "dialog.h"
@@ -14,14 +15,14 @@ private:
     QLineEdit *_apk;
     QLineEdit *_project;
     QComboBox *_framework;
+    QCheckBox *_resources;
+    QCheckBox *_sources;
 private Q_SLOTS:
     void onBrowseProject();
 public:
     explicit PreOpenApk(const QString &apk, QWidget *parent);
-public:
-    inline QString apk() { return _apk->text(); }
-    QString framework();
-    inline QString project() { return _project->text(); }
+public Q_SLOTS:
+    void accept();
 };
 
 APP_NAMESPACE_END

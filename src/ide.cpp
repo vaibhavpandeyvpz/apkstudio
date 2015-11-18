@@ -286,7 +286,7 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(__("app_version", "messages", APP_VERSION, APP_TAG_DATE));
+    box.setText(__("app_version", "messages", APP_REV_SHORT, APP_REV_LONG));
     box.setWindowIcon(Qrc::icon("dialog_about"));
     box.setWindowTitle(__("about", "titles"));
     box.exec();
@@ -362,12 +362,7 @@ void Ide::onMenuBarProjectSignExport()
 
 void Ide::onOpenApk(const QString &p)
 {
-    PreOpenApk *d = new PreOpenApk(p, this);
-    if (d->exec() == QDialog::Accepted)
-    {
-        Runner::get()->add(new DecodeRunnable(d->apk(), d->project(), d->framework(), this));
-    }
-    delete d;
+    (new PreOpenApk(p, this))->exec();
 }
 
 void Ide::onOpenDir(const QString &p)

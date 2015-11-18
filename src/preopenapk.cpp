@@ -5,18 +5,19 @@
 #include <QFormLayout>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include "include/decoderunnable.h"
 #include "include/pathutils.h"
 #include "include/preopenapk.h"
 #include "include/qrc.h"
+#include "include/runner.h"
 
 APP_NAMESPACE_START
 
 PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
-    : Dialog(QString(), p)
+    : Dialog("", p)
 {
     QFileInfo fi(a);
     QString project = PathUtils::combine(fi.absolutePath(), fi.completeBaseName());
-    setAttribute(Qt::WA_DeleteOnClose, false);
 #ifdef Q_OS_LINUX
     setFixedSize(480, 192);
 #else
@@ -33,6 +34,10 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     row->addWidget(browse);
     form->addRow(__("project_path", "forms"), row);
     form->addRow(__("framework_tag", "forms"), _framework = new QComboBox(this));
+    form->addRow(__("decompile_sources", "forms"), _sources = new QCheckBox(this));
+    form->addRow(__("decode_resources", "forms"), _resources = new QCheckBox(this));
+    _resources->setChecked(true);
+    _sources->setChecked(true);
     // Form : End
     QVBoxLayout *layout = new QVBoxLayout(this);
     QDialogButtonBox *buttons = new QDialogButtonBox(this);
@@ -64,9 +69,15 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     }
 }
 
-QString PreOpenApk::framework()
+void PreOpenApk::accept()
 {
-    return _framework->currentData().toString();
+    const QString apk = _apk->text();
+    const QString framework = _framework->currentData().toString();
+    const QString project = _project->text();
+    const bool resources = _resources->isChecked();
+    const bool sources = _sources->isChecked();
+    Runner::get()->add(new DecodeRunnable(apk, project, framework, sources, resources, parent()));
+    Dialog::accept();
 }
 
 void PreOpenApk::onBrowseProject()

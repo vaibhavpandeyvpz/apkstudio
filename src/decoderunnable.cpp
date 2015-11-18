@@ -3,24 +3,24 @@
 
 APP_NAMESPACE_START
 
-DecodeRunnable::DecodeRunnable(const QString &s, const QString &d, const QString &f, QObject *p)
-    : Runnable(p), _dest(d), _framework(f), _src(s)
+DecodeRunnable::DecodeRunnable(const QString &a, const QString &p, const QString &f, const bool s, const bool r, QObject *o)
+    : Runnable(o), _apk(a), _framework(f), _project(p), _resources(r), _sources(s)
 {
-    _connections << connect(this, SIGNAL(decodeFailure(QString)), p, SLOT(onDecodeFailure(QString)), Qt::QueuedConnection);
-    _connections << connect(this, SIGNAL(decodeSuccess(QString)), p, SLOT(onDecodeSuccess(QString)), Qt::QueuedConnection);
+    _connections << connect(this, SIGNAL(decodeFailure(QString)), o, SLOT(onDecodeFailure(QString)), Qt::QueuedConnection);
+    _connections << connect(this, SIGNAL(decodeSuccess(QString)), o, SLOT(onDecodeSuccess(QString)), Qt::QueuedConnection);
 }
 
 void DecodeRunnable::run()
 {
     emit runnableStarted();
-    Process::Result r = ApkTool::get()->decode(_src, _dest, _framework);
+    Process::Result r = ApkTool::get()->decode(_apk, _project, _framework, _sources, _resources);
     if (r.code == 0)
     {
-        emit decodeSuccess(_dest);
+        emit decodeSuccess(_project);
     }
     else
     {
-        emit decodeFailure(_src);
+        emit decodeFailure(_apk);
     }
     emit runnableStopped();
 }

@@ -1,8 +1,7 @@
-GIT_TAG = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD rev-list --tags --max-count=1)
-GIT_DATE = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD show -s --date=local --format=\\\"%ci\\\" $$GIT_TAG)
-GIT_VERSION = $$system(git --git-dir=$$PWD/.git --work-tree=$$PWD describe --always --long --tags $$GIT_TAG)
-DEFINES += APP_TAG_DATE=\\\"$$GIT_DATE\\\"
-DEFINES += APP_VERSION=\\\"$$GIT_VERSION\\\"
+GIT_REV_SHORT = $$system(git rev-parse --short HEAD)
+GIT_REV_LONG = $$system(git rev-parse HEAD)
+DEFINES += APP_REV_SHORT=\\\"$$GIT_REV_SHORT\\\"
+DEFINES += APP_REV_LONG=\\\"$$GIT_REV_LONG\\\"
 
 HEADERS += \
     include/adb.h \
@@ -56,7 +55,7 @@ OTHER_FILES += \
     res/highlight/strings.def \
     res/highlight/xml.def \
     res/highlight/yml.def \
-    res/html/about.html \ \
+    res/html/about.html \
     res/lang/en.ts \
     res/styles/default.qss \
     res/win32.rc \

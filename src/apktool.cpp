@@ -13,19 +13,21 @@ ApkTool::ApkTool(QObject *parent)
     _jar = PathUtils::find("apktool.jar");
 }
 
-Process::Result ApkTool::build(const QString &s, const QString &d)
+Process::Result ApkTool::build(const QString &p, const QString &a)
 {
-    return exec(QStringList("-f") << "b" << s << "-o" << d);
+    return exec(QStringList("-f") << "b" << p << "-o" << a);
 }
 
-Process::Result ApkTool::decode(const QString &s, const QString &d, const QString &f)
+Process::Result ApkTool::decode(const QString &a, const QString &p, const QString &f, const bool s, const bool r)
 {
     QStringList args("-f");
-    args << "d" << s << "-o" << d;
+    args << "d" << a << "-o" << p;
+    if (!s)
+    { args << "-s"; }
+    if (!r)
+    { args << "-r"; }
     if (!f.isNull() && !f.isEmpty())
-    {
-        args << "-t" << f;
-    }
+    { args << "-t" << f; }
     return exec(args);
 }
 
@@ -37,9 +39,7 @@ Process::Result ApkTool::exec(const QStringList &a)
 ApkTool *ApkTool::get()
 {
     if (!_self)
-    {
-        _self = new ApkTool();
-    }
+    { _self = new ApkTool(); }
     return _self;
 }
 
@@ -54,9 +54,7 @@ QString ApkTool::getVersion()
         {
             QString v("%1.%2.%3");
             for (int i = 1; i <= 3; i++)
-            {
-                v = v.arg(m.captured(i));
-            }
+            { v = v.arg(m.captured(i)); }
             return v;
         }
     }

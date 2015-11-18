@@ -10,13 +10,13 @@ class BuildRunnable : public Runnable
 {
     Q_OBJECT
 private:
-    QString _dest;
-    QString _src;
+    QString _apk;
+    QString _project;
 public:
-    explicit BuildRunnable(const QString &src, const QString &dest, QObject *parent);
+    explicit BuildRunnable(const QString &project, const QString &apk, QObject *parent);
     void run();
 Q_SIGNALS:
-    void buildFailure(const QString &dir);
+    void buildFailure(const QString &project);
     void buildSuccess(const QString &apk);
 };
 

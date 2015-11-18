@@ -96,6 +96,14 @@
         <translation>APK Path</translation>
     </message>
     <message>
+        <source>decompile_sources</source>
+        <translation>Decompile Source</translation>
+    </message>
+    <message>
+        <source>decode_resources</source>
+        <translation>Decode Resources</translation>
+    </message>
+    <message>
         <source>project_path</source>
         <translation>Project Path</translation>
     </message>
@@ -319,7 +327,7 @@
     </message>
     <message>
         <source>decode_success</source>
-        <translation>Sucessfully decoded %1</translation>
+        <translation>Sucessfully decoded to %1</translation>
     </message>
     <message>
         <source>build_failure</source>
@@ -351,7 +359,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation><![CDATA[<h3>APK Studio <small>%1</small></h3><p><strong>Tagged on</strong> %2</p>]]></translation>
+        <translation><![CDATA[<strong>APK Studio</strong> <a href="https://github.com/vaibhavpandeyvpz/apkstudio/tree/%2">%1</a>]]></translation>
     </message>
     <message>
         <source>no_apk</source>
