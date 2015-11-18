@@ -1,7 +1,11 @@
+language: cpp
+
+branches:
+  only:
+    - master
+
 os:
   - linux
-
-language: cpp
 
 install:
  - sudo add-apt-repository -y ppa:beineri/opt-qt521
