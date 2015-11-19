@@ -12,6 +12,7 @@ Instructions:
 **Note**: If you encounter any problems, make sure to check **Console Output** at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
 
 Download:
+--------
 -   Native installers for supported platforms are [here](https://bintray.com/vaibhavpandeyvpz/generic/apkstudio/view).
     <br>
     [![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Many thanks to BitRock for donating license for InstallBuilder.")](http://installbuilder.bitrock.com/)
