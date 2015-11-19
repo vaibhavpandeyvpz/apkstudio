@@ -18,7 +18,7 @@ Download:
 
 Installers:
 --------
--   Native installers for supported platforms are [here](https://github.com/vaibhavpandeyvpz/apkstudio/releases).
+-   Native installers for supported platforms are [here](https://bintray.com/vaibhavpandeyvpz/generic/apkstudio/view).
 <br>
 [![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Many thanks to BitRock for donating license for InstallBuilder.")](http://installbuilder.bitrock.com/)
 
