@@ -5,9 +5,11 @@
 Instructions:
 --------
 - Make sure **JAVA_HOME** point to a valid **JDK** (*JRE* may not work)
-- Point the **Vendor Path** in *Edit* > *Settings* to a valid folder having contents of [this](https://bintray.com/artifact/download/vaibhavpandeyvpz/generic/2015.10.29/vendor.zip) archive
-- A recommended location to extract above archive might be **~/.apkstudio/vendor**
-- You can now start de/re-compiling
+- You should also install or have **ADB** in *PATH*. This can be done on debian{-based} distros as follows:
+```bash
+sudo apt-get install android-tools-adb
+```
+- You can then download, install & start de/re-compiling
 
 **Note**: If you encounter any problems, make sure to check **Console Output** at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
 
@@ -31,10 +33,6 @@ qmake apkstudio.pro CONFIG+=release
 export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
 # {/IF}
 make
-```
-- Before using **APK Studio**, you also need to either install or have **ADB** in *PATH*. This can be done on debian{-based} distros as follows:
-```bash
-sudo apt-get install android-tools-adb
 ```
 - More information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki)
 
