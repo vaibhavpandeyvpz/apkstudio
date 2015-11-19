@@ -124,11 +124,6 @@ QString Preferences::vendorPath()
     QString pref = get(PREF_VENDOR_PATH).toString();
     if (pref.isNull() || pref.isEmpty())
     {
-        QFileInfo home(PathUtils::combine(appPath(), FOLDER_VENDOR));
-        if (home.exists() && home.isDir())
-        {
-            return home.absoluteFilePath();
-        }
 #ifdef Q_OS_LINUX
         QFileInfo share(LINUX_VENDOR_PATH);
         if (share.exists() && share.isDir())
@@ -136,6 +131,8 @@ QString Preferences::vendorPath()
             return share.absoluteFilePath();
         }
 #endif
+        QFileInfo home(PathUtils::combine(appPath(), FOLDER_VENDOR));
+        return home.absoluteFilePath();
     }
     return pref;
 }
