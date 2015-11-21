@@ -3,5 +3,6 @@ install:
   - set PATH=%PATH%;%QTDIR%\bin;C:\MinGW\bin
 build_script:
   - qmake apkstudio.pro
+  - lrelease res\lang\en.ts
   - mingw32-make
 test: off
