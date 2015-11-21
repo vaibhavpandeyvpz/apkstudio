@@ -48,6 +48,7 @@ HEADERS += \
 OTHER_FILES += \
     .gitignore \
     .travis.yml \
+    appveyor.yml \
     res/highlight/default.theme \
     res/highlight/java.def \
     res/highlight/numbers.def \
