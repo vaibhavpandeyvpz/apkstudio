@@ -9,6 +9,10 @@ Instructions:
 ```bash
 sudo apt-get install android-tools-adb
 ```
+- Also make sure you've **zipalign** installed. If it's not then issue the command:
+```bash
+sudo apt install zipalign
+```
 - You can then download, install & start de/re-compiling
 
 **Note**: If you encounter any problems, make sure to check **Console Output** at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
