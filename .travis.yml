@@ -2,7 +2,7 @@ language: cpp
 
 branches:
   only:
-    - test
+    - master
 
 os:
   - linux
