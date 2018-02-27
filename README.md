@@ -11,7 +11,7 @@ sudo apt-get install android-tools-adb
 ```
 - Also make sure you've **zipalign** installed. If it's not then issue the command:
 ```bash
-sudo apt install zipalign
+sudo apt-get install zipalign
 ```
 - You can then download, install & start de/re-compiling
 
