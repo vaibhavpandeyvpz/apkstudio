@@ -398,16 +398,16 @@ void Ide::onSignFailure(const QString &a)
 
 void Ide::onSignSuccess(const QString &a)
 {
+    _statusBar->showMessage(__("sign_success", "messages", a));
     QMessageBox mb;
-    mb.addButton(__("open_folder", "buttons"), QMessageBox::AcceptRole);
+    mb.addButton(__("install", "buttons"), QMessageBox::AcceptRole);
     mb.addButton(QMessageBox::Close);
     mb.setText(__("apk_signed", "messages"));
     mb.setWindowTitle(__("apk_signed", "titles"));
     if (mb.exec() != QMessageBox::Close)
     {
-        FileUtils::show(a);
+        Ide::onMenuBarProjectInstall();
     }
-    _statusBar->showMessage(__("sign_success", "messages", a));
 }
 
 Ide::~Ide()
