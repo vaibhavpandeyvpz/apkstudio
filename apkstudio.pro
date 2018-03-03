@@ -60,7 +60,9 @@ OTHER_FILES += \
     res/lang/en.ts \
     res/styles/default.qss \
     res/win32.rc \
-    README.md
+    README.md \
+    LICENSE.md \
+    _config.yml
 
 QT += core gui widgets
 
