@@ -1,4 +1,4 @@
-# APK Studio [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9709de5012824c36b54fda9c2c6390bf)](https://app.codacy.com/app/Surendrajat/apkstudio?utm_source=github.com&utm_medium=referral&utm_content=Surendrajat/apkstudio&utm_campaign=badger) [![Build Status(Linux)](https://travis-ci.org/Surendrajat/apkstudio.svg)](https://travis-ci.org/Surendrajat/apkstudio) [![Build status(Windows)](https://ci.appveyor.com/api/projects/status/mnr254lm0mlshmfb?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio) [![GitHub (pre-)release](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg)](https://github.com/Surendrajat/apkstudio/releases/tag/v4.0) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# APK Studio [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9709de5012824c36b54fda9c2c6390bf)](https://app.codacy.com/app/Surendrajat/apkstudio?utm_source=github.com&utm_medium=referral&utm_content=Surendrajat/apkstudio&utm_campaign=badger) [![Build Status(Linux)](https://travis-ci.org/Surendrajat/apkstudio.svg)](https://travis-ci.org/Surendrajat/apkstudio) [![Build status(Windows)](https://ci.appveyor.com/api/projects/status/mnr254lm0mlshmfb?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 >**APK Studio is a cross-platform IDE for reverse-engineering (decompiling, hacking & rebuilding) of android applications (APKs) within a single user-interface. It features a friendly layout with a code editor which support syntax-highlighting for smali (dalvik-bytecode) code files.**
 
 ### Features
@@ -11,7 +11,7 @@
 - **Framework**s Support
 
 ### Download
-[![Download](https://img.shields.io/badge/Download-v4.0-brightgreen.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
+[![Download](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
 
 ### Instructions
 - Install **Java** & make sure $JAVA_HOME points to a valid **JDK** (**JRE** may not work)
@@ -55,5 +55,6 @@
 ![Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio000.png "Screenshot #1")
 
 ![Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio002.png "Screenshot #2")
+
 ### Disclaimer
 Same as [apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
