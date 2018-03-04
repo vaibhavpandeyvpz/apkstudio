@@ -35,4 +35,5 @@ script:
   - cd ..
   - tar -zvcf apkstudio-latest-release.tar.gz apkstudio-latest-release
 
-  - ./apkstudio-latest-release/apkstudio
+after_script:
+  - curl --upload-file ./apkstudio-latest-release.tar.gz https://transfer.sh/apkstudio-latest-release-git.$(git rev-parse --short HEAD)-linux_x86_64.tar.gz
