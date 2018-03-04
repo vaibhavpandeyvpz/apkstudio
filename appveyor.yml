@@ -1,6 +1,6 @@
 branches:
   only:
-    - app-veyor-test
+    - master
 
 install:
   - set QTDIR=C:\Qt\5.8\mingw53_32
