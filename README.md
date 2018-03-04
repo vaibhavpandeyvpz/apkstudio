@@ -65,8 +65,6 @@ Screenshots:
 
 ![Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio002.png "Screenshot #2")
 
-![Screenshot #3](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio001.png "Screenshot #3")
-
 Disclaimer:
 -------------
 Same as [apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
