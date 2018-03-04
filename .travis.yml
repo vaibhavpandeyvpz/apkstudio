@@ -45,5 +45,5 @@ deploy:
   file: "*.AppImage"
   overwrite: true
   skip_cleanup: true
-  on:
-    tags: true
+  # on:
+  #   tags: true
