@@ -39,3 +39,6 @@ Makefile*
 # Temp
 
 *~
+
+#config-ymls
+*.yml

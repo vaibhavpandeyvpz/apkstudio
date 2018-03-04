@@ -37,4 +37,4 @@ script:
 #  - env GZIP=-9 tar -zvcf apkstudio-latest-release.tar.gz apkstudio-latest-release
 
 after_script:
-  - curl --upload-file ./*.appimage https://transfer.sh/apkstudio-git.$(git rev-parse --short HEAD)-linux_x86_64.appimage
+  - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-git.$(git rev-parse --short HEAD)-linux_x86_64.AppImage
