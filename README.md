@@ -28,6 +28,9 @@ Download:
 Building (Linux):
 --------
 - Make sure you have **GCC 4.6+**, **QT 5.2+**
+```shell
+sudo apt-install qt5-default qt4-linguist-tools qt5-qmake qttools5-dev build-essential
+```
 - Run below commands in a writable directory
 ```bash
 git clone https://github.com/surendrajat/apkstudio.git
@@ -39,7 +42,7 @@ export CXXFLAGS="$CXXFLAGS -DNO_NATIVE_DIALOG"
 # {/IF}
 make
 ```
-- More information on building from source is provided in the [Wiki](https://github.com/surendrajat/apkstudio/wiki)
+- More information on building from source using **Qt Creator** is provided in the [Wiki](https://github.com/surendrajat/apkstudio/wiki)
 
 Features:
 ---------------------------------
@@ -48,11 +51,12 @@ Features:
 - Automatic Zip-align
 - Syntax Highlighting (*.java; *.smali; *.xml; *.yml)
 - Image Viewer For Resources
-- One-click **Install** To Device
+- One-click **Install** to Device
 - Frameworks Support
 
 TODO:
 -------------
+- Replacing *jarsigner* with *apksigner*
 - Code Completion
 
 Screenshots:
