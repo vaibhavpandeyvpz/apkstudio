@@ -11,14 +11,15 @@ build_script:
   - qmake apkstudio.pro
   - mingw32-make
 after_build:
-  - windeployqt release/apkstudio.exe
+  - windeployqt release/apkstudio.exe --release --no-translations
 #  - cmd: cp LICENSE release/LICENSE.txt"
 #  - iscc innosetup.iss
   - rm release/*.o
   - rm release/*.cpp
+  - rm release/*.h
   - tree
 
 artifacts:
-  - path: Output\apkstudio-*.exe
+#  - path: Output\apkstudio-*.exe
   - path: release
     type: zip
