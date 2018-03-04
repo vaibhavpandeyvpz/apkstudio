@@ -22,7 +22,7 @@
 	sudo apt-get install android-tools-adb
 	```
 - Download latest [apktool](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the following path:
-	>**linux:** /home/{your-user-name}/.apkstudio/vendor/*apktool.jar*
+	>**linux:** /home/{your-user-name}/.apkstudio/vendor/*apktool.jar*  
 	>**Windows:** C:\Users\\{your-user-name}\\.apkstudio\vendor\\*apktool.jar*
 - Also make sure you've **zipalign** installed. On Ubuntu issue the command:
 	```bash
