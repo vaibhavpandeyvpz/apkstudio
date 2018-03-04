@@ -26,10 +26,11 @@ script:
 
   - ../linuxdeployqt*.AppImage apkstudio -bundle-non-qt-libs -no-translations -verbose=2
   - ls -al
-
+# removing doc folder, apprun shortcut and .DirIcon 
   - rm -rf doc AppRun .DirIcon
-  - cd  lib && mv libQt5Core.so.5 libQt5Gui.so.5 libQt5Widgets.so.5 .. && rm -r * && mv ../libQ* . && cd ..
-#  - find ./lib/ ! -name 'libQt*' -type f -exec rm -f {} + && rm lib/libQt5DBus.so.5 lib/libQt5XcbQpa.so.5
+# removing extra libraries
+  - cd  lib && mv libQt5Core.so.5 libQt5Gui.so.5 libQt5Widgets.so.5 libicui* .. && rm -r * && mv ../libQ* . && cd ..
+#
   - rm -rf plugins/imageformats/ plugins/platforminputcontexts/ plugins/xcbglintegrations/
 
   - cd ..
