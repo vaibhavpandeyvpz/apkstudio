@@ -61,11 +61,11 @@ TODO:
 
 Screenshots:
 -------------
-![Windows Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/windows-1.png "Windows Screenshot #1")
+![Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio000.png "Screenshot #1")
 
-![Linux Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/linux-1.png "Linux Screenshot #1")
+![Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio002.png "Screenshot #2")
 
-![Linux Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/linux-2.png "Linux Screenshot #2")
+![Screenshot #3](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio001.png "Screenshot #3")
 
 Disclaimer:
 -------------
