@@ -2,7 +2,7 @@
 >**APK Studio is a cross-platform IDE for reverse-engineering (decompiling, hacking & rebuilding) of android applications (APKs) within a single user-interface. It features a friendly layout with a code editor which support syntax-highlighting for smali (dalvik-bytecode) code files.**
 
 ### Features
-- **Decompile** & **Recompile** APKs (Using ***apktool***)
+- **Decompile** & **Recompile** APKs (Using ***Apktool***)
 - Flexible Keystore & Key-Alias Chooser
 - Automatic **Zip-align**
 - Syntax Highlighting (*.java, *.smali; *.xml; *.yml)
@@ -19,7 +19,7 @@
 	```bash
 	sudo apt-get install android-tools-adb
 	```
-- Download latest [apktool](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the following path:
+- Download latest [Apktool](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the following path:
 	>**linux:** ```/home/{your-user-name}/.apkstudio/vendor/apktool.jar```  
 	>**Windows:** ```C:\Users\{your-user-name}\.apkstudio\vendor\apktool.jar```
 - Also make sure you've **zipalign** installed. On Ubuntu issue the command:
@@ -27,7 +27,7 @@
 	sudo apt-get install zipalign
 	```
 
-	**Note**: If you encounter any problem, make sure to check **Console Output** at bottom of IDE to check what went wrong and report [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues). Also note that an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
+	**Note**: If you encounter any problem, make sure to check **Console Output** at bottom of IDE to check what went wrong and report [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues). Also note that an issue with [Apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
 
 ### Building (Linux)
 - Make sure you have **GCC 4.6+**, **QT 5.2+**
@@ -57,4 +57,4 @@
 ![Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio002.png "Screenshot #2")
 
 ### Disclaimer
-Same as [apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
+Same as [Apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
