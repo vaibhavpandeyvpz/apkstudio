@@ -3,21 +3,6 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9709de5012824c36b54fda9c2c6390bf)](https://app.codacy.com/app/Surendrajat/apkstudio?utm_source=github.com&utm_medium=referral&utm_content=Surendrajat/apkstudio&utm_campaign=badger)
 [![Build Status(Linux)](https://travis-ci.org/Surendrajat/apkstudio.svg)](https://travis-ci.org/Surendrajat/apkstudio) [![Build status(Windows)](https://ci.appveyor.com/api/projects/status/mnr254lm0mlshmfb?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio) [![GitHub (pre-)release](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg)](https://github.com/Surendrajat/apkstudio/releases/tag/v4.0) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Instructions:
---------
-- Make sure **JAVA_HOME** point to a valid **JDK** (*JRE* may not work)
-- You should also install or have **ADB** in *PATH*. This can be done on debian{-based} distros as follows:
-```bash
-sudo apt-get install android-tools-adb
-```
-- Also make sure you've **zipalign** installed. If it's not then issue the command:
-```bash
-sudo apt-get install zipalign
-```
-- You can then download, install & start de/re-compiling
-
-**Note**: If you encounter any problems, make sure to check **Console Output** at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
-
 Download:
 --------
 -   Native installers for supported platforms are [here](https://bintray.com/vaibhavpandeyvpz/generic/apkstudio/view).
@@ -25,11 +10,30 @@ Download:
     [![Installers by BitRock](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/bitrock.png "Many thanks to BitRock for donating license for InstallBuilder.")](http://installbuilder.bitrock.com/)
 
 
+Instructions:
+--------
+- Install **Java** & make sure ***$JAVA_HOME*** points to a valid **JDK** (**JRE** may not work)
+- You should also install or have **ADB** in ***$PATH***. This can be done on debian{-based} distros as follows:
+```bash
+sudo apt-get install android-tools-adb
+```
+- Download latest [apktool](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the path:
+```/home/{your-user-name}/.apkstudio/vendor/apktool.jar (for **linux**)
+
+    C:\Users\{your-user-name}\.apkstudio\vendor (for **windows**)
+```
+- Also make sure you've **zipalign** installed. If it's not then issue the command:
+```bash
+sudo apt-get install zipalign
+```
+
+**Note**: If you encounter any problems, make sure to check **Console Output** at bottom of IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
+
 Building (Linux):
 --------
 - Make sure you have **GCC 4.6+**, **QT 5.2+**
 ```shell
-sudo apt-install qt5-default qt4-linguist-tools qt5-qmake qttools5-dev build-essential
+sudo apt-get install qt5-default qt4-linguist-tools qt5-qmake qttools5-dev build-essential
 ```
 - Run below commands in a writable directory
 ```bash
@@ -56,7 +60,7 @@ Features:
 
 TODO:
 -------------
-- Replacing *jarsigner* with *apksigner*
+- Replacing **jarsigner** with **apksigner**
 - Code Completion
 
 Screenshots:
