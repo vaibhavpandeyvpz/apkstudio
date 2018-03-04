@@ -36,14 +36,14 @@ script:
 #  - cd ..
 #  - env GZIP=-9 tar -zvcf apkstudio-latest-release.tar.gz apkstudio-latest-release
 
-#after_script:
-#  - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-git.$(git rev-parse --short HEAD)-linux_x86_64.AppImage
+after_script:
+ - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-git.$(git rev-parse --short HEAD)-linux_x86_64.AppImage
 
-deploy:
-  provider: releases
-  api_key: $GITHUB OAUTH TOKEN"
-  file: "*.AppImage"
-  overwrite: true
-  skip_cleanup: true
-  # on:
-  #   tags: true
+# deploy:
+#   provider: releases
+#   api_key: $GITHUB OAUTH TOKEN"
+#   file: "*.AppImage"
+#   overwrite: true
+#   skip_cleanup: true
+#   # on:
+#   #   tags: true
