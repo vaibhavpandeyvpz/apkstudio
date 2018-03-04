@@ -14,8 +14,8 @@
  >[![Download](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
 
 ### Instructions
-- Install **Java** & make sure $JAVA_HOME points to a valid **JDK** (**JRE** may not work)
-- You should also install or have **ADB** in $PATH. This can be done on debian{-based} distros as follows:
+- Install **Java** & make sure ```$JAVA_HOME``` points to a valid **JDK** (**JRE** may not work)
+- You should also install or have **ADB** in ```$PATH```. This can be done on debian{-based} distros as follows:
 	```bash
 	sudo apt-get install android-tools-adb
 	```
