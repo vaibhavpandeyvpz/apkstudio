@@ -11,7 +11,7 @@
 - **Framework**s Support
 
 ### Download
-[![Download](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
+ >[![Download](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
 
 ### Instructions
 - Install **Java** & make sure $JAVA_HOME points to a valid **JDK** (**JRE** may not work)
@@ -20,8 +20,8 @@
 	sudo apt-get install android-tools-adb
 	```
 - Download latest [apktool](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the following path:
-	>**linux:** /home/{your-user-name}/.apkstudio/vendor/*apktool.jar*  
-	>**Windows:** C:\Users\\{your-user-name}\\.apkstudio\vendor\\*apktool.jar*
+	>**linux:** ```/home/{your-user-name}/.apkstudio/vendor/apktool.jar```  
+	>**Windows:** ```C:\Users\{your-user-name}\.apkstudio\vendor\apktool.jar```
 - Also make sure you've **zipalign** installed. On Ubuntu issue the command:
 	```bash
 	sudo apt-get install zipalign
