@@ -1,6 +1,6 @@
 branches:
   only:
-    - master
+    - ci-test-release
 
 install:
   - set QTDIR=C:\Qt\5.8\mingw53_32
