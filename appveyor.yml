@@ -1,6 +1,6 @@
 branches:
   only:
-    - ci-test-release
+    - master
 
 install:
   - set QTDIR=C:\Qt\5.8\mingw53_32
@@ -20,7 +20,6 @@ after_build:
   - tree
 
 artifacts:
-#  - path: Output\apkstudio-*.exe
   - path: release
     type: zip
     name: apkstudio
