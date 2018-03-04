@@ -2,7 +2,7 @@ language: cpp
 
 branches:
   only:
-    - ci-test-release
+    - master
 
 os:
   - linux
@@ -37,7 +37,7 @@ script:
 #  - env GZIP=-9 tar -zvcf apkstudio-latest-release.tar.gz apkstudio-latest-release
 
 after_script:
- - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-git.$(git rev-parse --short HEAD)-linux_x86_64.AppImage
+ - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-$(git rev-parse --short HEAD)-linux_x86_64.AppImage
 
 # deploy:
 #   provider: releases
