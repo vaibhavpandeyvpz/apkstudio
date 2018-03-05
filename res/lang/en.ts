@@ -359,7 +359,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation><![CDATA[<strong>APK Studio</strong> <a href="https://github.com/surendrajat/apkstudio/tree/%2">%1</a>]]></translation>
+        <translation><![CDATA[<strong>APK Studio</strong> v4.0]]></translation>
     </message>
     <message>
         <source>no_apk</source>
