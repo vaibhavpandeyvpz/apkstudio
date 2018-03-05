@@ -169,7 +169,7 @@ void Ide::onInit()
     restoreState(p->docksState());
     if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
     {
-        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
+        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages"), QMessageBox::Close);
     }
     QStringList f = p->sessionFiles();
     foreach (QString p, f)
@@ -286,7 +286,7 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(__("app_version", "messages", APP_REV_SHORT, APP_REV_LONG));
+    box.setText(__("app_version", "messages"));
     box.setWindowIcon(Qrc::icon("dialog_about"));
     box.setWindowTitle(__("about", "titles"));
     box.exec();

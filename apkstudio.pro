@@ -50,7 +50,6 @@ OTHER_FILES += \
     .travis.yml \
     appveyor.yml \
     res/highlight/default.theme \
-    res/highlight/java.def \
     res/highlight/numbers.def \
     res/highlight/smali.def \
     res/highlight/strings.def \
