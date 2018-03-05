@@ -319,7 +319,7 @@
     </message>
     <message>
         <source>download_vendor</source>
-        <translation><![CDATA[You need to download some 3rd-party applications/files from <a href="%1">here</a> and place them in <strong>%2</strong> for APK Studio to work.]]></translation>
+        <translation><![CDATA[You need to download some 3rd-party applications/files and place them in proper directory for APK Studio to work. Please follow <a href="https://github.com/Surendrajat/ApkStudio#requirements">this</a> link]]></translation>
     </message>
     <message>
         <source>decode_failure</source>
@@ -359,7 +359,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation><![CDATA[<strong>APK Studio</strong> <a href="https://github.com/vaibhavpandeyvpz/apkstudio/tree/%2">%1</a>]]></translation>
+        <translation><![CDATA[<strong>APK Studio</strong> <a href="https://github.com/surendrajat/apkstudio/tree/%2">%1</a>]]></translation>
     </message>
     <message>
         <source>no_apk</source>
@@ -445,11 +445,11 @@
     </message>
     <message>
         <source>ide</source>
-        <translation>APK Studio - http://git.io/vcZx0</translation>
+        <translation>APK Studio</translation>
     </message>
     <message>
         <source>ide_alt</source>
-        <translation>%1 - APK Studio - http://git.io/vcZx0</translation>
+        <translation>%1 - APK Studio</translation>
     </message>
     <message>
         <source>please_wait</source>
