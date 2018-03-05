@@ -3,7 +3,6 @@
         <file>fonts/scp_bold.ttf</file>
         <file>fonts/scp_regular.ttf</file>
         <file>highlight/default.theme</file>
-        <file>highlight/java.def</file>
         <file>highlight/numbers.def</file>
         <file>highlight/smali.def</file>
         <file>highlight/strings.def</file>
