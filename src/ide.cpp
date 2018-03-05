@@ -167,7 +167,7 @@ void Ide::onInit()
         resize(p->windowSize());
     }
     restoreState(p->docksState());
-    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
+    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "apktool.jar")))
     {
         QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages"), QMessageBox::Close);
     }
