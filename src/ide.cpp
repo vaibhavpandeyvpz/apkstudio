@@ -286,7 +286,7 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(__("app_version", "messages"));
+    box.setText("app_version");
     box.setWindowIcon(Qrc::icon("dialog_about"));
     box.setWindowTitle(__("about", "titles"));
     box.exec();
