@@ -17,7 +17,7 @@ PreOpenApk::PreOpenApk(const QString &a, QWidget *p)
     : Dialog("", p)
 {
     QFileInfo fi(a);
-    QString project = PathUtils::combine(fi.absolutePath(), fi.completeBaseName());
+    QString project = PathUtils::combine(fi.absolutePath(), fi.completeBaseName() + "_mod");
 #ifdef Q_OS_LINUX
     setFixedSize(480, 192);
 #else
