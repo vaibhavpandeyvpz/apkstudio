@@ -381,6 +381,10 @@
         <translation>APK Tool: %1</translation>
     </message>
     <message>
+        <source>version_uberapksigner</source>
+        <translation>APK Signer: %1</translation>
+    </message>
+    <message>
         <source>version_java</source>
         <translation>Java: %1</translation>
     </message>

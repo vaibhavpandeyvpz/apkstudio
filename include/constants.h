@@ -54,6 +54,7 @@
 #define REGEX_LF "[\\r\\n]"
 #define REGEX_ADB_VERSION "^.*(\\d+)\\.(\\d+)\\.(\\d+)$"
 #define REGEX_APKTOOL_VERSION "^(\\d+)\\.(\\d+)\\.(\\d+)$"
+#define REGEX_UBERAPKTOOL_VERSION "^.*(\\d+)\\.(\\d+)\\.(\\d+)$"
 #define REGEX_JAVA_VERSION "^.*\"(\\d+)\\.(\\d+)\\.(\\d+)_(\\d+)\"$"
 #define REGEX_THEME_STYLE "\\b([a-z]+)\\:\\s*([0-9a-z#]+)\\b"
 #define REGEX_WHITESPACE "\\s+"

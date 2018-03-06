@@ -22,7 +22,6 @@ HEADERS += \
     include/flickcharm.h \
     include/ide.h \
     include/installrunnable.h \
-    include/jarsigner.h \
     include/java.h \
     include/macros.h \
     include/menubar.h \
@@ -43,7 +42,7 @@ HEADERS += \
     include/toolbar.h \
     include/viewer.h \
     include/widgetbar.h \
-    include/zipalign.h
+    include/uberapksigner.h
 
 OTHER_FILES += \
     .gitignore \
@@ -88,7 +87,6 @@ SOURCES += \
     src/flickcharm.cpp \
     src/ide.cpp \
     src/installrunnable.cpp \
-    src/jarsigner.cpp \
     src/java.cpp \
     src/main.cpp \
     src/menubar.cpp \
@@ -109,7 +107,7 @@ SOURCES += \
     src/toolbar.cpp \
     src/viewer.cpp \
     src/widgetbar.cpp \
-    src/zipalign.cpp
+    src/uberapksigner.cpp
 
 TARGET = apkstudio
 
