@@ -24,7 +24,7 @@ script:
   - cd apkstudio-latest-release
   - cp ../apkstudio .
 
-  - ../linuxdeployqt*.AppImage apkstudio -bundle-non-qt-libs -no-translations -verbose=2 -appimage
+  - ../linuxdeployqt*.AppImage apkstudio -bundle-non-qt-libs -no-translations -verbose=2 -appimage -no-copy-copyright-files
 
 # removing doc folder, apprun shortcut and .DirIcon 
 #  - rm -rf doc AppRun .DirIcon
