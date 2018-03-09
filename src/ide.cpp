@@ -360,6 +360,20 @@ void Ide::onMenuBarProjectSignExport()
     }
 }
 
+void Ide::onToolBarProjectSign()
+{
+
+    if (_apk.isNull() || _apk.isEmpty())
+    {
+        QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
+    }
+    else
+    {
+        Preferences *p = Preferences::get();
+        Runner::get()->add(new SignRunnable(_apk, p->signKeystore(), p->signKeystorePass(), p->signKey(), p->signKeyPass(), this));
+    }
+}
+
 void Ide::onOpenApk(const QString &p)
 {
     (new PreOpenApk(p, this))->exec();

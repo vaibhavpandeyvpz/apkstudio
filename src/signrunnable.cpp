@@ -15,7 +15,6 @@ SignRunnable::SignRunnable(const QString &s, const QString &ks, const QString &k
 void SignRunnable::run()
 {
     emit runnableStarted();
-    QString tmp = PathUtils::temp("signed.apk");
     Process::Result r;
     if(_keystore.isEmpty())
         r = UberApkSigner::get()->signDebug(_src);
@@ -24,7 +23,6 @@ void SignRunnable::run()
     if (r.code == 0)
     {
         emit signSuccess(_src);
-        QFile::remove(tmp);
     }
     else
     {

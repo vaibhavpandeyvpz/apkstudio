@@ -300,7 +300,7 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export</translation>
+        <translation>Sign/Import</translation>
     </message>
     <message>
         <source>install</source>
@@ -465,7 +465,7 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export APK</translation>
+        <translation>Import KeyStore(Optional) and Sign APK</translation>
     </message>
     <message>
         <source>quit</source>
