@@ -1,5 +1,6 @@
 #include "include/adb.h"
 #include "include/apktool.h"
+#include "include/uberapksigner.h"
 #include "include/java.h"
 #include "include/statusbar.h"
 #include "include/qrc.h"
@@ -11,12 +12,15 @@ StatusBar::StatusBar(QWidget *parent)
 {
     QLabel *adb;
     QLabel *apkTool;
+    QLabel *uberApkSigner;
     QLabel *java;
     addPermanentWidget(java = new QLabel(this));
     addPermanentWidget(new StatusBarSeparator(this));
     addPermanentWidget(adb = new QLabel(this));
     addPermanentWidget(new StatusBarSeparator(this));
     addPermanentWidget(apkTool = new QLabel(this));
+    addPermanentWidget(new StatusBarSeparator(this));
+    addPermanentWidget(uberApkSigner = new QLabel(this));
     addPermanentWidget(new QWidget(this), 1);
     addPermanentWidget(_message = new QLabel(this));
     setContentsMargins(4, 0, 4, 0);
@@ -37,6 +41,14 @@ StatusBar::StatusBar(QWidget *parent)
     else
     {
         apkTool->setText(__("version_apktool", "statusbar", "n/a"));
+    }
+    if ((v = UberApkSigner::get()->getVersion()).isEmpty() == false)
+    {
+        uberApkSigner->setText(__("version_uberapksigner", "statusbar", v));
+    }
+    else
+    {
+        uberApkSigner->setText(__("version_uberapksigner", "statusbar", "n/a"));
     }
     if ((v = Java::get()->getVersion()).isEmpty() == false)
     {

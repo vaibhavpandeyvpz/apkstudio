@@ -3,9 +3,8 @@
 #include "include/apktool.h"
 #include "include/consoledock.h"
 #include "include/constants.h"
-#include "include/jarsigner.h"
+#include "include/uberapksigner.h"
 #include "include/qrc.h"
-#include "include/zipalign.h"
 
 APP_NAMESPACE_START
 
@@ -35,12 +34,11 @@ ConsoleDock::ConsoleDock(QWidget *parent)
     _connections << connect(Adb::get(), &Process::executing, this, &ConsoleDock::onExecuting);
     _connections << connect(ApkTool::get(), &Process::executed, this, &ConsoleDock::onExecuted);
     _connections << connect(ApkTool::get(), &Process::executing, this, &ConsoleDock::onExecuting);
-    _connections << connect(JarSigner::get(), &Process::executed, this, &ConsoleDock::onExecuted);
-    _connections << connect(JarSigner::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+    _connections << connect(UberApkSigner::get(), &Process::executed, this, &ConsoleDock::onExecuted);
+    _connections << connect(UberApkSigner::get(), &Process::executing, this, &ConsoleDock::onExecuting);
     _connections << connect(Java::get(), &Process::executed, this, &ConsoleDock::onExecuted);
     _connections << connect(Java::get(), &Process::executing, this, &ConsoleDock::onExecuting);
-    _connections << connect(ZipAlign::get(), &Process::executed, this, &ConsoleDock::onExecuted);
-    _connections << connect(ZipAlign::get(), &Process::executing, this, &ConsoleDock::onExecuting);
+
 }
 
 void ConsoleDock::onExecuted(const Process::Result &r)

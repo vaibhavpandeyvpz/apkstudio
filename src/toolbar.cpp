@@ -13,7 +13,7 @@ ToolBar::ToolBar(QWidget *p)
     addAction(Qrc::icon("toolbar_save"), __("save", "toolbar"), p, SLOT(onMenuBarFileSave()));
     addSeparator();
     addAction(Qrc::icon("toolbar_build"), __("build", "toolbar"), p, SLOT(onMenuBarProjectBuild()));
-    addAction(Qrc::icon("toolbar_sign"), __("sign", "toolbar"), p, SLOT(onMenuBarProjectSignExport()));
+    addAction(Qrc::icon("toolbar_sign"), __("sign", "toolbar"), p, SLOT(onToolBarProjectSign()));
     addSeparator();
     addAction(Qrc::icon("toolbar_terminal"), __("terminal", "toolbar"), p, SLOT(onMenuBarFileTerminal()));
     addAction(Qrc::icon("toolbar_settings"), __("settings", "toolbar"), p, SLOT(onMenuBarEditSettings()));

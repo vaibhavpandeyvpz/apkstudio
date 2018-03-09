@@ -300,7 +300,7 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export</translation>
+        <translation>Sign/Import</translation>
     </message>
     <message>
         <source>install</source>
@@ -379,6 +379,10 @@
     <message>
         <source>version_apktool</source>
         <translation>APK Tool: %1</translation>
+    </message>
+    <message>
+        <source>version_uberapksigner</source>
+        <translation>APK Signer: %1</translation>
     </message>
     <message>
         <source>version_java</source>
@@ -461,7 +465,7 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export APK</translation>
+        <translation>Import KeyStore(Optional) and Sign APK</translation>
     </message>
     <message>
         <source>quit</source>

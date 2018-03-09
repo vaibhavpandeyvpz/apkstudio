@@ -5,6 +5,7 @@
         <file>highlight/default.theme</file>
         <file>highlight/numbers.def</file>
         <file>highlight/smali.def</file>
+        <file>highlight/java.def</file>
         <file>highlight/strings.def</file>
         <file>highlight/xml.def</file>
         <file>highlight/yml.def</file>
