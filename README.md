@@ -37,6 +37,7 @@
 - [Bug Reporting](https://github.com/surendrajat/apkstudio/issues)
 - [Contributors](https://github.com/Surendrajat/ApkStudio/graphs/contributors)
 - [Special Thanks](https://github.com/Surendrajat/ApkStudio/wiki/SpecialThanks)
+- [XDA Thread](https://forum.xda-developers.com/showthread.php?t=3761033)
 
 ### TODO
 - [Framework management](https://ibotpeaches.github.io/Apktool/documentation/#frameworks) within IDE
