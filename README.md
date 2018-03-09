@@ -3,7 +3,7 @@
 
 ### Features
 - Decompile & Recompile APKs
-- Code Editor with Syntax Highlighting (`smali` `xml` `yml` language)
+- Code Editor with Syntax Highlighting (`java` `smali` `xml` `yml`)
 - Flexible Keystore & Key-Alias Chooser
 - Automatic *zipalign* & Apk *sign*ing
 - Built-in Image viewer for Resources
@@ -35,7 +35,7 @@
 ### TODO
 - Replacing `jarsigner` with [`uber-apk-signer`](https://github.com/patrickfav/uber-apk-signer) ([#issue96](https://github.com/vaibhavpandeyvpz/apkstudio/issues/96))
 - [Framework installation](https://ibotpeaches.github.io/Apktool/documentation/#frameworks) within IDE
-- Code Completion
+- Opcode Hex Viewer
 
 ### Screenshots
 >![Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio000.png "Screenshot #1")
