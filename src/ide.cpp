@@ -167,7 +167,7 @@ void Ide::onInit()
         resize(p->windowSize());
     }
     restoreState(p->docksState());
-    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "apktool.jar")))
+    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "apktool.jar")) || !QFile::exists(PathUtils::combine(p->vendorPath(), "uber-apk-signer.jar")))
     {
         QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages"), QMessageBox::Close);
     }
