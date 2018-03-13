@@ -129,12 +129,12 @@ void FindReplace::onReplaceAllWithClick()
 {
     if (_editor && !_editor->isReadOnly())
     {
-        int r = 0;
+        // int r = 0;
         while (_editor->textCursor().hasSelection())
         {
             _editor->textCursor().insertText(_replaceWith->text());
             findInEditor(_directionDown->isChecked());
-            r++;
+            // r++;
         }
     }
 }
