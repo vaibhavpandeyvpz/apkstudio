@@ -14,6 +14,7 @@ ToolBar::ToolBar(QWidget *p)
     addSeparator();
     addAction(Qrc::icon("toolbar_build"), __("build", "toolbar"), p, SLOT(onMenuBarProjectBuild()));
     addAction(Qrc::icon("toolbar_sign"), __("sign", "toolbar"), p, SLOT(onToolBarProjectSign()));
+    addAction(Qrc::icon("toolbar_install"), __("install", "toolbar"), p, SLOT(onMenuBarProjectInstall()));
     addSeparator();
     addAction(Qrc::icon("toolbar_terminal"), __("terminal", "toolbar"), p, SLOT(onMenuBarFileTerminal()));
     addAction(Qrc::icon("toolbar_settings"), __("settings", "toolbar"), p, SLOT(onMenuBarEditSettings()));

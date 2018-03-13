@@ -20,6 +20,7 @@ class Ide : public QMainWindow
 private:
     APP_CONNECTIONS_LIST
     QString _apk;
+    bool _signed;
     QPointer<PleaseWait> _pleaseWait;
     QString _project;
     bool _quit;

@@ -34,6 +34,7 @@ APP_NAMESPACE_START
 Ide::Ide(QWidget *parent)
     : QMainWindow(parent)
 {
+    _signed = false;
     addToolBar(Qt::TopToolBarArea, new ToolBar(this));
     setAcceptDrops(true);
     setCentralWidget(new EditorTabs(this));
@@ -314,6 +315,7 @@ void Ide::onMenuBarHelpFeedbackThanks()
 
 void Ide::onMenuBarProjectBuild()
 {
+    _signed = false;
     if (_project.isNull() || _project.isEmpty())
     {
         QMessageBox::warning(this, __("no_project", "titles"), __("no_project", "messages"), QMessageBox::Close);
@@ -330,6 +332,9 @@ void Ide::onMenuBarProjectInstall()
     if (_apk.isNull() || _apk.isEmpty())
     {
         QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
+    }else if (!_signed)
+    {
+        QMessageBox::warning(this, __("not_signed", "titles"), __("not_signed", "messages"), QMessageBox::Close);
     }
     else
     {
@@ -412,6 +417,7 @@ void Ide::onSignFailure(const QString &a)
 
 void Ide::onSignSuccess(const QString &a)
 {
+    _signed = true;
     _statusBar->showMessage(__("sign_success", "messages", a));
     QMessageBox mb;
     mb.addButton(__("install", "buttons"), QMessageBox::AcceptRole);

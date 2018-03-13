@@ -369,6 +369,10 @@
         <source>no_project</source>
         <translation>There is no project open at this time. Choose File &gt; Open &gt; APK to create new project.</translation>
     </message>
+    <message>
+        <source>not_signed</source>
+        <translation>APK is not Signed. Please Sign the APK first!.</translation>
+    </message>
 </context>
 <context>
     <name>statusbar</name>
@@ -479,6 +483,10 @@
         <source>no_project</source>
         <translation>No Open Project</translation>
     </message>
+    <message>
+        <source>not_signed</source>
+        <translation>Unsigned APK</translation>
+    </message>
 </context>
 <context>
     <name>toolbar</name>
@@ -504,7 +512,11 @@
     </message>
     <message>
         <source>sign</source>
-        <translation>Sign/Export APK</translation>
+        <translation>Sign APK</translation>
+    </message>
+    <message>
+        <source>install</source>
+        <translation>Install APK</translation>
     </message>
     <message>
         <source>terminal</source>
