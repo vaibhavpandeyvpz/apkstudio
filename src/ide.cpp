@@ -316,6 +316,9 @@ void Ide::onMenuBarHelpFeedbackThanks()
 void Ide::onMenuBarProjectBuild()
 {
     _signed = false;
+    //save all opened files before building
+    emit fileSaveAll();
+
     if (_project.isNull() || _project.isEmpty())
     {
         QMessageBox::warning(this, __("no_project", "titles"), __("no_project", "messages"), QMessageBox::Close);
