@@ -78,6 +78,8 @@ void MenuBar::addProjectMenu()
     m->addSeparator();
     m->addAction(__("sign_export", "menubar"), parent(), SLOT(onMenuBarProjectSignExport()));
     m->addAction(__("install", "menubar"), parent(), SLOT(onMenuBarProjectInstall()));
+    m->addSeparator();
+    m->addAction(__("browse", "menubar"), parent(), SLOT(onMenuBarProjectBrowseFiles()));
     addAction(m->menuAction());
 }
 

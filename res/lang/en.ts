@@ -306,6 +306,10 @@
         <source>install</source>
         <translation>Install</translation>
     </message>
+    <message>
+        <source>browse</source>
+        <translation>Browse Files</translation>
+    </message>
 </context>
 <context>
     <name>messages</name>
