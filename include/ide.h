@@ -73,6 +73,7 @@ public Q_SLOTS:
     void onMenuBarProjectReload();
     void onMenuBarProjectSignExport();
     void onToolBarProjectSign();
+    void onMenuBarProjectBrowseFiles();
     void onOpenApk(const QString &apk);
     void onOpenDir(const QString &project);
     void onRunnableStarted();

@@ -368,6 +368,12 @@ void Ide::onMenuBarProjectSignExport()
     }
 }
 
+void Ide::onMenuBarProjectBrowseFiles()
+{
+
+    FileUtils::show(_project + "/");
+}
+
 void Ide::onToolBarProjectSign()
 {
 
