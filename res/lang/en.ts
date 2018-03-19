@@ -363,7 +363,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation><![CDATA[ <strong>APK Studio v4.0.2 </strong> ]]></translation>
+        <translation><![CDATA[ <strong>APK Studio v4.0.3 </strong> ]]></translation>
     </message>
     <message>
         <source>no_apk</source>
