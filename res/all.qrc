@@ -3,9 +3,9 @@
         <file>fonts/scp_bold.ttf</file>
         <file>fonts/scp_regular.ttf</file>
         <file>highlight/default.theme</file>
-        <file>highlight/java.def</file>
         <file>highlight/numbers.def</file>
         <file>highlight/smali.def</file>
+        <file>highlight/java.def</file>
         <file>highlight/strings.def</file>
         <file>highlight/xml.def</file>
         <file>highlight/yml.def</file>
@@ -21,6 +21,7 @@
         <file>icons/toolbar_save.png</file>
         <file>icons/toolbar_settings.png</file>
         <file>icons/toolbar_sign.png</file>
+        <file>icons/toolbar_install.png</file>
         <file>icons/toolbar_terminal.png</file>
         <file>images/logo.png</file>
         <file>images/viewer_bg.png</file>

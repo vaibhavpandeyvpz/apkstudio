@@ -300,11 +300,15 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export</translation>
+        <translation>Sign/Import</translation>
     </message>
     <message>
         <source>install</source>
         <translation>Install</translation>
+    </message>
+    <message>
+        <source>browse</source>
+        <translation>Browse Files</translation>
     </message>
 </context>
 <context>
@@ -319,7 +323,7 @@
     </message>
     <message>
         <source>download_vendor</source>
-        <translation><![CDATA[You need to download some 3rd-party applications/files from <a href="%1">here</a> and place them in <strong>%2</strong> for APK Studio to work.]]></translation>
+        <translation><![CDATA[You need to download some 3rd-party applications/files and place them in proper directory for APK Studio to work. Please follow <a href="https://github.com/Surendrajat/ApkStudio#requirements">this link</a>]]></translation>
     </message>
     <message>
         <source>decode_failure</source>
@@ -359,7 +363,7 @@
     </message>
     <message>
         <source>app_version</source>
-        <translation><![CDATA[<strong>APK Studio</strong> <a href="https://github.com/vaibhavpandeyvpz/apkstudio/tree/%2">%1</a>]]></translation>
+        <translation><![CDATA[ <strong>APK Studio v4.0.3 </strong> ]]></translation>
     </message>
     <message>
         <source>no_apk</source>
@@ -368,6 +372,10 @@
     <message>
         <source>no_project</source>
         <translation>There is no project open at this time. Choose File &gt; Open &gt; APK to create new project.</translation>
+    </message>
+    <message>
+        <source>not_signed</source>
+        <translation>APK is not Signed. Please Sign the APK first!.</translation>
     </message>
 </context>
 <context>
@@ -379,6 +387,10 @@
     <message>
         <source>version_apktool</source>
         <translation>APK Tool: %1</translation>
+    </message>
+    <message>
+        <source>version_uberapksigner</source>
+        <translation>APK Signer: %1</translation>
     </message>
     <message>
         <source>version_java</source>
@@ -445,11 +457,11 @@
     </message>
     <message>
         <source>ide</source>
-        <translation>APK Studio - http://git.io/vcZx0</translation>
+        <translation>APK Studio</translation>
     </message>
     <message>
         <source>ide_alt</source>
-        <translation>%1 - APK Studio - http://git.io/vcZx0</translation>
+        <translation>%1 - APK Studio</translation>
     </message>
     <message>
         <source>please_wait</source>
@@ -461,7 +473,7 @@
     </message>
     <message>
         <source>sign_export</source>
-        <translation>Sign/Export APK</translation>
+        <translation>Import KeyStore(Optional) and Sign APK</translation>
     </message>
     <message>
         <source>quit</source>
@@ -474,6 +486,10 @@
     <message>
         <source>no_project</source>
         <translation>No Open Project</translation>
+    </message>
+    <message>
+        <source>not_signed</source>
+        <translation>Unsigned APK</translation>
     </message>
 </context>
 <context>
@@ -500,7 +516,11 @@
     </message>
     <message>
         <source>sign</source>
-        <translation>Sign/Export APK</translation>
+        <translation>Sign APK</translation>
+    </message>
+    <message>
+        <source>install</source>
+        <translation>Install APK</translation>
     </message>
     <message>
         <source>terminal</source>

@@ -34,6 +34,7 @@ APP_NAMESPACE_START
 Ide::Ide(QWidget *parent)
     : QMainWindow(parent)
 {
+    _signed = false;
     addToolBar(Qt::TopToolBarArea, new ToolBar(this));
     setAcceptDrops(true);
     setCentralWidget(new EditorTabs(this));
@@ -167,9 +168,9 @@ void Ide::onInit()
         resize(p->windowSize());
     }
     restoreState(p->docksState());
-    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "VERSION")))
+    if (!QFile::exists(PathUtils::combine(p->vendorPath(), "apktool.jar")) || !QFile::exists(PathUtils::combine(p->vendorPath(), "uber-apk-signer.jar")))
     {
-        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages", URL_DOCUMENTATION, p->vendorPath()), QMessageBox::Close);
+        QMessageBox::warning(this, __("action_required", "titles"), __("download_vendor", "messages"), QMessageBox::Close);
     }
     QStringList f = p->sessionFiles();
     foreach (QString p, f)
@@ -286,7 +287,7 @@ void Ide::onMenuBarHelpAbout()
     QMessageBox box;
     box.setIconPixmap(Qrc::image("logo"));
     box.setInformativeText(FileUtils::read(QString(QRC_HTML).arg("about")));
-    box.setText(__("app_version", "messages", APP_REV_SHORT, APP_REV_LONG));
+    box.setText(__("app_version", "messages"));
     box.setWindowIcon(Qrc::icon("dialog_about"));
     box.setWindowTitle(__("about", "titles"));
     box.exec();
@@ -314,6 +315,10 @@ void Ide::onMenuBarHelpFeedbackThanks()
 
 void Ide::onMenuBarProjectBuild()
 {
+    _signed = false;
+    //save all opened files before building
+    emit fileSaveAll();
+
     if (_project.isNull() || _project.isEmpty())
     {
         QMessageBox::warning(this, __("no_project", "titles"), __("no_project", "messages"), QMessageBox::Close);
@@ -330,6 +335,9 @@ void Ide::onMenuBarProjectInstall()
     if (_apk.isNull() || _apk.isEmpty())
     {
         QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
+    }else if (!_signed)
+    {
+        QMessageBox::warning(this, __("not_signed", "titles"), __("not_signed", "messages"), QMessageBox::Close);
     }
     else
     {
@@ -357,6 +365,26 @@ void Ide::onMenuBarProjectSignExport()
             Runner::get()->add(new SignRunnable(_apk, s->keystore(), s->keystorePass(), s->key(), s->keyPass(), this));
         }
         delete s;
+    }
+}
+
+void Ide::onMenuBarProjectBrowseFiles()
+{
+
+    FileUtils::show(_project + "/");
+}
+
+void Ide::onToolBarProjectSign()
+{
+
+    if (_apk.isNull() || _apk.isEmpty())
+    {
+        QMessageBox::warning(this, __("no_apk", "titles"), __("no_apk", "messages"), QMessageBox::Close);
+    }
+    else
+    {
+        Preferences *p = Preferences::get();
+        Runner::get()->add(new SignRunnable(_apk, p->signKeystore(), p->signKeystorePass(), p->signKey(), p->signKeyPass(), this));
     }
 }
 
@@ -398,16 +426,17 @@ void Ide::onSignFailure(const QString &a)
 
 void Ide::onSignSuccess(const QString &a)
 {
+    _signed = true;
+    _statusBar->showMessage(__("sign_success", "messages", a));
     QMessageBox mb;
-    mb.addButton(__("open_folder", "buttons"), QMessageBox::AcceptRole);
+    mb.addButton(__("install", "buttons"), QMessageBox::AcceptRole);
     mb.addButton(QMessageBox::Close);
     mb.setText(__("apk_signed", "messages"));
     mb.setWindowTitle(__("apk_signed", "titles"));
     if (mb.exec() != QMessageBox::Close)
     {
-        FileUtils::show(a);
+        Ide::onMenuBarProjectInstall();
     }
-    _statusBar->showMessage(__("sign_success", "messages", a));
 }
 
 Ide::~Ide()

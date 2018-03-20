@@ -20,6 +20,7 @@ class Ide : public QMainWindow
 private:
     APP_CONNECTIONS_LIST
     QString _apk;
+    bool _signed;
     QPointer<PleaseWait> _pleaseWait;
     QString _project;
     bool _quit;
@@ -71,6 +72,8 @@ public Q_SLOTS:
     void onMenuBarProjectInstall();
     void onMenuBarProjectReload();
     void onMenuBarProjectSignExport();
+    void onToolBarProjectSign();
+    void onMenuBarProjectBrowseFiles();
     void onOpenApk(const QString &apk);
     void onOpenDir(const QString &project);
     void onRunnableStarted();
