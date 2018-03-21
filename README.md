@@ -1,5 +1,5 @@
 
-# APK Studio [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9709de5012824c36b54fda9c2c6390bf)](https://app.codacy.com/app/Surendrajat/apkstudio?utm_source=github.com&utm_medium=referral&utm_content=Surendrajat/apkstudio&utm_campaign=badger) [![Build Status(Linux)](https://travis-ci.org/Surendrajat/ApkStudio.svg)](https://travis-ci.org/Surendrajat/ApkStudio) [![Build status(Windows)](https://ci.appveyor.com/api/projects/status/mnr254lm0mlshmfb?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+# APK Studio [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a816c080acad4a1989219c0f55da34b3)](https://www.codacy.com/app/Surendrajat/apkstudio_2?utm_source=github.com&utm_medium=referral&utm_content=vaibhavpandeyvpz/apkstudio&utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio) [![Build status](https://ci.appveyor.com/api/projects/status/t437hn0osaik6vv5/branch/master?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio-1cupt/branch/master) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 >**A Cross-Platform IDE for Reverse-Engineering (Disassembling, Hacking & Rebuilding)  Android applications  - featuring a friendly UI and Code editor with Syntax-highlighting support**
 
 ### Features
@@ -14,7 +14,7 @@
 - Frameworks Support
 
 ### Download
- >[![Download](https://img.shields.io/github/release/surendrajat/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/Surendrajat/apkstudio/releases)
+ >[![Download](https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio/all.svg?longCache=true&style=for-the-badge)](https://github.com/vaibhavpandeyvpz/apkstudio/releases)
 
 ### Requirements
 - **JDK >= 8**
@@ -33,11 +33,11 @@
     >- Windows: [adb driver](https://lifehacker.com/the-easiest-way-to-install-androids-adb-and-fastboot-to-1586992378)
 
 ### Links
-- [Building (Command line)](https://github.com/Surendrajat/ApkStudio/wiki/Building#building-linux)
-- [Building (Qt Creator)](https://github.com/Surendrajat/ApkStudio/wiki/Building#building-with-qt-creator)
-- [Bug Reporting](https://github.com/surendrajat/apkstudio/issues)
-- [Contributors](https://github.com/Surendrajat/ApkStudio/graphs/contributors)
-- [Special Thanks](https://github.com/Surendrajat/ApkStudio/wiki/SpecialThanks)
+- [Building (Command line)](https://github.com/vaibhavpandeyvpz/apkstudio/wiki/Building#building-linux)
+- [Building (Qt Creator)](https://github.com/vaibhavpandeyvpz/apkstudio/wiki/Building#building-with-qt-creator)
+- [Bug Reporting](https://github.com/vaibhavpandeyvpz/apkstudio/issues)
+- [Contributors](https://github.com/vaibhavpandeyvpz/apkstudio/graphs/contributors)
+- [Special Thanks](https://github.com/vaibhavpandeyvpz/apkstudio/wiki/SpecialThanks)
 - [XDA Thread](https://forum.xda-developers.com/showthread.php?t=3761033)
 
 ### TODO
@@ -45,9 +45,9 @@
 - Opcode Hex Viewer
 
 ### Screenshots
->![Screenshot #1](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio881.png "Screenshot #1")
+>![Screenshot #1](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/apkstudio881.png "Screenshot #1")
 
->![Screenshot #2](https://raw.githubusercontent.com/surendrajat/apkstudio/master/external/screenshots/apkstudio882.png "Screenshot #2")
+>![Screenshot #2](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/apkstudio882.png "Screenshot #2")
 
 ### Disclaimer
->Same as [Apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
+>Same as [Apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications & much more.
