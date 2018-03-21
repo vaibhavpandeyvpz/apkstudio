@@ -26,24 +26,5 @@ script:
 
   - ../linuxdeployqt*.AppImage apkstudio -bundle-non-qt-libs -no-translations -verbose=2 -appimage -no-copy-copyright-files
 
-# removing doc folder, apprun shortcut and .DirIcon 
-#  - rm -rf doc AppRun .DirIcon
-# removing extra libraries
-#  - cd  lib && mv libQt5Core.so.5 libQt5Gui.so.5 libQt5Widgets.so.5 libicu* .. && rm -r * && mv ../libQ* ../libi* . && cd ..
-#
-#  - rm -rf plugins/imageformats/ plugins/platforminputcontexts/ plugins/xcbglintegrations/
-
-#  - cd ..
-#  - env GZIP=-9 tar -zvcf apkstudio-latest-release.tar.gz apkstudio-latest-release
-
 after_script:
  - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-$(git rev-parse --short HEAD)-linux_x86_64.AppImage
-
-# deploy:
-#   provider: releases
-#   api_key: $GITHUB OAUTH TOKEN"
-#   file: "*.AppImage"
-#   overwrite: true
-#   skip_cleanup: true
-#   # on:
-#   #   tags: true
