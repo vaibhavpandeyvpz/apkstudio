@@ -323,7 +323,7 @@
     </message>
     <message>
         <source>download_vendor</source>
-        <translation><![CDATA[You need to download some 3rd-party applications/files and place them in proper directory for APK Studio to work. Please follow <a href="https://github.com/Surendrajat/ApkStudio#requirements">this link</a>]]></translation>
+        <translation><![CDATA[You need to download some 3rd-party applications/files and place them in proper directory for APK Studio to work. Please follow the <a href="https://github.com/vaibhavpandeyvpz/apkstudio#requirements">instructions here</a>]]></translation>
     </message>
     <message>
         <source>decode_failure</source>

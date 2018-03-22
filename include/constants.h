@@ -65,9 +65,9 @@
 
 #define THREADS_MAX 1
 
-#define URL_CONTRIBUTE "https://github.com/surendrajat/apkstudio"
-#define URL_DOCUMENTATION "http://surendrajat.github.io/ApkStudio"
-#define URL_ISSUES "https://github.com/surendrajat/apkstudio/issues"
+#define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
+#define URL_DOCUMENTATION "https://forum.xda-developers.com/showpost.php?p=75831837"
+#define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "https://forum.xda-developers.com/showthread.php?t=3761033"
 
 /**
