@@ -22,9 +22,9 @@ script:
 
   - mkdir apkstudio-latest-release
   - cd apkstudio-latest-release
-  - cp ../apkstudio .
+  - cp ../apkstudio ../external/apkstudio.* .
 
-  - ../linuxdeployqt*.AppImage apkstudio -bundle-non-qt-libs -no-translations -verbose=2 -appimage -no-copy-copyright-files
+  - ../linuxdeployqt*.AppImage apkstudio.desktop -bundle-non-qt-libs -no-translations -verbose=2 -no-copy-copyright-files -appimage
 
 after_script:
  - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-$(git rev-parse --short HEAD)-linux_x86_64.AppImage
