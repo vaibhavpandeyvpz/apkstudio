@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+	<id>apkstudio</id>
+	<metadata_license>CC0-1.0</metadata_license>
+	<project_license>GPL-2.0+</project_license>
+	<name>APK Studio</name>
+	<summary>Cross Platform IDE for reverse-engineering APKs</summary>
+	<description>
+		<p>A Cross-Platform IDE for Reverse-Engineering (Disassembling, Hacking & Rebuilding) Android applications - featuring a friendly UI and Code editor with Syntax-highlighting support.</p>
+	</description>
+	<launchable type="desktop-id">apkstudio.desktop</launchable>
+	<url type="homepage">https://github.com/vaibhavpandeyvpz/apkstudio</url>
+	<screenshots>
+		<screenshot type="default">
+			<image>https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/external/screenshots/apkstudio881.png</image>
+		</screenshot>
+	</screenshots>
+	<provides>
+		<id>apkstudio.desktop</id>
+	</provides>
+</component>
