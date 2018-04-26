@@ -19,13 +19,13 @@
 ### Requirements
 - **JDK >= 8**
 - **Apktool**  
-  >Download latest [`apktool.jar`](https://bitbucket.org/iBotPeaches/apktool/downloads/) and put it in the following path:  
+  >Download latest [`apktool`](https://bitbucket.org/iBotPeaches/apktool/downloads/), rename it to `apktool.jar` and put it in the following path:  
   >- Linux: `/home/{your-user-name}/.apkstudio/vendor/apktool.jar`  
   >- Windows: `C:\Users\{your-user-name}\.apkstudio\vendor\apktool.jar`
  
   >If you've `apktool.jar` already installed in the specified path, replace it with the new one and execute the following command in same path:   `java -jar apktool.jar empty-framework-dir --force`
 - **uber-apk-signer**  
-  >Download latest [`uber-apk-signer.jar`](https://github.com/patrickfav/uber-apk-signer/releases) and put it in the following path:  
+  >Download latest [`uber-apk-signer`](https://github.com/patrickfav/uber-apk-signer/releases), rename it to `uber-apk-signer.jar` and put it in the following path:  
     >- Linux: `/home/{your-user-name}/.apkstudio/vendor/uber-apk-signer.jar`  
     >- Windows: `C:\Users\{your-user-name}\.apkstudio\vendor\uber-apk-signer.jar`
 - **adb** (optional) and **zipalign** (linux_x86 only) 
