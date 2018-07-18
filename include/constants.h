@@ -11,7 +11,7 @@
 #define COLOR_OUTPUT 0xffffff
 #define COLOR_ERROR 0xfb0a2a
 
-#define EDITOR_EXT_CODER "java|smali|xml|yml"
+#define EDITOR_EXT_CODER "java|smali|xml|yml|txt|md|SF|properties|clj|MF|crt|json"
 #define EDITOR_EXT_VIEWER "gif|jpg|jpeg|png"
 
 #define FILE_PREFERENCES "preferences.ini"
