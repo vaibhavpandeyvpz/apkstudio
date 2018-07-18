@@ -1,3 +1,4 @@
+#include <QDesktopServices>
 #include <QFileInfo>
 #include <QInputDialog>
 #include <QTabBar>
@@ -226,6 +227,7 @@ void EditorTabs::onFileOpen(const QString &p)
         }
         else
         {
+            QDesktopServices::openUrl(QUrl(p));
             return;
         }
         _files.insert(p, i = addTab(w, _provider.icon(fi), fi.fileName()));
