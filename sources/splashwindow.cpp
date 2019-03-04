@@ -35,7 +35,11 @@ QWidget *SplashWindow::buildCentralWidget()
     m_LabelVersion->setContentsMargins(0, 2, 4, 0);
     m_LabelVersion->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     m_LabelVersion->setStyleSheet("QLabel { color: white; }");
-    m_LabelVersion->setText("1.0.0");
+    QString version(GIT_TAG);
+    if (version.isEmpty()) {
+        version = QString("%1.%2").arg(GIT_COMMIT_SHORT).arg(GIT_COMMIT_NUMBER);
+    }
+    m_LabelVersion->setText(version);
     m_LabelVersions = new QLabel(widget);
     m_LabelVersions->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     m_LabelVersions->setContentsMargins(10, 0, 0, 8);
