@@ -1,3 +1,0 @@
-@include numbers.def
-@include strings.def
-comments #[^\n]*
