@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QMainWindow>
+#include "binaryversionsthread.h"
 
 class SplashWindow : public QMainWindow
 {
@@ -13,16 +14,19 @@ public:
     ~SplashWindow();
 
 private:
-    QLabel *m_LabelVersion;
     QLabel *m_LabelVersions;
     QString mVersionApktool;
     QString mVersionJadx;
     QString mVersionJava;
+    BinaryVersionsThread *m_VersionsThread;
     QWidget *buildCentralWidget();
     void rewriteVersionsText();
 
 private slots:
-    void handleTimerTimeout();
+    void handleVersionFailed(const QString &binary);
+    void handleVersionResolved(const QString &binary, const QString &version);
+    void handleVersionSuccess();
+    void resolveVersions();
 };
 
 #endif // SPLASHWINDOW_H

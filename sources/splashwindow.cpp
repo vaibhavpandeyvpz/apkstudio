@@ -1,19 +1,22 @@
+#include <QDebug>
 #include <QPixmap>
 #include <QVBoxLayout>
 #include <QTimer>
+#include "binarysettingsdialog.h"
 #include "mainwindow.h"
+#include "processutils.h"
 #include "splashwindow.h"
 
 #define SPLASH_WIDTH 512
 #define SPLASH_HEIGHT 320
 
 SplashWindow::SplashWindow()
-    : QMainWindow(nullptr, Qt::SplashScreen)
+    : QMainWindow(nullptr, Qt::FramelessWindowHint)
 {
     setCentralWidget(buildCentralWidget());
     setMaximumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     setMinimumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-    QTimer::singleShot(1000, this, &SplashWindow::handleTimerTimeout);
+    QTimer::singleShot(500, this, &SplashWindow::resolveVersions);
 }
 
 QWidget *SplashWindow::buildCentralWidget()
@@ -30,16 +33,16 @@ QWidget *SplashWindow::buildCentralWidget()
     loading->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     loading->setStyleSheet("QLabel { color: white; }");
     loading->setText(tr("Loading..."));
-    m_LabelVersion = new QLabel(widget);
-    m_LabelVersion->setAlignment(Qt::AlignRight);
-    m_LabelVersion->setContentsMargins(0, 2, 4, 0);
-    m_LabelVersion->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-    m_LabelVersion->setStyleSheet("QLabel { color: white; }");
-    QString version(GIT_TAG);
-    if (version.isEmpty()) {
-        version = QString("%1.%2").arg(GIT_COMMIT_SHORT).arg(GIT_COMMIT_NUMBER);
+    auto version = new QLabel(widget);
+    version->setAlignment(Qt::AlignRight);
+    version->setContentsMargins(0, 2, 4, 0);
+    version->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
+    version->setStyleSheet("QLabel { color: white; }");
+    if (QString(GIT_TAG).isEmpty()) {
+        version->setText(QString("%1.%2").arg(GIT_COMMIT_SHORT).arg(GIT_COMMIT_NUMBER));
+    } else {
+        version->setText(GIT_TAG);
     }
-    m_LabelVersion->setText(version);
     m_LabelVersions = new QLabel(widget);
     m_LabelVersions->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     m_LabelVersions->setContentsMargins(10, 0, 0, 8);
@@ -48,7 +51,7 @@ QWidget *SplashWindow::buildCentralWidget()
     QFont font = loading->font();
     font.setPointSize(10);
     loading->setFont(font);
-    m_LabelVersion->setFont(font);
+    version->setFont(font);
     m_LabelVersions->setFont(font);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
@@ -56,21 +59,48 @@ QWidget *SplashWindow::buildCentralWidget()
     return widget;
 }
 
-void SplashWindow::handleTimerTimeout()
+void SplashWindow::handleVersionFailed(const QString &binary)
 {
-    if (mVersionJava.isEmpty()) {
-        mVersionJava = "1.9.0";
-    } else if (mVersionApktool.isEmpty()) {
-        mVersionApktool = "2.3.7";
-    } else if (mVersionJadx.isEmpty()) {
-        mVersionJadx = "0.9.2";
-    } else {
-        (new MainWindow())->show();
-        close();
-        return;
+#ifdef QT_DEBUG
+    qDebug() << "Binary" << binary << "version resolution failed";
+#endif
+    auto dialog = new BinarySettingsDialog(binary, this);
+    connect(dialog, &QDialog::accepted, this, &SplashWindow::resolveVersions);
+    connect(dialog, &QDialog::rejected, this, &QMainWindow::close);
+    QTimer::singleShot(100, dialog, &QDialog::exec);
+}
+
+void SplashWindow::handleVersionResolved(const QString &binary, const QString &version)
+{
+#ifdef QT_DEBUG
+    qDebug() << "Binary" << binary << "version resolved as" << version;
+#endif
+    if (binary == "apktool") {
+        mVersionApktool = version;
+    } else if (binary == "jadx") {
+        mVersionJadx = version;
+    } else if (binary == "java") {
+        mVersionJava = version;
     }
     rewriteVersionsText();
-    QTimer::singleShot(1000, this, &SplashWindow::handleTimerTimeout);
+}
+
+void SplashWindow::handleVersionSuccess()
+{
+    QTimer::singleShot(1000, [=] {
+        (new MainWindow())->show();
+        close();
+    });
+}
+
+void SplashWindow::resolveVersions()
+{
+    m_VersionsThread = new BinaryVersionsThread();
+    connect(m_VersionsThread, &BinaryVersionsThread::versionFailed, this, &SplashWindow::handleVersionFailed);
+    connect(m_VersionsThread, &BinaryVersionsThread::versionResolved, this, &SplashWindow::handleVersionResolved);
+    connect(m_VersionsThread, &BinaryVersionsThread::versionSuccess, this, &SplashWindow::handleVersionSuccess);
+    connect(m_VersionsThread, &BinaryVersionsThread::finished, m_VersionsThread, &QObject::deleteLater);
+    m_VersionsThread->start();
 }
 
 void SplashWindow::rewriteVersionsText()

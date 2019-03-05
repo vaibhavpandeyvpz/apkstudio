@@ -7,12 +7,20 @@ CONFIG += c++11
 
 HEADERS += \
     sources/mainwindow.h \
-    sources/splashwindow.h
+    sources/splashwindow.h \
+    sources/processutils.h \
+    sources/binarysettingswidget.h \
+    sources/binarysettingsdialog.h \
+    sources/binaryversionsthread.h
 
 SOURCES += \
     sources/main.cpp \
     sources/mainwindow.cpp \
-    sources/splashwindow.cpp
+    sources/splashwindow.cpp \
+    sources/processutils.cpp \
+    sources/binarysettingswidget.cpp \
+    sources/binarysettingsdialog.cpp \
+    sources/binaryversionsthread.cpp
 
 RESOURCES += \
     resources/all.qrc
