@@ -12,7 +12,8 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 private:
-    QMenuBar* buildMenuBar();
+    QToolBar *buildMainToolBar();
+    QMenuBar *buildMenuBar();
 private slots:
     void handleActionAbout();
     void handleActionApk();
@@ -22,10 +23,10 @@ private slots:
     void handleActionContribute();
     void handleActionCopy();
     void handleActionCut();
-    void handleActionDirectory();
     void handleActionDocumentation();
     void handleActionFile();
     void handleActionFind();
+    void handleActionFolder();
     void handleActionGoto();
     void handleActionInstall();
     void handleActionPaste();

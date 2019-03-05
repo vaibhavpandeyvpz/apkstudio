@@ -3,6 +3,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
+#include <QToolBar>
 #include <QUrl>
 #include "mainwindow.h"
 
@@ -17,6 +18,7 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setWindowTitle(tr("APK Studio", "main").append(" - https://git.io/fhxGT"));
@@ -28,13 +30,30 @@ MainWindow::MainWindow(QWidget *parent)
     }
 }
 
+QToolBar *MainWindow::buildMainToolBar()
+{
+    auto toolbar = new QToolBar(this);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open > APK"), this, &MainWindow::handleActionApk);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open > Folder"), this, &MainWindow::handleActionFolder);
+    toolbar->addSeparator();
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-gear-48.png"), tr("Settings"), this, &MainWindow::handleActionSettings);
+    auto empty = new QWidget(this);
+    empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    toolbar->addWidget(empty);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-hammer-48.png"), tr("Project > Build"), this, &MainWindow::handleActionBuild);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-software-installer-48.png"), tr("Project > Install"), this, &MainWindow::handleActionInstall);
+    toolbar->setIconSize(QSize(48, 48));
+    toolbar->setMovable(false);
+    return toolbar;
+}
+
 QMenuBar *MainWindow::buildMenuBar()
 {
     auto menubar = new QMenuBar(this);
     auto file = menubar->addMenu(tr("File"));
     auto open = file->addMenu(tr("Open"));
     open->addAction(tr("APK"), this, &MainWindow::handleActionApk, QKeySequence::New);
-    open->addAction(tr("Directory"), this, &MainWindow::handleActionDirectory, QKeySequence::Open);
+    open->addAction(tr("Folder"), this, &MainWindow::handleActionFolder, QKeySequence::Open);
     open->addSeparator();
     open->addAction(tr("File"), this, &MainWindow::handleActionFile);
     file->addSeparator();
@@ -119,10 +138,6 @@ void MainWindow::handleActionCut()
 {
 }
 
-void MainWindow::handleActionDirectory()
-{
-}
-
 void MainWindow::handleActionDocumentation()
 {
     QDesktopServices::openUrl(QUrl(URL_DOCUMENTATION));
@@ -133,6 +148,10 @@ void MainWindow::handleActionFile()
 }
 
 void MainWindow::handleActionFind()
+{
+}
+
+void MainWindow::handleActionFolder()
 {
 }
 
