@@ -15,7 +15,9 @@ BinarySettingsDialog::BinarySettingsDialog(const QString &focus, QWidget *parent
     layout->setSpacing(2);
     setAttribute(Qt::WA_DeleteOnClose);
     setMinimumSize(360, 240);
+#ifdef Q_OS_WIN
     setWindowIcon(QIcon(":/icons/fugue/application-terminal.png"));
+#endif
     setWindowTitle(tr("Binaries"));
 }
 

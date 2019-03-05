@@ -8,11 +8,9 @@
 class SplashWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     SplashWindow();
     ~SplashWindow();
-
 private:
     QLabel *m_LabelVersions;
     QString mVersionApktool;
@@ -21,7 +19,6 @@ private:
     BinaryVersionsThread *m_VersionsThread;
     QWidget *buildCentralWidget();
     void rewriteVersionsText();
-
 private slots:
     void handleVersionFailed(const QString &binary);
     void handleVersionResolved(const QString &binary, const QString &version);
