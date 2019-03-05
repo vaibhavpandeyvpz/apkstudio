@@ -2,6 +2,8 @@
 # APK Studio [![Codacy Badge](https://api.codacy.com/project/badge/Grade/a816c080acad4a1989219c0f55da34b3)](https://www.codacy.com/app/Surendrajat/apkstudio_2?utm_source=github.com&utm_medium=referral&utm_content=vaibhavpandeyvpz/apkstudio&utm_campaign=Badge_Grade) [![Build Status](https://travis-ci.org/vaibhavpandeyvpz/apkstudio.svg)](https://travis-ci.org/vaibhavpandeyvpz/apkstudio) [![Build status](https://ci.appveyor.com/api/projects/status/t437hn0osaik6vv5/branch/master?svg=true)](https://ci.appveyor.com/project/Surendrajat/apkstudio-1cupt/branch/master) [![Join the chat at https://gitter.im/apk-studio/ideas](https://badges.gitter.im/apk-studio/ideas.svg)](https://gitter.im/apk-studio/ideas?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 >**A Cross-Platform IDE for Reverse-Engineering (Disassembling, Hacking & Rebuilding)  Android applications  - featuring a friendly UI and Code editor with Syntax-highlighting support**
 
+If you are just willing to quickly decompile an Android app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
+
 ### Features
 - Disassembling & Rebuilding APKs
 - Code Editor with Syntax Highlighting (`java` `smali` `xml` `yml`)
