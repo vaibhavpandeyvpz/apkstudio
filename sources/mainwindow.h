@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QMap>
+#include <QProgressDialog>
 
 class MainWindow : public QMainWindow
 {
@@ -14,6 +15,7 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 private:
+    QProgressDialog *m_ProgressDialog;
     QLabel *m_StatusMessage;
     QLabel *m_VersionAdb;
     QLabel *m_VersionApktool;
@@ -49,6 +51,9 @@ private slots:
     void handleActionSettings();
     void handleActionSignExport();
     void handleActionUndo();
+    void handleDecompileFailed(const QString &apk);
+    void handleDecompileFinished(const QString &apk, const QString &folder);
+    void handleDecompileProgress(const int percent, const QString &message);
     void handleVersionResolved(const QString &binary, const QString &version);
 };
 

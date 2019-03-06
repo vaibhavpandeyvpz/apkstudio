@@ -1,18 +1,18 @@
 #include <QDebug>
 #include <QRegularExpression>
-#include "binaryversionsthread.h"
+#include "versionresolveworker.h"
 #include "processutils.h"
 
 #define REGEXP_ADB_VERSION "version (\\d+\\.\\d+\\.\\d+)$"
 #define REGEXP_JAVA_VERSION "version \"(\\d+\\.\\d+\\.\\d+(_\\d+)?)\" "
 #define REGEXP_UAS_VERSION "Version: (\\d+\\.\\d+\\.\\d+)$"
 
-BinaryVersionsThread::BinaryVersionsThread(QObject *parent)
-    : QThread(parent)
+VersionResolveWorker::VersionResolveWorker(QObject *parent)
+    : QObject(parent)
 {
 }
 
-void BinaryVersionsThread::run()
+void VersionResolveWorker::resolve()
 {
 #ifdef QT_DEBUG
     qDebug() << "Using 'java' from" << ProcessUtils::javaExe();
@@ -45,10 +45,9 @@ void BinaryVersionsThread::run()
 #endif
     found = false;
     const QString apktool = ProcessUtils::apktoolJar();
-    if (!apktool.isEmpty()) {
+    if (!java.isEmpty() && !apktool.isEmpty()) {
         QStringList args;
-        args << "-jar";
-        args << apktool;
+        args << "-jar" << apktool;
         args << "--version";
         ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
@@ -119,10 +118,9 @@ void BinaryVersionsThread::run()
 #endif
     found = false;
     const QString uas = ProcessUtils::uberApkSignerJar();
-    if (!uas.isEmpty()) {
+    if (!java.isEmpty() && !uas.isEmpty()) {
         QStringList args;
-        args << "-jar";
-        args << uas;
+        args << "-jar" << uas;
         args << "--version";
         ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG

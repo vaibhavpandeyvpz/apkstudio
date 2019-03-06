@@ -11,7 +11,9 @@ HEADERS += \
     sources/processutils.h \
     sources/binarysettingswidget.h \
     sources/binarysettingsdialog.h \
-    sources/binaryversionsthread.h
+    sources/apkdecompileworker.h \
+    sources/versionresolveworker.h \
+    sources/apkdecompiledialog.h
 
 SOURCES += \
     sources/main.cpp \
@@ -20,7 +22,9 @@ SOURCES += \
     sources/processutils.cpp \
     sources/binarysettingswidget.cpp \
     sources/binarysettingsdialog.cpp \
-    sources/binaryversionsthread.cpp
+    sources/apkdecompileworker.cpp \
+    sources/versionresolveworker.cpp \
+    sources/apkdecompiledialog.cpp
 
 RESOURCES += \
     resources/all.qrc

@@ -1,15 +1,19 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QFileDialog>
 #include <QFrame>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStatusBar>
+#include <QThread>
 #include <QToolBar>
 #include <QUrl>
+#include "apkdecompiledialog.h"
+#include "apkdecompileworker.h"
 #include "binarysettingsdialog.h"
-#include "binaryversionsthread.h"
+#include "versionresolveworker.h"
 #include "mainwindow.h"
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
@@ -34,9 +38,12 @@ MainWindow::MainWindow(QWidget *parent)
     } else {
         resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
     }
-    auto thread = new BinaryVersionsThread();
-    connect(thread, &BinaryVersionsThread::versionResolved, this, &MainWindow::handleVersionResolved);
+    auto thread = new QThread();
+    auto resolve = new VersionResolveWorker();
+    resolve->moveToThread(thread);
+    connect(thread, &QThread::started, resolve, &VersionResolveWorker::resolve);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(resolve, &VersionResolveWorker::versionResolved, this, &MainWindow::handleVersionResolved);
     thread->start();
 }
 
@@ -151,6 +158,34 @@ void MainWindow::handleActionAbout()
 
 void MainWindow::handleActionApk()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse APK"),
+                                                      QString(),
+                                                      tr("Android APK File(s) (*.apk)"));
+#ifdef QT_DEBUG
+    qDebug() << "User selected to open" << path;
+#endif
+    if (!path.isEmpty()) {
+        auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(path), this);
+        if (dialog->exec() == QDialog::Accepted) {
+            auto thread = new QThread();
+            auto decompile = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->sources());
+            decompile->moveToThread(thread);
+            connect(thread, &QThread::started, decompile, &ApkDecompileWorker::decompile);
+            connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+            connect(decompile, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
+            connect(decompile, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
+            connect(decompile, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+            thread->start();
+            m_ProgressDialog = new QProgressDialog(this);
+            m_ProgressDialog->setCancelButton(nullptr);
+            m_ProgressDialog->setRange(0, 100);
+            m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+            m_ProgressDialog->setWindowTitle(tr("Decompiling..."));
+            m_ProgressDialog->exec();
+        }
+        dialog->deleteLater();
+    }
 }
 
 void MainWindow::handleActionBuild()
@@ -193,6 +228,16 @@ void MainWindow::handleActionFind()
 
 void MainWindow::handleActionFolder()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse Folder (apktool.yml)"),
+                                                      QString(),
+                                                      tr("Apktool Project File(s) (apktool.yml)"));
+#ifdef QT_DEBUG
+    qDebug() << "User selected to open" << path;
+#endif
+    if (!path.isEmpty()) {
+        // QDir::toNativeSeparators(path)
+    }
 }
 
 void MainWindow::handleActionGoto()
@@ -249,6 +294,29 @@ void MainWindow::handleActionSignExport()
 
 void MainWindow::handleActionUndo()
 {
+}
+
+void MainWindow::handleDecompileFailed(const QString &apk)
+{
+    Q_UNUSED(apk)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Decompilation failed."));
+}
+
+void MainWindow::handleDecompileFinished(const QString &apk, const QString &folder)
+{
+    Q_UNUSED(apk)
+    Q_UNUSED(folder)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Decompilation finished."));
+}
+
+void MainWindow::handleDecompileProgress(const int percent, const QString &message)
+{
+    m_ProgressDialog->setLabelText(message);
+    m_ProgressDialog->setValue(percent);
 }
 
 void MainWindow::handleVersionResolved(const QString &binary, const QString &version)

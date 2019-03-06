@@ -42,68 +42,77 @@ QString BinarySettingsWidget::apktoolJar() const
 
 void BinarySettingsWidget::handleBrowseAdb()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
 #ifdef Q_OS_WIN
-    QFileDialog dialog(this, tr("Browse ADB (adb.exe)"), QString(), tr("Executable File(s) (*.exe)"));
+                                                      tr("Browse ADB (adb.exe)"),
 #else
-    QFileDialog dialog(this, tr("Browse ADB"));
+                                                      tr("Browse ADB"),
 #endif
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    if (dialog.exec() == QFileDialog::Accepted) {
-        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
-        m_EditAdbExe->setText(path);
+                                                      QString(),
+#ifdef Q_OS_WIN
+                                                      tr("Executable File(s) (*.exe)")
+#endif
+                                                      );
+    if (!path.isEmpty()) {
+        m_EditAdbExe->setText(QDir::toNativeSeparators(path));
     }
 }
 
 void BinarySettingsWidget::handleBrowseApktool()
 {
-    QFileDialog dialog(this, tr("Browse Apktool (apktool.jar)"), QString(), tr("JAR File(s) (*.jar)"));
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    if (dialog.exec() == QFileDialog::Accepted) {
-        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
-        m_EditApktoolJar->setText(path);
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse Apktool (apktool.jar)"),
+                                                      QString(),
+                                                      tr("JAR File(s) (*.jar)"));
+    if (!path.isEmpty()) {
+        m_EditApktoolJar->setText(QDir::toNativeSeparators(path));
     }
 }
 
 void BinarySettingsWidget::handleBrowseJadx()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
 #ifdef Q_OS_WIN
-    QFileDialog dialog(this, tr("Browse Jadx (jadx.bat)"), QString(), tr("Batch File(s) (*.bat)"));
+                                                      tr("Browse Jadx (jadx.bat)"),
 #else
-    QFileDialog dialog(this, tr("Browse Jadx"));
+                                                      tr("Browse Jadx"),
 #endif
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    if (dialog.exec() == QFileDialog::Accepted) {
-        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
-        m_EditJadxExe->setText(path);
+                                                      QString(),
+#ifdef Q_OS_WIN
+                                                      tr("Windows Batch File(s) (*.bat)")
+#endif
+                                                      );
+    if (!path.isEmpty()) {
+        m_EditJadxExe->setText(QDir::toNativeSeparators(path));
     }
 }
 
 void BinarySettingsWidget::handleBrowseJava()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
 #ifdef Q_OS_WIN
-    QFileDialog dialog(this, tr("Browse Java (java.exe)"), QString(), tr("Executable File(s) (*.exe)"));
+                                                      tr("Browse Java (java.exe)"),
 #else
-    QFileDialog dialog(this, tr("Browse Java"));
+                                                      tr("Browse Java"),
 #endif
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    if (dialog.exec() == QFileDialog::Accepted) {
-        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
-        m_EditJadxExe->setText(path);
+                                                      QString(),
+#ifdef Q_OS_WIN
+                                                      tr("Executable File(s) (*.exe)")
+#endif
+                                                      );
+    if (!path.isEmpty()) {
+        m_EditJavaExe->setText(QDir::toNativeSeparators(path));
     }
 }
 
 void BinarySettingsWidget::handleBrowseUberApkSigner()
 {
-    QFileDialog dialog(this, tr("Browse Uber APK Signer (uber-apk-signer.jar)"), QString(), tr("JAR File(s) (*.jar)"));
-    dialog.setAcceptMode(QFileDialog::AcceptOpen);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    if (dialog.exec() == QFileDialog::Accepted) {
-        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
-        m_EditUberApkSignerJar->setText(path);
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse Uber APK Signer (uber-apk-signer.jar)"),
+                                                      QString(),
+                                                      tr("JAR File(s) (*.jar)"));
+    if (!path.isEmpty()) {
+        m_EditUberApkSignerJar->setText(QDir::toNativeSeparators(path));
     }
 }
 
