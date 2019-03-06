@@ -1,6 +1,5 @@
 #include <QAbstractButton>
 #include <QFormLayout>
-#include <QIcon>
 #include <QSettings>
 #include <QVBoxLayout>
 #include "binarysettingsdialog.h"
@@ -32,9 +31,11 @@ void BinarySettingsDialog::handleButtonClick(QAbstractButton *button)
 {
     if (m_ButtonBox->standardButton(button) == QDialogButtonBox::Save) {
         QSettings settings;
+        settings.setValue("adb_exe", m_Widget->adbExe());
         settings.setValue("apktool_jar", m_Widget->apktoolJar());
         settings.setValue("jadx_exe", m_Widget->jadxExe());
         settings.setValue("java_exe", m_Widget->javaExe());
+        settings.setValue("uas_jar", m_Widget->uberApkSignerJar());
         settings.sync();
         accept();
     } else {

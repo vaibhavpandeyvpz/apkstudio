@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QLabel>
 #include <QMainWindow>
+#include <QMap>
 
 class MainWindow : public QMainWindow
 {
@@ -12,8 +14,15 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 private:
+    QLabel *m_StatusMessage;
+    QLabel *m_VersionAdb;
+    QLabel *m_VersionApktool;
+    QLabel *m_VersionJadx;
+    QLabel *m_VersionJava;
+    QLabel *m_VersionUberApkSigner;
     QToolBar *buildMainToolBar();
     QMenuBar *buildMenuBar();
+    QStatusBar *buildStatusBar();
 private slots:
     void handleActionAbout();
     void handleActionApk();
@@ -40,6 +49,7 @@ private slots:
     void handleActionSettings();
     void handleActionSignExport();
     void handleActionUndo();
+    void handleVersionResolved(const QString &binary, const QString &version);
 };
 
 #endif // MAINWINDOW_H

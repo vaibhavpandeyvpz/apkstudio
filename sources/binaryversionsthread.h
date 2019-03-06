@@ -10,9 +10,7 @@ public:
     explicit BinaryVersionsThread(QObject *parent = nullptr);
     void run() override;
 signals:
-    void versionFailed(const QString &binary);
     void versionResolved(const QString &binary, const QString &version);
-    void versionSuccess();
 };
 
 #endif // BINARYVERSIONSTHREAD_H

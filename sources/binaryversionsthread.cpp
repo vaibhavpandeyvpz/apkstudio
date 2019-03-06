@@ -3,7 +3,9 @@
 #include "binaryversionsthread.h"
 #include "processutils.h"
 
+#define REGEXP_ADB_VERSION "version (\\d+\\.\\d+\\.\\d+)$"
 #define REGEXP_JAVA_VERSION "version \"(\\d+\\.\\d+\\.\\d+(_\\d+)?)\" "
+#define REGEXP_UAS_VERSION "Version: (\\d+\\.\\d+\\.\\d+)$"
 
 BinaryVersionsThread::BinaryVersionsThread(QObject *parent)
     : QThread(parent)
@@ -35,7 +37,7 @@ void BinaryVersionsThread::run()
         }
     }
     if (!found) {
-        emit versionFailed("java");
+        emit versionResolved("java", QString());
         return;
     }
 #ifdef QT_DEBUG
@@ -61,7 +63,7 @@ void BinaryVersionsThread::run()
         }
     }
     if (!found) {
-        emit versionFailed("apktool");
+        emit versionResolved("apktool", QString());
         return;
     }
 #ifdef QT_DEBUG
@@ -83,8 +85,62 @@ void BinaryVersionsThread::run()
         }
     }
     if (!found) {
-        emit versionFailed("jadx");
+        emit versionResolved("jadx", QString());
         return;
     }
-    emit versionSuccess();
+#ifdef QT_DEBUG
+    qDebug() << "Using 'adb' from" << ProcessUtils::adbExe();
+#endif
+    found = false;
+    const QString adb = ProcessUtils::adbExe();
+    if (!adb.isEmpty()) {
+        ProcessResult result = ProcessUtils::runCommand(adb, QStringList() << "--version");
+#ifdef QT_DEBUG
+        qDebug() << "ADB returned code" << result.code;
+#endif
+        if (result.code == 0) {
+#ifdef QT_DEBUG
+            qDebug() << "ADB returned" << result.output[0];
+#endif
+            QRegularExpression regexp(REGEXP_ADB_VERSION);
+            QRegularExpressionMatch match = regexp.match(result.output[0]);
+            if (match.hasMatch()) {
+                emit versionResolved("adb", match.captured(1));
+                found = true;
+            }
+        }
+    }
+    if (!found) {
+        emit versionResolved("adb", QString());
+        return;
+    }
+#ifdef QT_DEBUG
+    qDebug() << "Using 'uas' from" << ProcessUtils::uberApkSignerJar();
+#endif
+    found = false;
+    const QString uas = ProcessUtils::uberApkSignerJar();
+    if (!uas.isEmpty()) {
+        QStringList args;
+        args << "-jar";
+        args << uas;
+        args << "--version";
+        ProcessResult result = ProcessUtils::runCommand(java, args);
+#ifdef QT_DEBUG
+        qDebug() << "Uber APK signer returned code" << result.code;
+#endif
+        if (result.code == 0) {
+#ifdef QT_DEBUG
+            qDebug() << "Uber APK signer returned" << result.output[0];
+#endif
+            QRegularExpression regexp(REGEXP_UAS_VERSION);
+            QRegularExpressionMatch match = regexp.match(result.output[0]);
+            if (match.hasMatch()) {
+                emit versionResolved("uas", match.captured(1));
+                found = true;
+            }
+        }
+        if (!found) {
+            emit versionResolved("uas", QString());
+        }
+    }
 }

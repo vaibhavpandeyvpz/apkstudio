@@ -12,7 +12,10 @@ BinarySettingsWidget::BinarySettingsWidget(const QString &focus, QWidget *parent
     : QWidget(parent)
 {
     setLayout(buildForm());
-    if (focus == "apktool") {
+    if (focus == "adb") {
+        m_EditAdbExe->selectAll();
+        m_EditAdbExe->setFocus();
+    } else if (focus == "apktool") {
         m_EditApktoolJar->selectAll();
         m_EditApktoolJar->setFocus();
     } else if (focus == "jadx") {
@@ -21,12 +24,35 @@ BinarySettingsWidget::BinarySettingsWidget(const QString &focus, QWidget *parent
     } else if (focus == "java") {
         m_EditJavaExe->selectAll();
         m_EditJavaExe->setFocus();
+    } else if (focus == "uas") {
+        m_EditUberApkSignerJar->selectAll();
+        m_EditUberApkSignerJar->setFocus();
     }
+}
+
+QString BinarySettingsWidget::adbExe() const
+{
+    return m_EditAdbExe->text();
 }
 
 QString BinarySettingsWidget::apktoolJar() const
 {
     return m_EditApktoolJar->text();
+}
+
+void BinarySettingsWidget::handleBrowseAdb()
+{
+#ifdef Q_OS_WIN
+    QFileDialog dialog(this, tr("Browse ADB (adb.exe)"), QString(), tr("Executable File(s) (*.exe)"));
+#else
+    QFileDialog dialog(this, tr("Browse ADB"));
+#endif
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() == QFileDialog::Accepted) {
+        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
+        m_EditAdbExe->setText(path);
+    }
 }
 
 void BinarySettingsWidget::handleBrowseApktool()
@@ -70,16 +96,21 @@ void BinarySettingsWidget::handleBrowseJava()
     }
 }
 
+void BinarySettingsWidget::handleBrowseUberApkSigner()
+{
+    QFileDialog dialog(this, tr("Browse Uber APK Signer (uber-apk-signer.jar)"), QString(), tr("JAR File(s) (*.jar)"));
+    dialog.setAcceptMode(QFileDialog::AcceptOpen);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    if (dialog.exec() == QFileDialog::Accepted) {
+        const QString path = QDir::toNativeSeparators(dialog.selectedFiles().first());
+        m_EditUberApkSignerJar->setText(path);
+    }
+}
+
 QLayout *BinarySettingsWidget::buildForm()
 {
     auto layout = new QFormLayout();
-    layout->addRow(
-#ifdef Q_OS_WIN
-                tr("Java (java.exe)"),
-#else
-                tr("Java"),
-#endif
-                m_EditJavaExe = new QLineEdit(this));
+    layout->addRow(tr("Java"), m_EditJavaExe = new QLineEdit(this));
     QLabel* label;
     QPushButton* button;
     QHBoxLayout* child = new QHBoxLayout();
@@ -90,7 +121,7 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
-    layout->addRow(tr("Apktool (apktool.jar)"), m_EditApktoolJar = new QLineEdit(this));
+    layout->addRow(tr("Apktool"), m_EditApktoolJar = new QLineEdit(this));
     child = new QHBoxLayout();
     child->addWidget(button = new QPushButton(tr("Browse"), this));
     connect(button, &QPushButton::pressed, this, &BinarySettingsWidget::handleBrowseApktool);
@@ -99,13 +130,7 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
-    layout->addRow(
-#ifdef Q_OS_WIN
-                tr("Jadx (jadx.bat)"),
-#else
-                tr("Jadx"),
-#endif
-                m_EditJadxExe = new QLineEdit(this));
+    layout->addRow(tr("Jadx"), m_EditJadxExe = new QLineEdit(this));
     child = new QHBoxLayout();
     child->addWidget(button = new QPushButton(tr("Browse"), this));
     connect(button, &QPushButton::pressed, this, &BinarySettingsWidget::handleBrowseJadx);
@@ -114,10 +139,30 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
+    layout->addRow(tr("ADB"), m_EditAdbExe = new QLineEdit(this));
+    child = new QHBoxLayout();
+    child->addWidget(button = new QPushButton(tr("Browse"), this));
+    connect(button, &QPushButton::pressed, this, &BinarySettingsWidget::handleBrowseAdb);
+    child->addWidget(label = new QLabel(QString("<a href=\"https://developer.android.com/studio/releases/platform-tools\">%1</a>").arg(tr("Get it here!")), this), 1);
+    label->setOpenExternalLinks(true);
+    label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    label->setTextFormat(Qt::RichText);
+    layout->addRow("", child);
+    layout->addRow(tr("Uber APK Signer"), m_EditUberApkSignerJar = new QLineEdit(this));
+    child = new QHBoxLayout();
+    child->addWidget(button = new QPushButton(tr("Browse"), this));
+    connect(button, &QPushButton::pressed, this, &BinarySettingsWidget::handleBrowseUberApkSigner);
+    child->addWidget(label = new QLabel(QString("<a href=\"https://github.com/patrickfav/uber-apk-signer/releases\">%1</a>").arg(tr("Get it here!")), this), 1);
+    label->setOpenExternalLinks(true);
+    label->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    label->setTextFormat(Qt::RichText);
+    layout->addRow("", child);
     QSettings settings;
+    m_EditAdbExe->setText(settings.value("adb_exe").toString());
     m_EditApktoolJar->setText(settings.value("apktool_jar").toString());
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
     m_EditJavaExe->setText(ProcessUtils::javaExe());
+    m_EditUberApkSignerJar->setText(settings.value("uas_jar").toString());
     return layout;
 }
 
@@ -129,4 +174,9 @@ QString BinarySettingsWidget::jadxExe() const
 QString BinarySettingsWidget::javaExe() const
 {
     return m_EditJavaExe->text();
+}
+
+QString BinarySettingsWidget::uberApkSignerJar() const
+{
+    return m_EditUberApkSignerJar->text();
 }

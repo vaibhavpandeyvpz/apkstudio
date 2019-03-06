@@ -1,14 +1,19 @@
 #include <QCloseEvent>
+#include <QDebug>
 #include <QDesktopServices>
+#include <QFrame>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
+#include <QStatusBar>
 #include <QToolBar>
 #include <QUrl>
+#include "binarysettingsdialog.h"
+#include "binaryversionsthread.h"
 #include "mainwindow.h"
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
-#define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio"
+#define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio/"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "https://forum.xda-developers.com/showthread.php?t=2493107"
 
@@ -21,13 +26,18 @@ MainWindow::MainWindow(QWidget *parent)
     addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    setWindowTitle(tr("APK Studio", "main").append(" - https://git.io/fhxGT"));
+    setStatusBar(buildStatusBar());
+    setWindowTitle(tr("APK Studio").append(" - https://git.io/fhxGT"));
     QSettings settings;
     if (settings.value("app_maximized").toBool()) {
         showMaximized();
     } else {
         resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
     }
+    auto thread = new BinaryVersionsThread();
+    connect(thread, &BinaryVersionsThread::versionResolved, this, &MainWindow::handleVersionResolved);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    thread->start();
 }
 
 QToolBar *MainWindow::buildMainToolBar()
@@ -91,6 +101,36 @@ QMenuBar *MainWindow::buildMenuBar()
     feedback->addAction(tr("Report Issues"), this, &MainWindow::handleActionReportIssues);
     help->addAction(tr("Contribute"), this, &MainWindow::handleActionContribute);
     return menubar;
+}
+
+QStatusBar *MainWindow::buildStatusBar()
+{
+    auto buildSeparator = [=] {
+        auto frame = new QFrame(this);
+        frame->setFrameStyle(QFrame::VLine);
+        frame->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        return frame;
+    };
+    auto statusbar = new QStatusBar(this);
+    statusbar->addPermanentWidget(new QLabel(tr("Java").append(':'), this));
+    statusbar->addPermanentWidget(m_VersionJava = new QLabel("...", this));
+    statusbar->addPermanentWidget(buildSeparator());
+    statusbar->addPermanentWidget(new QLabel(tr("Apktool").append(':'), this));
+    statusbar->addPermanentWidget(m_VersionApktool = new QLabel("...", this));
+    statusbar->addPermanentWidget(buildSeparator());
+    statusbar->addPermanentWidget(new QLabel(tr("Jadx").append(':'), this));
+    statusbar->addPermanentWidget(m_VersionJadx = new QLabel("...", this));
+    statusbar->addPermanentWidget(buildSeparator());
+    statusbar->addPermanentWidget(new QLabel(tr("ADB").append(':'), this));
+    statusbar->addPermanentWidget(m_VersionAdb = new QLabel("...", this));
+    statusbar->addPermanentWidget(buildSeparator());
+    statusbar->addPermanentWidget(new QLabel(tr("Uber APK Signer").append(':'), this));
+    statusbar->addPermanentWidget(m_VersionUberApkSigner = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QWidget(this), 1);
+    statusbar->addPermanentWidget(m_StatusMessage = new QLabel(tr("Ready!"), this));
+    statusbar->setContentsMargins(4, 4, 4, 4);
+    statusbar->setStyleSheet("QStatusBar::item { border: none; }");
+    return statusbar;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -169,6 +209,7 @@ void MainWindow::handleActionPaste()
 
 void MainWindow::handleActionQuit()
 {
+    close();
 }
 
 void MainWindow::handleActionRedo()
@@ -199,6 +240,7 @@ void MainWindow::handleActionSayThanks()
 
 void MainWindow::handleActionSettings()
 {
+    (new BinarySettingsDialog("java", this))->exec();
 }
 
 void MainWindow::handleActionSignExport()
@@ -207,6 +249,24 @@ void MainWindow::handleActionSignExport()
 
 void MainWindow::handleActionUndo()
 {
+}
+
+void MainWindow::handleVersionResolved(const QString &binary, const QString &version)
+{
+#ifdef QT_DEBUG
+    qDebug() << "Binary" << binary << "version resolved as" << version;
+#endif
+    if (binary == "adb") {
+        m_VersionAdb->setText(version.isEmpty() ? tr("n/a") : version);
+    } else if (binary == "apktool") {
+        m_VersionApktool->setText(version.isEmpty() ? tr("n/a") : version);
+    } else if (binary == "jadx") {
+        m_VersionJadx->setText(version.isEmpty() ? tr("n/a") : version);
+    } else if (binary == "java") {
+        m_VersionJava->setText(version.isEmpty() ? tr("n/a") : version);
+    } else if (binary == "uas") {
+        m_VersionUberApkSigner->setText(version.isEmpty() ? tr("n/a") : version);
+    }
 }
 
 MainWindow::~MainWindow()

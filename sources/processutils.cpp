@@ -8,6 +8,13 @@
 
 #define REGEXP_LF "[\\r\\n]"
 
+QString ProcessUtils::adbExe()
+{
+    QSettings settings;
+    const QString jar = settings.value("adb_exe").toString();
+    return (!jar.isEmpty() && QFile::exists(jar)) ? jar : QString();
+}
+
 QString ProcessUtils::apktoolJar()
 {
     QSettings settings;
@@ -65,4 +72,11 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
         result.code = -1;
     }
     return result;
+}
+
+QString ProcessUtils::uberApkSignerJar()
+{
+    QSettings settings;
+    const QString jar = settings.value("uas_jar").toString();
+    return (!jar.isEmpty() && QFile::exists(jar)) ? jar : QString();
 }

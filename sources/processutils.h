@@ -12,9 +12,11 @@ struct ProcessResult {
 class ProcessUtils
 {
 public:
+    static QString adbExe();
     static QString apktoolJar();
     static QString javaExe();
     static QString jadxExe();
+    static QString uberApkSignerJar();
     static ProcessResult runCommand(const QString &exe, const QStringList &args = QStringList(), int timeout = 30);
 };
 
