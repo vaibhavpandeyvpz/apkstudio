@@ -55,7 +55,6 @@ QLayout *ApkDecompileDialog::buildForm(const QString &apk)
     return layout;
 }
 
-
 QString ApkDecompileDialog::folder() const
 {
     return m_EditFolder->text();

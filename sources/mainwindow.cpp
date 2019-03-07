@@ -1,14 +1,17 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDockWidget>
 #include <QFileDialog>
 #include <QFrame>
+#include <QHeaderView>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStatusBar>
 #include <QThread>
 #include <QToolBar>
+#include <QTreeWidgetItem>
 #include <QUrl>
 #include "apkdecompiledialog.h"
 #include "apkdecompileworker.h"
@@ -27,7 +30,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
+    addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
     addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
+    setCentralWidget(buildCentralWidget());
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setStatusBar(buildStatusBar());
@@ -47,18 +52,35 @@ MainWindow::MainWindow(QWidget *parent)
     thread->start();
 }
 
+QWidget *MainWindow::buildCentralWidget()
+{
+    m_CentralStack = new QStackedWidget(this);
+    auto empty = new QLabel(m_CentralStack);
+    empty->setAlignment(Qt::AlignCenter);
+    empty->setMargin(32);
+    empty->setStyleSheet("QLabel { color: rgba(0, 0, 0, 25%) }");
+    empty->setText(tr("<h1>%1</h1><p>%2</p>")
+                .arg("No files open.")
+                .arg("You need to decompile an APK first or open an already decompiled folder. Once done, click on any file in the tree on the left top view or edit it."));
+    empty->setWordWrap(true);
+    m_CentralStack->addWidget(empty);
+    return m_CentralStack;
+}
+
 QToolBar *MainWindow::buildMainToolBar()
 {
     auto toolbar = new QToolBar(this);
-    toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open > APK"), this, &MainWindow::handleActionApk);
-    toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open > Folder"), this, &MainWindow::handleActionFolder);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open APK"), this, &MainWindow::handleActionApk);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open Folder"), this, &MainWindow::handleActionFolder);
     toolbar->addSeparator();
     toolbar->addAction(QIcon(":/icons/icons8/icons8-gear-48.png"), tr("Settings"), this, &MainWindow::handleActionSettings);
     auto empty = new QWidget(this);
     empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolbar->addWidget(empty);
-    toolbar->addAction(QIcon(":/icons/icons8/icons8-hammer-48.png"), tr("Project > Build"), this, &MainWindow::handleActionBuild);
-    toolbar->addAction(QIcon(":/icons/icons8/icons8-software-installer-48.png"), tr("Project > Install"), this, &MainWindow::handleActionInstall);
+    m_ActionBuild2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-hammer-48.png"), tr("Project Build"), this, &MainWindow::handleActionBuild);
+    m_ActionBuild2->setEnabled(false);
+    m_ActionInstall2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-software-installer-48.png"), tr("Project Install"), this, &MainWindow::handleActionInstall);
+    m_ActionInstall2->setEnabled(false);
     toolbar->setIconSize(QSize(48, 48));
     toolbar->setMovable(false);
     return toolbar;
@@ -74,31 +96,46 @@ QMenuBar *MainWindow::buildMenuBar()
     open->addSeparator();
     open->addAction(tr("File"), this, &MainWindow::handleActionFile);
     file->addSeparator();
-    file->addAction(tr("Close"), this, &MainWindow::handleActionClose, QKeySequence::Close);
-    file->addAction(tr("Close All"), this, &MainWindow::handleActionCloseAll);
+    m_ActionClose = file->addAction(tr("Close"), this, &MainWindow::handleActionClose, QKeySequence::Close);
+    m_ActionClose->setEnabled(false);
+    m_ActionCloseAll = file->addAction(tr("Close All"), this, &MainWindow::handleActionCloseAll);
+    m_ActionCloseAll->setEnabled(false);
     file->addSeparator();
-    file->addAction(tr("Save"), this, &MainWindow::handleActionSave, QKeySequence::Save);
-    file->addAction(tr("Save All"), this, &MainWindow::handleActionSaveAll);
+    m_ActionSave = file->addAction(tr("Save"), this, &MainWindow::handleActionSave, QKeySequence::Save);
+    m_ActionSave->setEnabled(false);
+    m_ActionSaveAll = file->addAction(tr("Save All"), this, &MainWindow::handleActionSaveAll);
+    m_ActionSaveAll->setEnabled(false);
     file->addSeparator();
     file->addAction(tr("Quit"), this, &MainWindow::handleActionQuit, QKeySequence::Quit);
     auto edit = menubar->addMenu(tr("Edit"));
-    edit->addAction(tr("Undo"), this, &MainWindow::handleActionUndo, QKeySequence::Undo);
-    edit->addAction(tr("Redo"), this, &MainWindow::handleActionRedo, QKeySequence::Redo);
+    m_ActionUndo = edit->addAction(tr("Undo"), this, &MainWindow::handleActionUndo, QKeySequence::Undo);
+    m_ActionUndo->setEnabled(false);
+    m_ActionRedo = edit->addAction(tr("Redo"), this, &MainWindow::handleActionRedo, QKeySequence::Redo);
+    m_ActionRedo->setEnabled(false);
     edit->addSeparator();
-    edit->addAction(tr("Cut"), this, &MainWindow::handleActionCut, QKeySequence::Cut);
-    edit->addAction(tr("Copy"), this, &MainWindow::handleActionCopy, QKeySequence::Copy);
-    edit->addAction(tr("Paste"), this, &MainWindow::handleActionPaste, QKeySequence::Paste);
+    m_ActionCut = edit->addAction(tr("Cut"), this, &MainWindow::handleActionCut, QKeySequence::Cut);
+    m_ActionCut->setEnabled(false);
+    m_ActionCopy = edit->addAction(tr("Copy"), this, &MainWindow::handleActionCopy, QKeySequence::Copy);
+    m_ActionCopy->setEnabled(false);
+    m_ActionPaste = edit->addAction(tr("Paste"), this, &MainWindow::handleActionPaste, QKeySequence::Paste);
+    m_ActionPaste->setEnabled(false);
     edit->addSeparator();
-    edit->addAction(tr("Find"), this, &MainWindow::handleActionFind, QKeySequence::Find);
-    edit->addAction(tr("Replace"), this, &MainWindow::handleActionReplace, QKeySequence::Replace);
-    edit->addAction(tr("Goto"), this, &MainWindow::handleActionGoto);
+    m_ActionFind = edit->addAction(tr("Find"), this, &MainWindow::handleActionFind, QKeySequence::Find);
+    m_ActionFind->setEnabled(false);
+    m_ActionReplace = edit->addAction(tr("Replace"), this, &MainWindow::handleActionReplace, QKeySequence::Replace);
+    m_ActionReplace->setEnabled(false);
+    m_ActionGoto = edit->addAction(tr("Goto"), this, &MainWindow::handleActionGoto);
+    m_ActionGoto->setEnabled(false);
     edit->addSeparator();
     edit->addAction(tr("Settings"), this, &MainWindow::handleActionSettings, QKeySequence::Preferences);
     auto project = menubar->addMenu(tr("Project"));
-    project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
+    m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
+    m_ActionBuild1->setEnabled(false);
     project->addSeparator();
-    project->addAction(tr("Sign/Export"), this, &MainWindow::handleActionSignExport);
-    project->addAction(tr("Install"), this, &MainWindow::handleActionInstall);
+    m_ActionSign = project->addAction(tr("Sign/Export"), this, &MainWindow::handleActionSignExport);
+    m_ActionSign->setEnabled(false);
+    m_ActionInstall1 = project->addAction(tr("Install"), this, &MainWindow::handleActionInstall);
+    m_ActionInstall1->setEnabled(false);
     auto help = menubar->addMenu(tr("Help"));
     help->addAction(tr("About"), this, &MainWindow::handleActionAbout);
     help->addAction(tr("Documentation"), this, &MainWindow::handleActionDocumentation);
@@ -108,6 +145,23 @@ QMenuBar *MainWindow::buildMenuBar()
     feedback->addAction(tr("Report Issues"), this, &MainWindow::handleActionReportIssues);
     help->addAction(tr("Contribute"), this, &MainWindow::handleActionContribute);
     return menubar;
+}
+
+QDockWidget *MainWindow::buildProjectsDock()
+{
+    auto dock = new QDockWidget(tr("Projects"), this);
+    m_ProjectsTree = new QTreeWidget(this);
+    m_ProjectsTree->header()->hide();
+    m_ProjectsTree->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_ProjectsTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_ProjectsTree->setMinimumWidth(240);
+    m_ProjectsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_ProjectsTree->setSelectionMode(QAbstractItemView::SingleSelection);
+    m_ProjectsTree->setSortingEnabled(false);
+    connect(m_ProjectsTree, &QTreeWidget::doubleClicked, this, &MainWindow::handleTreeDoubleClicked);
+    dock->setObjectName("ProjectsDock");
+    dock->setWidget(m_ProjectsTree);
+    return dock;
 }
 
 QStatusBar *MainWindow::buildStatusBar()
@@ -307,16 +361,43 @@ void MainWindow::handleDecompileFailed(const QString &apk)
 void MainWindow::handleDecompileFinished(const QString &apk, const QString &folder)
 {
     Q_UNUSED(apk)
-    Q_UNUSED(folder)
     m_ProgressDialog->close();
     m_ProgressDialog->deleteLater();
     m_StatusMessage->setText(tr("Decompilation finished."));
+    QFileInfo info(folder);
+    QTreeWidgetItem *item = new QTreeWidgetItem(m_ProjectsTree);
+    item->setData(0, Qt::UserRole + 1, Project);
+    item->setData(0, Qt::UserRole + 2, folder);
+    item->setIcon(0, m_FileIconProvider.icon(info));
+    item->setText(0, info.fileName());
+    reloadChildren(item);
+    m_ProjectsTree->addTopLevelItem(item);
+    m_ProjectsTree->expandItem(item);
+    m_ActionBuild1->setEnabled(true);
+    m_ActionBuild2->setEnabled(true);
 }
 
 void MainWindow::handleDecompileProgress(const int percent, const QString &message)
 {
     m_ProgressDialog->setLabelText(message);
     m_ProgressDialog->setValue(percent);
+}
+
+void MainWindow::handleTreeDoubleClicked(const QModelIndex &index)
+{
+    const int type = index.data(Qt::UserRole + 1).toInt();
+    const QString path = index.data(Qt::UserRole + 2).toString();
+#ifdef QT_DEBUG
+    qDebug() << "User double clicked" << path;
+#endif
+    switch (type) {
+    case Project:
+        break;
+    case Folder:
+        break;
+    case File:
+        break;
+    }
 }
 
 void MainWindow::handleVersionResolved(const QString &binary, const QString &version)
@@ -334,6 +415,28 @@ void MainWindow::handleVersionResolved(const QString &binary, const QString &ver
         m_VersionJava->setText(version.isEmpty() ? tr("n/a") : version);
     } else if (binary == "uas") {
         m_VersionUberApkSigner->setText(version.isEmpty() ? tr("n/a") : version);
+    }
+}
+
+void MainWindow::reloadChildren(QTreeWidgetItem *item)
+{
+    while (item->childCount()) {
+        qDeleteAll(item->takeChildren());
+    }
+    QDir dir(item->data(0, Qt::UserRole + 2).toString());
+    if (dir.exists()) {
+        QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
+        foreach (QFileInfo info, files) {
+            QTreeWidgetItem *child = new QTreeWidgetItem(item);
+            child->setData(0, Qt::UserRole + 1, info.isDir() ? Folder : File);
+            child->setData(0, Qt::UserRole + 2, info.absoluteFilePath());
+            child->setIcon(0, m_FileIconProvider.icon(info));
+            child->setText(0, info.fileName());
+            item->addChild(child);
+            if (info.isDir()) {
+                reloadChildren(child);
+            }
+        }
     }
 }
 
