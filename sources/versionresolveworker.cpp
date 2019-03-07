@@ -38,7 +38,6 @@ void VersionResolveWorker::resolve()
     }
     if (!found) {
         emit versionResolved("java", QString());
-        return;
     }
 #ifdef QT_DEBUG
     qDebug() << "Using 'apktool' from" << ProcessUtils::apktoolJar();
@@ -63,7 +62,6 @@ void VersionResolveWorker::resolve()
     }
     if (!found) {
         emit versionResolved("apktool", QString());
-        return;
     }
 #ifdef QT_DEBUG
     qDebug() << "Using 'jadx' from" << ProcessUtils::jadxExe();
@@ -85,7 +83,6 @@ void VersionResolveWorker::resolve()
     }
     if (!found) {
         emit versionResolved("jadx", QString());
-        return;
     }
 #ifdef QT_DEBUG
     qDebug() << "Using 'adb' from" << ProcessUtils::adbExe();
@@ -111,7 +108,6 @@ void VersionResolveWorker::resolve()
     }
     if (!found) {
         emit versionResolved("adb", QString());
-        return;
     }
 #ifdef QT_DEBUG
     qDebug() << "Using 'uas' from" << ProcessUtils::uberApkSignerJar();

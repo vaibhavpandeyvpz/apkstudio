@@ -170,7 +170,7 @@ QLayout *BinarySettingsWidget::buildForm()
     m_EditAdbExe->setText(settings.value("adb_exe").toString());
     m_EditApktoolJar->setText(settings.value("apktool_jar").toString());
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
-    m_EditJavaExe->setText(ProcessUtils::javaExe());
+    m_EditJavaExe->setText(settings.value("java_exe").toString());
     m_EditUberApkSignerJar->setText(settings.value("uas_jar").toString());
     return layout;
 }

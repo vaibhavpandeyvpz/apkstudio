@@ -62,7 +62,7 @@ QWidget *MainWindow::buildCentralWidget()
     empty->setStyleSheet("QLabel { color: rgba(0, 0, 0, 25%) }");
     empty->setText(tr("<h1>%1</h1><p>%2</p>")
                 .arg("No files open.")
-                .arg("You need to decompile an APK first or open an already decompiled folder. Once done, click on any file in the tree on the left top view or edit it."));
+                .arg("You need to decompile an APK first or open an already decompiled folder. Once done, click on any file in the tree on the left to view/edit it."));
     empty->setWordWrap(true);
     m_CentralStack->addWidget(empty);
     return m_CentralStack;

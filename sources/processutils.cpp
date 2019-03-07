@@ -1,9 +1,11 @@
+#include <QDebug>
 #include <QDir>
 #include <QFile>
 #include <QProcess>
 #include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QTextCodec>
 #include "processutils.h"
 
 #define REGEXP_LF "[\\r\\n]"
@@ -11,8 +13,19 @@
 QString ProcessUtils::adbExe()
 {
     QSettings settings;
-    const QString jar = settings.value("adb_exe").toString();
-    return (!jar.isEmpty() && QFile::exists(jar)) ? jar : QString();
+    QString exe = settings.value("adb_exe").toString();
+    if (!exe.isEmpty() && QFile::exists(exe)) {
+        return exe;
+    }
+    QString name("adb");
+#ifdef Q_OS_WIN
+    name.append("adb.exe");
+#endif
+    exe = findInPath(name);
+    if (!exe.isEmpty()) {
+        return exe;
+    }
+    return QString();
 }
 
 QString ProcessUtils::apktoolJar()
@@ -22,34 +35,101 @@ QString ProcessUtils::apktoolJar()
     return (!jar.isEmpty() && QFile::exists(jar)) ? jar : QString();
 }
 
-QString ProcessUtils::javaExe()
+QString ProcessUtils::expandEnvVar(const QString &name)
 {
-    QSettings settings;
-    QString exe;
-    exe = settings.value("java_exe").toString();
-    if (!exe.isEmpty()) {
-        return exe;
-    }
-    QString jhome = QProcessEnvironment::systemEnvironment().value("JAVA_HOME");
-    if (jhome.isEmpty()) {
+    QString value = QProcessEnvironment::systemEnvironment().value(name);
+    if (value.isEmpty()) {
         return QString();
     }
-    exe = jhome.append(QDir::separator())
-            .append("bin")
-            .append(QDir::separator())
 #ifdef Q_OS_WIN
-            .append("java.exe");
+    QRegularExpression regexp("(%([^%]+)%)");
 #else
-            .append("java");
+    QRegularExpression regexp("(\$([a-zA-Z0-9_]+))");
 #endif
-    return QFile::exists(exe) ? exe : QString();
+    if (!value.contains(regexp)) {
+        return value;
+    }
+    QRegularExpressionMatchIterator matches = regexp.globalMatch(value);
+    while (matches.hasNext()) {
+        QRegularExpressionMatch match = matches.next();
+        value.replace(match.capturedStart(1), match.capturedLength(1), expandEnvVar(match.captured(2)));
+    }
+    return value;
+}
+
+QString ProcessUtils::findInPath(const QString &exe)
+{
+    const QString path = expandEnvVar("PATH");
+#ifdef QT_DEBUG
+    qDebug() << "PATH is" << path;
+#endif
+    if (path.isEmpty()) {
+        return QString();
+    }
+#ifdef Q_OS_WIN
+    const char separator = ';';
+#else
+    const char separator = ':';
+#endif
+    const QStringList locations = path.split(separator);
+    foreach (QString location, locations) {
+        QDir dir(location);
+        if (dir.exists() && dir.exists(exe)) {
+#ifdef QT_DEBUG
+            qDebug() << exe << "found in" << location;
+#endif
+            return QDir::toNativeSeparators(dir.filePath(exe));
+        }
+    }
+    return QString();
 }
 
 QString ProcessUtils::jadxExe()
 {
     QSettings settings;
-    const QString exe = settings.value("jadx_exe").toString();
-    return (!exe.isEmpty() && QFile::exists(exe)) ? exe : QString();
+    QString exe = settings.value("jadx_exe").toString();
+    if (!exe.isEmpty() && QFile::exists(exe)) {
+        return exe;
+    }
+    QString name("jadx");
+#ifdef Q_OS_WIN
+    name.append("jadx.bat");
+#endif
+    exe = findInPath(name);
+    if (!exe.isEmpty()) {
+        return exe;
+    }
+    return QString();
+}
+
+QString ProcessUtils::javaExe()
+{
+    QSettings settings;
+    QString exe;
+    exe = settings.value("java_exe").toString();
+    if (!exe.isEmpty() && QFile::exists(exe)) {
+        return exe;
+    }
+    QString name("java");
+#ifdef Q_OS_WIN
+    name.append("java.exe");
+#endif
+    exe = findInPath(name);
+    if (!exe.isEmpty()) {
+        return exe;
+    }
+    QString jhome = expandEnvVar("JAVA_HOME");
+    if (jhome.isEmpty()) {
+        return QString();
+    }
+#ifdef QT_DEBUG
+    qDebug() << "JAVA_HOME is" << jhome;
+#endif
+    exe = jhome.append(QDir::separator())
+            .append("bin")
+            .append(QDir::separator())
+            .append(name);
+    return QFile::exists(exe) ? exe : QString();
 }
 
 ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, int timeout)
