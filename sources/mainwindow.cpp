@@ -7,6 +7,7 @@
 #include <QHeaderView>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QProcess>
 #include <QSettings>
 #include <QStatusBar>
 #include <QThread>
@@ -158,6 +159,7 @@ QDockWidget *MainWindow::buildProjectsDock()
     m_ProjectsTree->setSelectionBehavior(QAbstractItemView::SelectItems);
     m_ProjectsTree->setSelectionMode(QAbstractItemView::SingleSelection);
     m_ProjectsTree->setSortingEnabled(false);
+    connect(m_ProjectsTree, &QTreeWidget::customContextMenuRequested, this, &MainWindow::handleTreeContextMenu);
     connect(m_ProjectsTree, &QTreeWidget::doubleClicked, this, &MainWindow::handleTreeDoubleClicked);
     dock->setObjectName("ProjectsDock");
     dock->setWidget(m_ProjectsTree);
@@ -274,6 +276,15 @@ void MainWindow::handleActionDocumentation()
 
 void MainWindow::handleActionFile()
 {
+    const QString path = QFileDialog::getOpenFileName(this,
+                                                      tr("Browse File"),
+                                                      QString());
+#ifdef QT_DEBUG
+    qDebug() << "User selected to open" << path;
+#endif
+    if (!path.isEmpty()) {
+        openFile(path);
+    }
 }
 
 void MainWindow::handleActionFind()
@@ -290,7 +301,7 @@ void MainWindow::handleActionFolder()
     qDebug() << "User selected to open" << path;
 #endif
     if (!path.isEmpty()) {
-        // QDir::toNativeSeparators(path)
+        openProject(QFileInfo(path).dir().absolutePath());
     }
 }
 
@@ -364,23 +375,62 @@ void MainWindow::handleDecompileFinished(const QString &apk, const QString &fold
     m_ProgressDialog->close();
     m_ProgressDialog->deleteLater();
     m_StatusMessage->setText(tr("Decompilation finished."));
-    QFileInfo info(folder);
-    QTreeWidgetItem *item = new QTreeWidgetItem(m_ProjectsTree);
-    item->setData(0, Qt::UserRole + 1, Project);
-    item->setData(0, Qt::UserRole + 2, folder);
-    item->setIcon(0, m_FileIconProvider.icon(info));
-    item->setText(0, info.fileName());
-    reloadChildren(item);
-    m_ProjectsTree->addTopLevelItem(item);
-    m_ProjectsTree->expandItem(item);
-    m_ActionBuild1->setEnabled(true);
-    m_ActionBuild2->setEnabled(true);
+    openProject(folder);
 }
 
 void MainWindow::handleDecompileProgress(const int percent, const QString &message)
 {
     m_ProgressDialog->setLabelText(message);
     m_ProgressDialog->setValue(percent);
+}
+
+void MainWindow::handleTreeContextMenu(const QPoint &point)
+{
+    auto item = m_ProjectsTree->itemAt(point);
+    const int type = item->data(0, Qt::UserRole + 1).toInt();
+    const QString path = item->data(0, Qt::UserRole + 2).toString();
+#ifdef QT_DEBUG
+    qDebug() << "Content menu requested for" << item->text(0) << "at" << point;
+#endif
+    QMenu menu(this);
+    QAction *open = menu.addAction(tr("Open"));
+    if (type != File) {
+        open->setEnabled(false);
+    } else {
+        connect(open, &QAction::triggered, [=] {
+            openFile(path);
+        });
+    }
+#ifdef Q_OS_WIN
+    QAction *openin = menu.addAction(tr("Open in Explorer"));
+    connect(openin, &QAction::triggered, [=] {
+        QStringList args;
+        if (type == File) {
+            args << QLatin1String("/select,");
+        }
+        args << QDir::toNativeSeparators(path);
+        QProcess::startDetached("explorer.exe", args);
+    });
+#elif defined(Q_OS_MACOS)
+    QAction *openin = menu.addAction(tr("Open in Finder"));
+    connect(openin, &QAction::triggered, [=] {
+        QStringList args;
+        args << "-e" << QString("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(path);
+        QProcess::execute("/usr/bin/osascript", args);
+        args.clear();
+        args << "-e" << "tell application \"Finder\" to activate";
+        QProcess::execute("/usr/bin/osascript", args);
+    });
+#else
+    QAction *openin = menu.addAction(tr("Open in Files"));
+    connect(openin, &QAction::triggered, [=] {
+        QProcess::startDetached("xdg-open", QStringList() << path);
+    });
+#endif
+    menu.addSeparator();
+    QAction *collapse = menu.addAction(tr("Collapse All"));
+    connect(collapse, &QAction::triggered, m_ProjectsTree, &QTreeWidget::collapseAll);
+    menu.exec(m_ProjectsTree->mapToGlobal(point));
 }
 
 void MainWindow::handleTreeDoubleClicked(const QModelIndex &index)
@@ -392,10 +442,10 @@ void MainWindow::handleTreeDoubleClicked(const QModelIndex &index)
 #endif
     switch (type) {
     case Project:
-        break;
     case Folder:
         break;
     case File:
+        openFile(path);
         break;
     }
 }
@@ -416,6 +466,28 @@ void MainWindow::handleVersionResolved(const QString &binary, const QString &ver
     } else if (binary == "uas") {
         m_VersionUberApkSigner->setText(version.isEmpty() ? tr("n/a") : version);
     }
+}
+
+void MainWindow::openFile(const QString &path)
+{
+#ifdef QT_DEBUG
+    qDebug() << "Opening" << path;
+#endif
+}
+
+void MainWindow::openProject(const QString &folder)
+{
+    QFileInfo info(folder);
+    QTreeWidgetItem *item = new QTreeWidgetItem(m_ProjectsTree);
+    item->setData(0, Qt::UserRole + 1, Project);
+    item->setData(0, Qt::UserRole + 2, folder);
+    item->setIcon(0, m_FileIconProvider.icon(info));
+    item->setText(0, info.fileName());
+    reloadChildren(item);
+    m_ProjectsTree->addTopLevelItem(item);
+    m_ProjectsTree->expandItem(item);
+    m_ActionBuild1->setEnabled(true);
+    m_ActionBuild2->setEnabled(true);
 }
 
 void MainWindow::reloadChildren(QTreeWidgetItem *item)
