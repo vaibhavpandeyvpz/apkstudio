@@ -14,13 +14,13 @@ public:
     QString jadxExe() const;
     QString javaExe() const;
     QString uberApkSignerJar() const;
-    QLayout *buildForm();
 private:
     QLineEdit *m_EditAdbExe;
     QLineEdit *m_EditApktoolJar;
     QLineEdit *m_EditJadxExe;
     QLineEdit *m_EditJavaExe;
     QLineEdit *m_EditUberApkSignerJar;
+    QLayout *buildForm();
 private slots:
     void handleBrowseAdb();
     void handleBrowseApktool();

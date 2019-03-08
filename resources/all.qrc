@@ -12,5 +12,6 @@
         <file>icons8/icons8-hammer-48.png</file>
         <file>icons8/icons8-software-installer-48.png</file>
         <file>fugue/android.png</file>
+        <file>fugue/edit-signiture.png</file>
     </qresource>
 </RCC>

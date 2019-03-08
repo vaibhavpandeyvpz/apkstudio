@@ -15,7 +15,10 @@ HEADERS += \
     sources/versionresolveworker.h \
     sources/apkdecompiledialog.h \
     sources/apkrecompileworker.h \
-    sources/adbinstallworker.h
+    sources/adbinstallworker.h \
+    sources/signingconfigwidget.h \
+    sources/signingconfigdialog.h \
+    sources/apksignworker.h
 
 SOURCES += \
     sources/main.cpp \
@@ -28,7 +31,10 @@ SOURCES += \
     sources/versionresolveworker.cpp \
     sources/apkdecompiledialog.cpp \
     sources/apkrecompileworker.cpp \
-    sources/adbinstallworker.cpp
+    sources/adbinstallworker.cpp \
+    sources/signingconfigwidget.cpp \
+    sources/signingconfigdialog.cpp \
+    sources/apksignworker.cpp
 
 RESOURCES += \
     resources/all.qrc

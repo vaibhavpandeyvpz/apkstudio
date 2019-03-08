@@ -31,7 +31,8 @@ QWidget *ApkDecompileDialog::buildButtonBox()
     m_ButtonBox = new QDialogButtonBox(this);
     m_ButtonBox->addButton(tr("Decompile"), QDialogButtonBox::AcceptRole);
     m_ButtonBox->addButton(QDialogButtonBox::Cancel);
-    connect(m_ButtonBox, &QDialogButtonBox::clicked, this, &ApkDecompileDialog::handleButtonClick);
+    connect(m_ButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(m_ButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
     return m_ButtonBox;
 }
 
@@ -69,15 +70,6 @@ void ApkDecompileDialog::handleBrowseFolder()
                                                            QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
     if (!path.isEmpty()) {
         m_EditFolder->setText(QDir::toNativeSeparators(path));
-    }
-}
-
-void ApkDecompileDialog::handleButtonClick(QAbstractButton *button)
-{
-    if (m_ButtonBox->buttonRole(button) == QDialogButtonBox::AcceptRole) {
-        accept();
-    } else {
-        reject();
     }
 }
 

@@ -79,7 +79,7 @@ private slots:
     void handleActionSaveAll();
     void handleActionSayThanks();
     void handleActionSettings();
-    void handleActionSignExport();
+    void handleActionSign();
     void handleActionUndo();
     void handleDecompileFailed(const QString &apk);
     void handleDecompileFinished(const QString &apk, const QString &folder);
@@ -88,6 +88,8 @@ private slots:
     void handleInstallFinished(const QString &apk);
     void handleRecompileFailed(const QString &folder);
     void handleRecompileFinished(const QString &folder);
+    void handleSignFailed(const QString &apk);
+    void handleSignFinished(const QString &apk);
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);

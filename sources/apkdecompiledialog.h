@@ -23,7 +23,6 @@ private:
     QLayout *buildForm(const QString &apk);
 private slots:
     void handleBrowseFolder();
-    void handleButtonClick(QAbstractButton *button);
 };
 
 #endif // APKDECOMPILEDIALOG_H

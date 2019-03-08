@@ -18,7 +18,9 @@
 #include "apkdecompiledialog.h"
 #include "apkdecompileworker.h"
 #include "apkrecompileworker.h"
+#include "apksignworker.h"
 #include "binarysettingsdialog.h"
+#include "signingconfigdialog.h"
 #include "versionresolveworker.h"
 #include "mainwindow.h"
 
@@ -135,7 +137,7 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild1->setEnabled(false);
     project->addSeparator();
-    m_ActionSign = project->addAction(tr("Sign/Export"), this, &MainWindow::handleActionSignExport);
+    m_ActionSign = project->addAction(tr("Sign / Export"), this, &MainWindow::handleActionSign);
     m_ActionSign->setEnabled(false);
     m_ActionInstall1 = project->addAction(tr("Install"), this, &MainWindow::handleActionInstall);
     m_ActionInstall1->setEnabled(false);
@@ -339,6 +341,9 @@ void MainWindow::handleActionInstall()
 {
     auto selected = m_ProjectsTree->selectedItems().first();
     const QString path = selected->data(0, Qt::UserRole + 2).toString();
+#ifdef QT_DEBUG
+    qDebug() << "User wishes to install" << path;
+#endif
     auto thread = new QThread();
     auto worker = new AdbInstallWorker(path);
     worker->moveToThread(thread);
@@ -397,8 +402,33 @@ void MainWindow::handleActionSettings()
     (new BinarySettingsDialog("java", this))->exec();
 }
 
-void MainWindow::handleActionSignExport()
+void MainWindow::handleActionSign()
 {
+    auto selected = m_ProjectsTree->selectedItems().first();
+    const QString path = selected->data(0, Qt::UserRole + 2).toString();
+#ifdef QT_DEBUG
+    qDebug() << "User wishes to sign" << path;
+#endif
+    auto dialog = new SigningConfigDialog(this);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto thread = new QThread();
+        auto worker = new ApkSignWorker(path, dialog->keystore(), dialog->keystorePassword(), dialog->alias(), dialog->aliasPassword(), dialog->zipalign());
+        worker->moveToThread(thread);
+        connect(thread, &QThread::started, worker, &ApkSignWorker::sign);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+        connect(worker, &ApkSignWorker::signFailed, this, &MainWindow::handleSignFailed);
+        connect(worker, &ApkSignWorker::signFinished, this, &MainWindow::handleSignFinished);
+        thread->start();
+        m_ProgressDialog = new QProgressDialog(this);
+        m_ProgressDialog->setCancelButton(nullptr);
+        m_ProgressDialog->setLabelText(tr("Running uber-apk-signer..."));
+        m_ProgressDialog->setRange(0, 100);
+        m_ProgressDialog->setValue(50);
+        m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+        m_ProgressDialog->setWindowTitle(tr("Signing..."));
+        m_ProgressDialog->exec();
+    }
+    dialog->deleteLater();
 }
 
 void MainWindow::handleActionUndo()
@@ -496,6 +526,24 @@ void MainWindow::handleRecompileFinished(const QString &folder)
     }
 }
 
+void MainWindow::handleSignFailed(const QString &apk)
+{
+    Q_UNUSED(apk)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Signing failed."));
+}
+
+void MainWindow::handleSignFinished(const QString &apk)
+{
+    Q_UNUSED(apk)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Signing finished."));
+    auto selected = m_ProjectsTree->selectedItems().first();
+    reloadChildren(selected->parent());
+}
+
 void MainWindow::handleTreeContextMenu(const QPoint &point)
 {
     auto item = m_ProjectsTree->itemAt(point);
@@ -506,12 +554,12 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
 #endif
     QMenu menu(this);
     auto open = menu.addAction(tr("Open"));
-    if (type != File) {
-        open->setEnabled(false);
-    } else {
+    if (type == File) {
         connect(open, &QAction::triggered, [=] {
             openFile(path);
         });
+    } else {
+        open->setEnabled(false);
     }
 #ifdef Q_OS_WIN
     auto openin = menu.addAction(tr("Open in Explorer"));
@@ -544,11 +592,23 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
     connect(build, &QAction::triggered, this, &MainWindow::handleActionBuild);
     menu.addSeparator();
     auto install = menu.addAction(tr("Install"));
-    connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
-    if (!path.endsWith(".apk")) {
+    auto sign = menu.addAction(tr("Sign / Export"));
+    if (path.endsWith(".apk")) {
+        connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
+        connect(sign, &QAction::triggered, this, &MainWindow::handleActionSign);
+    } else {
         install->setEnabled(false);
+        sign->setEnabled(false);
     }
     menu.addSeparator();
+    auto refresh = menu.addAction(tr("Refresh"));
+    if (type != File) {
+        connect(refresh, &QAction::triggered, [=] {
+            reloadChildren(item);
+        });
+    } else {
+        refresh->setEnabled(false);
+    }
     auto collapse = menu.addAction(tr("Collapse All"));
     connect(collapse, &QAction::triggered, m_ProjectsTree, &QTreeWidget::collapseAll);
     menu.exec(m_ProjectsTree->mapToGlobal(point));
@@ -574,15 +634,16 @@ void MainWindow::handleTreeDoubleClicked(const QModelIndex &index)
 void MainWindow::handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(deselected)
-    bool install = false;
+    bool apk = false;
     if (!selected.isEmpty()) {
         auto index = selected.indexes().first();
         const int type = index.data(Qt::UserRole + 1).toInt();
         const QString path = index.data(Qt::UserRole + 2).toString();
-        install = (type == File) && path.endsWith(".apk");
+        apk = (type == File) && path.endsWith(".apk");
     }
-    m_ActionInstall1->setEnabled(install);
-    m_ActionInstall2->setEnabled(install);
+    m_ActionInstall1->setEnabled(apk);
+    m_ActionInstall2->setEnabled(apk);
+    m_ActionSign->setEnabled(apk);
 }
 
 void MainWindow::handleVersionResolved(const QString &binary, const QString &version)
@@ -639,6 +700,10 @@ void MainWindow::reloadChildren(QTreeWidgetItem *item)
             child->setData(0, Qt::UserRole + 2, info.absoluteFilePath());
             child->setIcon(0, m_FileIconProvider.icon(info));
             child->setText(0, info.fileName());
+            const QString tooltip = QString("%1 - %2")
+                    .arg(QDir::toNativeSeparators(info.filePath()))
+                    .arg(QLocale::system().formattedDataSize(info.size(), 2, QLocale::DataSizeTraditionalFormat));
+            child->setToolTip(0, tooltip);
             item->addChild(child);
             if (info.isDir()) {
                 reloadChildren(child);
