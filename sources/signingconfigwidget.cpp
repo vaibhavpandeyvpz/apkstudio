@@ -15,7 +15,7 @@ SigningConfigWidget::SigningConfigWidget(QWidget *parent)
 
 QString SigningConfigWidget::alias() const
 {
-    return m_EditAliasPassword->text();
+    return m_EditAlias->text();
 }
 
 QString SigningConfigWidget::aliasPassword() const

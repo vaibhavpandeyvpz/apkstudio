@@ -573,7 +573,7 @@ void MainWindow::handleRecompileFinished(const QString &folder)
 #ifdef QT_DEBUG
                 qDebug() << "Found file" << path;
 #endif
-                if (path.startsWith(folder) && !path.contains("Signed")) {
+                if (path.startsWith(folder)) {
                     focus = child;
                     break;
                 }
@@ -610,6 +610,9 @@ void MainWindow::handleSignFinished(const QString &apk)
     m_StatusMessage->setText(tr("Signing finished."));
     auto selected = m_ProjectsTree->selectedItems().first();
     reloadChildren(selected->parent());
+    m_ProjectsTree->scrollToItem(selected);
+    m_ProjectsTree->selectionModel()->clearSelection();
+    selected->setSelected(true);
 }
 
 void MainWindow::handleTreeContextMenu(const QPoint &point)
