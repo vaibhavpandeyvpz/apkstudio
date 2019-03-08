@@ -7,7 +7,9 @@
 #include <QMap>
 #include <QProgressDialog>
 #include <QStackedWidget>
+#include <QTextEdit>
 #include <QTreeWidget>
+#include "processutils.h"
 
 class MainWindow : public QMainWindow
 {
@@ -41,6 +43,7 @@ private:
     QAction *m_ActionSign;
     QAction *m_ActionUndo;
     QStackedWidget *m_CentralStack;
+    QTextEdit *m_EditConsole;
     QFileIconProvider m_FileIconProvider;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
@@ -51,6 +54,7 @@ private:
     QLabel *m_VersionJava;
     QLabel *m_VersionUberApkSigner;
     QWidget *buildCentralWidget();
+    QDockWidget *buildConsoleDock();
     QToolBar *buildMainToolBar();
     QMenuBar *buildMenuBar();
     QDockWidget *buildProjectsDock();
@@ -81,6 +85,8 @@ private slots:
     void handleActionSettings();
     void handleActionSign();
     void handleActionUndo();
+    void handleCommandFinished(const ProcessResult &result);
+    void handleCommandStarting(const QString &exe, const QStringList &args);
     void handleDecompileFailed(const QString &apk);
     void handleDecompileFinished(const QString &apk, const QString &folder);
     void handleDecompileProgress(const int percent, const QString &message);

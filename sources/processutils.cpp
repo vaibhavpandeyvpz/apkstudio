@@ -10,6 +10,27 @@
 
 #define REGEXP_LF "[\\r\\n]"
 
+ProcessOutput* ProcessOutput::m_Self = nullptr;
+
+void ProcessOutput::emitCommandFinished(const ProcessResult &result)
+{
+    emit commandFinished(result);
+}
+
+void ProcessOutput::emitCommandStarting(const QString &exe, const QStringList &args)
+{
+    emit commandStarting(exe, args);
+}
+
+ProcessOutput *ProcessOutput::instance()
+{
+    qRegisterMetaType<ProcessResult>("ProcessResult");
+    if (!m_Self) {
+        m_Self = new ProcessOutput();
+    }
+    return m_Self;
+}
+
 QString ProcessUtils::adbExe()
 {
     QSettings settings;
@@ -132,8 +153,9 @@ QString ProcessUtils::javaExe()
     return QFile::exists(exe) ? exe : QString();
 }
 
-ProcessUtils::ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, const int timeout)
+ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, const int timeout)
 {
+    ProcessOutput::instance()->emitCommandStarting(exe, args);
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
     process.start(exe, args, QIODevice::ReadOnly);
@@ -151,6 +173,7 @@ ProcessUtils::ProcessResult ProcessUtils::runCommand(const QString &exe, const Q
     } else {
         result.code = -1;
     }
+    ProcessOutput::instance()->emitCommandFinished(result);
     return result;
 }
 

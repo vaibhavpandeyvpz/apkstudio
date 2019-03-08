@@ -19,7 +19,7 @@ void AdbInstallWorker::install()
     }
     QStringList args;
     args << "install" << m_Apk;
-    ProcessUtils::ProcessResult result = ProcessUtils::runCommand(adb, args);
+    ProcessResult result = ProcessUtils::runCommand(adb, args);
 #ifdef QT_DEBUG
     qDebug() << "ADB returned code" << result.code;
 #endif

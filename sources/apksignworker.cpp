@@ -30,7 +30,7 @@ void ApkSignWorker::sign()
     if (!m_Zipalign) {
         args << "--skipZipAlign";
     }
-    ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, args);
+    ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
     qDebug() << "Uber APK Signer returned code" << result.code;
 #endif

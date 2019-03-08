@@ -24,6 +24,11 @@
 #include "versionresolveworker.h"
 #include "mainwindow.h"
 
+#define COLOR_CODE 0x2ad2c9
+#define COLOR_COMMAND 0xd0d2d3
+#define COLOR_OUTPUT 0xffffff
+#define COLOR_ERROR 0xfb0a2a
+
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio/"
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
@@ -36,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
+    addDockWidget(Qt::BottomDockWidgetArea, buildConsoleDock());
     addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
     setCentralWidget(buildCentralWidget());
     setMenuBar(buildMenuBar());
@@ -70,6 +76,33 @@ QWidget *MainWindow::buildCentralWidget()
     empty->setWordWrap(true);
     m_CentralStack->addWidget(empty);
     return m_CentralStack;
+}
+
+QDockWidget *MainWindow::buildConsoleDock()
+{
+    auto dock = new QDockWidget(tr("Console"), this);
+    QFont font;
+    font.setFamily("Courier New");
+    font.setFixedPitch(true);
+    font.setPointSize(9);
+    font.setStyleHint(QFont::Monospace);
+    QFontMetrics metrics(font);
+    QPalette palette;
+    palette.setColor(QPalette::Active, QPalette::Base, QColor("#000000"));
+    palette.setColor(QPalette::Inactive, QPalette::Base, QColor("#111111"));
+    m_EditConsole = new QTextEdit(this);
+    m_EditConsole->setFont(font);
+    m_EditConsole->setFrameStyle(QFrame::NoFrame);
+    m_EditConsole->setPalette(palette);
+    m_EditConsole->setReadOnly(true);
+    m_EditConsole->setTabStopWidth(4 * metrics.width('8'));
+    m_EditConsole->setWordWrapMode(QTextOption::NoWrap);
+    connect(ProcessOutput::instance(), &ProcessOutput::commandFinished, this, &MainWindow::handleCommandFinished);
+    connect(ProcessOutput::instance(), &ProcessOutput::commandStarting, this, &MainWindow::handleCommandStarting);
+    setContentsMargins(2, 2, 2, 2);
+    dock->setObjectName("ConsoleDock");
+    dock->setWidget(m_EditConsole);
+    return dock;
 }
 
 QToolBar *MainWindow::buildMainToolBar()
@@ -435,6 +468,41 @@ void MainWindow::handleActionUndo()
 {
 }
 
+void MainWindow::handleCommandFinished(const ProcessResult &result)
+{
+    if (!result.error.isEmpty()) {
+        m_EditConsole->setTextColor(QColor(COLOR_ERROR));
+        foreach (const QString &line, result.error) {
+            m_EditConsole->append(line);
+        }
+    }
+    if (!result.output.isEmpty()) {
+        m_EditConsole->setTextColor(QColor(COLOR_OUTPUT));
+        foreach (const QString &line, result.output) {
+            m_EditConsole->append(line);
+        }
+    }
+    m_EditConsole->setTextColor(QColor(COLOR_CODE));
+    m_EditConsole->append(QString("Process exited with code %1.").arg(result.code));
+    m_EditConsole->append(QString());
+}
+
+void MainWindow::handleCommandStarting(const QString &exe, const QStringList &args)
+{
+    QString line = "$ " + exe;
+    foreach (const QString &arg, args)
+    {
+        QString argument(arg);
+        if (arg.contains(' ')) {
+            argument.prepend('"');
+            argument.append('"');
+        }
+        line.append(' ' + arg);
+    }
+    m_EditConsole->setTextColor(QColor(COLOR_COMMAND));
+    m_EditConsole->append(line.trimmed());
+}
+
 void MainWindow::handleDecompileFailed(const QString &apk)
 {
     Q_UNUSED(apk)
@@ -505,7 +573,7 @@ void MainWindow::handleRecompileFinished(const QString &folder)
 #ifdef QT_DEBUG
                 qDebug() << "Found file" << path;
 #endif
-                if (path.startsWith(folder)) {
+                if (path.startsWith(folder) && !path.contains("Signed")) {
                     focus = child;
                     break;
                 }

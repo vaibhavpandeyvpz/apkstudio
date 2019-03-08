@@ -21,7 +21,7 @@ void ApkRecompileWorker::recompile()
     QStringList args;
     args << "-jar" << apktool;
     args << "b" << m_Folder;
-    ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, args);
+    ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
     qDebug() << "Apktool returned code" << result.code;
 #endif
