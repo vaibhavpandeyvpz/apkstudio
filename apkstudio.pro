@@ -13,7 +13,9 @@ HEADERS += \
     sources/binarysettingsdialog.h \
     sources/apkdecompileworker.h \
     sources/versionresolveworker.h \
-    sources/apkdecompiledialog.h
+    sources/apkdecompiledialog.h \
+    sources/apkrecompileworker.h \
+    sources/adbinstallworker.h
 
 SOURCES += \
     sources/main.cpp \
@@ -24,7 +26,9 @@ SOURCES += \
     sources/binarysettingsdialog.cpp \
     sources/apkdecompileworker.cpp \
     sources/versionresolveworker.cpp \
-    sources/apkdecompiledialog.cpp
+    sources/apkdecompiledialog.cpp \
+    sources/apkrecompileworker.cpp \
+    sources/adbinstallworker.cpp
 
 RESOURCES += \
     resources/all.qrc

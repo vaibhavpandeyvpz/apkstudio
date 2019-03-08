@@ -84,8 +84,13 @@ private slots:
     void handleDecompileFailed(const QString &apk);
     void handleDecompileFinished(const QString &apk, const QString &folder);
     void handleDecompileProgress(const int percent, const QString &message);
+    void handleInstallFailed(const QString &apk);
+    void handleInstallFinished(const QString &apk);
+    void handleRecompileFailed(const QString &folder);
+    void handleRecompileFinished(const QString &folder);
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
+    void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void handleVersionResolved(const QString &binary, const QString &version);
     void openFile(const QString &file);
     void openProject(const QString &folder);

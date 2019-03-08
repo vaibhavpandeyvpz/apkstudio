@@ -132,7 +132,7 @@ QString ProcessUtils::javaExe()
     return QFile::exists(exe) ? exe : QString();
 }
 
-ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, int timeout)
+ProcessUtils::ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, const int timeout)
 {
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);

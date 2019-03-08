@@ -14,8 +14,10 @@
 #include <QToolBar>
 #include <QTreeWidgetItem>
 #include <QUrl>
+#include "adbinstallworker.h"
 #include "apkdecompiledialog.h"
 #include "apkdecompileworker.h"
+#include "apkrecompileworker.h"
 #include "binarysettingsdialog.h"
 #include "versionresolveworker.h"
 #include "mainwindow.h"
@@ -161,6 +163,7 @@ QDockWidget *MainWindow::buildProjectsDock()
     m_ProjectsTree->setSortingEnabled(false);
     connect(m_ProjectsTree, &QTreeWidget::customContextMenuRequested, this, &MainWindow::handleTreeContextMenu);
     connect(m_ProjectsTree, &QTreeWidget::doubleClicked, this, &MainWindow::handleTreeDoubleClicked);
+    connect(m_ProjectsTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::handleTreeSelectionChanged);
     dock->setObjectName("ProjectsDock");
     dock->setWidget(m_ProjectsTree);
     return dock;
@@ -225,13 +228,13 @@ void MainWindow::handleActionApk()
         auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(path), this);
         if (dialog->exec() == QDialog::Accepted) {
             auto thread = new QThread();
-            auto decompile = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->sources());
-            decompile->moveToThread(thread);
-            connect(thread, &QThread::started, decompile, &ApkDecompileWorker::decompile);
+            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->sources());
+            worker->moveToThread(thread);
+            connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
             connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-            connect(decompile, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
-            connect(decompile, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
-            connect(decompile, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+            connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
+            connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
+            connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
             thread->start();
             m_ProgressDialog = new QProgressDialog(this);
             m_ProgressDialog->setCancelButton(nullptr);
@@ -246,6 +249,29 @@ void MainWindow::handleActionApk()
 
 void MainWindow::handleActionBuild()
 {
+    auto active = m_ProjectsTree->currentItem();
+    if (!active) {
+        active = m_ProjectsTree->topLevelItem(0);
+    }
+    while (active->data(0, Qt::UserRole + 1).toInt() != Project) {
+        active = active->parent();
+    }
+    auto thread = new QThread();
+    auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString());
+    worker->moveToThread(thread);
+    connect(thread, &QThread::started, worker, &ApkRecompileWorker::recompile);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(worker, &ApkRecompileWorker::recompileFailed, this, &MainWindow::handleRecompileFailed);
+    connect(worker, &ApkRecompileWorker::recompileFinished, this, &MainWindow::handleRecompileFinished);
+    thread->start();
+    m_ProgressDialog = new QProgressDialog(this);
+    m_ProgressDialog->setCancelButton(nullptr);
+    m_ProgressDialog->setLabelText(tr("Running apktool..."));
+    m_ProgressDialog->setRange(0, 100);
+    m_ProgressDialog->setValue(50);
+    m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+    m_ProgressDialog->setWindowTitle(tr("Recompiling..."));
+    m_ProgressDialog->exec();
 }
 
 void MainWindow::handleActionClose()
@@ -311,6 +337,24 @@ void MainWindow::handleActionGoto()
 
 void MainWindow::handleActionInstall()
 {
+    auto selected = m_ProjectsTree->selectedItems().first();
+    const QString path = selected->data(0, Qt::UserRole + 2).toString();
+    auto thread = new QThread();
+    auto worker = new AdbInstallWorker(path);
+    worker->moveToThread(thread);
+    connect(thread, &QThread::started, worker, &AdbInstallWorker::install);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(worker, &AdbInstallWorker::installFailed, this, &MainWindow::handleInstallFailed);
+    connect(worker, &AdbInstallWorker::installFinished, this, &MainWindow::handleInstallFinished);
+    thread->start();
+    m_ProgressDialog = new QProgressDialog(this);
+    m_ProgressDialog->setCancelButton(nullptr);
+    m_ProgressDialog->setLabelText(tr("Running adb install..."));
+    m_ProgressDialog->setRange(0, 100);
+    m_ProgressDialog->setValue(50);
+    m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+    m_ProgressDialog->setWindowTitle(tr("Installing..."));
+    m_ProgressDialog->exec();
 }
 
 void MainWindow::handleActionPaste()
@@ -384,16 +428,84 @@ void MainWindow::handleDecompileProgress(const int percent, const QString &messa
     m_ProgressDialog->setValue(percent);
 }
 
+void MainWindow::handleInstallFailed(const QString &apk)
+{
+    Q_UNUSED(apk)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Installation failed."));
+}
+
+void MainWindow::handleInstallFinished(const QString &apk)
+{
+    Q_UNUSED(apk)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Installation finished."));
+}
+
+void MainWindow::handleRecompileFailed(const QString &folder)
+{
+    Q_UNUSED(folder)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Recompilation failed."));
+}
+
+void MainWindow::handleRecompileFinished(const QString &folder)
+{
+    Q_UNUSED(folder)
+    m_ProgressDialog->close();
+    m_ProgressDialog->deleteLater();
+    m_StatusMessage->setText(tr("Recompilation finished."));
+    QTreeWidgetItem *focus = nullptr;
+    for (int i = 0; i < m_ProjectsTree->topLevelItemCount(); i++) {
+        auto parent = m_ProjectsTree->topLevelItem(i);
+        if (folder != parent->data(0, Qt::UserRole + 2).toString()) {
+            continue;
+        }
+#ifdef QT_DEBUG
+        qDebug() << "Found project" << folder;
+#endif
+        reloadChildren(parent);
+        auto dist = m_ProjectsTree->findItems(".apk", Qt::MatchEndsWith | Qt::MatchRecursive, 0);
+        foreach (auto child, dist) {
+            if (child->data(0, Qt::UserRole + 1).toInt() == File) {
+                const QString path = child->data(0, Qt::UserRole + 2).toString();
+#ifdef QT_DEBUG
+                qDebug() << "Found file" << path;
+#endif
+                if (path.startsWith(folder)) {
+                    focus = child;
+                    break;
+                }
+            }
+        }
+    }
+    if (focus) {
+        auto parent = focus->parent();
+        while (parent) {
+            if (!m_ProjectsTree->isItemExpanded(parent)) {
+                m_ProjectsTree->expandItem(parent);
+            }
+            parent = parent->parent();
+        }
+        m_ProjectsTree->scrollToItem(focus);
+        m_ProjectsTree->selectionModel()->clearSelection();
+        focus->setSelected(true);
+    }
+}
+
 void MainWindow::handleTreeContextMenu(const QPoint &point)
 {
     auto item = m_ProjectsTree->itemAt(point);
     const int type = item->data(0, Qt::UserRole + 1).toInt();
     const QString path = item->data(0, Qt::UserRole + 2).toString();
 #ifdef QT_DEBUG
-    qDebug() << "Content menu requested for" << item->text(0) << "at" << point;
+    qDebug() << "Context menu requested for" << item->text(0) << "at" << point;
 #endif
     QMenu menu(this);
-    QAction *open = menu.addAction(tr("Open"));
+    auto open = menu.addAction(tr("Open"));
     if (type != File) {
         open->setEnabled(false);
     } else {
@@ -402,7 +514,7 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
         });
     }
 #ifdef Q_OS_WIN
-    QAction *openin = menu.addAction(tr("Open in Explorer"));
+    auto openin = menu.addAction(tr("Open in Explorer"));
     connect(openin, &QAction::triggered, [=] {
         QStringList args;
         if (type == File) {
@@ -412,7 +524,7 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
         QProcess::startDetached("explorer.exe", args);
     });
 #elif defined(Q_OS_MACOS)
-    QAction *openin = menu.addAction(tr("Open in Finder"));
+    auto openin = menu.addAction(tr("Open in Finder"));
     connect(openin, &QAction::triggered, [=] {
         QStringList args;
         args << "-e" << QString("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(path);
@@ -422,13 +534,22 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
         QProcess::execute("/usr/bin/osascript", args);
     });
 #else
-    QAction *openin = menu.addAction(tr("Open in Files"));
+    auto openin = menu.addAction(tr("Open in Files"));
     connect(openin, &QAction::triggered, [=] {
         QProcess::startDetached("xdg-open", QStringList() << path);
     });
 #endif
     menu.addSeparator();
-    QAction *collapse = menu.addAction(tr("Collapse All"));
+    auto build = menu.addAction(tr("Build"));
+    connect(build, &QAction::triggered, this, &MainWindow::handleActionBuild);
+    menu.addSeparator();
+    auto install = menu.addAction(tr("Install"));
+    connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
+    if (!path.endsWith(".apk")) {
+        install->setEnabled(false);
+    }
+    menu.addSeparator();
+    auto collapse = menu.addAction(tr("Collapse All"));
     connect(collapse, &QAction::triggered, m_ProjectsTree, &QTreeWidget::collapseAll);
     menu.exec(m_ProjectsTree->mapToGlobal(point));
 }
@@ -448,6 +569,20 @@ void MainWindow::handleTreeDoubleClicked(const QModelIndex &index)
         openFile(path);
         break;
     }
+}
+
+void MainWindow::handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+    bool install = false;
+    if (!selected.isEmpty()) {
+        auto index = selected.indexes().first();
+        const int type = index.data(Qt::UserRole + 1).toInt();
+        const QString path = index.data(Qt::UserRole + 2).toString();
+        install = (type == File) && path.endsWith(".apk");
+    }
+    m_ActionInstall1->setEnabled(install);
+    m_ActionInstall2->setEnabled(install);
 }
 
 void MainWindow::handleVersionResolved(const QString &binary, const QString &version)

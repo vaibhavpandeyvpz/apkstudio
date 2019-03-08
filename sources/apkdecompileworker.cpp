@@ -22,7 +22,7 @@ void ApkDecompileWorker::decompile()
     QStringList args;
     args << "-jar" << apktool;
     args << "d" << "-o" << m_Folder << m_Apk;
-    ProcessResult result = ProcessUtils::runCommand(java, args);
+    ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
     qDebug() << "Apktool returned code" << result.code;
 #endif
@@ -39,7 +39,7 @@ void ApkDecompileWorker::decompile()
         }
         args.clear();
         args << "-r" << "-d" << m_Folder << m_Apk;
-        result = ProcessUtils::runCommand(jadx, args);
+        result = ProcessUtils::runCommand(jadx, args, PROCESS_TIMEOUT_SECS);
 #ifdef QT_DEBUG
         qDebug() << "Jadx returned code" << result.code;
 #endif

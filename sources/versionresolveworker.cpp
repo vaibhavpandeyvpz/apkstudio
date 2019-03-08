@@ -20,7 +20,7 @@ void VersionResolveWorker::resolve()
     bool found = false;
     const QString java = ProcessUtils::javaExe();
     if (!java.isEmpty()) {
-        ProcessResult result = ProcessUtils::runCommand(java, QStringList() << "-version");
+        ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, QStringList() << "-version");
 #ifdef QT_DEBUG
         qDebug() << "Java returned code" << result.code;
 #endif
@@ -48,7 +48,7 @@ void VersionResolveWorker::resolve()
         QStringList args;
         args << "-jar" << apktool;
         args << "--version";
-        ProcessResult result = ProcessUtils::runCommand(java, args);
+        ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
         qDebug() << "Apktool returned code" << result.code;
 #endif
@@ -69,7 +69,7 @@ void VersionResolveWorker::resolve()
     found = false;
     const QString jadx = ProcessUtils::jadxExe();
     if (!jadx.isEmpty()) {
-        ProcessResult result = ProcessUtils::runCommand(jadx, QStringList() << "--version");
+        ProcessUtils::ProcessResult result = ProcessUtils::runCommand(jadx, QStringList() << "--version");
 #ifdef QT_DEBUG
         qDebug() << "Jadx returned code" << result.code;
 #endif
@@ -90,7 +90,7 @@ void VersionResolveWorker::resolve()
     found = false;
     const QString adb = ProcessUtils::adbExe();
     if (!adb.isEmpty()) {
-        ProcessResult result = ProcessUtils::runCommand(adb, QStringList() << "--version");
+        ProcessUtils::ProcessResult result = ProcessUtils::runCommand(adb, QStringList() << "--version");
 #ifdef QT_DEBUG
         qDebug() << "ADB returned code" << result.code;
 #endif
@@ -118,7 +118,7 @@ void VersionResolveWorker::resolve()
         QStringList args;
         args << "-jar" << uas;
         args << "--version";
-        ProcessResult result = ProcessUtils::runCommand(java, args);
+        ProcessUtils::ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
         qDebug() << "Uber APK signer returned code" << result.code;
 #endif
