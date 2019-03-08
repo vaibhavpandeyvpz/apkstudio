@@ -6,6 +6,7 @@
 #include "processutils.h"
 #include "splashwindow.h"
 
+#define SPLASH_DURATION 1000
 #define SPLASH_WIDTH 512
 #define SPLASH_HEIGHT 320
 
@@ -15,7 +16,7 @@ SplashWindow::SplashWindow()
     setCentralWidget(buildCentralWidget());
     setMaximumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     setMinimumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-    QTimer::singleShot(3 * 1000, [=] {
+    QTimer::singleShot(SPLASH_DURATION, [=] {
         (new MainWindow())->show();
         close();
     });

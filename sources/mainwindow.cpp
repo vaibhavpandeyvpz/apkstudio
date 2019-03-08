@@ -609,7 +609,9 @@ void MainWindow::handleSignFinished(const QString &apk)
     m_ProgressDialog->deleteLater();
     m_StatusMessage->setText(tr("Signing finished."));
     auto selected = m_ProjectsTree->selectedItems().first();
-    reloadChildren(selected->parent());
+    auto parent = selected->parent();
+    reloadChildren(parent);
+    selected = parent->child(0);
     m_ProjectsTree->scrollToItem(selected);
     m_ProjectsTree->selectionModel()->clearSelection();
     selected->setSelected(true);
@@ -622,18 +624,16 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
     if (item) {
         const int type = item->data(0, Qt::UserRole + 1).toInt();
         const QString path = item->data(0, Qt::UserRole + 2).toString();
-    #ifdef QT_DEBUG
+#ifdef QT_DEBUG
         qDebug() << "Context menu requested for" << item->text(0) << "at" << point;
-    #endif
-        auto open = menu.addAction(tr("Open"));
+#endif
         if (type == File) {
+            auto open = menu.addAction(tr("Open"));
             connect(open, &QAction::triggered, [=] {
                 openFile(path);
             });
-        } else {
-            open->setEnabled(false);
         }
-    #ifdef Q_OS_WIN
+#ifdef Q_OS_WIN
         auto openin = menu.addAction(tr("Open in Explorer"));
         connect(openin, &QAction::triggered, [=] {
             QStringList args;
@@ -643,7 +643,7 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
             args << QDir::toNativeSeparators(path);
             QProcess::startDetached("explorer.exe", args);
         });
-    #elif defined(Q_OS_MACOS)
+#elif defined(Q_OS_MACOS)
         auto openin = menu.addAction(tr("Open in Finder"));
         connect(openin, &QAction::triggered, [=] {
             QStringList args;
@@ -653,33 +653,28 @@ void MainWindow::handleTreeContextMenu(const QPoint &point)
             args << "-e" << "tell application \"Finder\" to activate";
             QProcess::execute("/usr/bin/osascript", args);
         });
-    #else
+#else
         auto openin = menu.addAction(tr("Open in Files"));
         connect(openin, &QAction::triggered, [=] {
             QProcess::startDetached("xdg-open", QStringList() << path);
         });
-    #endif
+#endif
         menu.addSeparator();
         auto build = menu.addAction(tr("Build"));
         connect(build, &QAction::triggered, this, &MainWindow::handleActionBuild);
-        menu.addSeparator();
-        auto install = menu.addAction(tr("Install"));
-        auto sign = menu.addAction(tr("Sign / Export"));
         if (path.endsWith(".apk")) {
+            menu.addSeparator();
+            auto install = menu.addAction(tr("Install"));
             connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
+            auto sign = menu.addAction(tr("Sign / Export"));
             connect(sign, &QAction::triggered, this, &MainWindow::handleActionSign);
-        } else {
-            install->setEnabled(false);
-            sign->setEnabled(false);
         }
         menu.addSeparator();
-        auto refresh = menu.addAction(tr("Refresh"));
         if (type != File) {
+            auto refresh = menu.addAction(tr("Refresh"));
             connect(refresh, &QAction::triggered, [=] {
                 reloadChildren(item);
             });
-        } else {
-            refresh->setEnabled(false);
         }
     } else {
         auto apk = menu.addAction(tr("Open APK"));
