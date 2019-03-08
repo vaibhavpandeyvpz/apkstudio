@@ -20,7 +20,7 @@ void ApkSignWorker::sign()
     }
     QStringList args;
     args << "-jar" << uas;
-    args << "-a" << m_Apk;
+    args << "-a" << m_Apk << "--allowResign" << "--overwrite";
     if (!m_Keystore.isEmpty() && !m_Alias.isEmpty()) {
         args << "--ks" << m_Keystore;
         args << "--ksPass" << m_KeystorePassword;
