@@ -614,71 +614,83 @@ void MainWindow::handleSignFinished(const QString &apk)
 
 void MainWindow::handleTreeContextMenu(const QPoint &point)
 {
-    auto item = m_ProjectsTree->itemAt(point);
-    const int type = item->data(0, Qt::UserRole + 1).toInt();
-    const QString path = item->data(0, Qt::UserRole + 2).toString();
-#ifdef QT_DEBUG
-    qDebug() << "Context menu requested for" << item->text(0) << "at" << point;
-#endif
     QMenu menu(this);
-    auto open = menu.addAction(tr("Open"));
-    if (type == File) {
-        connect(open, &QAction::triggered, [=] {
-            openFile(path);
-        });
-    } else {
-        open->setEnabled(false);
-    }
-#ifdef Q_OS_WIN
-    auto openin = menu.addAction(tr("Open in Explorer"));
-    connect(openin, &QAction::triggered, [=] {
-        QStringList args;
+    auto item = m_ProjectsTree->itemAt(point);
+    if (item) {
+        const int type = item->data(0, Qt::UserRole + 1).toInt();
+        const QString path = item->data(0, Qt::UserRole + 2).toString();
+    #ifdef QT_DEBUG
+        qDebug() << "Context menu requested for" << item->text(0) << "at" << point;
+    #endif
+        auto open = menu.addAction(tr("Open"));
         if (type == File) {
-            args << QLatin1String("/select,");
+            connect(open, &QAction::triggered, [=] {
+                openFile(path);
+            });
+        } else {
+            open->setEnabled(false);
         }
-        args << QDir::toNativeSeparators(path);
-        QProcess::startDetached("explorer.exe", args);
-    });
-#elif defined(Q_OS_MACOS)
-    auto openin = menu.addAction(tr("Open in Finder"));
-    connect(openin, &QAction::triggered, [=] {
-        QStringList args;
-        args << "-e" << QString("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(path);
-        QProcess::execute("/usr/bin/osascript", args);
-        args.clear();
-        args << "-e" << "tell application \"Finder\" to activate";
-        QProcess::execute("/usr/bin/osascript", args);
-    });
-#else
-    auto openin = menu.addAction(tr("Open in Files"));
-    connect(openin, &QAction::triggered, [=] {
-        QProcess::startDetached("xdg-open", QStringList() << path);
-    });
-#endif
-    menu.addSeparator();
-    auto build = menu.addAction(tr("Build"));
-    connect(build, &QAction::triggered, this, &MainWindow::handleActionBuild);
-    menu.addSeparator();
-    auto install = menu.addAction(tr("Install"));
-    auto sign = menu.addAction(tr("Sign / Export"));
-    if (path.endsWith(".apk")) {
-        connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
-        connect(sign, &QAction::triggered, this, &MainWindow::handleActionSign);
-    } else {
-        install->setEnabled(false);
-        sign->setEnabled(false);
-    }
-    menu.addSeparator();
-    auto refresh = menu.addAction(tr("Refresh"));
-    if (type != File) {
-        connect(refresh, &QAction::triggered, [=] {
-            reloadChildren(item);
+    #ifdef Q_OS_WIN
+        auto openin = menu.addAction(tr("Open in Explorer"));
+        connect(openin, &QAction::triggered, [=] {
+            QStringList args;
+            if (type == File) {
+                args << QLatin1String("/select,");
+            }
+            args << QDir::toNativeSeparators(path);
+            QProcess::startDetached("explorer.exe", args);
         });
+    #elif defined(Q_OS_MACOS)
+        auto openin = menu.addAction(tr("Open in Finder"));
+        connect(openin, &QAction::triggered, [=] {
+            QStringList args;
+            args << "-e" << QString("tell application \"Finder\" to reveal POSIX file \"%1\"").arg(path);
+            QProcess::execute("/usr/bin/osascript", args);
+            args.clear();
+            args << "-e" << "tell application \"Finder\" to activate";
+            QProcess::execute("/usr/bin/osascript", args);
+        });
+    #else
+        auto openin = menu.addAction(tr("Open in Files"));
+        connect(openin, &QAction::triggered, [=] {
+            QProcess::startDetached("xdg-open", QStringList() << path);
+        });
+    #endif
+        menu.addSeparator();
+        auto build = menu.addAction(tr("Build"));
+        connect(build, &QAction::triggered, this, &MainWindow::handleActionBuild);
+        menu.addSeparator();
+        auto install = menu.addAction(tr("Install"));
+        auto sign = menu.addAction(tr("Sign / Export"));
+        if (path.endsWith(".apk")) {
+            connect(install, &QAction::triggered, this, &MainWindow::handleActionInstall);
+            connect(sign, &QAction::triggered, this, &MainWindow::handleActionSign);
+        } else {
+            install->setEnabled(false);
+            sign->setEnabled(false);
+        }
+        menu.addSeparator();
+        auto refresh = menu.addAction(tr("Refresh"));
+        if (type != File) {
+            connect(refresh, &QAction::triggered, [=] {
+                reloadChildren(item);
+            });
+        } else {
+            refresh->setEnabled(false);
+        }
     } else {
-        refresh->setEnabled(false);
+        auto apk = menu.addAction(tr("Open APK"));
+        connect(apk, &QAction::triggered, this, &MainWindow::handleActionApk);
+        auto folder = menu.addAction(tr("Open Folder"));
+        connect(folder, &QAction::triggered, this, &MainWindow::handleActionFolder);
+        menu.addSeparator();
     }
     auto collapse = menu.addAction(tr("Collapse All"));
-    connect(collapse, &QAction::triggered, m_ProjectsTree, &QTreeWidget::collapseAll);
+    if (m_ProjectsTree->topLevelItemCount() == 0) {
+        collapse->setEnabled(false);
+    } else {
+        connect(collapse, &QAction::triggered, m_ProjectsTree, &QTreeWidget::collapseAll);
+    }
     menu.exec(m_ProjectsTree->mapToGlobal(point));
 }
 
