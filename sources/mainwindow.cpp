@@ -24,6 +24,7 @@
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
 #include "binarysettingsdialog.h"
+#include "findreplacedialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
 #include "versionresolveworker.h"
@@ -43,7 +44,7 @@
 #define WINDOW_HEIGHT 480
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : QMainWindow(parent), m_FindReplaceDialog(nullptr)
 {
     addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
     addDockWidget(Qt::BottomDockWidgetArea, buildConsoleDock());
@@ -367,6 +368,8 @@ void MainWindow::handleActionFile()
 
 void MainWindow::handleActionFind()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    openFindReplaceDialog(edit, false);
 }
 
 void MainWindow::handleActionFolder()
@@ -439,6 +442,8 @@ void MainWindow::handleActionRedo()
 
 void MainWindow::handleActionReplace()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    openFindReplaceDialog(edit, false);
 }
 
 void MainWindow::handleActionReportIssues()
@@ -700,6 +705,9 @@ void MainWindow::handleTabChanged(const int index)
         m_ActionPaste->setEnabled(edit->canPaste());
         m_ActionRedo->setEnabled(edit->document()->isRedoAvailable());
         m_ActionUndo->setEnabled(edit->document()->isUndoAvailable());
+        if (m_FindReplaceDialog) {
+            m_FindReplaceDialog->setTextEdit(edit);
+        }
     }
     handleCursorPositionChanged();
 }
@@ -871,6 +879,19 @@ void MainWindow::openFile(const QString &path)
         m_MapOpenFiles.insert(path, i);
     }
     m_TabEditors->setCurrentIndex(i);
+}
+
+void MainWindow::openFindReplaceDialog(QPlainTextEdit *edit, const bool replace)
+{
+    if (!m_FindReplaceDialog) {
+        m_FindReplaceDialog = new FindReplaceDialog(replace, this);
+        connect(m_FindReplaceDialog, &QDialog::finished, [=] {
+            m_FindReplaceDialog->deleteLater();
+            m_FindReplaceDialog = nullptr;
+        });
+        m_FindReplaceDialog->show();
+    }
+    m_FindReplaceDialog->setTextEdit(edit);
 }
 
 void MainWindow::openProject(const QString &folder)

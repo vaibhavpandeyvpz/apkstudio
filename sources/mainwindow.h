@@ -9,6 +9,7 @@
 #include <QStackedWidget>
 #include <QTextEdit>
 #include <QTreeWidget>
+#include "findreplacedialog.h"
 #include "processutils.h"
 
 class MainWindow : public QMainWindow
@@ -45,8 +46,9 @@ private:
     QStackedWidget *m_CentralStack;
     QTextEdit *m_EditConsole;
     QList<QMetaObject::Connection> m_EditorConnections;
-    QMap<QString, int> m_MapOpenFiles;
     QFileIconProvider m_FileIconProvider;
+    FindReplaceDialog *m_FindReplaceDialog;
+    QMap<QString, int> m_MapOpenFiles;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
     QLabel *m_StatusCursor;
@@ -109,6 +111,7 @@ private slots:
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void handleVersionResolved(const QString &binary, const QString &version);
     void openFile(const QString &file);
+    void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
     void openProject(const QString &folder);
     void reloadChildren(QTreeWidgetItem *item);
 };

@@ -13,5 +13,7 @@
         <file>icons8/icons8-software-installer-48.png</file>
         <file>fugue/android.png</file>
         <file>fugue/edit-signiture.png</file>
+        <file>fugue/binocular.png</file>
+        <file>fugue/edit-replace.png</file>
     </qresource>
 </RCC>

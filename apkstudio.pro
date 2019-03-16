@@ -13,6 +13,7 @@ HEADERS += \
     sources/apksignworker.h \
     sources/binarysettingsdialog.h \
     sources/binarysettingswidget.h \
+    sources/findreplacedialog.h \
     sources/mainwindow.h \
     sources/processutils.h \
     sources/signingconfigdialog.h \
@@ -30,6 +31,7 @@ SOURCES += \
     sources/apksignworker.cpp \
     sources/binarysettingsdialog.cpp \
     sources/binarysettingswidget.cpp \
+    sources/findreplacedialog.cpp \
     sources/mainwindow.cpp \
     sources/processutils.cpp \
     sources/signingconfigdialog.cpp \
