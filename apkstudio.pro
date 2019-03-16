@@ -6,35 +6,37 @@ TEMPLATE = app
 CONFIG += c++11
 
 HEADERS += \
-    sources/mainwindow.h \
-    sources/splashwindow.h \
-    sources/processutils.h \
-    sources/binarysettingswidget.h \
-    sources/binarysettingsdialog.h \
-    sources/apkdecompileworker.h \
-    sources/versionresolveworker.h \
-    sources/apkdecompiledialog.h \
-    sources/apkrecompileworker.h \
     sources/adbinstallworker.h \
-    sources/signingconfigwidget.h \
+    sources/apkdecompiledialog.h \
+    sources/apkdecompileworker.h \
+    sources/apkrecompileworker.h \
+    sources/apksignworker.h \
+    sources/binarysettingsdialog.h \
+    sources/binarysettingswidget.h \
+    sources/mainwindow.h \
+    sources/processutils.h \
     sources/signingconfigdialog.h \
-    sources/apksignworker.h
+    sources/signingconfigwidget.h \
+    sources/sourcecodeedit.h \
+    sources/splashwindow.h \
+    sources/versionresolveworker.h
 
 SOURCES += \
     sources/main.cpp \
-    sources/mainwindow.cpp \
-    sources/splashwindow.cpp \
-    sources/processutils.cpp \
-    sources/binarysettingswidget.cpp \
-    sources/binarysettingsdialog.cpp \
-    sources/apkdecompileworker.cpp \
-    sources/versionresolveworker.cpp \
-    sources/apkdecompiledialog.cpp \
-    sources/apkrecompileworker.cpp \
     sources/adbinstallworker.cpp \
-    sources/signingconfigwidget.cpp \
+    sources/apkdecompiledialog.cpp \
+    sources/apkdecompileworker.cpp \
+    sources/apkrecompileworker.cpp \
+    sources/apksignworker.cpp \
+    sources/binarysettingsdialog.cpp \
+    sources/binarysettingswidget.cpp \
+    sources/mainwindow.cpp \
+    sources/processutils.cpp \
     sources/signingconfigdialog.cpp \
-    sources/apksignworker.cpp
+    sources/signingconfigwidget.cpp \
+    sources/sourcecodeedit.cpp \
+    sources/splashwindow.cpp \
+    sources/versionresolveworker.cpp
 
 RESOURCES += \
     resources/all.qrc

@@ -44,10 +44,13 @@ private:
     QAction *m_ActionUndo;
     QStackedWidget *m_CentralStack;
     QTextEdit *m_EditConsole;
+    QList<QMetaObject::Connection> m_EditorConnections;
+    QMap<QString, int> m_MapOpenFiles;
     QFileIconProvider m_FileIconProvider;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
     QLabel *m_StatusMessage;
+    QTabWidget *m_TabEditors;
     QLabel *m_VersionAdb;
     QLabel *m_VersionApktool;
     QLabel *m_VersionJadx;
@@ -85,6 +88,7 @@ private slots:
     void handleActionSettings();
     void handleActionSign();
     void handleActionUndo();
+    void handleClipboardDataChanged();
     void handleCommandFinished(const ProcessResult &result);
     void handleCommandStarting(const QString &exe, const QStringList &args);
     void handleDecompileFailed(const QString &apk);
@@ -96,6 +100,8 @@ private slots:
     void handleRecompileFinished(const QString &folder);
     void handleSignFailed(const QString &apk);
     void handleSignFinished(const QString &apk);
+    void handleTabChanged(const int index);
+    void handleTabCloseRequested(const int index);
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);

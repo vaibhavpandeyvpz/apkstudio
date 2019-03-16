@@ -1,3 +1,5 @@
+#include <QApplication>
+#include <QClipboard>
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
@@ -10,6 +12,8 @@
 #include <QProcess>
 #include <QSettings>
 #include <QStatusBar>
+#include <QTabWidget>
+#include <QTextDocumentFragment>
 #include <QThread>
 #include <QToolBar>
 #include <QTreeWidgetItem>
@@ -21,6 +25,7 @@
 #include "apksignworker.h"
 #include "binarysettingsdialog.h"
 #include "signingconfigdialog.h"
+#include "sourcecodeedit.h"
 #include "versionresolveworker.h"
 #include "mainwindow.h"
 
@@ -60,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(thread, &QThread::started, resolve, &VersionResolveWorker::resolve);
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     connect(resolve, &VersionResolveWorker::versionResolved, this, &MainWindow::handleVersionResolved);
+    connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     thread->start();
 }
 
@@ -75,6 +81,11 @@ QWidget *MainWindow::buildCentralWidget()
                 .arg("You need to decompile an APK first or open an already decompiled folder. Once done, click on any file in the tree on the left to view/edit it."));
     empty->setWordWrap(true);
     m_CentralStack->addWidget(empty);
+    m_CentralStack->addWidget(m_TabEditors = new QTabWidget(this));
+    connect(m_TabEditors, &QTabWidget::currentChanged, this, &MainWindow::handleTabChanged);
+    connect(m_TabEditors, &QTabWidget::tabCloseRequested, this, &MainWindow::handleTabCloseRequested);
+    m_TabEditors->setTabsClosable(true);
+    m_CentralStack->setCurrentIndex(1);
     return m_CentralStack;
 }
 
@@ -324,10 +335,18 @@ void MainWindow::handleActionContribute()
 
 void MainWindow::handleActionCopy()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        edit->copy();
+    }
 }
 
 void MainWindow::handleActionCut()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        edit->cut();
+    }
 }
 
 void MainWindow::handleActionDocumentation()
@@ -397,6 +416,10 @@ void MainWindow::handleActionInstall()
 
 void MainWindow::handleActionPaste()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit && edit->canPaste()) {
+        edit->paste();
+    }
 }
 
 void MainWindow::handleActionQuit()
@@ -406,6 +429,10 @@ void MainWindow::handleActionQuit()
 
 void MainWindow::handleActionRedo()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        edit->redo();
+    }
 }
 
 void MainWindow::handleActionReplace()
@@ -466,6 +493,19 @@ void MainWindow::handleActionSign()
 
 void MainWindow::handleActionUndo()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        edit->undo();
+    }
+}
+
+void MainWindow::handleClipboardDataChanged()
+{
+#ifdef QT_DEBUG
+    qDebug() << "Something has changed on clipboard.";
+#endif
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    m_ActionPaste->setEnabled(edit && edit->canPaste());
 }
 
 void MainWindow::handleCommandFinished(const ProcessResult &result)
@@ -617,6 +657,56 @@ void MainWindow::handleSignFinished(const QString &apk)
     selected->setSelected(true);
 }
 
+void MainWindow::handleTabChanged(const int index)
+{
+#ifdef QT_DEBUG
+    qDebug() << "User changed current tab" << index;
+#endif
+    auto widget = m_TabEditors->widget(index);
+    auto edit = static_cast<SourceCodeEdit *>(widget);
+    m_ActionCopy->setEnabled(false);
+    m_ActionCut->setEnabled(false);
+    m_ActionPaste->setEnabled(false);
+    m_ActionRedo->setEnabled(false);
+    m_ActionUndo->setEnabled(false);
+    for (auto conn: m_EditorConnections) {
+        disconnect(conn);
+    }
+    m_EditorConnections.clear();
+    if (edit) {
+        m_EditorConnections << connect(edit, &SourceCodeEdit::copyAvailable, m_ActionCopy, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &SourceCodeEdit::copyAvailable, m_ActionCut, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &SourceCodeEdit::redoAvailable, m_ActionRedo, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &SourceCodeEdit::undoAvailable, m_ActionUndo, &QAction::setEnabled);
+        bool selected = !edit->textCursor().selection().isEmpty();
+        m_ActionCut->setEnabled(selected);
+        m_ActionCopy->setEnabled(selected);
+        m_ActionPaste->setEnabled(edit->canPaste());
+        m_ActionRedo->setEnabled(edit->document()->isRedoAvailable());
+        m_ActionUndo->setEnabled(edit->document()->isUndoAvailable());
+    }
+}
+
+void MainWindow::handleTabCloseRequested(const int index)
+{
+#ifdef QT_DEBUG
+    qDebug() << "User requested to close tab" << index;
+#endif
+    const QString path = m_TabEditors->tabToolTip(index);
+    if (!path.isEmpty()) {
+        m_MapOpenFiles.remove(path);
+    }
+    m_ActionUndo->setEnabled(false);
+    m_ActionRedo->setEnabled(false);
+    m_ActionCut->setEnabled(false);
+    m_ActionCopy->setEnabled(false);
+    m_ActionPaste->setEnabled(false);
+    m_TabEditors->removeTab(index);
+    if (m_TabEditors->count() == 0) {
+        m_CentralStack->setCurrentIndex(0);
+    }
+}
+
 void MainWindow::handleTreeContextMenu(const QPoint &point)
 {
     QMenu menu(this);
@@ -747,6 +837,23 @@ void MainWindow::openFile(const QString &path)
 #ifdef QT_DEBUG
     qDebug() << "Opening" << path;
 #endif
+    int i;
+    if ((i = m_MapOpenFiles.value(path, -1)) < 0) {
+        QFileInfo info(path);
+        auto editor = new SourceCodeEdit(this);
+        i = m_TabEditors->addTab(editor, m_FileIconProvider.icon(info), info.fileName());
+        m_TabEditors->setTabToolTip(i, path);
+        QFile file(info.filePath());
+        if (file.open(QFile::ReadOnly | QFile::Text)) {
+            auto content = QString::fromUtf8(file.readAll());
+            editor->setPlainText(content);
+        }
+        if (m_CentralStack->currentIndex() != 1) {
+            m_CentralStack->setCurrentIndex(1);
+        }
+        m_MapOpenFiles.insert(path, i);
+    }
+    m_TabEditors->setCurrentIndex(i);
 }
 
 void MainWindow::openProject(const QString &folder)
