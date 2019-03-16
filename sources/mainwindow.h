@@ -49,6 +49,7 @@ private:
     QFileIconProvider m_FileIconProvider;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
+    QLabel *m_StatusCursor;
     QLabel *m_StatusMessage;
     QTabWidget *m_TabEditors;
     QLabel *m_VersionAdb;
@@ -91,6 +92,7 @@ private slots:
     void handleClipboardDataChanged();
     void handleCommandFinished(const ProcessResult &result);
     void handleCommandStarting(const QString &exe, const QStringList &args);
+    void handleCursorPositionChanged();
     void handleDecompileFailed(const QString &apk);
     void handleDecompileFinished(const QString &apk, const QString &folder);
     void handleDecompileProgress(const int percent, const QString &message);

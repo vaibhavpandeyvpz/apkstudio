@@ -7,8 +7,8 @@
 #include <QFileDialog>
 #include <QFrame>
 #include <QHeaderView>
+#include <QInputDialog>
 #include <QMenuBar>
-#include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QStatusBar>
@@ -173,7 +173,7 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionFind->setEnabled(false);
     m_ActionReplace = edit->addAction(tr("Replace"), this, &MainWindow::handleActionReplace, QKeySequence::Replace);
     m_ActionReplace->setEnabled(false);
-    m_ActionGoto = edit->addAction(tr("Goto"), this, &MainWindow::handleActionGoto);
+    m_ActionGoto = edit->addAction(tr("Go To"), this, &MainWindow::handleActionGoto);
     m_ActionGoto->setEnabled(false);
     edit->addSeparator();
     edit->addAction(tr("Settings"), this, &MainWindow::handleActionSettings, QKeySequence::Preferences);
@@ -239,6 +239,8 @@ QStatusBar *MainWindow::buildStatusBar()
     statusbar->addPermanentWidget(new QLabel(tr("Uber APK Signer").append(':'), this));
     statusbar->addPermanentWidget(m_VersionUberApkSigner = new QLabel("...", this));
     statusbar->addPermanentWidget(new QWidget(this), 1);
+    statusbar->addPermanentWidget(m_StatusCursor = new QLabel("0:0", this));
+    statusbar->addPermanentWidget(buildSeparator());
     statusbar->addPermanentWidget(m_StatusMessage = new QLabel(tr("Ready!"), this));
     statusbar->setContentsMargins(4, 4, 4, 4);
     statusbar->setStyleSheet("QStatusBar::item { border: none; }");
@@ -336,17 +338,13 @@ void MainWindow::handleActionContribute()
 void MainWindow::handleActionCopy()
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    if (edit) {
-        edit->copy();
-    }
+    edit->copy();
 }
 
 void MainWindow::handleActionCut()
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    if (edit) {
-        edit->cut();
-    }
+    edit->cut();
 }
 
 void MainWindow::handleActionDocumentation()
@@ -387,6 +385,12 @@ void MainWindow::handleActionFolder()
 
 void MainWindow::handleActionGoto()
 {
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    QTextCursor cursor = edit->textCursor();
+    const int line = QInputDialog::getInt(this, tr("Go To"), tr("Enter a line number:"), cursor.blockNumber() + 1, 1, edit->document()->lineCount());
+    if (line > 0) {
+        edit->gotoLine(line);
+    }
 }
 
 void MainWindow::handleActionInstall()
@@ -417,7 +421,7 @@ void MainWindow::handleActionInstall()
 void MainWindow::handleActionPaste()
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    if (edit && edit->canPaste()) {
+    if (edit->canPaste()) {
         edit->paste();
     }
 }
@@ -430,9 +434,7 @@ void MainWindow::handleActionQuit()
 void MainWindow::handleActionRedo()
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    if (edit) {
-        edit->redo();
-    }
+    edit->redo();
 }
 
 void MainWindow::handleActionReplace()
@@ -494,9 +496,7 @@ void MainWindow::handleActionSign()
 void MainWindow::handleActionUndo()
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    if (edit) {
-        edit->undo();
-    }
+    edit->undo();
 }
 
 void MainWindow::handleClipboardDataChanged()
@@ -541,6 +541,18 @@ void MainWindow::handleCommandStarting(const QString &exe, const QStringList &ar
     }
     m_EditConsole->setTextColor(QColor(COLOR_COMMAND));
     m_EditConsole->append(line.trimmed());
+}
+
+void MainWindow::handleCursorPositionChanged()
+{
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        QTextCursor cursor = edit->textCursor();
+        const QString position = QString("%1:%2").arg(cursor.blockNumber() + 1).arg(cursor.positionInBlock() + 1);
+        m_StatusCursor->setText(position);
+    } else {
+        m_StatusCursor->setText("0:0");
+    }
 }
 
 void MainWindow::handleDecompileFailed(const QString &apk)
@@ -669,15 +681,19 @@ void MainWindow::handleTabChanged(const int index)
     m_ActionPaste->setEnabled(false);
     m_ActionRedo->setEnabled(false);
     m_ActionUndo->setEnabled(false);
+    m_ActionFind->setEnabled(edit);
+    m_ActionReplace->setEnabled(edit);
+    m_ActionGoto->setEnabled(edit);
     for (auto conn: m_EditorConnections) {
         disconnect(conn);
     }
     m_EditorConnections.clear();
     if (edit) {
-        m_EditorConnections << connect(edit, &SourceCodeEdit::copyAvailable, m_ActionCopy, &QAction::setEnabled);
-        m_EditorConnections << connect(edit, &SourceCodeEdit::copyAvailable, m_ActionCut, &QAction::setEnabled);
-        m_EditorConnections << connect(edit, &SourceCodeEdit::redoAvailable, m_ActionRedo, &QAction::setEnabled);
-        m_EditorConnections << connect(edit, &SourceCodeEdit::undoAvailable, m_ActionUndo, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &QPlainTextEdit::copyAvailable, m_ActionCopy, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &QPlainTextEdit::copyAvailable, m_ActionCut, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &QPlainTextEdit::redoAvailable, m_ActionRedo, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &QPlainTextEdit::undoAvailable, m_ActionUndo, &QAction::setEnabled);
+        m_EditorConnections << connect(edit, &QPlainTextEdit::cursorPositionChanged, this, &MainWindow::handleCursorPositionChanged);
         bool selected = !edit->textCursor().selection().isEmpty();
         m_ActionCut->setEnabled(selected);
         m_ActionCopy->setEnabled(selected);
@@ -685,6 +701,7 @@ void MainWindow::handleTabChanged(const int index)
         m_ActionRedo->setEnabled(edit->document()->isRedoAvailable());
         m_ActionUndo->setEnabled(edit->document()->isUndoAvailable());
     }
+    handleCursorPositionChanged();
 }
 
 void MainWindow::handleTabCloseRequested(const int index)
