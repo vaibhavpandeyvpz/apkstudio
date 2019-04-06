@@ -58,6 +58,17 @@ void SigningConfigWidget::handleBrowseKeystore()
     }
 }
 
+void SigningConfigWidget::save()
+{
+    QSettings settings;
+    settings.setValue("signing_keystore", m_EditKeystore->text());
+    settings.setValue("signing_keystore_password", m_EditKeystorePassword->text());
+    settings.setValue("signing_alias", m_EditAlias->text());
+    settings.setValue("signing_alias_password", m_EditAliasPassword->text());
+    settings.setValue("signing_zipalign", m_CheckZipalign->isChecked());
+    settings.sync();
+}
+
 QString SigningConfigWidget::keystore() const
 {
     return m_EditKeystore->text();

@@ -11,11 +11,11 @@ HEADERS += \
     sources/apkdecompileworker.h \
     sources/apkrecompileworker.h \
     sources/apksignworker.h \
-    sources/binarysettingsdialog.h \
     sources/binarysettingswidget.h \
     sources/findreplacedialog.h \
     sources/mainwindow.h \
     sources/processutils.h \
+    sources/settingsdialog.h \
     sources/signingconfigdialog.h \
     sources/signingconfigwidget.h \
     sources/sourcecodeedit.h \
@@ -29,11 +29,11 @@ SOURCES += \
     sources/apkdecompileworker.cpp \
     sources/apkrecompileworker.cpp \
     sources/apksignworker.cpp \
-    sources/binarysettingsdialog.cpp \
     sources/binarysettingswidget.cpp \
     sources/findreplacedialog.cpp \
     sources/mainwindow.cpp \
     sources/processutils.cpp \
+    sources/settingsdialog.cpp \
     sources/signingconfigdialog.cpp \
     sources/signingconfigwidget.cpp \
     sources/sourcecodeedit.cpp \

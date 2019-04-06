@@ -68,7 +68,7 @@ QLayout *FindReplaceDialog::buildForm(const bool replace)
 
 void FindReplaceDialog::findInTextEdit(const bool next)
 {
-    bool found;
+    bool found = false;
     if (m_Edit) {
         m_LabelMessage->setText(QString());
         const QString term = m_EditFind->text();

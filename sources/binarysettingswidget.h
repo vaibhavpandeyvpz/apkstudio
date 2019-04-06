@@ -8,12 +8,7 @@ class BinarySettingsWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BinarySettingsWidget(const QString &focus, QWidget *parent = nullptr);
-    QString adbExe() const;
-    QString apktoolJar() const;
-    QString jadxExe() const;
-    QString javaExe() const;
-    QString uberApkSignerJar() const;
+    explicit BinarySettingsWidget(QWidget *parent = nullptr);
 private:
     QLineEdit *m_EditAdbExe;
     QLineEdit *m_EditApktoolJar;
@@ -27,6 +22,8 @@ private slots:
     void handleBrowseJadx();
     void handleBrowseJava();
     void handleBrowseUberApkSigner();
+public slots:
+    void save();
 };
 
 #endif // BINARYSETTINGSWIDGET_H

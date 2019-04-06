@@ -24,6 +24,8 @@ private:
     QLayout *buildLayout();
 private slots:
     void handleBrowseKeystore();
+public slots:
+    void save();
 };
 
 #endif // SIGNINGCONFIGWIDGET_H

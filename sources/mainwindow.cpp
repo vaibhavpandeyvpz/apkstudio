@@ -23,8 +23,8 @@
 #include "apkdecompileworker.h"
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
-#include "binarysettingsdialog.h"
 #include "findreplacedialog.h"
+#include "settingsdialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
 #include "versionresolveworker.h"
@@ -466,7 +466,7 @@ void MainWindow::handleActionSayThanks()
 
 void MainWindow::handleActionSettings()
 {
-    (new BinarySettingsDialog("java", this))->exec();
+    (new SettingsDialog(this))->exec();
 }
 
 void MainWindow::handleActionSign()
@@ -478,8 +478,15 @@ void MainWindow::handleActionSign()
 #endif
     auto dialog = new SigningConfigDialog(this);
     if (dialog->exec() == QDialog::Accepted) {
+        QSettings settings;
         auto thread = new QThread();
-        auto worker = new ApkSignWorker(path, dialog->keystore(), dialog->keystorePassword(), dialog->alias(), dialog->aliasPassword(), dialog->zipalign());
+        auto worker = new ApkSignWorker(
+                    path,
+                    settings.value("signing_keystore").toString(),
+                    settings.value("signing_keystore_password").toString(),
+                    settings.value("signing_alias").toString(),
+                    settings.value("signing_alias_password").toString(),
+                    settings.value("signing_zipalign", true).toBool());
         worker->moveToThread(thread);
         connect(thread, &QThread::started, worker, &ApkSignWorker::sign);
         connect(thread, &QThread::finished, thread, &QObject::deleteLater);
@@ -495,7 +502,6 @@ void MainWindow::handleActionSign()
         m_ProgressDialog->setWindowTitle(tr("Signing..."));
         m_ProgressDialog->exec();
     }
-    dialog->deleteLater();
 }
 
 void MainWindow::handleActionUndo()
@@ -517,13 +523,13 @@ void MainWindow::handleCommandFinished(const ProcessResult &result)
 {
     if (!result.error.isEmpty()) {
         m_EditConsole->setTextColor(QColor(COLOR_ERROR));
-        foreach (const QString &line, result.error) {
+        foreach (auto line, result.error) {
             m_EditConsole->append(line);
         }
     }
     if (!result.output.isEmpty()) {
         m_EditConsole->setTextColor(QColor(COLOR_OUTPUT));
-        foreach (const QString &line, result.output) {
+        foreach (auto line, result.output) {
             m_EditConsole->append(line);
         }
     }
@@ -535,8 +541,7 @@ void MainWindow::handleCommandFinished(const ProcessResult &result)
 void MainWindow::handleCommandStarting(const QString &exe, const QStringList &args)
 {
     QString line = "$ " + exe;
-    foreach (const QString &arg, args)
-    {
+    foreach (auto arg, args) {
         QString argument(arg);
         if (arg.contains(' ')) {
             argument.prepend('"');
@@ -917,7 +922,7 @@ void MainWindow::reloadChildren(QTreeWidgetItem *item)
     QDir dir(item->data(0, Qt::UserRole + 2).toString());
     if (dir.exists()) {
         QFileInfoList files = dir.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot, QDir::DirsFirst);
-        foreach (QFileInfo info, files) {
+        foreach (auto info, files) {
             QTreeWidgetItem *child = new QTreeWidgetItem(item);
             child->setData(0, Qt::UserRole + 1, info.isDir() ? Folder : File);
             child->setData(0, Qt::UserRole + 2, info.absoluteFilePath());
