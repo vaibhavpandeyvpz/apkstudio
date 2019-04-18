@@ -114,6 +114,8 @@ private slots:
     void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
     void openProject(const QString &folder);
     void reloadChildren(QTreeWidgetItem *item);
+private:
+    bool saveTab(int index);
 };
 
 Q_DECLARE_METATYPE(MainWindow::TreeItemType);

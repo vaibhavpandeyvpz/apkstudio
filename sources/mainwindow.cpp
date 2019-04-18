@@ -325,10 +325,18 @@ void MainWindow::handleActionBuild()
 
 void MainWindow::handleActionClose()
 {
+    int i = m_TabEditors->currentIndex();
+    if (i >= 0) {
+        handleTabCloseRequested(i);
+    }
 }
 
 void MainWindow::handleActionCloseAll()
 {
+    int i = m_TabEditors->count();
+    for (int j = --i; j >= 0; j--) {
+        handleTabCloseRequested(j);
+    }
 }
 
 void MainWindow::handleActionContribute()
@@ -453,10 +461,18 @@ void MainWindow::handleActionReportIssues()
 
 void MainWindow::handleActionSave()
 {
+    auto i = m_TabEditors->currentIndex();
+    if (i >= 0) {
+        saveTab(i);
+    }
 }
 
 void MainWindow::handleActionSaveAll()
 {
+    int i = m_TabEditors->count();
+    for (int j = 0; j < i; j++) {
+        saveTab(j);
+    }
 }
 
 void MainWindow::handleActionSayThanks()
@@ -686,6 +702,8 @@ void MainWindow::handleTabChanged(const int index)
 #endif
     auto widget = m_TabEditors->widget(index);
     auto edit = static_cast<SourceCodeEdit *>(widget);
+    m_ActionClose->setEnabled(index >= 0);
+    m_ActionCloseAll->setEnabled(index >= 0);
     m_ActionCopy->setEnabled(false);
     m_ActionCut->setEnabled(false);
     m_ActionPaste->setEnabled(false);
@@ -693,6 +711,8 @@ void MainWindow::handleTabChanged(const int index)
     m_ActionUndo->setEnabled(false);
     m_ActionFind->setEnabled(edit);
     m_ActionReplace->setEnabled(edit);
+    m_ActionSave->setEnabled(edit);
+    m_ActionSaveAll->setEnabled(edit);
     m_ActionGoto->setEnabled(edit);
     for (auto conn: m_EditorConnections) {
         disconnect(conn);
@@ -938,6 +958,26 @@ void MainWindow::reloadChildren(QTreeWidgetItem *item)
             }
         }
     }
+}
+
+bool MainWindow::saveTab(int i)
+{
+    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
+    if (edit) {
+        const QString path = m_TabEditors->tabToolTip(i);
+        QFile file(path);
+        if (file.open(QFile::WriteOnly | QFile::Text)) {
+            QTextStream out(&file);
+            out.setCodec("UTF-8");
+            out.setGenerateByteOrderMark(true);
+            out << edit->toPlainText();
+            out.flush();
+            file.close();
+        } else {
+            return false;
+        }
+    }
+    return true;
 }
 
 MainWindow::~MainWindow()
