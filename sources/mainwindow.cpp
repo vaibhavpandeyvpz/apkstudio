@@ -60,6 +60,13 @@ MainWindow::MainWindow(QWidget *parent)
     } else {
         resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
     }
+    const QString last = settings.value("last_project").toString();
+    if (!last.isEmpty()) {
+        QDir project(last);
+        if (project.exists() && QFile::exists(project.filePath("apktool.yml"))) {
+            openProject(last);
+        }
+    }
     auto thread = new QThread();
     auto resolve = new VersionResolveWorker();
     resolve->moveToThread(thread);
@@ -927,6 +934,9 @@ void MainWindow::openFindReplaceDialog(QPlainTextEdit *edit, const bool replace)
 
 void MainWindow::openProject(const QString &folder)
 {
+    QSettings settings;
+    settings.setValue("last_project", folder);
+    settings.sync();
     QFileInfo info(folder);
     QTreeWidgetItem *item = new QTreeWidgetItem(m_ProjectsTree);
     item->setData(0, Qt::UserRole + 1, Project);
