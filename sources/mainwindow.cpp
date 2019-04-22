@@ -63,13 +63,14 @@ MainWindow::MainWindow(QWidget *parent)
     connect(resolve, &VersionResolveWorker::versionResolved, this, &MainWindow::handleVersionResolved);
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     thread->start();
+    QSettings settings;
+    if (settings.value("app_maximized").toBool()) {
+        showMaximized();
+    } else {
+        resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
+    }
     QTimer::singleShot(100, [=] {
         QSettings settings;
-        if (settings.value("app_maximized").toBool()) {
-            showMaximized();
-        } else {
-            resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
-        }
         const QString project = settings.value("open_project").toString();
         if (!project.isEmpty()) {
             QDir dir(project);
