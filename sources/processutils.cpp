@@ -40,7 +40,7 @@ QString ProcessUtils::adbExe()
     }
     QString name("adb");
 #ifdef Q_OS_WIN
-    name.append("adb.exe");
+    name.append(".exe");
 #endif
     exe = findInPath(name);
     if (!exe.isEmpty()) {
@@ -65,7 +65,7 @@ QString ProcessUtils::expandEnvVar(const QString &name)
 #ifdef Q_OS_WIN
     QRegularExpression regexp("(%([^%]+)%)");
 #else
-    QRegularExpression regexp("(\$([a-zA-Z0-9_]+))");
+    QRegularExpression regexp("(\\$([a-zA-Z0-9_]+))");
 #endif
     if (!value.contains(regexp)) {
         return value;
@@ -114,7 +114,7 @@ QString ProcessUtils::jadxExe()
     }
     QString name("jadx");
 #ifdef Q_OS_WIN
-    name.append("jadx.bat");
+    name.append(".bat");
 #endif
     exe = findInPath(name);
     if (!exe.isEmpty()) {
@@ -133,7 +133,7 @@ QString ProcessUtils::javaExe()
     }
     QString name("java");
 #ifdef Q_OS_WIN
-    name.append("java.exe");
+    name.append(".exe");
 #endif
     exe = findInPath(name);
     if (!exe.isEmpty()) {
