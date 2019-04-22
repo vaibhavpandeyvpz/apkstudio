@@ -76,7 +76,7 @@ QWidget *MainWindow::buildCentralWidget()
     auto empty = new QLabel(m_CentralStack);
     empty->setAlignment(Qt::AlignCenter);
     empty->setMargin(32);
-    empty->setStyleSheet("QLabel { color: rgba(0, 0, 0, 25%) }");
+    empty->setStyleSheet("QLabel { color: rgba(0, 0, 0, 50%) }");
     empty->setText(tr("<h1>%1</h1><p>%2</p>")
                 .arg("No files open.")
                 .arg("You need to decompile an APK first or open an already decompiled folder. Once done, click on any file in the tree on the left to view/edit it."));
@@ -86,7 +86,7 @@ QWidget *MainWindow::buildCentralWidget()
     connect(m_TabEditors, &QTabWidget::currentChanged, this, &MainWindow::handleTabChanged);
     connect(m_TabEditors, &QTabWidget::tabCloseRequested, this, &MainWindow::handleTabCloseRequested);
     m_TabEditors->setTabsClosable(true);
-    m_CentralStack->setCurrentIndex(1);
+    m_CentralStack->setCurrentIndex(0);
     return m_CentralStack;
 }
 
@@ -94,9 +94,15 @@ QDockWidget *MainWindow::buildConsoleDock()
 {
     auto dock = new QDockWidget(tr("Console"), this);
     QFont font;
+#ifdef Q_OS_WIN
     font.setFamily("Courier New");
+#elif defined(Q_OS_MACOS)
+    font.setFamily("Monaco");
+#else
+    font.setFamily("Ubuntu Mono");
+#endif
     font.setFixedPitch(true);
-    font.setPointSize(9);
+    font.setPointSize(10);
     font.setStyleHint(QFont::Monospace);
     QFontMetrics metrics(font);
     QPalette palette;

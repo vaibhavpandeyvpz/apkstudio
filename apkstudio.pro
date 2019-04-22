@@ -11,6 +11,7 @@ HEADERS += \
     sources/apkdecompileworker.h \
     sources/apkrecompileworker.h \
     sources/apksignworker.h \
+    sources/appearancesettingswidget.h \
     sources/binarysettingswidget.h \
     sources/findreplacedialog.h \
     sources/mainwindow.h \
@@ -29,6 +30,7 @@ SOURCES += \
     sources/apkdecompileworker.cpp \
     sources/apkrecompileworker.cpp \
     sources/apksignworker.cpp \
+    sources/appearancesettingswidget.cpp \
     sources/binarysettingswidget.cpp \
     sources/findreplacedialog.cpp \
     sources/mainwindow.cpp \
@@ -41,7 +43,8 @@ SOURCES += \
     sources/versionresolveworker.cpp
 
 RESOURCES += \
-    resources/all.qrc
+    resources/all.qrc \
+    QDarkStyleSheet/qdarkstyle/style.qrc
 
 macx:ICON = resources/icon.icns
 win32:RC_ICONS += resources/icon.ico

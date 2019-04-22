@@ -20,7 +20,7 @@ SourceCodeEdit::SourceCodeEdit(QWidget *parent)
 #elif defined(Q_OS_MACOS)
     font.setFamily(settings.value("editor_font", "Monaco").toString());
 #else
-    font.setFamily(settings.value("editor_font", "Ubuntu Monospace").toString());
+    font.setFamily(settings.value("editor_font", "Ubuntu Mono").toString());
 #endif
     font.setFixedPitch(true);
     font.setPointSize(settings.value("editor_font_size", 10).toInt());

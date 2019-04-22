@@ -16,5 +16,6 @@
         <file>fugue/binocular.png</file>
         <file>fugue/edit-replace.png</file>
         <file>fugue/gear.png</file>
+        <file>fugue/color.png</file>
     </qresource>
 </RCC>

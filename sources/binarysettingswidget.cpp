@@ -81,9 +81,9 @@ void BinarySettingsWidget::handleBrowseAdb()
 #else
                                                       tr("Browse ADB"),
 #endif
-                                                      QString(),
+                                                      QString()
 #ifdef Q_OS_WIN
-                                                      tr("Executable File(s) (*.exe)")
+                                                      , tr("Executable File(s) (*.exe)")
 #endif
                                                       );
     if (!path.isEmpty()) {
@@ -110,9 +110,9 @@ void BinarySettingsWidget::handleBrowseJadx()
 #else
                                                       tr("Browse Jadx"),
 #endif
-                                                      QString(),
+                                                      QString()
 #ifdef Q_OS_WIN
-                                                      tr("Windows Batch File(s) (*.bat)")
+                                                      , tr("Windows Batch File(s) (*.bat)")
 #endif
                                                       );
     if (!path.isEmpty()) {
@@ -128,9 +128,9 @@ void BinarySettingsWidget::handleBrowseJava()
 #else
                                                       tr("Browse Java"),
 #endif
-                                                      QString(),
+                                                      QString()
 #ifdef Q_OS_WIN
-                                                      tr("Executable File(s) (*.exe)")
+                                                      , tr("Executable File(s) (*.exe)")
 #endif
                                                       );
     if (!path.isEmpty()) {

@@ -1,7 +1,8 @@
 #include <QDebug>
+#include <QPainter>
 #include <QPixmap>
-#include <QVBoxLayout>
 #include <QTimer>
+#include <QVBoxLayout>
 #include "mainwindow.h"
 #include "processutils.h"
 #include "splashwindow.h"
@@ -11,11 +12,11 @@
 #define SPLASH_HEIGHT 320
 
 SplashWindow::SplashWindow()
-    : QMainWindow(nullptr, Qt::FramelessWindowHint)
+    : QMainWindow(nullptr, Qt::SplashScreen)
 {
     setCentralWidget(buildCentralWidget());
-    setMaximumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-    setMinimumSize(SPLASH_WIDTH, SPLASH_HEIGHT);
+    setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
+    setStyleSheet("QLabel { background-color: transparent; color: white; padding: 0 }");
     QTimer::singleShot(SPLASH_DURATION, [=] {
         (new MainWindow())->show();
         close();
@@ -34,7 +35,6 @@ QWidget *SplashWindow::buildCentralWidget()
     loading->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     loading->setContentsMargins(10, 0, 0, 72);
     loading->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
-    loading->setStyleSheet("QLabel { color: white; }");
     loading->setText(tr("Loading..."));
     QFont font = loading->font();
     font.setPointSize(10);
@@ -44,7 +44,6 @@ QWidget *SplashWindow::buildCentralWidget()
     commit->setContentsMargins(10, 0, 0, 40);
     commit->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     commit->setFont(font);
-    commit->setStyleSheet("QLabel { color: white; }");
     commit->setText(QString("%1 (%2)").arg(GIT_COMMIT_SHORT).arg(GIT_COMMIT_NUMBER));
     const QString tag = QString(GIT_TAG);
     if (tag.isEmpty()) {
@@ -53,7 +52,6 @@ QWidget *SplashWindow::buildCentralWidget()
         version->setContentsMargins(0, 2, 4, 0);
         version->setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
         version->setFont(font);
-        version->setStyleSheet("QLabel { color: white; }");
     }
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
