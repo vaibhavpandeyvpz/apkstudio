@@ -112,7 +112,7 @@ private slots:
     void handleVersionResolved(const QString &binary, const QString &version);
     void openFile(const QString &file);
     void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
-    void openProject(const QString &folder);
+    void openProject(const QString &folder, const bool last = false);
     void reloadChildren(QTreeWidgetItem *item);
 private:
     bool saveTab(int index);

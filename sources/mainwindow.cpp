@@ -15,6 +15,7 @@
 #include <QTabWidget>
 #include <QTextDocumentFragment>
 #include <QThread>
+#include <QTimer>
 #include <QToolBar>
 #include <QTreeWidgetItem>
 #include <QUrl>
@@ -54,19 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setStatusBar(buildStatusBar());
     setWindowTitle(tr("APK Studio").append(" - https://git.io/fhxGT"));
-    QSettings settings;
-    if (settings.value("app_maximized").toBool()) {
-        showMaximized();
-    } else {
-        resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
-    }
-    const QString last = settings.value("last_project").toString();
-    if (!last.isEmpty()) {
-        QDir project(last);
-        if (project.exists() && QFile::exists(project.filePath("apktool.yml"))) {
-            openProject(last);
-        }
-    }
     auto thread = new QThread();
     auto resolve = new VersionResolveWorker();
     resolve->moveToThread(thread);
@@ -75,6 +63,27 @@ MainWindow::MainWindow(QWidget *parent)
     connect(resolve, &VersionResolveWorker::versionResolved, this, &MainWindow::handleVersionResolved);
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     thread->start();
+    QTimer::singleShot(100, [=] {
+        QSettings settings;
+        if (settings.value("app_maximized").toBool()) {
+            showMaximized();
+        } else {
+            resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
+        }
+        const QString project = settings.value("open_project").toString();
+        if (!project.isEmpty()) {
+            QDir dir(project);
+            if (dir.exists() && QFile::exists(dir.filePath("apktool.yml"))) {
+                openProject(project, true);
+            }
+        }
+        const QStringList files = settings.value("open_files").toStringList();
+        foreach (const QString &file, files) {
+            if (QFile::exists(file)) {
+                openFile(file);
+            }
+        }
+    });
 }
 
 QWidget *MainWindow::buildCentralWidget()
@@ -270,6 +279,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (!maximized) {
         settings.setValue("app_size", size());
     }
+    const QStringList files = m_MapOpenFiles.keys();
+    settings.setValue("open_files", QVariant::fromValue(files));
     settings.sync();
 }
 
@@ -932,10 +943,10 @@ void MainWindow::openFindReplaceDialog(QPlainTextEdit *edit, const bool replace)
     m_FindReplaceDialog->setTextEdit(edit);
 }
 
-void MainWindow::openProject(const QString &folder)
+void MainWindow::openProject(const QString &folder, const bool last)
 {
     QSettings settings;
-    settings.setValue("last_project", folder);
+    settings.setValue("open_project", folder);
     settings.sync();
     QFileInfo info(folder);
     QTreeWidgetItem *item = new QTreeWidgetItem(m_ProjectsTree);
@@ -948,6 +959,13 @@ void MainWindow::openProject(const QString &folder)
     m_ProjectsTree->expandItem(item);
     m_ActionBuild1->setEnabled(true);
     m_ActionBuild2->setEnabled(true);
+    QDir dir(folder);
+    if (!last) {
+        const QString manifest = dir.filePath("AndroidManifest.xml");
+        if (QFile::exists(manifest)) {
+            openFile(manifest);
+        }
+    }
 }
 
 void MainWindow::reloadChildren(QTreeWidgetItem *item)
