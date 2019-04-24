@@ -1,0 +1,8 @@
+[Desktop Entry]
+Categories=Qt;
+Comment=Open-source, cross-platform Qt based IDE for reverse-engineering Android application packages.
+Exec=apkstudio
+Name=ApkStudio
+Icon=icon
+Terminal=false
+Type=Application

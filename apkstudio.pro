@@ -43,10 +43,35 @@ SOURCES += \
     sources/versionresolveworker.cpp
 
 RESOURCES += \
+    QDarkStyleSheet/qdarkstyle/style.qrc \
+    build/linux.sh \
+    build/osx.sh \
+    build/windows.bat \
     resources/all.qrc \
-    QDarkStyleSheet/qdarkstyle/style.qrc
+    resources/apkstudio.desktop \
+    resources/apkstudio.iss \
+    .appveyor.yml \
+    .travis.yml
 
-macx:ICON = resources/icon.icns
+mac:RC_FILE = resources/icon.icns
+
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+
+    target.path = $$PREFIX/bin
+
+    icons.files += resources/icon.png
+    icons.path = $$PREFIX/share/pixmaps/
+
+    shortcut.files = resources/apkstudio.desktop
+    shortcut.path = $$PREFIX/share/applications/
+
+    INSTALLS += target icons shortcut
+    TARGET = apkstudio
+}
+
 win32:RC_ICONS += resources/icon.ico
 
 QMAKE_TARGET_COMPANY = Vaibhav Pandey -aka- VPZ
