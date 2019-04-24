@@ -34,7 +34,6 @@ QLayout *AppearanceSettingsWidget::buildForm()
     const QString font = settings.value("editor_font", "Courier New").toString();
 #elif defined(Q_OS_MACOS)
     const QString font = settings.value("editor_font", "Monaco").toString();
-    font.setFamily(settings.value("editor_font", "Monaco").toString());
 #else
     const QString font = settings.value("editor_font", "Ubuntu Mono").toString();
 #endif
