@@ -32,8 +32,8 @@ install: |
       source /opt/qt*/bin/qt*-env.sh
     fi
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
-      brew install qt510
-      brew link --force qt510
+      brew install qt
+      brew link --force qt
     fi
 
 script:
