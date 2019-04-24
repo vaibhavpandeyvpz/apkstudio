@@ -1,10 +1,9 @@
 @echo off
 setlocal EnableExtensions
 
-set DIR_BUILD="%APPVEYOR_BUILD_FOLDER%-build"
-mkdir %DIR_BUILD%
+mkdir "%APPVEYOR_BUILD_FOLDER%-build"
 
-qmake CONFIG+=release -o "%DIR_BUILD%" "%APPVEYOR_BUILD_FOLDER%"
+qmake CONFIG+=release -o "%APPVEYOR_BUILD_FOLDER%-build" "%APPVEYOR_BUILD_FOLDER%"
 cd /d "%APPVEYOR_BUILD_FOLDER%-build"
 nmake
 cd /d "%APPVEYOR_BUILD_FOLDER%"
