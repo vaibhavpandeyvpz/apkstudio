@@ -14,7 +14,7 @@ branches:
     - master
 
 install:
-- git submodule update --init --recursive
+  - git submodule update --init --recursive
 
 init:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %VCARCH%
