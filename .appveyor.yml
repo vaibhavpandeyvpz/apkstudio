@@ -24,6 +24,7 @@ deploy:
   auth_token:
     secure: ix7WdDQD0JcTBi17m9okMiMff3BKaGuKnRroi6m+dvsB4xxtnInfYuwgAD3Uayuw
   description: 'Deployed from continuous integration.'
+  force_update: true
   on:
     branch: master
     appveyor_repo_tag: true
