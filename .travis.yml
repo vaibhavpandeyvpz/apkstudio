@@ -42,7 +42,7 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: pjGl0U3TeHDzfHeW+VmrPQFdQtbLsIlV0niwSfGIUGQ+WD+LA4VDJNhu5ctUpR4yWVZWWUtBoj7M9g2D2h+7wi7MkFFJqIgxz41Fc41W/93WD2sC6I/5Y3AsNk4xGf5WuDYOB64lKBrc5uGn4HT696ixSkG3HEd/0WLd56BS0VM=
+    secure: R/e46wWF2V7B0sx1WEu04Y9c4rmtXw/b80APFfO98+ZhDKBWSDR/ZMzN1KKALhgrRobqUrqONc4KSXpX4s06RfiokDw6X0Q3j9nWNvPg+yk7n0cMw3AH/+u45n83rKeIlYM0pFsklXd7FJyaYW2YThhsTAk1Y7YQ+2uLrWGJl+g=
   file_glob: true
   file: deploy/*
   skip_cleanup: true
