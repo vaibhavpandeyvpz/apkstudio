@@ -1,0 +1,21 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>icon.png</file>
+        <file>splash.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file>icon.ico</file>
+        <file>fugue/application-terminal.png</file>
+        <file>icons8/icons8-android-os-48.png</file>
+        <file>icons8/icons8-folder-48.png</file>
+        <file>icons8/icons8-gear-48.png</file>
+        <file>icons8/icons8-hammer-48.png</file>
+        <file>icons8/icons8-software-installer-48.png</file>
+        <file>fugue/android.png</file>
+        <file>fugue/edit-signiture.png</file>
+        <file>fugue/binocular.png</file>
+        <file>fugue/edit-replace.png</file>
+        <file>fugue/gear.png</file>
+        <file>fugue/color.png</file>
+    </qresource>
+</RCC>

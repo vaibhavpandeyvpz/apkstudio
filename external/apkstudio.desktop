@@ -1,7 +1,0 @@
-[Desktop Entry]
-Name=APK Studio
-Comment=Cross Platform IDE for reverse-engineering APKs
-Type=Application
-Exec=apkstudio
-Icon=apkstudio
-Categories=IDE;Development;Qt;

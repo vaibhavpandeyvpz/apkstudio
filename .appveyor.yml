@@ -1,0 +1,33 @@
+environment:
+  matrix:
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      OPENSSL_DIR: C:\OpenSSL-Win32
+      QTDIR: C:\Qt\5.10.1\msvc2015
+      VCARCH: x86
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      OPENSSL_DIR: C:\OpenSSL-Win64
+      QTDIR: C:\Qt\5.10.1\msvc2015_64
+      VCARCH: x64
+
+branches:
+  only:
+    - master
+
+init:
+  - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %VCARCH%
+
+before_build:
+  - set PATH="%QTDIR%\bin";"C:\Program Files (x86)\Inno Setup 5";%PATH%
+
+build_script:
+  - call "%APPVEYOR_BUILD_FOLDER%\build\windows.bat"
+
+deploy:
+  artifact: /deploy/ApkStudio*\.exe/
+  auth_token:
+    secure: ix7WdDQD0JcTBi17m9okMiMff3BKaGuKnRroi6m+dvsB4xxtnInfYuwgAD3Uayuw
+  description: 'Deployed from continuous integration.'
+  on:
+    branch: master
+    appveyor_repo_tag: true
+  provider: GitHub

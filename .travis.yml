@@ -4,27 +4,48 @@ branches:
   only:
     - master
 
-os:
-  - linux
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+    - os: osx
+      osx_image: xcode8
 
-before_install:
-  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-  - sudo apt-get update -qq
-  - sudo apt-get install qt5-default qttools5-dev-tools
+addons:
+  apt:
+    packages:
+      - libgl1-mesa-dev
+
+before_install: |
+  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+    sudo add-apt-repository ppa:beineri/opt-qt510-trusty -y
+    sudo apt update -qq
+  fi
+  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    brew update
+  fi
+
+install: |
+  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+    sudo apt-get install qt510base -y
+    source /opt/qt*/bin/qt*-env.sh
+  fi
+  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+    brew install qt510
+    brew link --force qt510
+  fi
 
 script:
-  - lrelease res/lang/en.ts
-  - qmake apkstudio.pro CONFIG+=release
-  - make
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then chmod +x $TRAVIS_BUILD_DIR/build/linux.sh; $TRAVIS_BUILD_DIR/build/linux.sh; fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then chmod +x $TRAVIS_BUILD_DIR/build/osx.sh; $TRAVIS_BUILD_DIR/build/osx.sh; fi
 
-  - wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-  - chmod a+x linuxdeployqt*.AppImage
-
-  - mkdir apkstudio-latest-release
-  - cd apkstudio-latest-release
-  - cp ../apkstudio ../external/apkstudio.* .
-
-  - ../linuxdeployqt*.AppImage apkstudio.desktop -bundle-non-qt-libs -no-translations -verbose=2 -no-copy-copyright-files -appimage
-
-after_script:
- - curl --upload-file ./*.AppImage https://transfer.sh/apkstudio-$(git rev-parse --short HEAD)-linux_x86_64.AppImage
+deploy:
+  provider: releases
+  api_key:
+    secure: $GITHUB_ACCESS_TOKEN
+  file_glob:true
+  file: "deploy/*"
+  skip_cleanup: true
+  on:
+    tags: true

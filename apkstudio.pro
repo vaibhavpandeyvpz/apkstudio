@@ -1,117 +1,111 @@
-GIT_REV_SHORT = $$system(git rev-parse --short HEAD)
-GIT_REV_LONG = $$system(git rev-parse HEAD)
-DEFINES += APP_REV_SHORT=\\\"$$GIT_REV_SHORT\\\"
-DEFINES += APP_REV_LONG=\\\"$$GIT_REV_LONG\\\"
-
-HEADERS += \
-    include/adb.h \
-    include/apktool.h \
-    include/buildrunnable.h \
-    include/coder.h \
-    include/coderhighlighter.h \
-    include/coderhighlighterdefinition.h \
-    include/coderhighlightertheme.h \
-    include/codersidebar.h \
-    include/consoledock.h \
-    include/constants.h \
-    include/decoderunnable.h \
-    include/dialog.h \
-    include/editortabs.h \
-    include/fileutils.h \
-    include/findreplace.h \
-    include/flickcharm.h \
-    include/ide.h \
-    include/installrunnable.h \
-    include/java.h \
-    include/macros.h \
-    include/menubar.h \
-    include/pathutils.h \
-    include/pleasewait.h \
-    include/preferences.h \
-    include/preopenapk.h \
-    include/process.h \
-    include/projectdock.h \
-    include/qrc.h \
-    include/runnable.h \
-    include/runner.h \
-    include/settingseditor.h \
-    include/signexportapk.h \
-    include/signrunnable.h \
-    include/statusbar.h \
-    include/textutils.h \
-    include/toolbar.h \
-    include/viewer.h \
-    include/widgetbar.h \
-    include/uberapksigner.h
-
-OTHER_FILES += \
-    .gitignore \
-    .travis.yml \
-    appveyor.yml \
-    res/highlight/default.theme \
-    res/highlight/numbers.def \
-    res/highlight/smali.def \
-    res/highlight/strings.def \
-    res/highlight/xml.def \
-    res/highlight/yml.def \
-    res/html/about.html \
-    res/lang/en.ts \
-    res/styles/default.qss \
-    res/win32.rc \
-    README.md \
-    LICENSE.md \
-    _config.yml
-
 QT += core gui widgets
 
-win32:RC_FILE = res/win32.rc
-
-RESOURCES += \
-    res/all.qrc
-
-SOURCES += \
-    src/adb.cpp \
-    src/apktool.cpp \
-    src/buildrunnable.cpp \
-    src/coder.cpp \
-    src/coderhighlighter.cpp \
-    src/coderhighlighterdefinition.cpp \
-    src/coderhighlightertheme.cpp \
-    src/codersidebar.cpp \
-    src/consoledock.cpp \
-    src/decoderunnable.cpp \
-    src/dialog.cpp \
-    src/editortabs.cpp \
-    src/fileutils.cpp \
-    src/findreplace.cpp \
-    src/flickcharm.cpp \
-    src/ide.cpp \
-    src/installrunnable.cpp \
-    src/java.cpp \
-    src/main.cpp \
-    src/menubar.cpp \
-    src/pathutils.cpp \
-    src/pleasewait.cpp \
-    src/preferences.cpp \
-    src/preopenapk.cpp \
-    src/process.cpp \
-    src/projectdock.cpp \
-    src/qrc.cpp \
-    src/runnable.cpp \
-    src/runner.cpp \
-    src/settingseditor.cpp \
-    src/signexportapk.cpp \
-    src/signrunnable.cpp \
-    src/statusbar.cpp \
-    src/textutils.cpp \
-    src/toolbar.cpp \
-    src/viewer.cpp \
-    src/widgetbar.cpp \
-    src/uberapksigner.cpp
-
-TARGET = apkstudio
-
+TARGET = ApkStudio
 TEMPLATE = app
 
-TRANSLATIONS += \
-    res/lang/en.ts
+CONFIG += c++11
+
+HEADERS += \
+    sources/adbinstallworker.h \
+    sources/apkdecompiledialog.h \
+    sources/apkdecompileworker.h \
+    sources/apkrecompileworker.h \
+    sources/apksignworker.h \
+    sources/appearancesettingswidget.h \
+    sources/binarysettingswidget.h \
+    sources/findreplacedialog.h \
+    sources/mainwindow.h \
+    sources/processutils.h \
+    sources/settingsdialog.h \
+    sources/signingconfigdialog.h \
+    sources/signingconfigwidget.h \
+    sources/sourcecodeedit.h \
+    sources/splashwindow.h \
+    sources/versionresolveworker.h
+
+SOURCES += \
+    sources/main.cpp \
+    sources/adbinstallworker.cpp \
+    sources/apkdecompiledialog.cpp \
+    sources/apkdecompileworker.cpp \
+    sources/apkrecompileworker.cpp \
+    sources/apksignworker.cpp \
+    sources/appearancesettingswidget.cpp \
+    sources/binarysettingswidget.cpp \
+    sources/findreplacedialog.cpp \
+    sources/mainwindow.cpp \
+    sources/processutils.cpp \
+    sources/settingsdialog.cpp \
+    sources/signingconfigdialog.cpp \
+    sources/signingconfigwidget.cpp \
+    sources/sourcecodeedit.cpp \
+    sources/splashwindow.cpp \
+    sources/versionresolveworker.cpp
+
+RESOURCES += \
+    QDarkStyleSheet/qdarkstyle/style.qrc \
+    build/linux.sh \
+    build/osx.sh \
+    build/windows.bat \
+    resources/all.qrc \
+    resources/apkstudio.desktop \
+    resources/apkstudio.iss \
+    .appveyor.yml \
+    .travis.yml
+
+mac:RC_FILE = resources/icon.icns
+
+unix {
+    isEmpty(PREFIX) {
+        PREFIX = /usr/local
+    }
+
+    target.path = $$PREFIX/bin
+
+    icons.files += resources/icon.png
+    icons.path = $$PREFIX/share/pixmaps/
+
+    shortcut.files = resources/apkstudio.desktop
+    shortcut.path = $$PREFIX/share/applications/
+
+    INSTALLS += target icons shortcut
+    TARGET = apkstudio
+}
+
+win32:RC_ICONS += resources/icon.ico
+
+QMAKE_TARGET_COMPANY = Vaibhav Pandey -aka- VPZ
+QMAKE_TARGET_COPYRIGHT = Vaibhav Pandey
+QMAKE_TARGET_DESCRIPTION = Open-source, cross-platform Qt based IDE for reverse-engineering Android application packages.
+QMAKE_TARGET_PRODUCT = APK Studio
+
+win32 {
+    NULL_DEVICE = NUL
+} else {
+    NULL_DEVICE = /dev/null
+}
+
+GIT_CMD_BASE = git --git-dir $$PWD/.git --work-tree $$PWD
+GIT_BRANCH = $$system($$GIT_CMD_BASE rev-parse --abbrev-ref HEAD 2> $$NULL_DEVICE)
+GIT_COMMIT_FULL = $$system($$GIT_CMD_BASE rev-parse HEAD 2> $$NULL_DEVICE)
+GIT_COMMIT_NUMBER = $$system($$GIT_CMD_BASE rev-list HEAD --count 2> $$NULL_DEVICE)
+GIT_COMMIT_SHORT = $$system($$GIT_CMD_BASE rev-parse --short HEAD 2> $$NULL_DEVICE)
+GIT_TAG = $$system($$GIT_CMD_BASE tag -l --points-at HEAD 2> $$NULL_DEVICE)
+
+DEFINES += GIT_BRANCH=\\\"$$GIT_BRANCH\\\" \
+    GIT_COMMIT_FULL=\\\"$$GIT_COMMIT_FULL\\\" \
+    GIT_COMMIT_NUMBER=\\\"$$GIT_COMMIT_NUMBER\\\" \
+    GIT_COMMIT_SHORT=\\\"$$GIT_COMMIT_SHORT\\\" \
+    GIT_TAG=\\\"$$GIT_TAG\\\"
+
+!isEmpty(GIT_TAG) {
+    win32 {
+        VERSION = $${GIT_TAG}.$${GIT_COMMIT_NUMBER}
+    } else {
+        VERSION = $$GIT_TAG
+    }
+    macx {
+        INFO_PLIST_PATH = $$shell_quote($${OUT_PWD}/$${TARGET}.app/Contents/Info.plist)
+        QMAKE_POST_LINK += /usr/libexec/PlistBuddy -c \"Set :CFBundleShortVersionString $${VERSION}\" $${INFO_PLIST_PATH}
+    }
+}
