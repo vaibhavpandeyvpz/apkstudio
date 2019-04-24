@@ -17,24 +17,24 @@ addons:
     packages:
       - libgl1-mesa-dev
 
-before_install: |
-  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    sudo add-apt-repository ppa:beineri/opt-qt510-trusty -y
-    sudo apt update -qq
-  fi
-  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
-    brew update
-  fi
+before_install:
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+      sudo add-apt-repository ppa:beineri/opt-qt510-trusty -y
+      sudo apt update -qq
+    fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+      brew update
+    fi
 
-install: |
-  if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-    sudo apt-get install qt510base -y
-    source /opt/qt*/bin/qt*-env.sh
-  fi
-  if [[ $TRAVIS_OS_NAME == "osx" ]]; then
-    brew install qt510
-    brew link --force qt510
-  fi
+install:
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then
+      sudo apt-get install qt510base -y
+      source /opt/qt*/bin/qt*-env.sh
+    fi
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then
+      brew install qt510
+      brew link --force qt510
+    fi
 
 script:
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then chmod +x $TRAVIS_BUILD_DIR/build/linux.sh; $TRAVIS_BUILD_DIR/build/linux.sh; fi
@@ -43,9 +43,9 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: $GITHUB_ACCESS_TOKEN
-  file_glob:true
-  file: "deploy/*"
+    secure: pjGl0U3TeHDzfHeW+VmrPQFdQtbLsIlV0niwSfGIUGQ+WD+LA4VDJNhu5ctUpR4yWVZWWUtBoj7M9g2D2h+7wi7MkFFJqIgxz41Fc41W/93WD2sC6I/5Y3AsNk4xGf5WuDYOB64lKBrc5uGn4HT696ixSkG3HEd/0WLd56BS0VM=
+  file_glob: true
+  file: deploy/*
   skip_cleanup: true
   on:
     tags: true
