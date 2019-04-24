@@ -19,8 +19,12 @@ before_build:
 build_script:
   - call "%APPVEYOR_BUILD_FOLDER%\build\windows.bat"
 
+artifacts:
+  path: deploy\*.exe
+  name: installers
+
 deploy:
-  artifact: deploy\*.exe
+  artifact: installers
   auth_token:
     secure: ix7WdDQD0JcTBi17m9okMiMff3BKaGuKnRroi6m+dvsB4xxtnInfYuwgAD3Uayuw
   description: 'Deployed from continuous integration.'

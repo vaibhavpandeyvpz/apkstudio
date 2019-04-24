@@ -15,5 +15,8 @@ mkdir -p AppDir/usr/lib/
 cp -r /usr/lib/x86_64-linux-gnu/nss AppDir/usr/lib/
 ./linuxdeployqt*.AppImage AppDir/usr/share/applications/apkstudio.desktop -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so
 
+if [ ! -z $TRAVIS_TAG ]; then
+  mv ApkStudio-x86_64.AppImage ApkStudio-$TRAVIS_TAG-x86_64.AppImage
+fi
 mkdir -p $TRAVIS_BUILD_DIR/deploy
-mv ApkStudio-x86_64.AppImage $TRAVIS_BUILD_DIR/deploy/
+mv ApkStudio*AppImage $TRAVIS_BUILD_DIR/deploy/

@@ -19,5 +19,8 @@ mv ApkStudio.app $DMG_DIR_NAME/
 ln -s /Applications $DMG_DIR_NAME/Applications
 hdiutil create -format UDZO -srcfolder $DMG_DIR_NAME ApkStudio-x86_64.dmg
 
+if [ ! -z $TRAVIS_TAG ]; then
+  mv ApkStudio-x86_64.dmg ApkStudio-$TRAVIS_TAG-x86_64.dmg
+fi
 mkdir -p $TRAVIS_BUILD_DIR/deploy
-mv ApkStudio-x86_64.dmg $TRAVIS_BUILD_DIR/deploy/
+mv ApkStudio*dmg $TRAVIS_BUILD_DIR/deploy/
