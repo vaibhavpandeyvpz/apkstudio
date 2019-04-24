@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 
-DIR_BUILD=$TRAVIS_BUILD_DIR-build
-mkdir $DIR_BUILD
+mkdir $TRAVIS_BUILD_DIR-build
 
-cd $DIR_BUILD
+cd $TRAVIS_BUILD_DIR-build
 qmake CONFIG+=release PREFIX=/usr $TRAVIS_BUILD_DIR
 make
 make install INSTALL_ROOT=AppDir
