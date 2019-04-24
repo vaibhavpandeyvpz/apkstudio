@@ -13,8 +13,7 @@ chmod +x linuxdeployqt*.AppImage
 unset QTDIR; unset QT_PLUGIN_PATH; unset LD_LIBRARY_PATH
 mkdir -p AppDir/usr/lib/
 cp -r /usr/lib/x86_64-linux-gnu/nss AppDir/usr/lib/
-./linuxdeployqt*.AppImage AppDir/usr/share/applications/apkstudio.desktop -bundle-non-qt-libs
-./linuxdeployqt*.AppImage AppDir/usr/share/applications/apkstudio.desktop -appimage
+./linuxdeployqt*.AppImage AppDir/usr/share/applications/apkstudio.desktop -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so
 
 mkdir -p $TRAVIS_BUILD_DIR/deploy
 mv ApkStudio-x86_64.AppImage $TRAVIS_BUILD_DIR/deploy/

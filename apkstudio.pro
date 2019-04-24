@@ -51,7 +51,8 @@ RESOURCES += \
     resources/apkstudio.desktop \
     resources/apkstudio.iss \
     .appveyor.yml \
-    .travis.yml
+    .travis.yml \
+    README.md
 
 mac:RC_FILE = resources/icon.icns
 
