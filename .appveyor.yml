@@ -1,17 +1,11 @@
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      OPENSSL_DIR: C:\OpenSSL-Win32
       QTDIR: C:\Qt\5.10.1\msvc2015
       VCARCH: x86
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      OPENSSL_DIR: C:\OpenSSL-Win64
       QTDIR: C:\Qt\5.10.1\msvc2015_64
       VCARCH: x64
-
-branches:
-  only:
-    - master
 
 install:
   - git submodule update --init --recursive
