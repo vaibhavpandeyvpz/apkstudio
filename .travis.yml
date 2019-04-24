@@ -7,28 +7,24 @@ branches:
 matrix:
   include:
     - os: linux
-      dist: trusty
-      sudo: required
+      dist: xenial
+      addons:
+        apt:
+          sources:
+            - ppa:beineri/opt-qt-5.12.3-xenial
+          packages:
+            - libgl1-mesa-dev
+            - qt512base
     - os: osx
-      osx_image: xcode8
-
-addons:
-  apt:
-    packages:
-      - libgl1-mesa-dev
+      osx_image: xcode9
 
 before_install: |
-    if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-      sudo add-apt-repository ppa:beineri/opt-qt510-trusty -y
-      sudo apt update -qq
-    fi
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
       brew update
     fi
 
 install: |
     if [[ $TRAVIS_OS_NAME == "linux" ]]; then
-      sudo apt-get install qt510base -y
       source /opt/qt*/bin/qt*-env.sh
     fi
     if [[ $TRAVIS_OS_NAME == "osx" ]]; then
