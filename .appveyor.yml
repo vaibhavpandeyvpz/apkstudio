@@ -20,7 +20,7 @@ build_script:
   - call "%APPVEYOR_BUILD_FOLDER%\build\windows.bat"
 
 deploy:
-  artifact: /deploy/ApkStudio*\.exe/
+  artifact: deploy\*.exe
   auth_token:
     secure: ix7WdDQD0JcTBi17m9okMiMff3BKaGuKnRroi6m+dvsB4xxtnInfYuwgAD3Uayuw
   description: 'Deployed from continuous integration.'
