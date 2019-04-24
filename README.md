@@ -1,7 +1,6 @@
 <img align="left" src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/icon.png" alt="APK Studio" height="192px">
 
-APK Studio
-==========
+# APK Studio
 Open-source, cross-platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for Android's \*.smali code files.
 
 [![AppVeyor](https://img.shields.io/appveyor/ci/vaibhavpandeyvpz/apkstudio.svg)](https://ci.appveyor.com/project/vaibhavpandeyvpz/apkstudio)
