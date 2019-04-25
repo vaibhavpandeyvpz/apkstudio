@@ -1,0 +1,13 @@
+SourceCodeEdit {
+    background-color: #222;
+    color: #ccc;
+    selection-background-color: #000;
+    selection-color: #fff;
+}
+
+SourceCodeSidebarWidget {
+    background-color: #000;
+    color: #aaa;
+    selection-background-color: #222;
+    selection-color: #ccc;
+}

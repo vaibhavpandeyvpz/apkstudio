@@ -18,4 +18,8 @@
         <file>fugue/gear.png</file>
         <file>fugue/color.png</file>
     </qresource>
+    <qresource prefix="/styles">
+        <file>dark.qss</file>
+        <file>light.qss</file>
+    </qresource>
 </RCC>

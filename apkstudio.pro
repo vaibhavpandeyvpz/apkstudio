@@ -6,6 +6,7 @@ TEMPLATE = app
 CONFIG += c++11
 
 HEADERS += \
+    Qt-Frameless-Window-DarkStyle/DarkStyle.h \
     sources/adbinstallworker.h \
     sources/apkdecompiledialog.h \
     sources/apkdecompileworker.h \
@@ -24,6 +25,7 @@ HEADERS += \
     sources/versionresolveworker.h
 
 SOURCES += \
+    Qt-Frameless-Window-DarkStyle/DarkStyle.cpp \
     sources/main.cpp \
     sources/adbinstallworker.cpp \
     sources/apkdecompiledialog.cpp \
@@ -43,7 +45,7 @@ SOURCES += \
     sources/versionresolveworker.cpp
 
 RESOURCES += \
-    QDarkStyleSheet/qdarkstyle/style.qrc \
+    Qt-Frameless-Window-DarkStyle/darkstyle.qrc \
     build/linux.sh \
     build/osx.sh \
     build/windows.bat \

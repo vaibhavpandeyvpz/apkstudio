@@ -1,0 +1,16 @@
+SourceCodeEdit {
+    alternate-background-color: #ced7df;
+    background-color: #fff;
+    color: #222;
+    font-family: Courier;
+    font-size: 10pt;
+    selection-background-color: #c4dff6;
+    selection-color: #205081;
+}
+
+SourceCodeSidebarWidget {
+    background-color: #eff3f6;
+    color: #59626a;
+    selection-background-color: #ced7df;
+    selection-color: #323b43;
+}
