@@ -57,7 +57,6 @@ RESOURCES += \
     build/windows.bat \
     resources/all.qrc \
     resources/apkstudio.desktop \
-    resources/apkstudio.iss \
     .appveyor.yml \
     .travis.yml \
     README.md

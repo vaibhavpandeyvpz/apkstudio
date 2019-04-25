@@ -14,17 +14,17 @@ init:
   - call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %VCARCH%
 
 before_build:
-  - set PATH="%QTDIR%\bin";"C:\Program Files (x86)\Inno Setup 5";%PATH%
+  - set PATH="%QTDIR%\bin";%PATH%
 
 build_script:
   - call "%APPVEYOR_BUILD_FOLDER%\build\windows.bat"
 
 artifacts:
-  path: deploy\*.exe
-  name: installers
+  path: deploy\*.zip
+  name: archives
 
 deploy:
-  artifact: installers
+  artifact: archives
   auth_token:
     secure: ix7WdDQD0JcTBi17m9okMiMff3BKaGuKnRroi6m+dvsB4xxtnInfYuwgAD3Uayuw
   description: 'Deployed from continuous integration.'
