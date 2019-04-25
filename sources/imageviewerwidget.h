@@ -28,9 +28,9 @@ protected:
 public:
     explicit ImageViewerWidget(QWidget *parent = nullptr);
 public:
-    inline void setPixmap(const QPixmap &i) { m_Image->setPixmap(i); }
-    inline void zoomIn() { zoomInOut(1.25); }
-    inline void zoomOut() { zoomInOut(0.8); }
+    void setPixmap(const QPixmap &i);
+    void zoomIn();
+    void zoomOut();
     void zoomReset();
 };
 

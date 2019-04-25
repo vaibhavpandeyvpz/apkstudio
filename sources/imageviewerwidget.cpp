@@ -32,6 +32,16 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     QScrollArea::keyPressEvent(event);
 }
 
+void ImageViewerWidget::setPixmap(const QPixmap &i)
+{
+    m_Image->setPixmap(i);
+}
+
+void ImageViewerWidget::zoomIn()
+{
+    zoomInOut(1.25);
+}
+
 void ImageViewerWidget::zoomInOut(const double f)
 {
     m_Scale *= f;
@@ -42,6 +52,11 @@ void ImageViewerWidget::zoomInOut(const double f)
     int vs = int(f * vbar->value() + ((f - 1) * vbar->pageStep() / 2));
     hbar->setValue(hs);
     vbar->setValue(vs);
+}
+
+void ImageViewerWidget::zoomOut()
+{
+    zoomInOut(0.75);
 }
 
 void ImageViewerWidget::zoomReset()
