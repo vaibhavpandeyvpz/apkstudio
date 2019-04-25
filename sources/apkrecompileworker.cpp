@@ -9,6 +9,7 @@ ApkRecompileWorker::ApkRecompileWorker(const QString &folder, QObject *parent)
 
 void ApkRecompileWorker::recompile()
 {
+    emit started();
 #ifdef QT_DEBUG
     qDebug() << "Recompiling" << m_Folder;
 #endif
@@ -18,8 +19,10 @@ void ApkRecompileWorker::recompile()
         emit recompileFailed(m_Folder);
         return;
     }
+    QString heap("-Xmx%1m");
+    heap = heap.arg(QString::number(ProcessUtils::javaHeapSize()));
     QStringList args;
-    args << "-jar" << apktool;
+    args << heap << "-jar" << apktool;
     args << "b" << m_Folder;
     ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
@@ -30,4 +33,5 @@ void ApkRecompileWorker::recompile()
         return;
     }
     emit recompileFinished(m_Folder);
+    emit finished();
 }

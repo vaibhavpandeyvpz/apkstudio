@@ -9,6 +9,7 @@ ApkSignWorker::ApkSignWorker(const QString &apk, const QString &keystore, const 
 
 void ApkSignWorker::sign()
 {
+    emit started();
 #ifdef QT_DEBUG
     qDebug() << "Signing" << m_Apk;
 #endif
@@ -18,8 +19,10 @@ void ApkSignWorker::sign()
         emit signFailed(m_Apk);
         return;
     }
+    QString heap("-Xmx%1m");
+    heap = heap.arg(QString::number(ProcessUtils::javaHeapSize()));
     QStringList args;
-    args << "-jar" << uas;
+    args << heap << "-jar" << uas;
     args << "-a" << m_Apk << "--allowResign" << "--overwrite";
     if (!m_Keystore.isEmpty() && !m_Alias.isEmpty()) {
         args << "--ks" << m_Keystore;
@@ -39,4 +42,5 @@ void ApkSignWorker::sign()
         return;
     }
     emit signFinished(m_Apk);
+    emit finished();
 }

@@ -9,6 +9,7 @@ ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder
 
 void ApkDecompileWorker::decompile()
 {
+    emit started();
 #ifdef QT_DEBUG
     qDebug() << "Decompiling" << m_Apk << "into" << m_Folder;
 #endif
@@ -19,8 +20,10 @@ void ApkDecompileWorker::decompile()
         return;
     }
     emit decompileProgress(25, tr("Running apktool..."));
+    QString heap("-Xmx%1m");
+    heap = heap.arg(QString::number(ProcessUtils::javaHeapSize()));
     QStringList args;
-    args << "-jar" << apktool;
+    args << heap << "-jar" << apktool;
     args << "d" << "-o" << m_Folder << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
@@ -45,4 +48,5 @@ void ApkDecompileWorker::decompile()
 #endif
     }
     emit decompileFinished(m_Apk, m_Folder);
+    emit finished();
 }

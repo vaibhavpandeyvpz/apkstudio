@@ -12,8 +12,10 @@ public:
 private:
     QString m_Apk;
 signals:
+    void finished();
     void installFailed(const QString &apk);
     void installFinished(const QString &apk);
+    void started();
 };
 
 #endif // ADBINSTALLWORKER_H

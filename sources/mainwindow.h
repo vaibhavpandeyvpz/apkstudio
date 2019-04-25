@@ -23,7 +23,7 @@ public:
         Folder,
         File
     };
-    MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(const QMap<QString, QString> &versions, QWidget *parent = nullptr);
     ~MainWindow();
 protected:
     void closeEvent(QCloseEvent *event);
@@ -57,18 +57,13 @@ private:
     QLabel *m_StatusCursor;
     QLabel *m_StatusMessage;
     QTabWidget *m_TabEditors;
-    QLabel *m_VersionAdb;
-    QLabel *m_VersionApktool;
-    QLabel *m_VersionJadx;
-    QLabel *m_VersionJava;
-    QLabel *m_VersionUberApkSigner;
     QWidget *buildCentralWidget();
     QDockWidget *buildConsoleDock();
     QDockWidget *buildFilesDock();
     QToolBar *buildMainToolBar();
     QMenuBar *buildMenuBar();
     QDockWidget *buildProjectsDock();
-    QStatusBar *buildStatusBar();
+    QStatusBar *buildStatusBar(const QMap<QString, QString> &versions);
     int findTabIndex(const QString& path);
 private slots:
     void handleActionAbout();
@@ -115,7 +110,6 @@ private slots:
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-    void handleVersionResolved(const QString &binary, const QString &version);
     void openFile(const QString &file);
     void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
     void openProject(const QString &folder, const bool last = false);

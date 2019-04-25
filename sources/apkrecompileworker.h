@@ -12,8 +12,10 @@ public:
 private:
     QString m_Folder;
 signals:
+    void finished();
     void recompileFailed(const QString &folder);
     void recompileFinished(const QString &folder);
+    void started();
 };
 
 #endif // APKRECOMPILEWORKER_H

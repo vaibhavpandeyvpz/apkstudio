@@ -9,6 +9,7 @@ AdbInstallWorker::AdbInstallWorker(const QString &apk, QObject *parent)
 
 void AdbInstallWorker::install()
 {
+    emit started();
 #ifdef QT_DEBUG
     qDebug() << "Installing" << m_Apk;
 #endif
@@ -28,4 +29,5 @@ void AdbInstallWorker::install()
         return;
     }
     emit installFinished(m_Apk);
+    emit finished();
 }

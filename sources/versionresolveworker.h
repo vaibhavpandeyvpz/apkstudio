@@ -10,6 +10,8 @@ public:
     explicit VersionResolveWorker(QObject *parent = nullptr);
     void resolve();
 signals:
+    void finished();
+    void started();
     void versionResolved(const QString &binary, const QString &version);
 };
 

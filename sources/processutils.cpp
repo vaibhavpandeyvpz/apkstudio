@@ -153,6 +153,12 @@ QString ProcessUtils::javaExe()
     return QFile::exists(exe) ? exe : QString();
 }
 
+int ProcessUtils::javaHeapSize()
+{
+    QSettings settings;
+    return settings.value("java_heap", 256).toInt();
+}
+
 ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, const int timeout)
 {
     ProcessOutput::instance()->emitCommandStarting(exe, args);

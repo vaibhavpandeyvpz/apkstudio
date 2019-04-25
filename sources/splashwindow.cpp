@@ -1,13 +1,14 @@
 #include <QDebug>
 #include <QPainter>
 #include <QPixmap>
+#include <QThread>
 #include <QTimer>
 #include <QVBoxLayout>
 #include "mainwindow.h"
 #include "processutils.h"
 #include "splashwindow.h"
+#include "versionresolveworker.h"
 
-#define SPLASH_DURATION 1000
 #define SPLASH_WIDTH 512
 #define SPLASH_HEIGHT 320
 
@@ -17,10 +18,16 @@ SplashWindow::SplashWindow()
     setCentralWidget(buildCentralWidget());
     setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
     setStyleSheet("QLabel { background-color: transparent; color: white; padding: 0 }");
-    QTimer::singleShot(SPLASH_DURATION, [=] {
-        (new MainWindow())->show();
-        close();
-    });
+    auto thread = new QThread;
+    auto worker = new VersionResolveWorker;
+    worker->moveToThread(thread);
+    connect(worker, &VersionResolveWorker::versionResolved, this, &SplashWindow::handleVersionResolved);
+    connect(worker, &VersionResolveWorker::finished, this, &SplashWindow::handleVersionResolveFinished);
+    connect(thread, &QThread::started, worker, &VersionResolveWorker::resolve);
+    connect(worker, &VersionResolveWorker::finished, thread, &QThread::quit);
+    connect(worker, &VersionResolveWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    thread->start();
 }
 
 QWidget *SplashWindow::buildCentralWidget()
@@ -57,6 +64,17 @@ QWidget *SplashWindow::buildCentralWidget()
     layout->setSpacing(0);
     widget->setLayout(layout);
     return widget;
+}
+
+void SplashWindow::handleVersionResolved(const QString &binary, const QString &version)
+{
+    m_Versions.insert(binary, version);
+}
+
+void SplashWindow::handleVersionResolveFinished()
+{
+    (new MainWindow(m_Versions))->show();
+    close();
 }
 
 SplashWindow::~SplashWindow()

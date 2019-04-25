@@ -14,6 +14,7 @@ VersionResolveWorker::VersionResolveWorker(QObject *parent)
 
 void VersionResolveWorker::resolve()
 {
+    emit started();
 #ifdef QT_DEBUG
     qDebug() << "Using 'java' from" << ProcessUtils::javaExe();
 #endif
@@ -137,4 +138,5 @@ void VersionResolveWorker::resolve()
             emit versionResolved("uas", QString());
         }
     }
+    emit finished();
 }

@@ -2,6 +2,7 @@
 #define BINARYSETTINGSWIDGET_H
 
 #include <QLineEdit>
+#include <QSpinBox>
 #include <QWidget>
 
 class BinarySettingsWidget : public QWidget
@@ -15,6 +16,7 @@ private:
     QLineEdit *m_EditJadxExe;
     QLineEdit *m_EditJavaExe;
     QLineEdit *m_EditUberApkSignerJar;
+    QSpinBox *m_SpinJavaHeap;
     QLayout *buildForm();
 private slots:
     void handleBrowseAdb();

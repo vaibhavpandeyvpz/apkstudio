@@ -30,7 +30,6 @@
 #include "settingsdialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
-#include "versionresolveworker.h"
 #include "mainwindow.h"
 
 #define COLOR_CODE 0x2ad2c9
@@ -48,7 +47,7 @@
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     : QMainWindow(parent), m_FindReplaceDialog(nullptr)
 {
     addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
@@ -58,16 +57,9 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(buildCentralWidget());
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
-    setStatusBar(buildStatusBar());
-    setWindowTitle(tr("APK Studio").append(" - https://git.io/fhxGT"));
-    auto thread = new QThread();
-    auto resolve = new VersionResolveWorker();
-    resolve->moveToThread(thread);
-    connect(thread, &QThread::started, resolve, &VersionResolveWorker::resolve);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-    connect(resolve, &VersionResolveWorker::versionResolved, this, &MainWindow::handleVersionResolved);
+    setStatusBar(buildStatusBar(versions));
+    setWindowTitle(tr("APK Studio").append(" - https://vaibhavpandey.com/apkstudio/"));
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
-    thread->start();
     QSettings settings;
     const bool dark = settings.value("dark_theme", false).toBool();
     QFile qss(QString(":/styles/%1.qss").arg(dark ? "dark" : "light"));
@@ -86,17 +78,28 @@ MainWindow::MainWindow(QWidget *parent)
     }
     QTimer::singleShot(100, [=] {
         QSettings settings;
-        const QString project = settings.value("open_project").toString();
-        if (!project.isEmpty()) {
-            QDir dir(project);
-            if (dir.exists() && QFile::exists(dir.filePath("apktool.yml"))) {
-                openProject(project, true);
-            }
-        }
         const QStringList files = settings.value("open_files").toStringList();
         foreach (const QString &file, files) {
             if (QFile::exists(file)) {
                 openFile(file);
+            }
+        }
+        bool missing = false;
+        foreach (const QString &binary, versions.keys()) {
+            if (versions[binary].isEmpty()) {
+                missing = true;
+                break;
+            }
+        }
+        if (missing) {
+            int btn = QMessageBox::information(
+                        this,
+                        tr("Requirements"),
+                        tr("One or more required 3rd-party binaries are missing. Please review settings first."),
+                        tr("Settings"),
+                        tr("Cancel"));
+            if (btn == 0) {
+                (new SettingsDialog(1, this))->exec();
             }
         }
     });
@@ -271,7 +274,7 @@ QDockWidget *MainWindow::buildProjectsDock()
     return dock;
 }
 
-QStatusBar *MainWindow::buildStatusBar()
+QStatusBar *MainWindow::buildStatusBar(const QMap<QString, QString> &versions)
 {
     auto buildSeparator = [=] {
         auto frame = new QFrame(this);
@@ -280,20 +283,15 @@ QStatusBar *MainWindow::buildStatusBar()
         return frame;
     };
     auto statusbar = new QStatusBar(this);
-    statusbar->addPermanentWidget(new QLabel(tr("Java").append(':'), this));
-    statusbar->addPermanentWidget(m_VersionJava = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QLabel(tr("Java").append(": ").append(versions["java"]), this));
     statusbar->addPermanentWidget(buildSeparator());
-    statusbar->addPermanentWidget(new QLabel(tr("Apktool").append(':'), this));
-    statusbar->addPermanentWidget(m_VersionApktool = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QLabel(tr("Apktool").append(": ").append(versions["apktool"]), this));
     statusbar->addPermanentWidget(buildSeparator());
-    statusbar->addPermanentWidget(new QLabel(tr("Jadx").append(':'), this));
-    statusbar->addPermanentWidget(m_VersionJadx = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QLabel(tr("Jadx").append(": ").append(versions["jadx"]), this));
     statusbar->addPermanentWidget(buildSeparator());
-    statusbar->addPermanentWidget(new QLabel(tr("ADB").append(':'), this));
-    statusbar->addPermanentWidget(m_VersionAdb = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QLabel(tr("ADB").append(": ").append(versions["adb"]), this));
     statusbar->addPermanentWidget(buildSeparator());
-    statusbar->addPermanentWidget(new QLabel(tr("Uber APK Signer").append(':'), this));
-    statusbar->addPermanentWidget(m_VersionUberApkSigner = new QLabel("...", this));
+    statusbar->addPermanentWidget(new QLabel(tr("Uber APK Signer").append(": ").append(versions["uas"]), this));
     statusbar->addPermanentWidget(new QWidget(this), 1);
     statusbar->addPermanentWidget(m_StatusCursor = new QLabel("0:0", this));
     statusbar->addPermanentWidget(buildSeparator());
@@ -372,11 +370,12 @@ void MainWindow::handleActionApk()
             auto thread = new QThread();
             auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->sources());
             worker->moveToThread(thread);
-            connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
-            connect(thread, &QThread::finished, thread, &QObject::deleteLater);
             connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
             connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
             connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+            connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
+            connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
+            connect(thread, &QThread::finished, thread, &QObject::deleteLater);
             thread->start();
             m_ProgressDialog = new QProgressDialog(this);
             m_ProgressDialog->setCancelButton(nullptr);
@@ -401,10 +400,12 @@ void MainWindow::handleActionBuild()
     auto thread = new QThread();
     auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString());
     worker->moveToThread(thread);
-    connect(thread, &QThread::started, worker, &ApkRecompileWorker::recompile);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     connect(worker, &ApkRecompileWorker::recompileFailed, this, &MainWindow::handleRecompileFailed);
     connect(worker, &ApkRecompileWorker::recompileFinished, this, &MainWindow::handleRecompileFinished);
+    connect(thread, &QThread::started, worker, &ApkRecompileWorker::recompile);
+    connect(worker, &ApkRecompileWorker::finished, thread, &QThread::quit);
+    connect(worker, &ApkRecompileWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     thread->start();
     m_ProgressDialog = new QProgressDialog(this);
     m_ProgressDialog->setCancelButton(nullptr);
@@ -475,9 +476,11 @@ void MainWindow::handleActionFind()
 
 void MainWindow::handleActionFolder()
 {
+    QSettings settings;
+    const QString project = settings.value("open_project").toString();
     const QString path = QFileDialog::getOpenFileName(this,
                                                       tr("Browse Folder (apktool.yml)"),
-                                                      QString(),
+                                                      project,
                                                       tr("Apktool Project File(s) (apktool.yml)"));
 #ifdef QT_DEBUG
     qDebug() << "User selected to open" << path;
@@ -507,10 +510,12 @@ void MainWindow::handleActionInstall()
     auto thread = new QThread();
     auto worker = new AdbInstallWorker(path);
     worker->moveToThread(thread);
-    connect(thread, &QThread::started, worker, &AdbInstallWorker::install);
-    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     connect(worker, &AdbInstallWorker::installFailed, this, &MainWindow::handleInstallFailed);
     connect(worker, &AdbInstallWorker::installFinished, this, &MainWindow::handleInstallFinished);
+    connect(thread, &QThread::started, worker, &AdbInstallWorker::install);
+    connect(worker, &AdbInstallWorker::finished, thread, &QThread::quit);
+    connect(worker, &AdbInstallWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     thread->start();
     m_ProgressDialog = new QProgressDialog(this);
     m_ProgressDialog->setCancelButton(nullptr);
@@ -575,7 +580,7 @@ void MainWindow::handleActionSayThanks()
 
 void MainWindow::handleActionSettings()
 {
-    (new SettingsDialog(this))->exec();
+    (new SettingsDialog(0, this))->exec();
 }
 
 void MainWindow::handleActionSign()
@@ -597,10 +602,12 @@ void MainWindow::handleActionSign()
                     settings.value("signing_alias_password").toString(),
                     settings.value("signing_zipalign", true).toBool());
         worker->moveToThread(thread);
-        connect(thread, &QThread::started, worker, &ApkSignWorker::sign);
-        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
         connect(worker, &ApkSignWorker::signFailed, this, &MainWindow::handleSignFailed);
         connect(worker, &ApkSignWorker::signFinished, this, &MainWindow::handleSignFinished);
+        connect(thread, &QThread::started, worker, &ApkSignWorker::sign);
+        connect(worker, &ApkSignWorker::finished, thread, &QThread::quit);
+        connect(worker, &ApkSignWorker::finished, worker, &QObject::deleteLater);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
         thread->start();
         m_ProgressDialog = new QProgressDialog(this);
         m_ProgressDialog->setCancelButton(nullptr);
@@ -997,24 +1004,6 @@ void MainWindow::handleTreeSelectionChanged(const QItemSelection &selected, cons
     m_ActionInstall1->setEnabled(apk);
     m_ActionInstall2->setEnabled(apk);
     m_ActionSign->setEnabled(apk);
-}
-
-void MainWindow::handleVersionResolved(const QString &binary, const QString &version)
-{
-#ifdef QT_DEBUG
-    qDebug() << "Binary" << binary << "version resolved as" << version;
-#endif
-    if (binary == "adb") {
-        m_VersionAdb->setText(version.isEmpty() ? tr("n/a") : version);
-    } else if (binary == "apktool") {
-        m_VersionApktool->setText(version.isEmpty() ? tr("n/a") : version);
-    } else if (binary == "jadx") {
-        m_VersionJadx->setText(version.isEmpty() ? tr("n/a") : version);
-    } else if (binary == "java") {
-        m_VersionJava->setText(version.isEmpty() ? tr("n/a") : version);
-    } else if (binary == "uas") {
-        m_VersionUberApkSigner->setText(version.isEmpty() ? tr("n/a") : version);
-    }
 }
 
 void MainWindow::openFile(const QString &path)

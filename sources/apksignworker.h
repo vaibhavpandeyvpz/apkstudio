@@ -17,8 +17,10 @@ private:
     QString m_AliasPassword;
     bool m_Zipalign;
 signals:
+    void finished();
     void signFailed(const QString &apk);
     void signFinished(const QString &apk);
+    void started();
 };
 
 #endif // APKSIGNWORKER_H

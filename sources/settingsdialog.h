@@ -14,7 +14,7 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SettingsDialog(QWidget *parent = nullptr);
+    explicit SettingsDialog(const int page = 0, QWidget *parent = nullptr);
 private:
     AppearanceSettingsWidget *m_AppearanceSettingsWidget;
     BinarySettingsWidget *m_BinarySettingsWidget;

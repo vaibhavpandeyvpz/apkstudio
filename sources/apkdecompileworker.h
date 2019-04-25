@@ -17,6 +17,8 @@ signals:
     void decompileFailed(const QString &apk);
     void decompileFinished(const QString &apk, const QString &folder);
     void decompileProgress(const int percent, const QString &message);
+    void finished();
+    void started();
 };
 
 #endif // APKDECOMPILEWORKER_H

@@ -28,6 +28,10 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
+    layout->addRow(tr("Java Heap (MBs)"), m_SpinJavaHeap = new QSpinBox(this));
+    m_SpinJavaHeap->setMinimum(10);
+    m_SpinJavaHeap->setMaximum(65535);
+    m_SpinJavaHeap->setSingleStep(1);
     layout->addRow(tr("Apktool"), m_EditApktoolJar = new QLineEdit(this));
     child = new QHBoxLayout();
     child->addWidget(button = new QPushButton(tr("Browse"), this));
@@ -70,6 +74,7 @@ QLayout *BinarySettingsWidget::buildForm()
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
     m_EditJavaExe->setText(settings.value("java_exe").toString());
     m_EditUberApkSignerJar->setText(settings.value("uas_jar").toString());
+    m_SpinJavaHeap->setValue(ProcessUtils::javaHeapSize());
     return layout;
 }
 
@@ -156,6 +161,7 @@ void BinarySettingsWidget::save()
     settings.setValue("apktool_jar", m_EditApktoolJar->text());
     settings.setValue("jadx_exe", m_EditJadxExe->text());
     settings.setValue("java_exe", m_EditJavaExe->text());
+    settings.setValue("java_heap", m_SpinJavaHeap->value());
     settings.setValue("uas_jar", m_EditUberApkSignerJar->text());
     settings.sync();
 }

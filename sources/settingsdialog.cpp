@@ -1,7 +1,7 @@
 #include <QHBoxLayout>
 #include "settingsdialog.h"
 
-SettingsDialog::SettingsDialog(QWidget *parent)
+SettingsDialog::SettingsDialog(const int page, QWidget *parent)
     : QDialog(parent)
 {
     auto layout = new QVBoxLayout(this);
@@ -15,6 +15,9 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     setWindowIcon(QIcon(":/icons/fugue/gear.png"));
 #endif
     setWindowTitle(tr("Settings"));
+    if (page != 0) {
+        m_OptionsList->setCurrentRow(page);
+    }
 }
 
 QWidget *SettingsDialog::buildButtonBox()

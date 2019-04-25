@@ -21,9 +21,11 @@ QLayout *AppearanceSettingsWidget::buildForm()
     spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     themes->addWidget(spacer);
     layout->addRow(tr("Theme"), themes);
-    layout->addRow(tr("Editor font"), m_ComboEditorFont = new QFontComboBox(this));
-    layout->addRow(tr("Editor font size"), m_SpinEditorFontSize = new QSpinBox(this));
-    layout->addRow(tr("Show whitespaces?"), m_CheckShowWhitespaces = new QCheckBox(this));
+    layout->addRow(tr("Editor Font"), m_ComboEditorFont = new QFontComboBox(this));
+    layout->addRow(tr("Editor Font Size"), m_SpinEditorFontSize = new QSpinBox(this));
+    m_SpinEditorFontSize->setMinimum(10);
+    m_SpinEditorFontSize->setSingleStep(1);
+    layout->addRow(tr("Show Whitespaces?"), m_CheckShowWhitespaces = new QCheckBox(this));
     QSettings settings;
     const bool dark = settings.value("dark_theme", false).toBool();
     if (dark) {
