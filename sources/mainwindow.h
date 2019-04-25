@@ -3,10 +3,12 @@
 
 #include <QFileIconProvider>
 #include <QLabel>
+#include <QListView>
 #include <QMainWindow>
 #include <QMap>
 #include <QProgressDialog>
 #include <QStackedWidget>
+#include <QStandardItemModel>
 #include <QTextEdit>
 #include <QTreeWidget>
 #include "findreplacedialog.h"
@@ -48,7 +50,8 @@ private:
     QList<QMetaObject::Connection> m_EditorConnections;
     QFileIconProvider m_FileIconProvider;
     FindReplaceDialog *m_FindReplaceDialog;
-    QMap<QString, int> m_MapOpenFiles;
+    QListView *m_ListOpenFiles;
+    QStandardItemModel *m_ModelOpenFiles;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
     QLabel *m_StatusCursor;
@@ -61,10 +64,12 @@ private:
     QLabel *m_VersionUberApkSigner;
     QWidget *buildCentralWidget();
     QDockWidget *buildConsoleDock();
+    QDockWidget *buildFilesDock();
     QToolBar *buildMainToolBar();
     QMenuBar *buildMenuBar();
     QDockWidget *buildProjectsDock();
     QStatusBar *buildStatusBar();
+    int findTabIndex(const QString& path);
 private slots:
     void handleActionAbout();
     void handleActionApk();
@@ -98,6 +103,7 @@ private slots:
     void handleDecompileFailed(const QString &apk);
     void handleDecompileFinished(const QString &apk, const QString &folder);
     void handleDecompileProgress(const int percent, const QString &message);
+    void handleFilesSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
     void handleInstallFailed(const QString &apk);
     void handleInstallFinished(const QString &apk);
     void handleRecompileFailed(const QString &folder);

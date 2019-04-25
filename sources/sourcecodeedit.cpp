@@ -72,6 +72,11 @@ QPointF SourceCodeEdit::contentOffsetProxy()
     return contentOffset();
 }
 
+QString SourceCodeEdit::filePath()
+{
+    return m_FilePath;
+}
+
 QTextBlock SourceCodeEdit::firstVisibleBlockProxy()
 {
     return firstVisibleBlock();
@@ -377,7 +382,7 @@ void SourceCodeEdit::open(const QString &path)
                     ThemedSyntaxHighlighter::definitions(extension),
                     document());
     }
-    m_File = path;
+    m_FilePath = path;
 }
 
 void SourceCodeEdit::paintEvent(QPaintEvent *event)
@@ -405,7 +410,7 @@ void SourceCodeEdit::resizeEvent(QResizeEvent *event)
 
 bool SourceCodeEdit::save()
 {
-    QFile file(m_File);
+    QFile file(m_FilePath);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
         out.setCodec("UTF-8");

@@ -13,19 +13,19 @@ public:
     QRectF blockBoundingGeometryProxy(const QTextBlock &block);
     QRectF blockBoundingRectProxy(const QTextBlock &block);
     QPointF contentOffsetProxy();
+    QString filePath();
     QTextBlock firstVisibleBlockProxy();
     void gotoLine(const int no);
     void moveCursor(const bool end);
     void open(const QString &path);
     bool save();
-
 protected:
     void keyPressEvent(QKeyEvent *event);
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
     void wheelEvent(QWheelEvent *event);
 private:
-    QString m_File;
+    QString m_FilePath;
     SourceCodeSidebarWidget *m_Sidebar;
     int indentSize(const QString &text);
     bool indentText(const bool forward);

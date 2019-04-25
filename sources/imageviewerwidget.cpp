@@ -1,3 +1,4 @@
+#include <QScrollBar>
 #include "imageviewerwidget.h"
 
 ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
@@ -20,6 +21,17 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
     viewport()->setCursor(Qt::OpenHandCursor);
 }
 
+QString ImageViewerWidget::filePath()
+{
+    return m_FilePath;
+}
+
+void ImageViewerWidget::open(const QString &path)
+{
+    m_FilePath = path;
+    m_Image->setPixmap(QPixmap(path));
+}
+
 void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
 {
     if (event->modifiers().testFlag(Qt::ControlModifier)) {
@@ -30,11 +42,6 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         }
     }
     QScrollArea::keyPressEvent(event);
-}
-
-void ImageViewerWidget::setPixmap(const QPixmap &i)
-{
-    m_Image->setPixmap(i);
 }
 
 void ImageViewerWidget::zoomIn()

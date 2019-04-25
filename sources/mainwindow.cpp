@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), m_FindReplaceDialog(nullptr)
 {
     addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
+    addDockWidget(Qt::LeftDockWidgetArea, buildFilesDock());
     addDockWidget(Qt::BottomDockWidgetArea, buildConsoleDock());
     addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
     setCentralWidget(buildCentralWidget());
@@ -150,6 +151,22 @@ QDockWidget *MainWindow::buildConsoleDock()
     setContentsMargins(2, 2, 2, 2);
     dock->setObjectName("ConsoleDock");
     dock->setWidget(m_EditConsole);
+    return dock;
+}
+
+QDockWidget *MainWindow::buildFilesDock()
+{
+    auto dock = new QDockWidget(tr("Files"), this);
+    m_ListOpenFiles = new QListView(this);
+    m_ListOpenFiles->setContextMenuPolicy(Qt::CustomContextMenu);
+    m_ListOpenFiles->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    m_ListOpenFiles->setMinimumWidth(240);
+    m_ListOpenFiles->setModel(m_ModelOpenFiles = new QStandardItemModel(m_ListOpenFiles));
+    m_ListOpenFiles->setSelectionBehavior(QAbstractItemView::SelectItems);
+    m_ListOpenFiles->setSelectionMode(QAbstractItemView::SingleSelection);
+    connect(m_ListOpenFiles->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::handleFilesSelectionChanged);
+    dock->setObjectName("FilesDock");
+    dock->setWidget(m_ListOpenFiles);
     return dock;
 }
 
@@ -295,9 +312,34 @@ void MainWindow::closeEvent(QCloseEvent *event)
         settings.setValue("app_size", size());
     }
     settings.setValue("dock_state", saveState());
-    const QStringList files = m_MapOpenFiles.keys();
+    QStringList files;
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
+        files << m_ModelOpenFiles->index(i, 0).data(Qt::UserRole + 1).toString();
+    }
     settings.setValue("open_files", QVariant::fromValue(files));
     settings.sync();
+}
+
+int MainWindow::findTabIndex(const QString &path)
+{
+    int total = m_TabEditors->count();
+    for (int i = 0; i < total; i++) {
+        QString path2;
+        auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
+        if (edit) {
+            path2 = edit->filePath();
+        } else {
+            auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->widget(i));
+            if (viewer) {
+                path2 = viewer->filePath();
+            }
+        }
+        if (QString::compare(path, path2) == 0) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void MainWindow::handleActionAbout()
@@ -646,6 +688,16 @@ void MainWindow::handleDecompileProgress(const int percent, const QString &messa
     m_ProgressDialog->setValue(percent);
 }
 
+void MainWindow::handleFilesSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+    Q_UNUSED(deselected)
+    if (!selected.isEmpty()) {
+        auto index = selected.indexes().first();
+        const QString path = index.data(Qt::UserRole + 1).toString();
+        m_TabEditors->setCurrentIndex(findTabIndex(path));
+    }
+}
+
 void MainWindow::handleInstallFailed(const QString &apk)
 {
     Q_UNUSED(apk)
@@ -742,8 +794,24 @@ void MainWindow::handleTabChanged(const int index)
 #ifdef QT_DEBUG
     qDebug() << "User changed current tab" << index;
 #endif
-    auto widget = m_TabEditors->widget(index);
-    auto edit = dynamic_cast<SourceCodeEdit *>(widget);
+    QString path;
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        path = edit->filePath();
+    } else {
+        auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->currentWidget());
+        if (viewer) {
+            path = viewer->filePath();
+        }
+    }
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
+        const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
+        if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
+            m_ListOpenFiles->setCurrentIndex(mindex);
+            break;
+        }
+    }
     m_ActionClose->setEnabled(index >= 0);
     m_ActionCloseAll->setEnabled(index >= 0);
     m_ActionCopy->setEnabled(false);
@@ -784,9 +852,23 @@ void MainWindow::handleTabCloseRequested(const int index)
 #ifdef QT_DEBUG
     qDebug() << "User requested to close tab" << index;
 #endif
-    const QString path = m_TabEditors->tabToolTip(index);
-    if (!path.isEmpty()) {
-        m_MapOpenFiles.remove(path);
+    QString path;
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(index));
+    if (edit) {
+        path = edit->filePath();
+    } else {
+        auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->widget(index));
+        if (viewer) {
+            path = viewer->filePath();
+        }
+    }
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
+        const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
+        if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
+            m_ModelOpenFiles->removeRow(mindex.row());
+            break;
+        }
     }
     m_ActionUndo->setEnabled(false);
     m_ActionRedo->setEnabled(false);
@@ -929,29 +1011,39 @@ void MainWindow::openFile(const QString &path)
 #ifdef QT_DEBUG
     qDebug() << "Opening" << path;
 #endif
-    int i;
-    if ((i = m_MapOpenFiles.value(path, -1)) < 0) {
-        QWidget *widget;
-        QFileInfo info(path);
-        const QString extension = info.suffix();
-        if (!extension.isEmpty() && QString(IMAGE_EXTENSIONS).contains(extension, Qt::CaseInsensitive)) {
-            auto viewer = new ImageViewerWidget(this);
-            viewer->setPixmap(QPixmap(path));
-            viewer->zoomReset();
-            widget = viewer;
-        } else {
-            auto editor = new SourceCodeEdit(this);
-            editor->open(path);
-            widget = editor;
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
+        const QModelIndex &index = m_ModelOpenFiles->index(i, 0);
+        if (QString::compare(index.data(Qt::UserRole + 1).toString(), path) == 0) {
+            m_TabEditors->setCurrentIndex(findTabIndex(path));
+            return;
         }
-        i = m_TabEditors->addTab(widget, m_FileIconProvider.icon(info), info.fileName());
-        m_TabEditors->setTabToolTip(i, path);
-        if (m_CentralStack->currentIndex() != 1) {
-            m_CentralStack->setCurrentIndex(1);
-        }
-        m_MapOpenFiles.insert(path, i);
     }
+    QFileInfo info(path);
+    QWidget *widget;
+    const QString extension = info.suffix();
+    if (!extension.isEmpty() && QString(IMAGE_EXTENSIONS).contains(extension, Qt::CaseInsensitive)) {
+        auto viewer = new ImageViewerWidget(this);
+        viewer->open(path);
+        viewer->zoomReset();
+        widget = viewer;
+    } else {
+        auto editor = new SourceCodeEdit(this);
+        editor->open(path);
+        widget = editor;
+    }
+    const QIcon icon = m_FileIconProvider.icon(info);
+    auto item = new QStandardItem(icon, info.fileName());
+    item->setData(path, Qt::UserRole + 1);
+    m_ModelOpenFiles->appendRow(item);
+    const int i = m_TabEditors->addTab(widget, icon, info.fileName());
     m_TabEditors->setCurrentIndex(i);
+    m_TabEditors->setTabToolTip(i, path);
+    if (m_CentralStack->currentIndex() != 1) {
+        m_CentralStack->setCurrentIndex(1);
+    }
+    m_ActionClose->setEnabled(true);
+    m_ActionCloseAll->setEnabled(true);
 }
 
 void MainWindow::openFindReplaceDialog(QPlainTextEdit *edit, const bool replace)
