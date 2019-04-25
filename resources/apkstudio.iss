@@ -4,7 +4,7 @@
 Source: "{#DeploymentDir}\*"; DestDir: "{app}"; Flags: recursesubdirs
 
 [Setup]
-AppName=WA360
+AppName="APK Studio"
 AppVersion=1.0
 Compression=lzma2
 DefaultDirName="{pf}\VPZ\APK Studio"
