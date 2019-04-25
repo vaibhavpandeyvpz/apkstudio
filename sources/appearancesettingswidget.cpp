@@ -23,6 +23,7 @@ QLayout *AppearanceSettingsWidget::buildForm()
     layout->addRow(tr("Theme"), themes);
     layout->addRow(tr("Editor font"), m_ComboEditorFont = new QFontComboBox(this));
     layout->addRow(tr("Editor font size"), m_SpinEditorFontSize = new QSpinBox(this));
+    layout->addRow(tr("Show whitespaces?"), m_CheckShowWhitespaces = new QCheckBox(this));
     QSettings settings;
     const bool dark = settings.value("dark_theme", false).toBool();
     if (dark) {
@@ -39,6 +40,7 @@ QLayout *AppearanceSettingsWidget::buildForm()
 #endif
     m_ComboEditorFont->setCurrentText(font);
     m_SpinEditorFontSize->setValue(settings.value("editor_font_size", 10).toInt());
+    m_CheckShowWhitespaces->setChecked(settings.value("editor_whitespaces", false).toBool());
     return layout;
 }
 
@@ -48,5 +50,6 @@ void AppearanceSettingsWidget::save()
     settings.setValue("dark_theme", m_RadioThemeDark->isChecked());
     settings.setValue("editor_font", m_ComboEditorFont->currentText());
     settings.setValue("editor_font_size", m_SpinEditorFontSize->value());
+    settings.setValue("editor_whitespaces", m_CheckShowWhitespaces->isChecked());
     settings.sync();
 }

@@ -22,6 +22,7 @@ HEADERS += \
     sources/signingconfigwidget.h \
     sources/sourcecodeedit.h \
     sources/splashwindow.h \
+    sources/themedsyntaxhighlighter.h \
     sources/versionresolveworker.h
 
 SOURCES += \
@@ -42,6 +43,7 @@ SOURCES += \
     sources/signingconfigwidget.cpp \
     sources/sourcecodeedit.cpp \
     sources/splashwindow.cpp \
+    sources/themedsyntaxhighlighter.cpp \
     sources/versionresolveworker.cpp
 
 RESOURCES += \

@@ -1,10 +1,13 @@
 #include <QApplication>
+#include <QFileInfo>
 #include <QPainter>
 #include <QScrollBar>
 #include <QSettings>
 #include <QShortcut>
 #include <QTextBlock>
+#include <QTextStream>
 #include "sourcecodeedit.h"
+#include "themedsyntaxhighlighter.h"
 
 #define TAB_STOP_WIDTH 4
 #define TABS_TO_SPACES true
@@ -30,6 +33,12 @@ SourceCodeEdit::SourceCodeEdit(QWidget *parent)
     setFont(font);
     setTabChangesFocus(false);
     setWordWrapMode(QTextOption::NoWrap);
+    const bool whitespaces = settings.value("editor_whitespaces", false).toBool();
+    if (whitespaces) {
+        QTextOption options;
+        options.setFlags(QTextOption::ShowTabsAndSpaces);
+        document()->setDefaultTextOption(options);
+    }
     connect(this, &QPlainTextEdit::cursorPositionChanged, this, &SourceCodeEdit::handleCursorPositionChanged);
     connect(this, &QPlainTextEdit::blockCountChanged, this, &SourceCodeEdit::handleBlockCountChanged);
     connect(this, &QPlainTextEdit::textChanged, this, &SourceCodeEdit::handleTextChanged);
@@ -353,6 +362,24 @@ void SourceCodeEdit::moveSelection(const bool up)
     setTextCursor(moved);
 }
 
+void SourceCodeEdit::open(const QString &path)
+{
+    QFile file(path);
+    if (file.open(QFile::ReadOnly | QFile::Text)) {
+        auto content = QString::fromUtf8(file.readAll());
+        setPlainText(content);
+        QFileInfo info(path);
+        QString extension = info.suffix().toLower();
+        QSettings settings;
+        const bool dark = settings.value("dark_theme", false).toBool();
+        new ThemedSyntaxHighlighter(
+                    ThemedSyntaxHighlighter::theme(dark ? "dark" : "light"),
+                    ThemedSyntaxHighlighter::definitions(extension),
+                    document());
+    }
+    m_File = path;
+}
+
 void SourceCodeEdit::paintEvent(QPaintEvent *event)
 {
     QPainter line(viewport());
@@ -374,6 +401,21 @@ void SourceCodeEdit::resizeEvent(QResizeEvent *event)
     QPlainTextEdit::resizeEvent(event);
     QRect rect = contentsRect();
     m_Sidebar->setGeometry(QRect(rect.left(), rect.top(), m_Sidebar->sizeHint().width(), rect.height()));
+}
+
+bool SourceCodeEdit::save()
+{
+    QFile file(m_File);
+    if (file.open(QFile::WriteOnly | QFile::Text)) {
+        QTextStream out(&file);
+        out.setCodec("UTF-8");
+        out.setGenerateByteOrderMark(false);
+        out << toPlainText();
+        out.flush();
+        file.close();
+        return true;
+    }
+    return false;
 }
 
 void SourceCodeEdit::transformText(const bool upper)

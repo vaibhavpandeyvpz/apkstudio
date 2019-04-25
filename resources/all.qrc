@@ -1,4 +1,12 @@
 <RCC>
+    <qresource prefix="/highlights">
+        <file>java.def</file>
+        <file>numbers.def</file>
+        <file>smali.def</file>
+        <file>strings.def</file>
+        <file>xml.def</file>
+        <file>yml.def</file>
+    </qresource>
     <qresource prefix="/images">
         <file>icon.png</file>
         <file>splash.png</file>
@@ -21,5 +29,9 @@
     <qresource prefix="/styles">
         <file>dark.qss</file>
         <file>light.qss</file>
+    </qresource>
+    <qresource prefix="/themes">
+        <file>dark.theme</file>
+        <file>light.theme</file>
     </qresource>
 </RCC>

@@ -920,15 +920,11 @@ void MainWindow::openFile(const QString &path)
 #endif
     int i;
     if ((i = m_MapOpenFiles.value(path, -1)) < 0) {
-        QFileInfo info(path);
         auto editor = new SourceCodeEdit(this);
+        editor->open(path);
+        QFileInfo info(path);
         i = m_TabEditors->addTab(editor, m_FileIconProvider.icon(info), info.fileName());
         m_TabEditors->setTabToolTip(i, path);
-        QFile file(info.filePath());
-        if (file.open(QFile::ReadOnly | QFile::Text)) {
-            auto content = QString::fromUtf8(file.readAll());
-            editor->setPlainText(content);
-        }
         if (m_CentralStack->currentIndex() != 1) {
             m_CentralStack->setCurrentIndex(1);
         }
@@ -1005,18 +1001,7 @@ bool MainWindow::saveTab(int i)
 {
     auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
     if (edit) {
-        const QString path = m_TabEditors->tabToolTip(i);
-        QFile file(path);
-        if (file.open(QFile::WriteOnly | QFile::Text)) {
-            QTextStream out(&file);
-            out.setCodec("UTF-8");
-            out.setGenerateByteOrderMark(true);
-            out << edit->toPlainText();
-            out.flush();
-            file.close();
-        } else {
-            return false;
-        }
+        return edit->save();
     }
     return true;
 }

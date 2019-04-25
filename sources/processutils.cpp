@@ -8,7 +8,7 @@
 #include <QTextCodec>
 #include "processutils.h"
 
-#define REGEXP_LF "[\\r\\n]"
+#define REGEXP_CRLF "[\\r\\n]"
 
 ProcessOutput* ProcessOutput::m_Self = nullptr;
 
@@ -167,7 +167,7 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
         result.code = process.exitCode();
         QString error(process.readAllStandardError());
         QString output(process.readAllStandardOutput());
-        QRegularExpression crlf(REGEXP_LF);
+        QRegularExpression crlf(REGEXP_CRLF);
         result.error = error.split(crlf, QString::SkipEmptyParts);
         result.output = output.split(crlf, QString::SkipEmptyParts);
     } else {

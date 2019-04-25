@@ -1,0 +1,13 @@
+keywords <[\s]*[/]?[\s]*[\w]+(?=[\s/>])
+keywords <[\s]*[/]?[\s]*[\w]+-(\w+/?)+(?=[\s/>])
+keywords [<>]
+keywords />
+keywords </
+keywords <\?
+keywords \?>
+attributes \w+(?=\=)
+attributes \w+:(\w+/?)+(?=\=)
+@include numbers
+strings "[^\n"]+"(?=[?\s/>])
+resources @([a-zA-Z])+(?=/)
+comments? <!--|[^-]*-([^-][^-]*-)*->

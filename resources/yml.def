@@ -1,0 +1,7 @@
+@include numbers
+@include strings
+namespace !!.*$
+strings [-:](\s+)?.*$
+strings (\s+)?.*$
+variables \b[^:].*:
+comments #[^\n]*

@@ -1,6 +1,7 @@
 #ifndef APPERANCESETTINGSWIDGET_H
 #define APPERANCESETTINGSWIDGET_H
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QSpinBox>
 #include <QLineEdit>
@@ -13,6 +14,7 @@ class AppearanceSettingsWidget : public QWidget
 public:
     explicit AppearanceSettingsWidget(QWidget *parent = nullptr);
 private:
+    QCheckBox *m_CheckShowWhitespaces;
     QComboBox *m_ComboEditorFont;
     QRadioButton *m_RadioThemeDark;
     QSpinBox *m_SpinEditorFontSize;
