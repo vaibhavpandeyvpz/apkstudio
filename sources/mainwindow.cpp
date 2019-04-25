@@ -25,6 +25,7 @@
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
 #include "findreplacedialog.h"
+#include "imageviewerwidget.h"
 #include "settingsdialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
@@ -35,6 +36,8 @@
 #define COLOR_COMMAND 0xd0d2d3
 #define COLOR_OUTPUT 0xffffff
 #define COLOR_ERROR 0xfb0a2a
+
+#define IMAGE_EXTENSIONS "gif|jpg|jpeg|png"
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio/"
@@ -377,13 +380,13 @@ void MainWindow::handleActionContribute()
 
 void MainWindow::handleActionCopy()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     edit->copy();
 }
 
 void MainWindow::handleActionCut()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     edit->cut();
 }
 
@@ -407,7 +410,7 @@ void MainWindow::handleActionFile()
 
 void MainWindow::handleActionFind()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     openFindReplaceDialog(edit, false);
 }
 
@@ -427,7 +430,7 @@ void MainWindow::handleActionFolder()
 
 void MainWindow::handleActionGoto()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     QTextCursor cursor = edit->textCursor();
     const int line = QInputDialog::getInt(this, tr("Go To"), tr("Enter a line number:"), cursor.blockNumber() + 1, 1, edit->document()->lineCount());
     if (line > 0) {
@@ -462,7 +465,7 @@ void MainWindow::handleActionInstall()
 
 void MainWindow::handleActionPaste()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     if (edit->canPaste()) {
         edit->paste();
     }
@@ -475,13 +478,13 @@ void MainWindow::handleActionQuit()
 
 void MainWindow::handleActionRedo()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     edit->redo();
 }
 
 void MainWindow::handleActionReplace()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     openFindReplaceDialog(edit, false);
 }
 
@@ -553,7 +556,7 @@ void MainWindow::handleActionSign()
 
 void MainWindow::handleActionUndo()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     edit->undo();
 }
 
@@ -562,8 +565,10 @@ void MainWindow::handleClipboardDataChanged()
 #ifdef QT_DEBUG
     qDebug() << "Something has changed on clipboard.";
 #endif
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
-    m_ActionPaste->setEnabled(edit && edit->canPaste());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    if (edit) {
+        m_ActionPaste->setEnabled(edit && edit->canPaste());
+    }
 }
 
 void MainWindow::handleCommandFinished(const ProcessResult &result)
@@ -602,7 +607,7 @@ void MainWindow::handleCommandStarting(const QString &exe, const QStringList &ar
 
 void MainWindow::handleCursorPositionChanged()
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     if (edit) {
         QTextCursor cursor = edit->textCursor();
         const QString position = QString("%1:%2").arg(cursor.blockNumber() + 1).arg(cursor.positionInBlock() + 1);
@@ -732,7 +737,7 @@ void MainWindow::handleTabChanged(const int index)
     qDebug() << "User changed current tab" << index;
 #endif
     auto widget = m_TabEditors->widget(index);
-    auto edit = static_cast<SourceCodeEdit *>(widget);
+    auto edit = dynamic_cast<SourceCodeEdit *>(widget);
     m_ActionClose->setEnabled(index >= 0);
     m_ActionCloseAll->setEnabled(index >= 0);
     m_ActionCopy->setEnabled(false);
@@ -920,10 +925,20 @@ void MainWindow::openFile(const QString &path)
 #endif
     int i;
     if ((i = m_MapOpenFiles.value(path, -1)) < 0) {
-        auto editor = new SourceCodeEdit(this);
-        editor->open(path);
+        QWidget *widget;
         QFileInfo info(path);
-        i = m_TabEditors->addTab(editor, m_FileIconProvider.icon(info), info.fileName());
+        const QString extension = info.suffix();
+        if (!extension.isEmpty() && QString(IMAGE_EXTENSIONS).contains(extension, Qt::CaseInsensitive)) {
+            auto viewer = new ImageViewerWidget(this);
+            viewer->setPixmap(QPixmap(path));
+            viewer->zoomReset();
+            widget = viewer;
+        } else {
+            auto editor = new SourceCodeEdit(this);
+            editor->open(path);
+            widget = editor;
+        }
+        i = m_TabEditors->addTab(widget, m_FileIconProvider.icon(info), info.fileName());
         m_TabEditors->setTabToolTip(i, path);
         if (m_CentralStack->currentIndex() != 1) {
             m_CentralStack->setCurrentIndex(1);
@@ -999,7 +1014,7 @@ void MainWindow::reloadChildren(QTreeWidgetItem *item)
 
 bool MainWindow::saveTab(int i)
 {
-    auto edit = static_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
+    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
     if (edit) {
         return edit->save();
     }

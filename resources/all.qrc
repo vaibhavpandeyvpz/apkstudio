@@ -34,4 +34,7 @@
         <file>dark.theme</file>
         <file>light.theme</file>
     </qresource>
+    <qresource prefix="/">
+        <file>checkerboard.png</file>
+    </qresource>
 </RCC>

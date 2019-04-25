@@ -15,6 +15,8 @@ HEADERS += \
     sources/appearancesettingswidget.h \
     sources/binarysettingswidget.h \
     sources/findreplacedialog.h \
+    sources/flickcharm.h \
+    sources/imageviewerwidget.h \
     sources/mainwindow.h \
     sources/processutils.h \
     sources/settingsdialog.h \
@@ -27,6 +29,8 @@ HEADERS += \
 
 SOURCES += \
     Qt-Frameless-Window-DarkStyle/DarkStyle.cpp \
+    sources/flickcharm.cpp \
+    sources/imageviewerwidget.cpp \
     sources/main.cpp \
     sources/adbinstallworker.cpp \
     sources/apkdecompiledialog.cpp \
