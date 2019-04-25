@@ -8,6 +8,8 @@
 
 Open-source, cross platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for Android's \*.smali code files.
 
+[![Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)
+
 <p align="center">
   <a href="https://ci.appveyor.com/project/vaibhavpandeyvpz/apkstudio">
     <img src="https://img.shields.io/appveyor/ci/vaibhavpandeyvpz/apkstudio.svg" alt="AppVeyor">
