@@ -78,6 +78,10 @@ MainWindow::MainWindow(QWidget *parent)
     } else {
         resize(settings.value("app_size", QSize(WINDOW_WIDTH, WINDOW_HEIGHT)).toSize());
     }
+    const QVariant state = settings.value("dock_state");
+    if (state.isValid()) {
+        restoreState(state.toByteArray());
+    }
     QTimer::singleShot(100, [=] {
         QSettings settings;
         const QString project = settings.value("open_project").toString();
@@ -165,6 +169,7 @@ QToolBar *MainWindow::buildMainToolBar()
     m_ActionInstall2->setEnabled(false);
     toolbar->setIconSize(QSize(48, 48));
     toolbar->setMovable(false);
+    toolbar->setObjectName("Toolbar");
     return toolbar;
 }
 
@@ -289,6 +294,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     if (!maximized) {
         settings.setValue("app_size", size());
     }
+    settings.setValue("dock_state", saveState());
     const QStringList files = m_MapOpenFiles.keys();
     settings.setValue("open_files", QVariant::fromValue(files));
     settings.sync();
