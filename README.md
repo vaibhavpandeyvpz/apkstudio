@@ -6,7 +6,7 @@
   APK Studio
 </h1>
 
-Open-source, cross-platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for Android's \*.smali code files.
+Open-source, cross platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for Android's \*.smali code files.
 
 <p align="center">
   <a href="https://ci.appveyor.com/project/vaibhavpandeyvpz/apkstudio">
@@ -19,11 +19,28 @@ Open-source, cross-platform Qt based IDE for reverse-engineering Android applica
 
 If you are just willing to quickly decompile an Android app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
 
+### Features
+- Cross platform, run on **Linux**, **Mac OS X** & **Windows**
+- Decompile/recompile/sign & install APKs
+- Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
+- Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files
+
 ### Downloads
 Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading.
 
 ### Building
 Information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki).
+
+### Credits
+- [iBotPeaches](https://github.com/iBotPeaches) for [apktool](https://ibotpeaches.github.io/Apktool)
+- [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
+- [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
+- [probonopd](https://github.com/probonopd) for [linuxdeployqt](https://github.com/probonopd/linuxdeployqt)
+- [p.yusukekamiyamane](https://p.yusukekamiyamane.com/) for [Fugue](https://p.yusukekamiyamane.com/) icons
+- [Icons8](https://icons8.com/) for various icons
+- [Surendrajat](https://github.com/Surendrajat) for maintaining project while I couldn't
+
+**Note**: If you encounter any problems, make sure to check **Console** output at the bottom of the IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio [here](https://github.com/vaibhavpandeyvpz/apkstudio/issues) on Github. Please note, an issue with [apktool](http://ibotpeaches.github.io/Apktool/) is not an issue with **APK Studio**. Please verify the context of issue before opening a ticket.
 
 ---
 
