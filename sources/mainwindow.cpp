@@ -373,6 +373,7 @@ void MainWindow::handleActionApk()
             connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
             connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
             connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+            connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
             connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
             connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
             connect(thread, &QThread::finished, thread, &QObject::deleteLater);
