@@ -7,10 +7,6 @@
         <file>xml.def</file>
         <file>yml.def</file>
     </qresource>
-    <qresource prefix="/images">
-        <file>icon.png</file>
-        <file>splash.png</file>
-    </qresource>
     <qresource prefix="/icons">
         <file>icon.ico</file>
         <file>fugue/application-terminal.png</file>
@@ -26,6 +22,11 @@
         <file>fugue/gear.png</file>
         <file>fugue/color.png</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>checkerboard.png</file>
+        <file>icon.png</file>
+        <file>splash.png</file>
+    </qresource>
     <qresource prefix="/styles">
         <file>dark.qss</file>
         <file>light.qss</file>
@@ -35,6 +36,6 @@
         <file>light.theme</file>
     </qresource>
     <qresource prefix="/">
-        <file>checkerboard.png</file>
+        <file>about.html</file>
     </qresource>
 </RCC>

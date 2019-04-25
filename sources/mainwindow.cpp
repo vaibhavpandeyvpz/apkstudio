@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QStatusBar>
@@ -344,6 +345,16 @@ int MainWindow::findTabIndex(const QString &path)
 
 void MainWindow::handleActionAbout()
 {
+    QMessageBox box;
+    box.setIconPixmap(QPixmap(":/images/icon.png").scaledToWidth(128));
+    QFile about(":/about.html");
+    about.open(QIODevice::ReadOnly | QIODevice::Text);
+    QTextStream stream(&about);
+    box.setInformativeText(stream.readAll());
+    about.close();
+    box.setText(QString("<strong>Tag</strong>: %1<br><strong>Commit</strong>: %2").arg(GIT_TAG).arg(GIT_COMMIT_FULL));
+    box.setWindowTitle(tr("About"));
+    box.exec();
 }
 
 void MainWindow::handleActionApk()

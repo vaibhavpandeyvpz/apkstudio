@@ -12,7 +12,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent) :
     m_Image->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     m_Image->setStyleSheet("QLabel {"
         "background-color: transparent;"
-        "background-image: url(':/checkerboard.png');"
+        "background-image: url(':/images/checkerboard.png');"
         "border: 1px dashed #000000;"
     "}");
     setAlignment(Qt::AlignCenter);
