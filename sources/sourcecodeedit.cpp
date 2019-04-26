@@ -28,17 +28,17 @@ SourceCodeEdit::SourceCodeEdit(QWidget *parent)
     font.setFixedPitch(true);
     font.setPointSize(settings.value("editor_font_size", 10).toInt());
     font.setStyleHint(QFont::Monospace);
-    setCursorWidth(2);
-    setFrameStyle(QFrame::NoFrame);
-    setFont(font);
-    setTabChangesFocus(false);
-    setWordWrapMode(QTextOption::NoWrap);
     const bool whitespaces = settings.value("editor_whitespaces", false).toBool();
     if (whitespaces) {
         QTextOption options;
         options.setFlags(QTextOption::ShowTabsAndSpaces);
         document()->setDefaultTextOption(options);
     }
+    setCursorWidth(2);
+    setFrameStyle(QFrame::NoFrame);
+    setFont(font);
+    setTabChangesFocus(false);
+    setWordWrapMode(QTextOption::NoWrap);
     connect(this, &QPlainTextEdit::cursorPositionChanged, this, &SourceCodeEdit::handleCursorPositionChanged);
     connect(this, &QPlainTextEdit::blockCountChanged, this, &SourceCodeEdit::handleBlockCountChanged);
     connect(this, &QPlainTextEdit::textChanged, this, &SourceCodeEdit::handleTextChanged);
