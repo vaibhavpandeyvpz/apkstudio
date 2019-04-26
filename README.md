@@ -17,6 +17,12 @@ Open-source, cross platform [Qt](https://www.qt.io/) based IDE for reverse-engin
   <a href="https://travis-ci.org/vaibhavpandeyvpz/apkstudio">
     <img src="https://img.shields.io/travis/vaibhavpandeyvpz/apkstudio.svg" alt="Travis CI">
   </a>
+  <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases/latest">
+    <img src="https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio.svg" alt="Release">
+  </a>
+  <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases">
+    <img src="https://img.shields.io/github/downloads/vaibhavpandeyvpz/apkstudio/total.svg" alt="Downloads">
+  </a>
 </p>
 
 If you are just willing to quickly decompile an [Android](https://android.com/) app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).

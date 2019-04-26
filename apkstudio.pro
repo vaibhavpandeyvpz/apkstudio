@@ -52,10 +52,13 @@ SOURCES += \
 
 RESOURCES += \
     Qt-Frameless-Window-DarkStyle/darkstyle.qrc \
+    resources/all.qrc
+
+OTHER_FILES += \
     build/linux.sh \
     build/osx.sh \
     build/windows.bat \
-    resources/all.qrc \
+    docs/index.html \
     resources/apkstudio.desktop \
     .appveyor.yml \
     .travis.yml \
