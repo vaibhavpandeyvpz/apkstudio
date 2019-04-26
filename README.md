@@ -6,7 +6,7 @@
   APK Studio
 </h1>
 
-Open-source, cross platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for Android's \*.smali code files.
+Open-source, cross platform [Qt](https://www.qt.io/) based IDE for reverse-engineering [Android](https://android.com/) application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for \*.smali code files.
 
 [![Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)
 
@@ -19,7 +19,7 @@ Open-source, cross platform Qt based IDE for reverse-engineering Android applica
   </a>
 </p>
 
-If you are just willing to quickly decompile an Android app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
+If you are just willing to quickly decompile an [Android](https://android.com/) app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
 
 ### Features
 - Cross platform, run on **Linux**, **Mac OS X** & **Windows**
