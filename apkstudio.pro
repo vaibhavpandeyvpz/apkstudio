@@ -64,7 +64,7 @@ OTHER_FILES += \
     .travis.yml \
     README.md
 
-mac:RC_FILE = resources/icon.icns
+mac:ICON = resources/icon.icns
 
 unix {
     isEmpty(PREFIX) {
