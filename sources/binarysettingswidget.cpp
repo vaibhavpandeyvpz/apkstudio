@@ -69,10 +69,20 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
     QSettings settings;
-    m_EditAdbExe->setText(settings.value("adb_exe").toString());
+    auto adb = settings.value("adb_exe").toString();
+    if (adb.isEmpty()) {
+        m_EditAdbExe->setText(ProcessUtils::adbExe());
+    } else {
+        m_EditAdbExe->setText(adb);
+    }
     m_EditApktoolJar->setText(settings.value("apktool_jar").toString());
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
-    m_EditJavaExe->setText(settings.value("java_exe").toString());
+    auto java = settings.value("java_exe").toString();
+    if (adb.isEmpty()) {
+        m_EditJavaExe->setText(ProcessUtils::javaExe());
+    } else {
+        m_EditJavaExe->setText(java);
+    }
     m_EditUberApkSignerJar->setText(settings.value("uas_jar").toString());
     m_SpinJavaHeap->setValue(ProcessUtils::javaHeapSize());
     return layout;
@@ -86,7 +96,7 @@ void BinarySettingsWidget::handleBrowseAdb()
 #else
                                                       tr("Browse ADB"),
 #endif
-                                                      QString()
+                                                      m_EditAdbExe->text()
 #ifdef Q_OS_WIN
                                                       , tr("Executable File(s) (*.exe)")
 #endif
@@ -100,7 +110,7 @@ void BinarySettingsWidget::handleBrowseApktool()
 {
     const QString path = QFileDialog::getOpenFileName(this,
                                                       tr("Browse Apktool (apktool.jar)"),
-                                                      QString(),
+                                                      m_EditApktoolJar->text(),
                                                       tr("JAR File(s) (*.jar)"));
     if (!path.isEmpty()) {
         m_EditApktoolJar->setText(QDir::toNativeSeparators(path));
@@ -115,7 +125,7 @@ void BinarySettingsWidget::handleBrowseJadx()
 #else
                                                       tr("Browse Jadx"),
 #endif
-                                                      QString()
+                                                      m_EditJadxExe->text()
 #ifdef Q_OS_WIN
                                                       , tr("Windows Batch File(s) (*.bat)")
 #endif
@@ -133,7 +143,7 @@ void BinarySettingsWidget::handleBrowseJava()
 #else
                                                       tr("Browse Java"),
 #endif
-                                                      QString()
+                                                      m_EditJavaExe->text()
 #ifdef Q_OS_WIN
                                                       , tr("Executable File(s) (*.exe)")
 #endif
@@ -147,7 +157,7 @@ void BinarySettingsWidget::handleBrowseUberApkSigner()
 {
     const QString path = QFileDialog::getOpenFileName(this,
                                                       tr("Browse Uber APK Signer (uber-apk-signer.jar)"),
-                                                      QString(),
+                                                      m_EditUberApkSignerJar->text(),
                                                       tr("JAR File(s) (*.jar)"));
     if (!path.isEmpty()) {
         m_EditUberApkSignerJar->setText(QDir::toNativeSeparators(path));

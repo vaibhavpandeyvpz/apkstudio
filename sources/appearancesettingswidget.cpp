@@ -1,8 +1,12 @@
+#include <QApplication>
 #include <QFontComboBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QSettings>
 #include "appearancesettingswidget.h"
+
+#define CODE_RESTART 60600
 
 AppearanceSettingsWidget::AppearanceSettingsWidget(QWidget *parent)
     : QWidget(parent)
@@ -49,9 +53,20 @@ QLayout *AppearanceSettingsWidget::buildForm()
 void AppearanceSettingsWidget::save()
 {
     QSettings settings;
+    bool dark = settings.value("dark_theme").toBool();
     settings.setValue("dark_theme", m_RadioThemeDark->isChecked());
     settings.setValue("editor_font", m_ComboEditorFont->currentText());
     settings.setValue("editor_font_size", m_SpinEditorFontSize->value());
     settings.setValue("editor_whitespaces", m_CheckShowWhitespaces->isChecked());
     settings.sync();
+    if (dark != m_RadioThemeDark->isChecked()) {
+        int btn = QMessageBox::information(this,
+                                           tr("Theme"),
+                                           tr("Changes to app theme will be applied only when you restart APK studio."),
+                                           tr("Restart"),
+                                           tr("OK"));
+        if (btn == 0) {
+            QApplication::exit(CODE_RESTART);
+        }
+    }
 }

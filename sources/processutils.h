@@ -31,7 +31,6 @@ class ProcessUtils
 public:
     static QString adbExe();
     static QString apktoolJar();
-    static QString expandEnvVar(const QString &name);
     static QString findInPath(const QString &exe);
     static QString jadxExe();
     static QString javaExe();

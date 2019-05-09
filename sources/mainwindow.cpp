@@ -87,6 +87,9 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
         bool missing = false;
         foreach (const QString &binary, versions.keys()) {
             if (versions[binary].isEmpty()) {
+#ifdef QT_DEBUG
+                qDebug() << binary << "is missing";
+#endif
                 missing = true;
                 break;
             }
