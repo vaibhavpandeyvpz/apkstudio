@@ -1,10 +1,13 @@
 <RCC>
     <qresource prefix="/highlights">
+        <file>html.def</file>
         <file>java.def</file>
         <file>numbers.def</file>
+        <file>properties.def</file>
         <file>smali.def</file>
         <file>strings.def</file>
         <file>xml.def</file>
+        <file>yaml.def</file>
         <file>yml.def</file>
     </qresource>
     <qresource prefix="/icons">

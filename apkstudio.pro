@@ -1,3 +1,5 @@
+include(QHexView/QHexView.pri)
+
 QT += core gui widgets
 
 TARGET = ApkStudio
@@ -16,6 +18,7 @@ HEADERS += \
     sources/binarysettingswidget.h \
     sources/findreplacedialog.h \
     sources/flickcharm.h \
+    sources/hexedit.h \
     sources/imageviewerwidget.h \
     sources/mainwindow.h \
     sources/processutils.h \
@@ -30,6 +33,7 @@ HEADERS += \
 SOURCES += \
     Qt-Frameless-Window-DarkStyle/DarkStyle.cpp \
     sources/flickcharm.cpp \
+    sources/hexedit.cpp \
     sources/imageviewerwidget.cpp \
     sources/main.cpp \
     sources/adbinstallworker.cpp \

@@ -32,6 +32,7 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 - Decompile/recompile/sign & install APKs
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
 - Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files
+- Built-in hex viewer for binary files
 
 ### Downloads
 Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading.
@@ -44,6 +45,8 @@ Information on building from source is provided in the [Wiki](https://github.com
 - [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
 - [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
 - [probonopd](https://github.com/probonopd) for [linuxdeployqt](https://github.com/probonopd/linuxdeployqt)
+- [Jürgen Skrotzky](https://github.com/Jorgen-VikingGod) for [Qt-Frameless-Window-DarkStyle](https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle)
+- [Antonio Davide](https://github.com/Dax89) for [QHexView](https://github.com/Dax89/QHexView)
 - [p.yusukekamiyamane](https://p.yusukekamiyamane.com/) for [Fugue](https://p.yusukekamiyamane.com/) icons
 - [Icons8](https://icons8.com/) for various icons
 - [Surendrajat](https://github.com/Surendrajat) for maintaining project while I couldn't

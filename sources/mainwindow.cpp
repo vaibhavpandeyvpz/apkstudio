@@ -26,18 +26,20 @@
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
 #include "findreplacedialog.h"
+#include "hexedit.h"
 #include "imageviewerwidget.h"
+#include "mainwindow.h"
 #include "settingsdialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
-#include "mainwindow.h"
 
 #define COLOR_CODE 0x2ad2c9
 #define COLOR_COMMAND 0xd0d2d3
 #define COLOR_OUTPUT 0xffffff
 #define COLOR_ERROR 0xfb0a2a
 
-#define IMAGE_EXTENSIONS "gif|jpg|jpeg|png"
+#define IMAGE_EXTENSIONS "gif|jpeg|jpg|png"
+#define TEXT_EXTENSIONS "java|html|properties|smali|txt|xml|yaml|yml"
 
 #define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
 #define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio/"
@@ -328,14 +330,16 @@ int MainWindow::findTabIndex(const QString &path)
     int total = m_TabEditors->count();
     for (int i = 0; i < total; i++) {
         QString path2;
-        auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
+        auto widget = m_TabEditors->widget(i);
+        auto edit = dynamic_cast<SourceCodeEdit *>(widget);
+        auto hex = dynamic_cast<HexEdit *>(widget);
+        auto viewer = dynamic_cast<ImageViewerWidget *>(widget);
         if (edit) {
             path2 = edit->filePath();
-        } else {
-            auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->widget(i));
-            if (viewer) {
-                path2 = viewer->filePath();
-            }
+        } else if (hex) {
+            path2 = hex->filePath();
+        } else if (viewer) {
+            path2 = viewer->filePath();
         }
         if (QString::compare(path, path2) == 0) {
             return i;
@@ -817,14 +821,16 @@ void MainWindow::handleTabChanged(const int index)
     qDebug() << "User changed current tab" << index;
 #endif
     QString path;
-    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
+    auto widget = m_TabEditors->currentWidget();
+    auto edit = dynamic_cast<SourceCodeEdit *>(widget);
+    auto hex = dynamic_cast<HexEdit *>(widget);
+    auto viewer = dynamic_cast<ImageViewerWidget *>(widget);
     if (edit) {
         path = edit->filePath();
-    } else {
-        auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->currentWidget());
-        if (viewer) {
-            path = viewer->filePath();
-        }
+    } else if (hex) {
+        path = hex->filePath();
+    } else if (viewer) {
+        path = viewer->filePath();
     }
     const int total = m_ModelOpenFiles->rowCount();
     for (int i = 0; i < total; ++i) {
@@ -843,8 +849,8 @@ void MainWindow::handleTabChanged(const int index)
     m_ActionUndo->setEnabled(false);
     m_ActionFind->setEnabled(edit);
     m_ActionReplace->setEnabled(edit);
-    m_ActionSave->setEnabled(edit);
-    m_ActionSaveAll->setEnabled(edit);
+    m_ActionSave->setEnabled(edit || hex);
+    m_ActionSaveAll->setEnabled(edit || hex);
     m_ActionGoto->setEnabled(edit);
     for (auto conn: m_EditorConnections) {
         disconnect(conn);
@@ -875,14 +881,16 @@ void MainWindow::handleTabCloseRequested(const int index)
     qDebug() << "User requested to close tab" << index;
 #endif
     QString path;
-    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(index));
+    auto widget = m_TabEditors->widget(index);
+    auto edit = dynamic_cast<SourceCodeEdit *>(widget);
+    auto hex = dynamic_cast<HexEdit *>(widget);
+    auto viewer = dynamic_cast<ImageViewerWidget *>(widget);
     if (edit) {
         path = edit->filePath();
-    } else {
-        auto viewer = dynamic_cast<ImageViewerWidget *>(m_TabEditors->widget(index));
-        if (viewer) {
-            path = viewer->filePath();
-        }
+    } else if (hex) {
+        path = hex->filePath();
+    } else if (viewer) {
+        path = viewer->filePath();
     }
     const int total = m_ModelOpenFiles->rowCount();
     for (int i = 0; i < total; ++i) {
@@ -1031,10 +1039,14 @@ void MainWindow::openFile(const QString &path)
         viewer->open(path);
         viewer->zoomReset();
         widget = viewer;
-    } else {
+    } else if (!extension.isEmpty() && QString(TEXT_EXTENSIONS).contains(extension, Qt::CaseInsensitive)) {
         auto editor = new SourceCodeEdit(this);
         editor->open(path);
         widget = editor;
+    } else {
+        auto hex = new HexEdit(this);
+        hex->open(path);
+        widget = hex;
     }
     const QIcon icon = m_FileIconProvider.icon(info);
     auto item = new QStandardItem(icon, info.fileName());
@@ -1116,9 +1128,15 @@ void MainWindow::reloadChildren(QTreeWidgetItem *item)
 
 bool MainWindow::saveTab(int i)
 {
-    auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->widget(i));
+    auto widget = m_TabEditors->widget(i);
+    auto edit = dynamic_cast<SourceCodeEdit *>(widget);
     if (edit) {
         return edit->save();
+    } else {
+        auto hex = dynamic_cast<HexEdit *>(widget);
+        if (hex) {
+            return hex->save();
+        }
     }
     return true;
 }
