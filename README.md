@@ -32,7 +32,7 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 - Decompile/recompile/sign & install APKs
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
 - Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files
-- Built-in hex viewer for binary files
+- Built-in hex editor for binary files
 
 ### Downloads
 Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading.
