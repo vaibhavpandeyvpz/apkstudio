@@ -13,10 +13,14 @@ public:
     explicit ApkDecompileDialog(const QString &apk, QWidget *parent = nullptr);
     QString apk() const;
     QString folder() const;
-    bool sources() const;
+    bool java() const;
+    bool resources() const;
+    bool smali() const;
 private:
     QDialogButtonBox *m_ButtonBox;
-    QCheckBox *m_CheckSources;
+    QCheckBox *m_CheckJava;
+    QCheckBox *m_CheckResources;
+    QCheckBox *m_CheckSmali;
     QLineEdit *m_EditApk;
     QLineEdit *m_EditFolder;
     QWidget *buildButtonBox();

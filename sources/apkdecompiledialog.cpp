@@ -14,7 +14,7 @@ ApkDecompileDialog::ApkDecompileDialog(const QString &apk, QWidget *parent)
     layout->addWidget(buildButtonBox());
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(2);
-    setMinimumSize(320, 160);
+    setMinimumSize(340, 160);
 #ifdef Q_OS_WIN
     setWindowIcon(QIcon(":/icons/fugue/android.png"));
 #endif
@@ -51,7 +51,11 @@ QLayout *ApkDecompileDialog::buildForm(const QString &apk)
     empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     child->addWidget(empty);
     layout->addRow("", child);
-    layout->addRow(tr("Decompile Java?"), m_CheckSources = new QCheckBox(this));
+    layout->addRow(tr("Decompile smali?"), m_CheckSmali = new QCheckBox(this));
+    m_CheckSmali->setChecked(true);
+    layout->addRow(tr("Decompile resources?"), m_CheckResources = new QCheckBox(this));
+    m_CheckResources->setChecked(true);
+    layout->addRow(tr("Decompile java?"), m_CheckJava = new QCheckBox(this));
     layout->setSpacing(2);
     return layout;
 }
@@ -73,7 +77,17 @@ void ApkDecompileDialog::handleBrowseFolder()
     }
 }
 
-bool ApkDecompileDialog::sources() const
+bool ApkDecompileDialog::java() const
 {
-    return m_CheckSources->isChecked();
+    return m_CheckJava->isChecked();
+}
+
+bool ApkDecompileDialog::resources() const
+{
+    return m_CheckResources->isChecked();
+}
+
+bool ApkDecompileDialog::smali() const
+{
+    return m_CheckSmali->isChecked();
 }

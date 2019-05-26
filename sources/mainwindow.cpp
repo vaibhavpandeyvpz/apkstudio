@@ -375,7 +375,7 @@ void MainWindow::handleActionApk()
         auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(path), this);
         if (dialog->exec() == QDialog::Accepted) {
             auto thread = new QThread();
-            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->sources());
+            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java());
             worker->moveToThread(thread);
             connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
             connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);

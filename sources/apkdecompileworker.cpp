@@ -2,8 +2,8 @@
 #include "apkdecompileworker.h"
 #include "processutils.h"
 
-ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool sources, QObject *parent)
-    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Sources(sources)
+ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, QObject *parent)
+    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Java(java), m_Resources(resources), m_Smali(smali)
 {
 }
 
@@ -24,7 +24,14 @@ void ApkDecompileWorker::decompile()
     heap = heap.arg(QString::number(ProcessUtils::javaHeapSize()));
     QStringList args;
     args << heap << "-jar" << apktool;
-    args << "d" << "-o" << m_Folder << m_Apk;
+    args << "d";
+    if (!m_Smali) {
+        args << "-s";
+    }
+    if (!m_Resources) {
+        args << "-r";
+    }
+    args << "-o" << m_Folder << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
     qDebug() << "Apktool returned code" << result.code;
@@ -33,7 +40,7 @@ void ApkDecompileWorker::decompile()
         emit decompileFailed(m_Apk);
         return;
     }
-    if (m_Sources) {
+    if (m_Java) {
         emit decompileProgress(75, tr("Running jadx..."));
         const QString jadx = ProcessUtils::jadxExe();
         if (jadx.isEmpty()) {
