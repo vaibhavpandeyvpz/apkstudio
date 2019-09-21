@@ -35,7 +35,7 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 - Built-in hex editor for binary files
 
 ### Downloads
-Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable points to a valid java installation for *jadx* to be able to run.
+Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for *jadx* to be able to run.
 
 ### Building
 Information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki).
