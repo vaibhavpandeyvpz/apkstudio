@@ -46,15 +46,15 @@
 #define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
 #define URL_THANKS "https://forum.xda-developers.com/showthread.php?t=2493107"
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     : QMainWindow(parent), m_FindReplaceDialog(nullptr)
 {
-    addDockWidget(Qt::LeftDockWidgetArea, buildProjectsDock());
-    addDockWidget(Qt::LeftDockWidgetArea, buildFilesDock());
-    addDockWidget(Qt::BottomDockWidgetArea, buildConsoleDock());
+    addDockWidget(Qt::LeftDockWidgetArea, m_DockProject = buildProjectsDock());
+    addDockWidget(Qt::LeftDockWidgetArea, m_DockFiles = buildFilesDock());
+    addDockWidget(Qt::BottomDockWidgetArea, m_DockConsole = buildConsoleDock());
     addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
     setCentralWidget(buildCentralWidget());
     setMenuBar(buildMenuBar());
@@ -78,6 +78,9 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     if (state.isValid()) {
         restoreState(state.toByteArray());
     }
+    m_ActionViewProject->setChecked(m_DockProject->isVisible());
+    m_ActionViewFiles->setChecked(m_DockFiles->isVisible());
+    m_ActionViewConsole->setChecked(m_DockConsole->isVisible());
     QTimer::singleShot(100, [=] {
         QSettings settings;
         const QStringList files = settings.value("open_files").toStringList();
@@ -241,6 +244,19 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionGoto->setEnabled(false);
     edit->addSeparator();
     edit->addAction(tr("Settings"), this, &MainWindow::handleActionSettings, QKeySequence::Preferences);
+    auto view = menubar->addMenu(tr("View"));
+    m_ActionViewProject = view->addAction(tr("Project"));
+    m_ActionViewProject->setCheckable(true);
+    connect(m_ActionViewProject, &QAction::toggled, m_DockProject, &QDockWidget::setVisible);
+    connect(m_DockProject, &QDockWidget::visibilityChanged, m_ActionViewProject, &QAction::setChecked);
+    m_ActionViewFiles = view->addAction(tr("Files"));
+    m_ActionViewFiles->setCheckable(true);
+    connect(m_ActionViewFiles, &QAction::toggled, m_DockFiles, &QDockWidget::setVisible);
+    connect(m_DockFiles, &QDockWidget::visibilityChanged, m_ActionViewFiles, &QAction::setChecked);
+    m_ActionViewConsole = view->addAction(tr("Console"));
+    m_ActionViewConsole->setCheckable(true);
+    connect(m_ActionViewConsole, &QAction::toggled, m_DockConsole, &QDockWidget::setVisible);
+    connect(m_DockConsole, &QDockWidget::visibilityChanged, m_ActionViewConsole, &QAction::setChecked);
     auto project = menubar->addMenu(tr("Project"));
     m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild1->setEnabled(false);
@@ -781,7 +797,7 @@ void MainWindow::handleRecompileFinished(const QString &folder)
     if (focus) {
         auto parent = focus->parent();
         while (parent) {
-            if (!m_ProjectsTree->isItemExpanded(parent)) {
+            if (!parent->isExpanded()) {
                 m_ProjectsTree->expandItem(parent);
             }
             parent = parent->parent();

@@ -21,9 +21,6 @@ QLayout *AppearanceSettingsWidget::buildForm()
     QRadioButton *light = new QRadioButton(tr("Light"), this);
     themes->addWidget(light);
     themes->addWidget(m_RadioThemeDark = new QRadioButton(tr("Dark"), this));
-    auto spacer = new QWidget(this);
-    spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    themes->addWidget(spacer);
     layout->addRow(tr("Theme"), themes);
     layout->addRow(tr("Editor Font"), m_ComboEditorFont = new QFontComboBox(this));
     layout->addRow(tr("Editor Font Size"), m_SpinEditorFontSize = new QSpinBox(this));

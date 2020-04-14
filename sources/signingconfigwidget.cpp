@@ -32,7 +32,7 @@ QLayout *SigningConfigWidget::buildLayout()
     child->addWidget(button = new QPushButton(tr("Browse"), this));
     connect(button, &QPushButton::pressed, this, &SigningConfigWidget::handleBrowseKeystore);
     auto empty = new QWidget(this);
-    empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
     child->addWidget(empty);
     layout->addRow("", child);
     layout->addRow(tr("Keystore Password"), m_EditKeystorePassword = new QLineEdit(this));

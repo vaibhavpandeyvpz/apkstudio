@@ -53,11 +53,11 @@ void VersionResolveWorker::resolve()
 #ifdef QT_DEBUG
         qDebug() << "Apktool returned code" << result.code;
 #endif
-        if (result.code == 0) {
+        if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
-            qDebug() << "Apktool returned" << result.output[0];
+            qDebug() << "Apktool returned" << result.output.first();
 #endif
-            emit versionResolved("apktool", result.output[0].trimmed());
+            emit versionResolved("apktool", result.output.first().trimmed());
             found = true;
         }
     }
@@ -74,11 +74,11 @@ void VersionResolveWorker::resolve()
 #ifdef QT_DEBUG
         qDebug() << "Jadx returned code" << result.code;
 #endif
-        if (result.code == 0) {
+        if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
-            qDebug() << "Jadx returned" << result.output[0];
+            qDebug() << "Jadx returned" << result.output.first();
 #endif
-            emit versionResolved("jadx", result.output[0].trimmed());
+            emit versionResolved("jadx", result.output.first().trimmed());
             found = true;
         }
     }
@@ -95,12 +95,12 @@ void VersionResolveWorker::resolve()
 #ifdef QT_DEBUG
         qDebug() << "ADB returned code" << result.code;
 #endif
-        if (result.code == 0) {
+        if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
-            qDebug() << "ADB returned" << result.output[0];
+            qDebug() << "ADB returned" << result.output.first();
 #endif
             QRegularExpression regexp(REGEXP_ADB_VERSION);
-            QRegularExpressionMatch match = regexp.match(result.output[0]);
+            QRegularExpressionMatch match = regexp.match(result.output.first());
             if (match.hasMatch()) {
                 emit versionResolved("adb", match.captured(1));
                 found = true;
@@ -123,12 +123,12 @@ void VersionResolveWorker::resolve()
 #ifdef QT_DEBUG
         qDebug() << "Uber APK signer returned code" << result.code;
 #endif
-        if (result.code == 0) {
+        if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
-            qDebug() << "Uber APK signer returned" << result.output[0];
+            qDebug() << "Uber APK signer returned" << result.output.first();
 #endif
             QRegularExpression regexp(REGEXP_UAS_VERSION);
-            QRegularExpressionMatch match = regexp.match(result.output[0]);
+            QRegularExpressionMatch match = regexp.match(result.output.first());
             if (match.hasMatch()) {
                 emit versionResolved("uas", match.captured(1));
                 found = true;

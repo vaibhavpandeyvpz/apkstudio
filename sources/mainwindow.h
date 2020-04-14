@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDockWidget>
 #include <QFileIconProvider>
 #include <QLabel>
 #include <QListView>
@@ -45,7 +46,13 @@ private:
     QAction *m_ActionSaveAll;
     QAction *m_ActionSign;
     QAction *m_ActionUndo;
+    QAction *m_ActionViewProject;
+    QAction *m_ActionViewFiles;
+    QAction *m_ActionViewConsole;
     QStackedWidget *m_CentralStack;
+    QDockWidget *m_DockProject;
+    QDockWidget *m_DockFiles;
+    QDockWidget *m_DockConsole;
     QTextEdit *m_EditConsole;
     QList<QMetaObject::Connection> m_EditorConnections;
     QFileIconProvider m_FileIconProvider;
