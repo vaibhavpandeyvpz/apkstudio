@@ -4,7 +4,7 @@
 #include "processutils.h"
 
 #define REGEXP_ADB_VERSION "version (\\d+\\.\\d+\\.\\d+)$"
-#define REGEXP_JAVA_VERSION "version \"(\\d+\\.\\d+\\.\\d+(_\\d+)?)\""
+#define REGEXP_JAVA_VERSION "version \"([\\d._]+)\""
 #define REGEXP_UAS_VERSION "Version: (\\d+\\.\\d+\\.\\d+)$"
 
 VersionResolveWorker::VersionResolveWorker(QObject *parent)
