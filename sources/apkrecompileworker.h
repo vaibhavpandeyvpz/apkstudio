@@ -7,9 +7,10 @@ class ApkRecompileWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApkRecompileWorker(const QString &folder, QObject *parent = nullptr);
+    explicit ApkRecompileWorker(const QString &folder, bool aapt2, QObject *parent = nullptr);
     void recompile();
 private:
+    bool m_Aapt2;
     QString m_Folder;
 signals:
     void finished();

@@ -41,6 +41,7 @@ QLayout *BinarySettingsWidget::buildForm()
     label->setTextInteractionFlags(Qt::TextBrowserInteraction);
     label->setTextFormat(Qt::RichText);
     layout->addRow("", child);
+    layout->addRow(tr("Use AAPT2?"), m_CheckAapt2 = new QCheckBox(this));
     layout->addRow(tr("Jadx"), m_EditJadxExe = new QLineEdit(this));
     child = new QHBoxLayout();
     child->addWidget(button = new QPushButton(tr("Browse"), this));
@@ -76,6 +77,7 @@ QLayout *BinarySettingsWidget::buildForm()
         m_EditAdbExe->setText(adb);
     }
     m_EditApktoolJar->setText(settings.value("apktool_jar").toString());
+    m_CheckAapt2->setChecked(settings.value("use_aapt2", true).toBool());
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
     auto java = settings.value("java_exe").toString();
     if (adb.isEmpty()) {

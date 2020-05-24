@@ -2,8 +2,8 @@
 #include "apkrecompileworker.h"
 #include "processutils.h"
 
-ApkRecompileWorker::ApkRecompileWorker(const QString &folder, QObject *parent)
-    : QObject(parent), m_Folder(folder)
+ApkRecompileWorker::ApkRecompileWorker(const QString &folder, bool aapt2, QObject *parent)
+    : QObject(parent), m_Aapt2(aapt2), m_Folder(folder)
 {
 }
 
@@ -24,6 +24,9 @@ void ApkRecompileWorker::recompile()
     QStringList args;
     args << heap << "-jar" << apktool;
     args << "b" << m_Folder;
+    if (m_Aapt2) {
+        args << "--use-aapt2";
+    }
     ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
     qDebug() << "Apktool returned code" << result.code;

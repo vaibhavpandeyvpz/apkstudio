@@ -421,8 +421,10 @@ void MainWindow::handleActionBuild()
     while (active->data(0, Qt::UserRole + 1).toInt() != Project) {
         active = active->parent();
     }
+    QSettings settings;
+    auto appt2 = settings.value("use_aapt2", true).toBool();
     auto thread = new QThread();
-    auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString());
+    auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString(), appt2);
     worker->moveToThread(thread);
     connect(worker, &ApkRecompileWorker::recompileFailed, this, &MainWindow::handleRecompileFailed);
     connect(worker, &ApkRecompileWorker::recompileFinished, this, &MainWindow::handleRecompileFinished);

@@ -1,6 +1,7 @@
 #ifndef BINARYSETTINGSWIDGET_H
 #define BINARYSETTINGSWIDGET_H
 
+#include <QCheckBox>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QWidget>
@@ -11,6 +12,7 @@ class BinarySettingsWidget : public QWidget
 public:
     explicit BinarySettingsWidget(QWidget *parent = nullptr);
 private:
+    QCheckBox *m_CheckAapt2;
     QLineEdit *m_EditAdbExe;
     QLineEdit *m_EditApktoolJar;
     QLineEdit *m_EditJadxExe;
