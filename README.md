@@ -25,13 +25,6 @@ Open-source, cross platform [Qt](https://www.qt.io/) based IDE for reverse-engin
   </a>
 </p>
 
-<h3 align="center">Sponsor</h3>
-<p align="center">
-  <a href="https://appfrom.site/">
-    <img src="https://appfrom.site/external/images/ad-banner-450x128.png" alt="appfrom.site">
-  </a>
-</p>
-
 If you are just willing to quickly decompile an [Android](https://android.com/) app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
 
 ### Unmaintained
