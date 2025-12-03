@@ -137,6 +137,14 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     QHexView
 )
 
+# macOS: Set rpath for Qt frameworks
+if(APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        INSTALL_RPATH "@executable_path/../Frameworks"
+        BUILD_WITH_INSTALL_RPATH TRUE
+    )
+endif()
+
 # Compile definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     GIT_BRANCH="${GIT_BRANCH}"

@@ -198,10 +198,29 @@ jobs:
           fi
           if [ -n "$APP_BUNDLE" ] && [ -d "$APP_BUNDLE" ]; then
             echo "Deploying Qt dependencies to: $APP_BUNDLE"
-            macdeployqt "$APP_BUNDLE" -always-overwrite
+            echo "Qt6_DIR: $Qt6_DIR"
+            echo "macdeployqt path: $(which macdeployqt)"
+            # Use verbose mode to see what's happening
+            macdeployqt "$APP_BUNDLE" -always-overwrite -verbose=2
+            # Verify Qt frameworks were deployed
+            echo "Checking for Qt frameworks..."
+            ls -la "$APP_BUNDLE/Contents/Frameworks/" 2>/dev/null || echo "Frameworks directory not found"
+            # Check rpath in executable
+            echo "Checking rpath in executable..."
+            otool -l "$APP_BUNDLE/Contents/MacOS/ApkStudio" | grep -A 2 LC_RPATH || echo "No rpath found"
+            # Ensure rpath is set correctly
+            EXECUTABLE="$APP_BUNDLE/Contents/MacOS/ApkStudio"
+            if [ -f "$EXECUTABLE" ]; then
+              echo "Fixing rpath in executable..."
+              install_name_tool -add_rpath "@executable_path/../Frameworks" "$EXECUTABLE" 2>/dev/null || true
+              install_name_tool -add_rpath "@loader_path/../Frameworks" "$EXECUTABLE" 2>/dev/null || true
+              echo "Updated rpath:"
+              otool -l "$EXECUTABLE" | grep -A 2 LC_RPATH
+            fi
           else
-            echo "Warning: ApkStudio.app not found for macdeployqt"
+            echo "Error: ApkStudio.app not found for macdeployqt"
             find . -type d -name "*.app" 2>/dev/null || true
+            exit 1
           fi
 
       - name: Code sign app bundle
