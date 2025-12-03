@@ -24,8 +24,9 @@ void ApkRecompileWorker::recompile()
     QStringList args;
     args << heap << "-jar" << apktool;
     args << "b" << m_Folder;
-    if (m_Aapt2) {
-        args << "--use-aapt2";
+    // Apktool 2.12.1+ uses aapt2 by default, so we only need to specify --use-aapt1 if aapt1 is requested
+    if (!m_Aapt2) {
+        args << "--use-aapt1";
     }
     ProcessResult result = ProcessUtils::runCommand(java, args);
 #ifdef QT_DEBUG
