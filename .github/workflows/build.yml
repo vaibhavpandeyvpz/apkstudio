@@ -324,29 +324,101 @@ jobs:
             echo "Warning: Code signing copied app failed, but continuing..."
           }
 
-          # Touch the app bundle to refresh Finder icon cache
-          touch "dmg_temp/${APP_BUNDLE_NAME}"
-          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents"
-          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist"
-
           # Verify icon exists in app bundle
           ICON_PATH="$APP_PATH/Contents/Resources/icon.icns"
+          DMG_APP_ICON_PATH="dmg_temp/${APP_BUNDLE_NAME}/Contents/Resources/icon.icns"
+          
           if [ ! -f "$ICON_PATH" ]; then
             echo "Warning: Icon not found at $ICON_PATH"
             echo "Contents of Resources directory:"
             ls -la "$APP_PATH/Contents/Resources/" 2>/dev/null || echo "Resources directory not found"
           fi
+          
+          # Verify icon exists in copied app bundle
+          if [ -f "$DMG_APP_ICON_PATH" ]; then
+            echo "Icon found in copied app bundle at: $DMG_APP_ICON_PATH"
+            # Set custom icon flag using SetFile (if available)
+            if command -v SetFile &> /dev/null; then
+              SetFile -a C "dmg_temp/${APP_BUNDLE_NAME}"
+              echo "Set custom icon flag on app bundle"
+            fi
+          else
+            echo "Warning: Icon not found in copied app bundle at: $DMG_APP_ICON_PATH"
+            # Copy icon if it exists in source
+            if [ -f "$ICON_PATH" ]; then
+              mkdir -p "dmg_temp/${APP_BUNDLE_NAME}/Contents/Resources"
+              cp "$ICON_PATH" "$DMG_APP_ICON_PATH"
+              echo "Copied icon to app bundle Resources"
+            fi
+          fi
+          
+          # Verify Info.plist has correct display name
+          if [ -f "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist" ]; then
+            echo "Verifying Info.plist..."
+            if grep -q "CFBundleDisplayName" "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist"; then
+              echo "CFBundleDisplayName found in Info.plist"
+              # Extract display name
+              DISPLAY_NAME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist" 2>/dev/null || echo "")
+              echo "Display name in Info.plist: $DISPLAY_NAME"
+            else
+              echo "Warning: CFBundleDisplayName not found in Info.plist"
+            fi
+          fi
+          
+          # Touch the app bundle to refresh Finder icon cache
+          touch "dmg_temp/${APP_BUNDLE_NAME}"
+          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents"
+          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist"
+          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents/Resources"
+          if [ -f "$DMG_APP_ICON_PATH" ]; then
+            touch "$DMG_APP_ICON_PATH"
+          fi
+          
+          # Re-sign after modifications
+          codesign --force --deep --sign - "dmg_temp/${APP_BUNDLE_NAME}" || {
+            echo "Warning: Re-signing after modifications failed, but continuing..."
+          }
+          
+          # Try to set bundle display name using xattr (if supported)
+          # This helps Finder show the correct name
+          xattr -w com.apple.FinderInfo "0000000000000000040000000000000000000000000000000000000000000000" "dmg_temp/${APP_BUNDLE_NAME}" 2>/dev/null || {
+            echo "Note: Could not set FinderInfo (this is optional)"
+          }
+          
+          # Rename the bundle in DMG to show "APK Studio" instead of "ApkStudio"
+          # The executable name stays the same, only the bundle name changes
+          if [ -d "dmg_temp/${APP_BUNDLE_NAME}" ]; then
+            mv "dmg_temp/${APP_BUNDLE_NAME}" "dmg_temp/APK Studio.app"
+            DMG_APP_NAME="APK Studio.app"
+            echo "Renamed bundle to 'APK Studio.app' for DMG display"
+          else
+            DMG_APP_NAME="${APP_BUNDLE_NAME}"
+          fi
+          
+          # Re-sign the renamed bundle
+          if [ -d "dmg_temp/${DMG_APP_NAME}" ]; then
+            codesign --force --deep --sign - "dmg_temp/${DMG_APP_NAME}" || {
+              echo "Warning: Re-signing renamed bundle failed, but continuing..."
+            }
+          fi
 
           # Create DMG with volume icon and ensure app icon is visible
-          if [ -f "$ICON_PATH" ]; then
+          # Use the icon from the copied app bundle if available
+          DMG_ICON_PATH="${DMG_APP_ICON_PATH}"
+          if [ ! -f "$DMG_ICON_PATH" ] && [ -f "$ICON_PATH" ]; then
+            DMG_ICON_PATH="$ICON_PATH"
+          fi
+          
+          if [ -f "$DMG_ICON_PATH" ]; then
+            echo "Creating DMG with icon: $DMG_ICON_PATH"
             create-dmg \
               --volname "APK Studio" \
-              --volicon "$ICON_PATH" \
+              --volicon "$DMG_ICON_PATH" \
               --window-pos 200 120 \
               --window-size 600 400 \
               --icon-size 100 \
-              --icon "${APP_BUNDLE_NAME}" 150 190 \
-              --hide-extension "${APP_BUNDLE_NAME}" \
+              --icon "${DMG_APP_NAME}" 150 190 \
+              --hide-extension "${DMG_APP_NAME}" \
               --app-drop-link 450 190 \
               "$DMG_NAME" \
               dmg_temp/
@@ -357,12 +429,13 @@ jobs:
               --window-pos 200 120 \
               --window-size 600 400 \
               --icon-size 100 \
-              --icon "${APP_BUNDLE_NAME}" 150 190 \
-              --hide-extension "${APP_BUNDLE_NAME}" \
+              --icon "${DMG_APP_NAME}" 150 190 \
+              --hide-extension "${DMG_APP_NAME}" \
               --app-drop-link 450 190 \
               "$DMG_NAME" \
               dmg_temp/
           fi
+          
 
           # Verify DMG was created
           if [ -f "$DMG_NAME" ]; then
