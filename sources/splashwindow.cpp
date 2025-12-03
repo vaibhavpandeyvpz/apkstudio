@@ -7,6 +7,8 @@
 #include "mainwindow.h"
 #include "processutils.h"
 #include "splashwindow.h"
+#include "tooldownloaddialog.h"
+#include "tooldownloadworker.h"
 #include "versionresolveworker.h"
 
 #define SPLASH_WIDTH 512
@@ -76,6 +78,7 @@ void SplashWindow::handleVersionResolveFinished()
     (new MainWindow(m_Versions))->show();
     close();
 }
+
 
 SplashWindow::~SplashWindow()
 {

@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find Qt6
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Network Widgets)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -74,12 +74,10 @@ set(SOURCES
     sources/apksignworker.cpp
     sources/appearancesettingswidget.cpp
     sources/binarysettingswidget.cpp
-    sources/darkstyle.cpp
     sources/findreplacedialog.cpp
     sources/flickcharm.cpp
     sources/hexedit.cpp
     sources/imageviewerwidget.cpp
-    sources/lightstyle.cpp
     sources/mainwindow.cpp
     sources/processutils.cpp
     sources/settingsdialog.cpp
@@ -87,8 +85,9 @@ set(SOURCES
     sources/signingconfigwidget.cpp
     sources/sourcecodeedit.cpp
     sources/splashwindow.cpp
-    sources/stylecommon.cpp
     sources/themedsyntaxhighlighter.cpp
+    sources/tooldownloaddialog.cpp
+    sources/tooldownloadworker.cpp
     sources/versionresolveworker.cpp
 )
 
@@ -98,14 +97,12 @@ set(HEADERS
     sources/apkdecompileworker.h
     sources/apkrecompileworker.h
     sources/apksignworker.h
-    sources/darkstyle.h
     sources/appearancesettingswidget.h
     sources/binarysettingswidget.h
     sources/findreplacedialog.h
     sources/flickcharm.h
     sources/hexedit.h
     sources/imageviewerwidget.h
-    sources/lightstyle.h
     sources/mainwindow.h
     sources/processutils.h
     sources/settingsdialog.h
@@ -113,8 +110,9 @@ set(HEADERS
     sources/signingconfigwidget.h
     sources/sourcecodeedit.h
     sources/splashwindow.h
-    sources/stylecommon.h
     sources/themedsyntaxhighlighter.h
+    sources/tooldownloaddialog.h
+    sources/tooldownloadworker.h
     sources/versionresolveworker.h
 )
 
@@ -141,6 +139,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
+    Qt6::Network
     Qt6::Widgets
     QHexView
 )
@@ -192,6 +191,8 @@ if(APPLE)
             "    <string>6.0</string>\n"
             "    <key>CFBundleName</key>\n"
             "    <string>${PROJECT_NAME}</string>\n"
+            "    <key>CFBundleDisplayName</key>\n"
+            "    <string>APK Studio</string>\n"
             "    <key>CFBundlePackageType</key>\n"
             "    <string>APPL</string>\n"
             "    <key>CFBundleShortVersionString</key>\n"
@@ -202,7 +203,15 @@ if(APPLE)
             "    <string>10.13</string>\n"
             "    <key>NSHighResolutionCapable</key>\n"
             "    <true/>\n"
+            "    <key>NSPrincipalClass</key>\n"
+            "    <string>NSApplication</string>\n"
+            "    <key>LSApplicationCategoryType</key>\n"
+            "    <string>public.app-category.developer-tools</string>\n"
+            "    <key>NSRequiresAquaSystemAppearance</key>\n"
+            "    <false/>\n"
             "    <key>CFBundleIconFile</key>\n"
+            "    <string>icon.icns</string>\n"
+            "    <key>CFBundleIconName</key>\n"
             "    <string>icon.icns</string>\n"
             "</dict>\n"
             "</plist>\n"

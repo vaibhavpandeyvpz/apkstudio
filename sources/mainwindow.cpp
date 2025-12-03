@@ -10,6 +10,7 @@
 #include <QInputDialog>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QProcess>
 #include <QSettings>
 #include <QStatusBar>
@@ -28,10 +29,15 @@
 #include "findreplacedialog.h"
 #include "hexedit.h"
 #include "imageviewerwidget.h"
+#include "tooldownloaddialog.h"
+#include "tooldownloadworker.h"
+#include "versionresolveworker.h"
 #include "mainwindow.h"
 #include "settingsdialog.h"
 #include "signingconfigdialog.h"
 #include "sourcecodeedit.h"
+
+#define CODE_RESTART 60600
 
 #define COLOR_CODE 0x2ad2c9
 #define COLOR_COMMAND 0xd0d2d3
@@ -94,13 +100,43 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
             }
         }
         if (missing) {
-            int btn = QMessageBox::information(
-                        this,
-                        tr("Requirements"),
-                        tr("One or more required 3rd-party binaries are missing. Please review settings first."),
-                        tr("Settings"),
-                        tr("Cancel"));
-            if (btn == 0) {
+            QMessageBox msgBox(this);
+            msgBox.setWindowTitle(tr("Requirements"));
+            msgBox.setText(tr("One or more required 3rd-party binaries are missing."));
+            msgBox.setInformativeText(tr("Would you like to download them automatically or configure manually?"));
+            QPushButton *downloadButton = msgBox.addButton(tr("Download"), QMessageBox::AcceptRole);
+            QPushButton *settingsButton = msgBox.addButton(tr("Settings"), QMessageBox::ActionRole);
+            msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
+            
+            int result = msgBox.exec();
+            if (msgBox.clickedButton() == downloadButton) {
+                // Download all missing tools
+                QList<ToolDownloadWorker::ToolType> toolsToDownload;
+                foreach (const QString &binary, versions.keys()) {
+                    if (versions[binary].isEmpty()) {
+                        if (binary == "java") {
+                            toolsToDownload.append(ToolDownloadWorker::Java);
+                        } else if (binary == "apktool") {
+                            toolsToDownload.append(ToolDownloadWorker::Apktool);
+                        } else if (binary == "jadx") {
+                            toolsToDownload.append(ToolDownloadWorker::Jadx);
+                        } else if (binary == "adb") {
+                            toolsToDownload.append(ToolDownloadWorker::Adb);
+                        } else if (binary == "uas") {
+                            toolsToDownload.append(ToolDownloadWorker::UberApkSigner);
+                        }
+                    }
+                }
+                
+                if (!toolsToDownload.isEmpty()) {
+                    ToolDownloadDialog downloadDialog(toolsToDownload, this);
+                    if (downloadDialog.exec() == QDialog::Accepted && downloadDialog.wasSuccessful()) {
+                        // Restart the application to detect newly downloaded tools
+                        QApplication::exit(CODE_RESTART);
+                    }
+                }
+            } else if (msgBox.clickedButton() == settingsButton) {
+                // Settings
                 (new SettingsDialog(1, this))->exec();
             }
         }

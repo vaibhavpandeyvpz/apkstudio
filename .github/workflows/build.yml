@@ -288,8 +288,9 @@ jobs:
 
       - name: Create DMG
         run: |
-          APP_NAME="ApkStudio"
-          APP_PATH="build/bin/ApkStudio.app"
+          APP_NAME="APK Studio"
+          APP_BUNDLE_NAME="ApkStudio.app"
+          APP_PATH="build/bin/${APP_BUNDLE_NAME}"
           DMG_NAME="ApkStudio-macOS-x64.dmg"
 
           if [ ! -d "$APP_PATH" ]; then
@@ -313,20 +314,20 @@ jobs:
 
           # Create a temporary directory for DMG contents
           mkdir -p dmg_temp
-          cp -R "$APP_PATH" "dmg_temp/$APP_NAME.app"
+          cp -R "$APP_PATH" "dmg_temp/${APP_BUNDLE_NAME}"
 
           # Remove quarantine from copied app as well
-          xattr -cr "dmg_temp/$APP_NAME.app"
+          xattr -cr "dmg_temp/${APP_BUNDLE_NAME}"
 
           # Code sign the copied app as well
-          codesign --force --deep --sign - "dmg_temp/$APP_NAME.app" || {
+          codesign --force --deep --sign - "dmg_temp/${APP_BUNDLE_NAME}" || {
             echo "Warning: Code signing copied app failed, but continuing..."
           }
 
           # Touch the app bundle to refresh Finder icon cache
-          touch "dmg_temp/$APP_NAME.app"
-          touch "dmg_temp/$APP_NAME.app/Contents"
-          touch "dmg_temp/$APP_NAME.app/Contents/Info.plist"
+          touch "dmg_temp/${APP_BUNDLE_NAME}"
+          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents"
+          touch "dmg_temp/${APP_BUNDLE_NAME}/Contents/Info.plist"
 
           # Verify icon exists in app bundle
           ICON_PATH="$APP_PATH/Contents/Resources/icon.icns"
@@ -335,33 +336,51 @@ jobs:
             echo "Contents of Resources directory:"
             ls -la "$APP_PATH/Contents/Resources/" 2>/dev/null || echo "Resources directory not found"
           fi
+          
+          # Rename the bundle in DMG to show "APK Studio" instead of "ApkStudio"
+          # The executable name stays the same, only the bundle name changes
+          if [ -d "dmg_temp/${APP_BUNDLE_NAME}" ]; then
+            mv "dmg_temp/${APP_BUNDLE_NAME}" "dmg_temp/APK Studio.app"
+            DMG_APP_NAME="APK Studio.app"
+            echo "Renamed bundle to 'APK Studio.app' for DMG display"
+          else
+            DMG_APP_NAME="${APP_BUNDLE_NAME}"
+          fi
+          
+          # Re-sign the renamed bundle
+          if [ -d "dmg_temp/${DMG_APP_NAME}" ]; then
+            codesign --force --deep --sign - "dmg_temp/${DMG_APP_NAME}" || {
+              echo "Warning: Re-signing renamed bundle failed, but continuing..."
+            }
+          fi
 
           # Create DMG with volume icon and ensure app icon is visible
           if [ -f "$ICON_PATH" ]; then
             create-dmg \
-              --volname "ApkStudio" \
+              --volname "APK Studio" \
               --volicon "$ICON_PATH" \
               --window-pos 200 120 \
               --window-size 600 400 \
               --icon-size 100 \
-              --icon "$APP_NAME.app" 150 190 \
-              --hide-extension "$APP_NAME.app" \
+              --icon "${DMG_APP_NAME}" 150 190 \
+              --hide-extension "${DMG_APP_NAME}" \
               --app-drop-link 450 190 \
               "$DMG_NAME" \
               dmg_temp/
           else
             echo "Creating DMG without volume icon (icon file not found)"
             create-dmg \
-              --volname "ApkStudio" \
+              --volname "APK Studio" \
               --window-pos 200 120 \
               --window-size 600 400 \
               --icon-size 100 \
-              --icon "$APP_NAME.app" 150 190 \
-              --hide-extension "$APP_NAME.app" \
+              --icon "${DMG_APP_NAME}" 150 190 \
+              --hide-extension "${DMG_APP_NAME}" \
               --app-drop-link 450 190 \
               "$DMG_NAME" \
               dmg_temp/
           fi
+          
 
           # Verify DMG was created
           if [ -f "$DMG_NAME" ]; then
