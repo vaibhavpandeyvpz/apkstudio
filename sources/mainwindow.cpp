@@ -63,12 +63,6 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     setWindowTitle(tr("APK Studio").append(" - https://vaibhavpandey.com/apkstudio/"));
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     QSettings settings;
-    const bool dark = settings.value("dark_theme", false).toBool();
-    QFile qss(QString(":/styles/%1.qss").arg(dark ? "dark" : "light"));
-    qss.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream contents(&qss);
-    setStyleSheet(contents.readAll());
-    qss.close();
     if (settings.value("app_maximized").toBool()) {
         showMaximized();
     } else {

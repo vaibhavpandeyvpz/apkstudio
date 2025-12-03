@@ -1,6 +1,3 @@
-[submodule "Qt-Frameless-Window-DarkStyle"]
-	path = Qt-Frameless-Window-DarkStyle
-	url = https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle
 [submodule "QHexView"]
 	path = QHexView
 	url = https://github.com/Dax89/QHexView.git

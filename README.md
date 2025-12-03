@@ -90,7 +90,7 @@ The project uses GitHub Actions for automated builds on Windows, Linux, and macO
 - [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
 - [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
 - [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) team for [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) and [linuxdeploy-plugin-qt](https://github.com/linuxdeploy/linuxdeploy-plugin-qt)
-- [Jürgen Skrotzky](https://github.com/Jorgen-VikingGod) for [Qt-Frameless-Window-DarkStyle](https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle)
+- [Antonio Dias](https://github.com/antonypro) for [QGoodWindow](https://github.com/antonypro/QGoodWindow)
 - [Antonio Davide](https://github.com/Dax89) for [QHexView](https://github.com/Dax89/QHexView)
 - [p.yusukekamiyamane](https://p.yusukekamiyamane.com/) for [Fugue](https://p.yusukekamiyamane.com/) icons
 - [Icons8](https://icons8.com/) for various icons
