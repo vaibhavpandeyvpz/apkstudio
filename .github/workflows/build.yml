@@ -119,8 +119,12 @@ jobs:
           echo "Found executable at: $EXECUTABLE"
           cp "$EXECUTABLE" AppDir/usr/bin/apkstudio
           mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
+          # Copy and fix desktop file to use correct icon name
           cp ${{ github.workspace }}/resources/apkstudio.desktop AppDir/usr/share/applications/
-          cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
+          sed -i 's/^Icon=.*/Icon=apkstudio/' AppDir/usr/share/applications/apkstudio.desktop
+          # Copy icon to proper location
+          cp ${{ github.workspace }}/resources/icon.png AppDir/usr/share/icons/hicolor/512x512/apps/apkstudio.png
           chmod +x AppDir/usr/bin/apkstudio
 
       - name: Create AppImage with linuxdeploy
