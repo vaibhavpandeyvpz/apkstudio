@@ -1,0 +1,390 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [created]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          cache: true
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --config Release
+
+      - name: Deploy Qt dependencies
+        shell: pwsh
+        run: |
+          $env:PATH = "$env:Qt6_DIR\bin;$env:PATH"
+
+          # Find the executable
+          $ExePath = ""
+          if (Test-Path "build\bin\Release\ApkStudio.exe") {
+            $ExePath = "build\bin\Release\ApkStudio.exe"
+          } elseif (Test-Path "build\Release\ApkStudio.exe") {
+            $ExePath = "build\Release\ApkStudio.exe"
+          } else {
+            Write-Host "Error: Executable not found. Searching..."
+            Get-ChildItem -Path build -Recurse -Filter "ApkStudio.exe" -ErrorAction SilentlyContinue | Select-Object FullName
+            exit 1
+          }
+
+          Write-Host "Found executable at: $ExePath"
+          windeployqt --release $ExePath
+
+      - name: Create archive
+        shell: pwsh
+        run: |
+          # Find the directory containing the executable
+          $SourceDir = ""
+          if (Test-Path "build\bin\Release") {
+            $SourceDir = "build\bin\Release"
+          } elseif (Test-Path "build\Release") {
+            $SourceDir = "build\Release"
+          } else {
+            Write-Host "Error: Release directory not found"
+            exit 1
+          }
+
+          Write-Host "Creating archive from: $SourceDir"
+          Compress-Archive -Path "$SourceDir\*" -DestinationPath ApkStudio-Windows-x64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-Windows-x64
+          path: ApkStudio-Windows-x64.zip
+          retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ApkStudio-Windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libxkbcommon-x11-0
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          cache: true
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --config Release -j$(nproc)
+
+      - name: Install
+        run: |
+          cmake --install build --prefix install
+
+      - name: Download linuxdeploy and plugins
+        run: |
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage"
+          chmod +x linuxdeploy*.AppImage
+
+      - name: Find executable
+        run: |
+          echo "Searching for executable..."
+          find . -type f -executable \( -name "ApkStudio" -o -name "apkstudio" \) 2>/dev/null | head -5
+          ls -la install/bin/ 2>/dev/null || echo "install/bin/ does not exist"
+          ls -la build/ 2>/dev/null | head -10 || echo "build/ does not exist"
+
+      - name: Prepare AppDir for AppImage
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/lib
+          # Find the executable (could be ApkStudio or apkstudio, in build or install)
+          EXECUTABLE=""
+          if [ -f install/bin/ApkStudio ]; then
+            EXECUTABLE="install/bin/ApkStudio"
+          elif [ -f install/bin/apkstudio ]; then
+            EXECUTABLE="install/bin/apkstudio"
+          elif [ -f build/ApkStudio ]; then
+            EXECUTABLE="build/ApkStudio"
+          elif [ -f build/apkstudio ]; then
+            EXECUTABLE="build/apkstudio"
+          else
+            echo "Error: Executable not found. Listing directories..."
+            find . -type f -executable -name "*pk*" 2>/dev/null || true
+            exit 1
+          fi
+          echo "Found executable at: $EXECUTABLE"
+          cp "$EXECUTABLE" AppDir/usr/bin/apkstudio
+          mkdir -p AppDir/usr/share/applications
+          mkdir -p AppDir/usr/share/icons/hicolor/512x512/apps
+          # Copy and fix desktop file to use correct icon name
+          cp ${{ github.workspace }}/resources/apkstudio.desktop AppDir/usr/share/applications/
+          sed -i 's/^Icon=.*/Icon=apkstudio/' AppDir/usr/share/applications/apkstudio.desktop
+          # Copy icon to both locations: root for linuxdeploy and hicolor for system
+          cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
+          cp ${{ github.workspace }}/resources/icon.png AppDir/usr/share/icons/hicolor/512x512/apps/apkstudio.png
+          chmod +x AppDir/usr/bin/apkstudio
+
+      - name: Create AppImage with linuxdeploy
+        run: |
+          export QTDIR=${{ env.QT_ROOT_DIR }}
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir --executable AppDir/usr/bin/apkstudio --desktop-file AppDir/usr/share/applications/apkstudio.desktop --icon-file AppDir/apkstudio.png --plugin qt --output appimage
+
+      - name: Rename AppImage if tagged
+        run: |
+          if [ ! -z "${{ github.ref }}" ] && [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            if [ -f ApkStudio-x86_64.AppImage ]; then
+              mv ApkStudio-x86_64.AppImage ApkStudio-${TAG_NAME}-x86_64.AppImage
+            fi
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-Linux-x64
+          path: ApkStudio*.AppImage
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        run: |
+          # Find the AppImage file
+          APPIMAGE_FILE=$(find . -maxdepth 1 -name "ApkStudio*.AppImage" -type f | head -1)
+          if [ -z "$APPIMAGE_FILE" ]; then
+            echo "Error: AppImage file not found"
+            exit 1
+          fi
+          echo "Found AppImage: $APPIMAGE_FILE"
+          echo "APPIMAGE_FILE=$APPIMAGE_FILE" >> $GITHUB_ENV
+
+      - name: Upload AppImage to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ${{ env.APPIMAGE_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          cache: true
+
+      - name: Set Qt directory
+        run: |
+          QT_DIR=""
+          if [ -n "${{ env.Qt6_DIR }}" ]; then
+            QT_DIR="${{ env.Qt6_DIR }}"
+          elif [ -n "${{ env.Qt_DIR }}" ]; then
+            QT_DIR="${{ env.Qt_DIR }}"
+          else
+            QT_CONFIG=$(find "$HOME" "$RUNNER_WORKSPACE" "/Users/runner" -name "Qt6Config.cmake" -type f 2>/dev/null | head -1)
+            if [ -n "$QT_CONFIG" ]; then
+              QT_DIR=$(dirname "$QT_CONFIG" | xargs dirname | xargs dirname | xargs dirname)
+            fi
+          fi
+          if [ -z "$QT_DIR" ] || [ ! -d "$QT_DIR" ]; then
+            echo "Error: Could not determine Qt directory"
+            exit 1
+          fi
+          echo "Using Qt directory: $QT_DIR"
+          echo "QT_DIR=$QT_DIR" >> $GITHUB_ENV
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.QT_DIR }}"
+
+      - name: Build
+        run: |
+          cmake --build build --config Release -j$(sysctl -n hw.ncpu)
+
+      - name: Deploy Qt frameworks
+        run: |
+          QT_DIR="${{ env.QT_DIR }}"
+          export PATH="$QT_DIR/bin:$PATH"
+          APP_BUNDLE="build/bin/ApkStudio.app"
+
+          # Verify app bundle exists
+          if [ ! -d "$APP_BUNDLE" ]; then
+            echo "Error: App bundle not found at $APP_BUNDLE"
+            find . -type d -name "*.app" 2>/dev/null || true
+            exit 1
+          fi
+
+          # Find macdeployqt
+          MACDEPLOYQT="$QT_DIR/bin/macdeployqt"
+          if [ ! -f "$MACDEPLOYQT" ]; then
+            MACDEPLOYQT=$(find "$QT_DIR" -name "macdeployqt" -type f 2>/dev/null | head -1)
+          fi
+
+          if [ -z "$MACDEPLOYQT" ] || [ ! -f "$MACDEPLOYQT" ]; then
+            echo "Error: macdeployqt not found"
+            exit 1
+          fi
+
+          echo "Deploying Qt frameworks to: $APP_BUNDLE"
+          chmod +x "$MACDEPLOYQT"
+          "$MACDEPLOYQT" "$APP_BUNDLE" -always-overwrite
+
+      - name: Install create-dmg
+        run: |
+          brew install create-dmg
+
+      - name: Create DMG
+        run: |
+          APP_NAME="ApkStudio"
+          APP_PATH="build/bin/ApkStudio.app"
+          DMG_NAME="ApkStudio-macOS-x64.dmg"
+
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Error: App bundle not found at $APP_PATH"
+            exit 1
+          fi
+
+          # Remove quarantine attribute to prevent "damaged" error
+          xattr -cr "$APP_PATH"
+
+          # Code sign the app with ad-hoc signature (required for macOS Gatekeeper)
+          echo "Code signing app bundle..."
+          codesign --force --deep --sign - "$APP_PATH" || {
+            echo "Warning: Code signing failed, but continuing..."
+          }
+
+          # Verify the signature
+          codesign --verify --verbose "$APP_PATH" || {
+            echo "Warning: Code signature verification failed, but continuing..."
+          }
+
+          # Create a temporary directory for DMG contents
+          mkdir -p dmg_temp
+          cp -R "$APP_PATH" "dmg_temp/$APP_NAME.app"
+
+          # Remove quarantine from copied app as well
+          xattr -cr "dmg_temp/$APP_NAME.app"
+
+          # Code sign the copied app as well
+          codesign --force --deep --sign - "dmg_temp/$APP_NAME.app" || {
+            echo "Warning: Code signing copied app failed, but continuing..."
+          }
+
+          # Touch the app bundle to refresh Finder icon cache
+          touch "dmg_temp/$APP_NAME.app"
+          touch "dmg_temp/$APP_NAME.app/Contents"
+          touch "dmg_temp/$APP_NAME.app/Contents/Info.plist"
+
+          # Verify icon exists in app bundle
+          ICON_PATH="$APP_PATH/Contents/Resources/icon.icns"
+          if [ ! -f "$ICON_PATH" ]; then
+            echo "Warning: Icon not found at $ICON_PATH"
+            echo "Contents of Resources directory:"
+            ls -la "$APP_PATH/Contents/Resources/" 2>/dev/null || echo "Resources directory not found"
+          fi
+
+          # Create DMG with volume icon and ensure app icon is visible
+          if [ -f "$ICON_PATH" ]; then
+            create-dmg \
+              --volname "ApkStudio" \
+              --volicon "$ICON_PATH" \
+              --window-pos 200 120 \
+              --window-size 600 400 \
+              --icon-size 100 \
+              --icon "$APP_NAME.app" 150 190 \
+              --hide-extension "$APP_NAME.app" \
+              --app-drop-link 450 190 \
+              "$DMG_NAME" \
+              dmg_temp/
+          else
+            echo "Creating DMG without volume icon (icon file not found)"
+            create-dmg \
+              --volname "ApkStudio" \
+              --window-pos 200 120 \
+              --window-size 600 400 \
+              --icon-size 100 \
+              --icon "$APP_NAME.app" 150 190 \
+              --hide-extension "$APP_NAME.app" \
+              --app-drop-link 450 190 \
+              "$DMG_NAME" \
+              dmg_temp/
+          fi
+
+          # Verify DMG was created
+          if [ -f "$DMG_NAME" ]; then
+            echo "DMG created successfully: $DMG_NAME"
+            ls -lh "$DMG_NAME"
+          else
+            echo "Error: DMG was not created"
+            exit 1
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-macOS-x64
+          path: ApkStudio-macOS-x64.dmg
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ApkStudio-macOS-x64.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

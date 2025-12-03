@@ -6,16 +6,15 @@
   APK Studio
 </h1>
 
-Open-source, cross platform [Qt](https://www.qt.io/) based IDE for reverse-engineering [Android](https://android.com/) application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for \*.smali code files.
+Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engineering [Android](https://android.com/) application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for \*.smali code files.
+
+**Note**: This project has been migrated from Qt5 to Qt6 and from qmake to CMake. The build system now uses modern CMake with automated CI/CD via GitHub Actions.
 
 [![Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)
 
 <p align="center">
-  <a href="https://ci.appveyor.com/project/vaibhavpandeyvpz/apkstudio">
-    <img src="https://img.shields.io/appveyor/ci/vaibhavpandeyvpz/apkstudio.svg" alt="AppVeyor">
-  </a>
-  <a href="https://travis-ci.org/vaibhavpandeyvpz/apkstudio">
-    <img src="https://img.shields.io/travis/vaibhavpandeyvpz/apkstudio.svg" alt="Travis CI">
+  <a href="https://github.com/vaibhavpandeyvpz/apkstudio/actions">
+    <img src="https://github.com/vaibhavpandeyvpz/apkstudio/workflows/Build/badge.svg" alt="Build Status">
   </a>
   <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases/latest">
     <img src="https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio.svg" alt="Release">
@@ -23,15 +22,13 @@ Open-source, cross platform [Qt](https://www.qt.io/) based IDE for reverse-engin
   <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases">
     <img src="https://img.shields.io/github/downloads/vaibhavpandeyvpz/apkstudio/total.svg" alt="Downloads">
   </a>
+  <a href="https://github.com/vaibhavpandeyvpz/apkstudio/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/vaibhavpandeyvpz/apkstudio.svg" alt="License">
+  </a>
 </p>
 
-If you are just willing to quickly decompile an [Android](https://android.com/) app, you can make use of [DeAPK - Online APK Decompiler](https://deapk.vaibhavpandey.com/) which lets you decompile an Android app using [apktool](https://github.com/ibotpeaches/apktool) and [jadx](https://github.com/skylot/jadx).
-
-### Unmaintained
-
-⚠️ This project is not being actively maintained until further notice. ⚠️
-
 ### Features
+
 - Cross platform, run on **Linux**, **Mac OS X** & **Windows**
 - Decompile/recompile/sign & install APKs
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
@@ -39,16 +36,60 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 - Built-in hex editor for binary files
 
 ### Downloads
-Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for *jadx* to be able to run.
+
+Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for _jadx_ to be able to run.
 
 ### Building
-Information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki).
+
+#### Requirements
+
+- **CMake** 3.16 or higher
+- **Qt6** 6.10.1 or higher (Core, Gui, Widgets components)
+- **C++17** compatible compiler
+- **Git** (for version information)
+
+#### Build Instructions
+
+1. **Clone the repository** (including submodules):
+   ```bash
+   git clone --recursive https://github.com/vaibhavpandeyvpz/apkstudio.git
+   cd apkstudio
+   ```
+
+2. **Configure the build**:
+   ```bash
+   cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+   ```
+   
+   On macOS, you may need to specify the Qt path:
+   ```bash
+   cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/path/to/Qt/6.10.1/clang_64
+   ```
+
+3. **Build the project**:
+   ```bash
+   cmake --build build --config Release
+   ```
+
+4. **Deploy Qt dependencies** (optional, for distribution):
+   - **Windows**: Use `windeployqt` from Qt installation
+   - **Linux**: Use `linuxdeploy` with Qt plugin to create AppImage
+   - **macOS**: Use `macdeployqt` to bundle Qt frameworks
+
+The executable will be located at:
+- **Windows**: `build/bin/Release/ApkStudio.exe`
+- **Linux/macOS**: `build/bin/ApkStudio` (or `build/bin/ApkStudio.app` on macOS)
+
+#### CI/CD
+
+The project uses GitHub Actions for automated builds on Windows, Linux, and macOS. Build artifacts are automatically created and uploaded on every push, pull request, and release.
 
 ### Credits
+
 - [iBotPeaches](https://github.com/iBotPeaches) for [apktool](https://ibotpeaches.github.io/Apktool)
 - [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
 - [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
-- [probonopd](https://github.com/probonopd) for [linuxdeployqt](https://github.com/probonopd/linuxdeployqt)
+- [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) team for [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) and [linuxdeploy-plugin-qt](https://github.com/linuxdeploy/linuxdeploy-plugin-qt)
 - [Jürgen Skrotzky](https://github.com/Jorgen-VikingGod) for [Qt-Frameless-Window-DarkStyle](https://github.com/Jorgen-VikingGod/Qt-Frameless-Window-DarkStyle)
 - [Antonio Davide](https://github.com/Dax89) for [QHexView](https://github.com/Dax89/QHexView)
 - [p.yusukekamiyamane](https://p.yusukekamiyamane.com/) for [Fugue](https://p.yusukekamiyamane.com/) icons
@@ -60,4 +101,5 @@ Information on building from source is provided in the [Wiki](https://github.com
 ---
 
 ##### Disclaimer
+
 Same as [apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.

@@ -1,6 +1,6 @@
 #include <QFile>
 #include <QVBoxLayout>
-#include "document/buffer/qmemorybuffer.h"
+#include <QHexView/model/buffer/qmemorybuffer.h>
 #include "hexedit.h"
 
 HexEdit::HexEdit(QWidget *parent)
@@ -19,7 +19,7 @@ QString HexEdit::filePath()
 
 void HexEdit::open(const QString &path)
 {
-    auto document = QHexDocument::fromFile<QMemoryBuffer>(path);
+    auto document = QHexDocument::fromFile(path);
     m_HexView->setDocument(document);
     m_FilePath = path;
 }
@@ -28,7 +28,7 @@ bool HexEdit::save()
 {
     QFile file(m_FilePath);
     if (file.open(QFile::WriteOnly)) {
-        m_HexView->document()->saveTo(&file);
+        m_HexView->hexDocument()->saveTo(&file);
         file.close();
         return true;
     }

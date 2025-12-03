@@ -60,9 +60,9 @@ SyntaxHighlighterDefinitionList ThemedSyntaxHighlighter::definitions(const QStri
         QTextStream contents(&file);
         QString data = contents.readAll();
         file.close();
-        QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), QString::SkipEmptyParts);
+        QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), Qt::SkipEmptyParts);
         foreach (const QString line, lines) {
-            QStringList pair = line.split(QRegularExpression(REGEXP_WHITESPACE), QString::SkipEmptyParts);
+            QStringList pair = line.split(QRegularExpression(REGEXP_WHITESPACE), Qt::SkipEmptyParts);
             if (pair.size() == 2) {
                 if (QString::compare(pair.first(), "@include") == 0) {
                     defs << definitions(pair.last());
@@ -99,9 +99,9 @@ SyntaxHighlighterTheme ThemedSyntaxHighlighter::theme(const QString &name)
     QTextStream contents(&file);
     QString data = contents.readAll();
     file.close();
-    QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), QString::SkipEmptyParts);
+    QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), Qt::SkipEmptyParts);
     foreach (const QString line, lines) {
-        QStringList pair = line.split(QRegularExpression(REGEXP_THEME_LINE), QString::SkipEmptyParts);
+        QStringList pair = line.split(QRegularExpression(REGEXP_THEME_LINE), Qt::SkipEmptyParts);
         if (pair.size() == 2) {
             QTextCharFormat tcf;
             QRegularExpression regexp(REGEXP_THEME_STYLE);

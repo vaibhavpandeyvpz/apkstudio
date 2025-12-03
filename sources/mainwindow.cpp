@@ -156,7 +156,7 @@ QDockWidget *MainWindow::buildConsoleDock()
     m_EditConsole->setFrameStyle(QFrame::NoFrame);
     m_EditConsole->setPalette(palette);
     m_EditConsole->setReadOnly(true);
-    m_EditConsole->setTabStopWidth(4 * metrics.width('8'));
+    m_EditConsole->setTabStopDistance(4 * metrics.horizontalAdvance('8'));
     m_EditConsole->setWordWrapMode(QTextOption::NoWrap);
     connect(ProcessOutput::instance(), &ProcessOutput::commandFinished, this, &MainWindow::handleCommandFinished);
     connect(ProcessOutput::instance(), &ProcessOutput::commandStarting, this, &MainWindow::handleCommandStarting);

@@ -2,7 +2,7 @@
 #define HEXEDIT_H
 
 #include <QWidget>
-#include "qhexview.h"
+#include <QHexView/qhexview.h>
 
 class HexEdit : public QWidget
 {
