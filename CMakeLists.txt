@@ -74,10 +74,12 @@ set(SOURCES
     sources/apksignworker.cpp
     sources/appearancesettingswidget.cpp
     sources/binarysettingswidget.cpp
+    sources/darkstyle.cpp
     sources/findreplacedialog.cpp
     sources/flickcharm.cpp
     sources/hexedit.cpp
     sources/imageviewerwidget.cpp
+    sources/lightstyle.cpp
     sources/mainwindow.cpp
     sources/processutils.cpp
     sources/settingsdialog.cpp
@@ -85,9 +87,9 @@ set(SOURCES
     sources/signingconfigwidget.cpp
     sources/sourcecodeedit.cpp
     sources/splashwindow.cpp
+    sources/stylecommon.cpp
     sources/themedsyntaxhighlighter.cpp
     sources/versionresolveworker.cpp
-    Qt-Frameless-Window-DarkStyle/DarkStyle.cpp
 )
 
 set(HEADERS
@@ -96,12 +98,14 @@ set(HEADERS
     sources/apkdecompileworker.h
     sources/apkrecompileworker.h
     sources/apksignworker.h
+    sources/darkstyle.h
     sources/appearancesettingswidget.h
     sources/binarysettingswidget.h
     sources/findreplacedialog.h
     sources/flickcharm.h
     sources/hexedit.h
     sources/imageviewerwidget.h
+    sources/lightstyle.h
     sources/mainwindow.h
     sources/processutils.h
     sources/settingsdialog.h
@@ -109,13 +113,12 @@ set(HEADERS
     sources/signingconfigwidget.h
     sources/sourcecodeedit.h
     sources/splashwindow.h
+    sources/stylecommon.h
     sources/themedsyntaxhighlighter.h
     sources/versionresolveworker.h
-    Qt-Frameless-Window-DarkStyle/DarkStyle.h
 )
 
 set(RESOURCES
-    Qt-Frameless-Window-DarkStyle/darkstyle.qrc
     resources/all.qrc
 )
 
@@ -132,7 +135,6 @@ endif()
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/sources
-    ${CMAKE_CURRENT_SOURCE_DIR}/Qt-Frameless-Window-DarkStyle
 )
 
 # Link libraries
@@ -146,6 +148,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 # Compile definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
+    QT_VERSION_QT6
     GIT_BRANCH="${GIT_BRANCH}"
     GIT_COMMIT_FULL="${GIT_COMMIT_FULL}"
     GIT_COMMIT_NUMBER="${GIT_COMMIT_NUMBER}"
