@@ -236,16 +236,6 @@ if(APPLE)
         )
         # Add icon to target so it's included in the bundle
         target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON_RESOURCE_MACOSX})
-        
-        # Ensure icon is properly copied to Resources directory (post-build step)
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E make_directory
-                "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/Contents/Resources"
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                "${CMAKE_SOURCE_DIR}/resources/icon.icns"
-                "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/Contents/Resources/icon.icns"
-            COMMENT "Copying icon.icns to app bundle Resources"
-        )
     endif()
 endif()
 
