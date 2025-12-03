@@ -262,17 +262,54 @@ jobs:
             echo "Warning: Code signing copied app failed, but continuing..."
           }
           
-          # Create DMG
-          create-dmg \
-            --volname "ApkStudio" \
-            --window-pos 200 120 \
-            --window-size 600 400 \
-            --icon-size 100 \
-            --icon "$APP_NAME.app" 150 190 \
-            --hide-extension "$APP_NAME.app" \
-            --app-drop-link 450 190 \
-            "$DMG_NAME" \
-            dmg_temp/
+          # Touch the app bundle to refresh Finder icon cache
+          touch "dmg_temp/$APP_NAME.app"
+          touch "dmg_temp/$APP_NAME.app/Contents"
+          touch "dmg_temp/$APP_NAME.app/Contents/Info.plist"
+          
+          # Verify icon exists in app bundle
+          ICON_PATH="$APP_PATH/Contents/Resources/icon.icns"
+          if [ ! -f "$ICON_PATH" ]; then
+            echo "Warning: Icon not found at $ICON_PATH"
+            echo "Contents of Resources directory:"
+            ls -la "$APP_PATH/Contents/Resources/" 2>/dev/null || echo "Resources directory not found"
+          fi
+          
+          # Create DMG with volume icon and ensure app icon is visible
+          if [ -f "$ICON_PATH" ]; then
+            create-dmg \
+              --volname "ApkStudio" \
+              --volicon "$ICON_PATH" \
+              --window-pos 200 120 \
+              --window-size 600 400 \
+              --icon-size 100 \
+              --icon "$APP_NAME.app" 150 190 \
+              --hide-extension "$APP_NAME.app" \
+              --app-drop-link 450 190 \
+              "$DMG_NAME" \
+              dmg_temp/
+          else
+            echo "Creating DMG without volume icon (icon file not found)"
+            create-dmg \
+              --volname "ApkStudio" \
+              --window-pos 200 120 \
+              --window-size 600 400 \
+              --icon-size 100 \
+              --icon "$APP_NAME.app" 150 190 \
+              --hide-extension "$APP_NAME.app" \
+              --app-drop-link 450 190 \
+              "$DMG_NAME" \
+              dmg_temp/
+          fi
+          
+          # Verify DMG was created
+          if [ -f "$DMG_NAME" ]; then
+            echo "DMG created successfully: $DMG_NAME"
+            ls -lh "$DMG_NAME"
+          else
+            echo "Error: DMG was not created"
+            exit 1
+          fi
 
 
       - name: Upload artifact
