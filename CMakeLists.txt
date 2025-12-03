@@ -159,10 +159,11 @@ if(WIN32)
         WIN32_EXECUTABLE TRUE
     )
     if(EXISTS ${CMAKE_SOURCE_DIR}/resources/icon.ico)
-        set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_SOURCE_DIR}/resources/icon.ico")
-        set_source_files_properties(${APP_ICON_RESOURCE_WINDOWS} PROPERTIES
-            MACOSX_PACKAGE_LOCATION "Resources"
+        # Create resource file for icon
+        file(WRITE ${CMAKE_BINARY_DIR}/app.rc
+            "IDI_ICON1 ICON DISCARDABLE \"${CMAKE_SOURCE_DIR}/resources/icon.ico\"\n"
         )
+        target_sources(${PROJECT_NAME} PRIVATE ${CMAKE_BINARY_DIR}/app.rc)
     endif()
 endif()
 
