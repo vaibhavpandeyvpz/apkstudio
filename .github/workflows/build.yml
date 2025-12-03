@@ -7,7 +7,12 @@ on:
   pull_request:
     branches:
       - master
+  release:
+    types: [created]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -76,6 +81,15 @@ jobs:
           name: ApkStudio-Windows-x64
           path: ApkStudio-Windows-x64.zip
           retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ApkStudio-Windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-linux:
     name: Build Linux
@@ -175,6 +189,27 @@ jobs:
           path: ApkStudio*.AppImage
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        run: |
+          # Find the AppImage file
+          APPIMAGE_FILE=$(find . -maxdepth 1 -name "ApkStudio*.AppImage" -type f | head -1)
+          if [ -z "$APPIMAGE_FILE" ]; then
+            echo "Error: AppImage file not found"
+            exit 1
+          fi
+          echo "Found AppImage: $APPIMAGE_FILE"
+          echo "APPIMAGE_FILE=$APPIMAGE_FILE" >> $GITHUB_ENV
+
+      - name: Upload AppImage to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ${{ env.APPIMAGE_FILE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-macos:
     name: Build macOS
@@ -344,3 +379,12 @@ jobs:
           path: ApkStudio-macOS-x64.dmg
           if-no-files-found: error
           retention-days: 30
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.event.release.tag_name }}
+          files: ApkStudio-macOS-x64.dmg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
