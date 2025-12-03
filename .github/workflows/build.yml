@@ -98,8 +98,8 @@ jobs:
             cp build/apkstudio AppDir/usr/bin/
           fi
           mkdir -p AppDir/usr/share/applications
-          cp ../resources/apkstudio.desktop AppDir/usr/share/applications/
-          cp ../resources/icon.png AppDir/apkstudio.png
+          cp ${{ github.workspace }}/resources/apkstudio.desktop AppDir/usr/share/applications/
+          cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
           chmod +x AppDir/usr/bin/apkstudio
 
       - name: Create AppImage with linuxdeployqt
