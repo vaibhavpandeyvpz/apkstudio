@@ -8,8 +8,6 @@
 
 Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engineering [Android](https://android.com/) application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for \*.smali code files.
 
-**Note**: This project has been migrated from Qt5 to Qt6 and from qmake to CMake. The build system now uses modern CMake with automated CI/CD via GitHub Actions.
-
 [![Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)
 
 <p align="center">
@@ -31,20 +29,24 @@ Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engi
 
 - Cross platform, run on **Linux**, **Mac OS X** & **Windows**
 - Decompile/recompile/sign & install APKs
+- **Automatic tool download & installation** - APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer)
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
 - Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files
 - Built-in hex editor for binary files
+- **Dark/Light theme support** - Native Qt 6 theming with system integration
 
 ### Downloads
 
-Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for _jadx_ to be able to run.
+Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading.
+
+**Note:** APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer) on first launch. If you prefer to use your own installations, you can configure them in Settings.
 
 ### Building
 
 #### Requirements
 
 - **CMake** 3.16 or higher
-- **Qt6** 6.10.1 or higher (Core, Gui, Widgets components)
+- **Qt6** 6.10.1 or higher (Core, Gui, Network, Widgets components)
 - **C++17** compatible compiler
 - **Git** (for version information)
 
@@ -90,7 +92,6 @@ The project uses GitHub Actions for automated builds on Windows, Linux, and macO
 - [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
 - [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
 - [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) team for [linuxdeploy](https://github.com/linuxdeploy/linuxdeploy) and [linuxdeploy-plugin-qt](https://github.com/linuxdeploy/linuxdeploy-plugin-qt)
-- [Antonio Dias](https://github.com/antonypro) for [QGoodWindow](https://github.com/antonypro/QGoodWindow)
 - [Antonio Davide](https://github.com/Dax89) for [QHexView](https://github.com/Dax89/QHexView)
 - [p.yusukekamiyamane](https://p.yusukekamiyamane.com/) for [Fugue](https://p.yusukekamiyamane.com/) icons
 - [Icons8](https://icons8.com/) for various icons
