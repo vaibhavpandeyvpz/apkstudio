@@ -37,12 +37,38 @@ jobs:
         shell: pwsh
         run: |
           $env:PATH = "$env:Qt6_DIR\bin;$env:PATH"
-          windeployqt --release build\Release\ApkStudio.exe
+          
+          # Find the executable
+          $ExePath = ""
+          if (Test-Path "build\bin\Release\ApkStudio.exe") {
+            $ExePath = "build\bin\Release\ApkStudio.exe"
+          } elseif (Test-Path "build\Release\ApkStudio.exe") {
+            $ExePath = "build\Release\ApkStudio.exe"
+          } else {
+            Write-Host "Error: Executable not found. Searching..."
+            Get-ChildItem -Path build -Recurse -Filter "ApkStudio.exe" -ErrorAction SilentlyContinue | Select-Object FullName
+            exit 1
+          }
+          
+          Write-Host "Found executable at: $ExePath"
+          windeployqt --release $ExePath
 
       - name: Create archive
         shell: pwsh
         run: |
-          Compress-Archive -Path build\Release\* -DestinationPath ApkStudio-Windows-x64.zip
+          # Find the directory containing the executable
+          $SourceDir = ""
+          if (Test-Path "build\bin\Release") {
+            $SourceDir = "build\bin\Release"
+          } elseif (Test-Path "build\Release") {
+            $SourceDir = "build\Release"
+          } else {
+            Write-Host "Error: Release directory not found"
+            exit 1
+          }
+          
+          Write-Host "Creating archive from: $SourceDir"
+          Compress-Archive -Path "$SourceDir\*" -DestinationPath ApkStudio-Windows-x64.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
