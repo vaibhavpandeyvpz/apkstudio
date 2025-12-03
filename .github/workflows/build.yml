@@ -83,10 +83,12 @@ jobs:
         run: |
           cmake --install build --prefix install
 
-      - name: Download linuxdeployqt
+      - name: Download linuxdeploy and plugins
         run: |
-          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
-          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
+          wget -c -nv "https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage"
+          chmod +x linuxdeploy*.AppImage
 
       - name: Find executable
         run: |
@@ -121,12 +123,10 @@ jobs:
           cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
           chmod +x AppDir/usr/bin/apkstudio
 
-      - name: Create AppImage with linuxdeployqt
+      - name: Create AppImage with linuxdeploy
         run: |
-          unset QTDIR
-          unset QT_PLUGIN_PATH
-          unset LD_LIBRARY_PATH
-          ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/apkstudio.desktop -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so
+          export QTDIR=${{ env.QT_ROOT_DIR }}
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir --executable AppDir/usr/bin/apkstudio --desktop-file AppDir/usr/share/applications/apkstudio.desktop --icon-file AppDir/apkstudio.png --plugin qt --output appimage
 
       - name: Rename AppImage if tagged
         run: |
