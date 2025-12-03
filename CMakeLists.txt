@@ -163,8 +163,45 @@ endif()
 if(APPLE)
     set_target_properties(${PROJECT_NAME} PROPERTIES
         MACOSX_BUNDLE TRUE
-        MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/Info.plist
     )
+    # Create Info.plist if it doesn't exist
+    if(NOT EXISTS ${CMAKE_SOURCE_DIR}/resources/Info.plist)
+        file(WRITE ${CMAKE_BINARY_DIR}/Info.plist
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+            "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n"
+            "<plist version=\"1.0\">\n"
+            "<dict>\n"
+            "    <key>CFBundleDevelopmentRegion</key>\n"
+            "    <string>en</string>\n"
+            "    <key>CFBundleExecutable</key>\n"
+            "    <string>${PROJECT_NAME}</string>\n"
+            "    <key>CFBundleIdentifier</key>\n"
+            "    <string>com.vaibhavpandey.apkstudio</string>\n"
+            "    <key>CFBundleInfoDictionaryVersion</key>\n"
+            "    <string>6.0</string>\n"
+            "    <key>CFBundleName</key>\n"
+            "    <string>${PROJECT_NAME}</string>\n"
+            "    <key>CFBundlePackageType</key>\n"
+            "    <string>APPL</string>\n"
+            "    <key>CFBundleShortVersionString</key>\n"
+            "    <string>${PROJECT_VERSION}</string>\n"
+            "    <key>CFBundleVersion</key>\n"
+            "    <string>${PROJECT_VERSION}</string>\n"
+            "    <key>LSMinimumSystemVersion</key>\n"
+            "    <string>10.13</string>\n"
+            "    <key>NSHighResolutionCapable</key>\n"
+            "    <true/>\n"
+            "</dict>\n"
+            "</plist>\n"
+        )
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_BINARY_DIR}/Info.plist
+        )
+    else()
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/Info.plist
+        )
+    endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/resources/icon.icns)
         set(APP_ICON_RESOURCE_MACOSX "${CMAKE_SOURCE_DIR}/resources/icon.icns")
         set_source_files_properties(${APP_ICON_RESOURCE_MACOSX} PROPERTIES
