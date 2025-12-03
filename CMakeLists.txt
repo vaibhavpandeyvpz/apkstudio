@@ -120,7 +120,13 @@ set(RESOURCES
 )
 
 # Create executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
+if(WIN32)
+    add_executable(${PROJECT_NAME} WIN32 ${SOURCES} ${HEADERS} ${RESOURCES})
+elseif(APPLE)
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${SOURCES} ${HEADERS} ${RESOURCES})
+else()
+    add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${RESOURCES})
+endif()
 
 # Include directories
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -137,13 +143,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     QHexView
 )
 
-# macOS: Set rpath for Qt frameworks
-if(APPLE)
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        INSTALL_RPATH "@executable_path/../Frameworks"
-        BUILD_WITH_INSTALL_RPATH TRUE
-    )
-endif()
 
 # Compile definitions
 target_compile_definitions(${PROJECT_NAME} PRIVATE
@@ -200,7 +199,7 @@ if(APPLE)
             "    <key>NSHighResolutionCapable</key>\n"
             "    <true/>\n"
             "    <key>CFBundleIconFile</key>\n"
-            "    <string>icon</string>\n"
+            "    <string>icon.icns</string>\n"
             "</dict>\n"
             "</plist>\n"
         )
@@ -213,6 +212,11 @@ if(APPLE)
         )
     endif()
     if(EXISTS ${CMAKE_SOURCE_DIR}/resources/icon.icns)
+        set(MACOSX_BUNDLE_ICON_FILE "icon.icns")
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE_ICON_FILE ${MACOSX_BUNDLE_ICON_FILE}
+        )
+        # Copy icon to bundle Resources
         set(APP_ICON_RESOURCE_MACOSX "${CMAKE_SOURCE_DIR}/resources/icon.icns")
         set_source_files_properties(${APP_ICON_RESOURCE_MACOSX} PROPERTIES
             MACOSX_PACKAGE_LOCATION "Resources"
@@ -238,7 +242,19 @@ endif()
 # Install rules (macOS)
 if(APPLE)
     install(TARGETS ${PROJECT_NAME}
-        BUNDLE DESTINATION bin
+        BUNDLE DESTINATION .
+        RUNTIME DESTINATION bin
+    )
+endif()
+
+# Set output directories
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin/$<CONFIG>
+    )
+else()
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 endif()
 

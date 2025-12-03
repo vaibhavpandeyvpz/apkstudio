@@ -165,159 +165,115 @@ jobs:
           version: "6.10.1"
           cache: true
 
+      - name: Set Qt directory
+        run: |
+          QT_DIR=""
+          if [ -n "${{ env.Qt6_DIR }}" ]; then
+            QT_DIR="${{ env.Qt6_DIR }}"
+          elif [ -n "${{ env.Qt_DIR }}" ]; then
+            QT_DIR="${{ env.Qt_DIR }}"
+          else
+            QT_CONFIG=$(find "$HOME" "$RUNNER_WORKSPACE" "/Users/runner" -name "Qt6Config.cmake" -type f 2>/dev/null | head -1)
+            if [ -n "$QT_CONFIG" ]; then
+              QT_DIR=$(dirname "$QT_CONFIG" | xargs dirname | xargs dirname | xargs dirname)
+            fi
+          fi
+          if [ -z "$QT_DIR" ] || [ ! -d "$QT_DIR" ]; then
+            echo "Error: Could not determine Qt directory"
+            exit 1
+          fi
+          echo "Using Qt directory: $QT_DIR"
+          echo "QT_DIR=$QT_DIR" >> $GITHUB_ENV
+
       - name: Configure CMake
         run: |
-          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="${{ env.QT_DIR }}"
 
       - name: Build
         run: |
           cmake --build build --config Release -j$(sysctl -n hw.ncpu)
 
-      - name: Install
+      - name: Deploy Qt frameworks
         run: |
-          cmake --install build --prefix install
-
-      - name: Deploy Qt dependencies with macdeployqt
-        run: |
-          export PATH="$Qt6_DIR/bin:$PATH"
-          APP_BUNDLE=""
-          # Find the app bundle
-          if [ -d install/bin/ApkStudio.app ]; then
-            APP_BUNDLE="install/bin/ApkStudio.app"
-          elif [ -d build/Release/ApkStudio.app ]; then
-            APP_BUNDLE="build/Release/ApkStudio.app"
-          elif [ -d build/Debug/ApkStudio.app ]; then
-            APP_BUNDLE="build/Debug/ApkStudio.app"
-          elif [ -d build/ApkStudio.app ]; then
-            APP_BUNDLE="build/ApkStudio.app"
-          else
-            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
-            if [ -n "$FOUND_APP" ]; then
-              APP_BUNDLE="$FOUND_APP"
-            fi
-          fi
-          if [ -n "$APP_BUNDLE" ] && [ -d "$APP_BUNDLE" ]; then
-            echo "Deploying Qt dependencies to: $APP_BUNDLE"
-            echo "Qt6_DIR: $Qt6_DIR"
-            echo "macdeployqt path: $(which macdeployqt)"
-            # Use verbose mode to see what's happening
-            macdeployqt "$APP_BUNDLE" -always-overwrite -verbose=2
-            # Verify Qt frameworks were deployed
-            echo "Checking for Qt frameworks..."
-            ls -la "$APP_BUNDLE/Contents/Frameworks/" 2>/dev/null || echo "Frameworks directory not found"
-            # Check rpath in executable
-            echo "Checking rpath in executable..."
-            otool -l "$APP_BUNDLE/Contents/MacOS/ApkStudio" | grep -A 2 LC_RPATH || echo "No rpath found"
-            # Ensure rpath is set correctly
-            EXECUTABLE="$APP_BUNDLE/Contents/MacOS/ApkStudio"
-            if [ -f "$EXECUTABLE" ]; then
-              echo "Fixing rpath in executable..."
-              install_name_tool -add_rpath "@executable_path/../Frameworks" "$EXECUTABLE" 2>/dev/null || true
-              install_name_tool -add_rpath "@loader_path/../Frameworks" "$EXECUTABLE" 2>/dev/null || true
-              echo "Updated rpath:"
-              otool -l "$EXECUTABLE" | grep -A 2 LC_RPATH
-            fi
-          else
-            echo "Error: ApkStudio.app not found for macdeployqt"
+          QT_DIR="${{ env.QT_DIR }}"
+          export PATH="$QT_DIR/bin:$PATH"
+          APP_BUNDLE="build/bin/ApkStudio.app"
+          
+          # Verify app bundle exists
+          if [ ! -d "$APP_BUNDLE" ]; then
+            echo "Error: App bundle not found at $APP_BUNDLE"
             find . -type d -name "*.app" 2>/dev/null || true
             exit 1
           fi
-
-      - name: Code sign app bundle
-        run: |
-          APP_BUNDLE=""
-          # Find the app bundle
-          if [ -d install/bin/ApkStudio.app ]; then
-            APP_BUNDLE="install/bin/ApkStudio.app"
-          elif [ -d build/Release/ApkStudio.app ]; then
-            APP_BUNDLE="build/Release/ApkStudio.app"
-          elif [ -d build/Debug/ApkStudio.app ]; then
-            APP_BUNDLE="build/Debug/ApkStudio.app"
-          elif [ -d build/ApkStudio.app ]; then
-            APP_BUNDLE="build/ApkStudio.app"
-          else
-            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
-            if [ -n "$FOUND_APP" ]; then
-              APP_BUNDLE="$FOUND_APP"
-            fi
+          
+          # Find macdeployqt
+          MACDEPLOYQT="$QT_DIR/bin/macdeployqt"
+          if [ ! -f "$MACDEPLOYQT" ]; then
+            MACDEPLOYQT=$(find "$QT_DIR" -name "macdeployqt" -type f 2>/dev/null | head -1)
           fi
-          if [ -n "$APP_BUNDLE" ] && [ -d "$APP_BUNDLE" ]; then
-            echo "Code signing app bundle: $APP_BUNDLE"
-            # Sign all nested components first (required for proper code signing)
-            # Sign frameworks
-            if [ -d "$APP_BUNDLE/Contents/Frameworks" ]; then
-              find "$APP_BUNDLE/Contents/Frameworks" -type d -name "*.framework" | while read framework; do
-                codesign --force --sign - "$framework" 2>/dev/null || true
-              done
-              find "$APP_BUNDLE/Contents/Frameworks" -type f \( -name "*.dylib" -o -name "*.so" \) | while read lib; do
-                codesign --force --sign - "$lib" 2>/dev/null || true
-              done
-            fi
-            # Sign plugins
-            if [ -d "$APP_BUNDLE/Contents/PlugIns" ]; then
-              find "$APP_BUNDLE/Contents/PlugIns" -type f | while read plugin; do
-                codesign --force --sign - "$plugin" 2>/dev/null || true
-              done
-            fi
-            # Sign the app bundle itself (use --deep for nested signing)
-            codesign --force --deep --sign - --options runtime "$APP_BUNDLE"
-            # Verify the signature
-            codesign --verify --verbose "$APP_BUNDLE" || echo "Warning: Code signature verification failed"
-            # Check if app is notarized (it won't be, but this helps with Gatekeeper)
-            spctl --assess --verbose "$APP_BUNDLE" 2>/dev/null || echo "Note: App is not notarized (expected for CI builds)"
-          else
-            echo "Error: ApkStudio.app not found for code signing"
+          
+          if [ -z "$MACDEPLOYQT" ] || [ ! -f "$MACDEPLOYQT" ]; then
+            echo "Error: macdeployqt not found"
             exit 1
           fi
+          
+          echo "Deploying Qt frameworks to: $APP_BUNDLE"
+          chmod +x "$MACDEPLOYQT"
+          "$MACDEPLOYQT" "$APP_BUNDLE" -always-overwrite
 
-      - name: Find app bundle
+      - name: Install create-dmg
         run: |
-          echo "Searching for ApkStudio.app..."
-          find . -type d -name "*.app" 2>/dev/null | head -10
-          ls -la install/bin/ 2>/dev/null || echo "install/bin/ does not exist"
-          ls -la build/ 2>/dev/null | head -10 || echo "build/ does not exist"
+          brew install create-dmg
 
       - name: Create DMG
         run: |
-          APP_PATH=""
-          # Check various possible locations
-          if [ -d install/bin/ApkStudio.app ]; then
-            APP_PATH="install/bin/ApkStudio.app"
-          elif [ -d build/Release/ApkStudio.app ]; then
-            APP_PATH="build/Release/ApkStudio.app"
-          elif [ -d build/Debug/ApkStudio.app ]; then
-            APP_PATH="build/Debug/ApkStudio.app"
-          elif [ -d build/ApkStudio.app ]; then
-            APP_PATH="build/ApkStudio.app"
-          else
-            # Try to find it
-            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
-            if [ -n "$FOUND_APP" ]; then
-              APP_PATH="$FOUND_APP"
-            fi
-          fi
+          APP_NAME="ApkStudio"
+          APP_PATH="build/bin/ApkStudio.app"
+          DMG_NAME="ApkStudio-macOS-x64.dmg"
           
-          if [ -n "$APP_PATH" ] && [ -d "$APP_PATH" ]; then
-            echo "Found app bundle at: $APP_PATH"
-            # Verify app is signed before creating DMG
-            codesign --verify --verbose "$APP_PATH" || echo "Warning: App bundle verification failed"
-            DMG_DIR_NAME=ApkStudio
-            if [ -d $DMG_DIR_NAME ]; then
-              rm -rf $DMG_DIR_NAME
-            fi
-            mkdir -p $DMG_DIR_NAME
-            cp -R "$APP_PATH" $DMG_DIR_NAME/
-            ln -s /Applications $DMG_DIR_NAME/Applications
-            # Create DMG with proper attributes
-            hdiutil create -volname "ApkStudio" -srcfolder $DMG_DIR_NAME -ov -format UDZO ApkStudio-macOS-x64.dmg
-            # Verify DMG
-            hdiutil verify ApkStudio-macOS-x64.dmg
-          else
-            echo "Error: ApkStudio.app not found"
-            echo "Searched in: install/bin/, build/Release/, build/Debug/, build/"
-            find . -type d -name "*.app" 2>/dev/null || true
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Error: App bundle not found at $APP_PATH"
             exit 1
           fi
+          
+          # Remove quarantine attribute to prevent "damaged" error
+          xattr -cr "$APP_PATH"
+          
+          # Code sign the app with ad-hoc signature (required for macOS Gatekeeper)
+          echo "Code signing app bundle..."
+          codesign --force --deep --sign - "$APP_PATH" || {
+            echo "Warning: Code signing failed, but continuing..."
+          }
+          
+          # Verify the signature
+          codesign --verify --verbose "$APP_PATH" || {
+            echo "Warning: Code signature verification failed, but continuing..."
+          }
+          
+          # Create a temporary directory for DMG contents
+          mkdir -p dmg_temp
+          cp -R "$APP_PATH" "dmg_temp/$APP_NAME.app"
+          
+          # Remove quarantine from copied app as well
+          xattr -cr "dmg_temp/$APP_NAME.app"
+          
+          # Code sign the copied app as well
+          codesign --force --deep --sign - "dmg_temp/$APP_NAME.app" || {
+            echo "Warning: Code signing copied app failed, but continuing..."
+          }
+          
+          # Create DMG
+          create-dmg \
+            --volname "ApkStudio" \
+            --window-pos 200 120 \
+            --window-size 600 400 \
+            --icon-size 100 \
+            --icon "$APP_NAME.app" 150 190 \
+            --hide-extension "$APP_NAME.app" \
+            --app-drop-link 450 190 \
+            "$DMG_NAME" \
+            dmg_temp/
+
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
