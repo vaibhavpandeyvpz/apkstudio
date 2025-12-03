@@ -52,7 +52,7 @@ void ImageViewerWidget::zoomIn()
 void ImageViewerWidget::zoomInOut(const double f)
 {
     m_Scale *= f;
-    m_Image->resize(m_Scale * m_Image->pixmap()->size());
+    m_Image->resize(m_Scale * m_Image->pixmap().size());
     QScrollBar *hbar = horizontalScrollBar();
     QScrollBar *vbar = verticalScrollBar();
     int hs = int(f * hbar->value() + ((f - 1) * hbar->pageStep() / 2));

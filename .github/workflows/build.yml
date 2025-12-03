@@ -1,0 +1,197 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          modules: "qtbase qtdeclarative qtsvg"
+          cache: true
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --config Release
+
+      - name: Deploy Qt dependencies
+        shell: pwsh
+        run: |
+          $env:PATH = "$env:Qt6_DIR\bin;$env:PATH"
+          windeployqt --release build\Release\ApkStudio.exe
+
+      - name: Create archive
+        shell: pwsh
+        run: |
+          Compress-Archive -Path build\Release\* -DestinationPath ApkStudio-Windows-x64.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-Windows-x64
+          path: ApkStudio-Windows-x64.zip
+          retention-days: 30
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-dev libxkbcommon-x11-0
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          modules: "qtbase qtdeclarative qtsvg"
+          cache: true
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --config Release -j$(nproc)
+
+      - name: Install
+        run: |
+          cmake --install build --prefix install
+
+      - name: Download linuxdeployqt
+        run: |
+          wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+          chmod +x linuxdeployqt-continuous-x86_64.AppImage
+
+      - name: Prepare AppDir for AppImage
+        run: |
+          mkdir -p AppDir/usr/bin
+          mkdir -p AppDir/usr/lib
+          if [ -f install/bin/apkstudio ]; then
+            cp install/bin/apkstudio AppDir/usr/bin/
+          elif [ -f build/apkstudio ]; then
+            cp build/apkstudio AppDir/usr/bin/
+          fi
+          mkdir -p AppDir/usr/share/applications
+          cp ../resources/apkstudio.desktop AppDir/usr/share/applications/
+          cp ../resources/icon.png AppDir/apkstudio.png
+          chmod +x AppDir/usr/bin/apkstudio
+
+      - name: Create AppImage with linuxdeployqt
+        run: |
+          unset QTDIR
+          unset QT_PLUGIN_PATH
+          unset LD_LIBRARY_PATH
+          ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/share/applications/apkstudio.desktop -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so
+
+      - name: Rename AppImage if tagged
+        run: |
+          if [ ! -z "${{ github.ref }}" ] && [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            if [ -f ApkStudio-x86_64.AppImage ]; then
+              mv ApkStudio-x86_64.AppImage ApkStudio-${TAG_NAME}-x86_64.AppImage
+            fi
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-Linux-x64
+          path: ApkStudio*.AppImage
+          if-no-files-found: error
+          retention-days: 30
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: "6.10.1"
+          modules: "qtbase qtdeclarative qtsvg"
+          cache: true
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --config Release -j$(sysctl -n hw.ncpu)
+
+      - name: Install
+        run: |
+          cmake --install build --prefix install
+
+      - name: Deploy Qt dependencies with macdeployqt
+        run: |
+          export PATH="$Qt6_DIR/bin:$PATH"
+          if [ -d install/bin/ApkStudio.app ]; then
+            macdeployqt install/bin/ApkStudio.app -always-overwrite
+          elif [ -d build/Release/ApkStudio.app ]; then
+            macdeployqt build/Release/ApkStudio.app -always-overwrite
+          fi
+
+      - name: Create DMG
+        run: |
+          APP_PATH=""
+          if [ -d install/bin/ApkStudio.app ]; then
+            APP_PATH="install/bin/ApkStudio.app"
+          elif [ -d build/Release/ApkStudio.app ]; then
+            APP_PATH="build/Release/ApkStudio.app"
+          fi
+
+          if [ -n "$APP_PATH" ]; then
+            DMG_DIR_NAME=ApkStudio
+            if [ -d $DMG_DIR_NAME ]; then
+              rm -rf $DMG_DIR_NAME
+            fi
+            mkdir -p $DMG_DIR_NAME
+            cp -R $APP_PATH $DMG_DIR_NAME/
+            ln -s /Applications $DMG_DIR_NAME/Applications
+            hdiutil create -volname "ApkStudio" -srcfolder $DMG_DIR_NAME -ov -format UDZO ApkStudio-macOS-x64.dmg
+          else
+            echo "Error: ApkStudio.app not found"
+            exit 1
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ApkStudio-macOS-x64
+          path: ApkStudio-macOS-x64.dmg
+          if-no-files-found: error
+          retention-days: 30

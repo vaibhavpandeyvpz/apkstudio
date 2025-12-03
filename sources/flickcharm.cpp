@@ -6,6 +6,9 @@
 #include <QList>
 #include <QMouseEvent>
 #include <QScrollBar>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QPointingDevice>
+#endif
 #include "flickcharm.h"
 
 FlickCharm::FlickCharm(QObject *parent): QObject(parent)
@@ -109,8 +112,13 @@ bool FlickCharm::eventFilter(QObject *object, QEvent *event)
         if (mouseEvent->type() == QEvent::MouseButtonRelease) {
             consumed = true;
             data->state = FlickData::Steady;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QMouseEvent *event1 = new QMouseEvent(QEvent::MouseButtonPress, QPointF(data->pressPos), data->pressPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier, QPointingDevice::primaryPointingDevice());
+            QMouseEvent *event2 = new QMouseEvent(mouseEvent->type(), QPointF(mouseEvent->pos()), mouseEvent->globalPos(), mouseEvent->button(), mouseEvent->buttons(), mouseEvent->modifiers(), QPointingDevice::primaryPointingDevice());
+#else
             QMouseEvent *event1 = new QMouseEvent(QEvent::MouseButtonPress, data->pressPos, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
             QMouseEvent *event2 = new QMouseEvent(*mouseEvent);
+#endif
             data->ignored << event1;
             data->ignored << event2;
             QApplication::postEvent(object, event1);

@@ -6,6 +6,9 @@
 #include <QShortcut>
 #include <QTextBlock>
 #include <QTextStream>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QStringConverter>
+#endif
 #include "sourcecodeedit.h"
 #include "themedsyntaxhighlighter.h"
 
@@ -388,7 +391,7 @@ void SourceCodeEdit::open(const QString &path)
 void SourceCodeEdit::paintEvent(QPaintEvent *event)
 {
     QPainter line(viewport());
-    const int offset = static_cast<int>((fontMetrics().width('8') * 80)
+    const int offset = static_cast<int>((fontMetrics().horizontalAdvance('8') * 80)
                                         + contentOffset().x()
                                         + document()->documentMargin());
     QPen pen = line.pen();
@@ -413,7 +416,11 @@ bool SourceCodeEdit::save()
     QFile file(m_FilePath);
     if (file.open(QFile::WriteOnly | QFile::Text)) {
         QTextStream out(&file);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         out.setCodec("UTF-8");
+#else
+        out.setEncoding(QStringConverter::Utf8);
+#endif
         out.setGenerateByteOrderMark(false);
         out << toPlainText();
         out.flush();
@@ -443,7 +450,11 @@ void SourceCodeEdit::transformText(const bool upper)
 void SourceCodeEdit::wheelEvent(QWheelEvent *event)
 {
     if (event->modifiers() & Qt::ControlModifier) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const int delta = event->angleDelta().y();
+#else
         const int delta = event->delta();
+#endif
         if (delta > 0) {
             zoomIn();
         } else if (delta < 0) {
@@ -462,7 +473,11 @@ SourceCodeSidebarWidget::SourceCodeSidebarWidget(SourceCodeEdit *edit)
 void SourceCodeSidebarWidget::leaveEvent(QEvent *e)
 {
     Q_UNUSED(e)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QMouseEvent copy(QEvent::MouseMove, QPointF(-1, -1), Qt::NoButton, Qt::NoButton, Qt::NoModifier);
+#else
     QMouseEvent copy(QEvent::MouseMove, QPoint(-1, -1), Qt::NoButton, nullptr, nullptr);
+#endif
     mouseEvent(&copy);
 }
 
@@ -535,7 +550,7 @@ QSize SourceCodeSidebarWidget::sizeHint() const
     }
     digits++;
     digits++;
-    return QSize((3 + (m_Edit->fontMetrics().width('8') * digits)), 0);
+    return QSize((3 + (m_Edit->fontMetrics().horizontalAdvance('8') * digits)), 0);
 }
 
 void SourceCodeSidebarWidget::wheelEvent(QWheelEvent *e)

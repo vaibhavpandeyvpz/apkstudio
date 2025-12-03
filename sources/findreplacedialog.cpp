@@ -3,6 +3,7 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QVBoxLayout>
 #include "findreplacedialog.h"
 
@@ -84,7 +85,7 @@ void FindReplaceDialog::findInTextEdit(const bool next)
         }
         QTextCursor cursor;
         if (m_CheckRegexp->isChecked()) {
-            QRegExp regex(term, (m_CheckCase->isChecked() ? Qt::CaseSensitive : Qt::CaseInsensitive));
+            QRegularExpression regex(term, (m_CheckCase->isChecked() ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption));
             cursor = m_Edit->document()->find(regex, cursor, flags);
             m_Edit->setTextCursor(cursor);
             found = !cursor.isNull();

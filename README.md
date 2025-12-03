@@ -32,6 +32,7 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 ⚠️ This project is not being actively maintained until further notice. ⚠️
 
 ### Features
+
 - Cross platform, run on **Linux**, **Mac OS X** & **Windows**
 - Decompile/recompile/sign & install APKs
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
@@ -39,12 +40,15 @@ If you are just willing to quickly decompile an [Android](https://android.com/) 
 - Built-in hex editor for binary files
 
 ### Downloads
-Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for *jadx* to be able to run.
+
+Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading. **Important:** Make sure to have `JAVA_HOME` environment variable pointing to a valid java installation for _jadx_ to be able to run.
 
 ### Building
+
 Information on building from source is provided in the [Wiki](https://github.com/vaibhavpandeyvpz/apkstudio/wiki).
 
 ### Credits
+
 - [iBotPeaches](https://github.com/iBotPeaches) for [apktool](https://ibotpeaches.github.io/Apktool)
 - [patrickfav](https://github.com/patrickfav) for [uber-apk-signer](https://github.com/patrickfav/uber-apk-signer)
 - [skylot](https://github.com/skylot) for [jadx](https://github.com/skylot/jadx)
@@ -60,4 +64,5 @@ Information on building from source is provided in the [Wiki](https://github.com
 ---
 
 ##### Disclaimer
+
 Same as [apktool](http://ibotpeaches.github.io/Apktool/), **APK Studio** is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
