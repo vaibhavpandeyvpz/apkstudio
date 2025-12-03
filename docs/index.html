@@ -8,7 +8,13 @@
     />
     <link
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <title>
       APK Studio | Cross platform, Open-Source IDE for Android
@@ -16,120 +22,193 @@
     </title>
     <meta
       name="description"
-      content="Open-source, cross platform Qt based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for *.smali code files."
+      content="Open-source, cross platform Qt6 based IDE for reverse-engineering Android application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for *.smali code files."
     />
     <style>
       body {
-        font-family: "Fira Sans", sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: #2d3748;
+        min-height: 100vh;
+      }
+      .main-container {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .hero-section {
+        background: #667eea;
+        color: white;
+        padding: 1.5rem 1.5rem;
+        text-align: center;
+      }
+      .hero-section img {
+        max-width: 96px;
+        margin-bottom: 0.5rem;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+      .content-section {
+        padding: 1.5rem;
+      }
+      .feature-list {
+        list-style: none;
+        padding: 0;
+      }
+      .feature-list li {
+        padding: 0.25rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+      .feature-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1rem;
+      }
+      .badge-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin: 0.75rem 0;
+      }
+      .badge-container img {
+        height: 20px;
+      }
+      .section-title {
+        color: #667eea;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid #e9ecef;
+        font-size: 1.25rem;
+      }
+      .section-title:first-child {
+        margin-top: 0;
+      }
+      .screenshot {
+        max-width: 100%;
+        border-radius: 6px;
+        margin: 0.75rem 0;
+      }
+      .download-btn {
+        background: #2d3748;
+        border: none;
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: transform 0.2s, box-shadow 0.2s;
+        font-size: 0.9rem;
+      }
+      .download-btn:hover {
+        background: #1a202c;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(45, 55, 72, 0.4);
+        color: white;
       }
     </style>
   </head>
-  <body class="bg-light h-100 d-flex">
-    <div class="container my-auto">
-      <div class="row justify-content-center my-3">
-        <div class="col-lg-5 d-flex order-lg-2">
-          <div class="mb-3 my-lg-auto">
-            <img
-              alt="Screenshot | APK Studio"
-              class="mw-100 mb-3"
-              src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png"
-            />
-            <h6>Sponsor</h6>
-            <p class="text-center mb-0">
-              <a href="https://appfrom.site/">
-                <img
-                  src="https://appfrom.site/external/images/ad-banner-450x128.png"
-                  alt="appfrom.site"
-                />
-              </a>
-            </p>
-          </div>
-        </div>
-        <div class="col-lg-5 d-flex order-lg-1">
-          <div class="my-auto">
-            <div class="card">
-              <div class="card-body">
-                <h1 class="card-title">APK Studio</h1>
-                <p class="card-text">
-                  Open-source, cross platform
-                  <a href="https://www.qt.io/" rel="nofollow">Qt</a> based IDE
-                  for reverse-engineering
-                  <a href="https://android.com/" rel="nofollow">Android</a>
-                  application packages. It features a friendly IDE-like layout
-                  including code editor with syntax highlighting support for
-                  *.smali code files.
+  <body class="h-100 d-flex">
+    <div class="container my-auto py-2">
+      <div class="row justify-content-center">
+        <div class="col-lg-9 col-xl-8">
+          <div class="main-container">
+            <!-- Hero Section -->
+            <div class="hero-section">
+              <img
+                src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/icon.png"
+                alt="APK Studio"
+              />
+              <h1 class="h2 mb-2">APK Studio</h1>
+              <p class="mb-3" style="font-size: 0.95rem;">
+                Open-source, cross platform <a href="https://www.qt.io/" rel="nofollow" style="color: white; text-decoration: underline;">Qt6</a> based IDE for reverse-engineering
+                <a href="https://android.com/" rel="nofollow" style="color: white; text-decoration: underline;">Android</a> application packages
+              </p>
+              <div class="badge-container justify-content-center">
+                <a href="https://github.com/vaibhavpandeyvpz/apkstudio/actions">
+                  <img src="https://github.com/vaibhavpandeyvpz/apkstudio/workflows/Build/badge.svg" alt="Build Status" />
+                </a>
+                <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases/latest">
+                  <img src="https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio.svg" alt="Release" />
+                </a>
+                <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases">
+                  <img src="https://img.shields.io/github/downloads/vaibhavpandeyvpz/apkstudio/total.svg" alt="Downloads" />
+                </a>
+                <a href="https://github.com/vaibhavpandeyvpz/apkstudio/blob/master/LICENSE">
+                  <img src="https://img.shields.io/github/license/vaibhavpandeyvpz/apkstudio.svg" alt="License" />
+                </a>
+              </div>
+              <div class="mt-2">
+                <a
+                  href="https://github.com/vaibhavpandeyvpz/apkstudio/releases"
+                  class="download-btn"
+                  rel="nofollow"
+                >
+                  <i class="fas fa-download me-1"></i>Download Latest Release
+                </a>
+              </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="content-section">
+              <!-- Screenshot -->
+              <div class="text-center mb-3">
+                <a href="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png">
+                  <img
+                    src="https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png"
+                    alt="APK Studio Screenshot"
+                    class="screenshot"
+                  />
+                </a>
+              </div>
+
+              <!-- Features -->
+              <h2 class="section-title">
+                <i class="fas fa-star me-2"></i>Features
+              </h2>
+              <ul class="feature-list">
+                <li>Cross platform, run on <strong>Linux</strong>, <strong>Mac OS X</strong> & <strong>Windows</strong></li>
+                <li>Decompile/recompile/sign & install APKs</li>
+                <li><strong>Automatic tool download & installation</strong> - APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer)</li>
+                <li>Built-in code editor (*.java; *.smali; *.xml; *.yml) w/ syntax highlighting</li>
+                <li>Built-in viewer for image (*.gif; *.jpg; *.jpeg; *.png) files</li>
+                <li>Built-in hex editor for binary files</li>
+                <li><strong>Dark/Light theme support</strong> - Native Qt 6 theming with system integration</li>
+              </ul>
+
+              <!-- Downloads -->
+              <h2 class="section-title">
+                <i class="fas fa-download me-2"></i>Downloads
+              </h2>
+              <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">
+                Please head over to <a href="https://github.com/vaibhavpandeyvpz/apkstudio/releases" rel="nofollow">Releases</a> page for downloading.
+              </p>
+              <div class="alert alert-info py-2 px-3" role="alert" style="font-size: 0.9rem; margin-bottom: 1rem;">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer) on first launch. If you prefer to use your own installations, you can configure them in Settings.
+              </div>
+
+              <div class="alert alert-warning mt-3 py-2 px-3" role="alert" style="font-size: 0.9rem;">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Note:</strong> If you encounter any problems, make sure to check <strong>Console</strong> output at the bottom of the IDE to get the output of command which was actually executed by program. Report any issues related to APK Studio <a href="https://github.com/vaibhavpandeyvpz/apkstudio/issues" rel="nofollow">here</a> on Github. Please note, an issue with <a href="http://ibotpeaches.github.io/Apktool/" rel="nofollow">apktool</a> is not an issue with <strong>APK Studio</strong>. Please verify the context of issue before opening a ticket.
+              </div>
+
+              <!-- Footer -->
+              <hr class="my-3" />
+              <div class="text-center text-muted" style="font-size: 0.85rem;">
+                <p class="mb-1">
+                  <strong>Disclaimer:</strong> Same as <a href="http://ibotpeaches.github.io/Apktool/" rel="nofollow">apktool</a>, <strong>APK Studio</strong> is neither intended for piracy nor other non-legal uses. It could be used for localizing, adding some features or support for custom platforms, analyzing applications &amp; much more.
                 </p>
-                <p class="card-text">
-                  <a
-                    href="https://ci.appveyor.com/project/vaibhavpandeyvpz/apkstudio"
-                    rel="nofollow"
-                  >
-                    <img
-                      src="https://img.shields.io/appveyor/ci/vaibhavpandeyvpz/apkstudio.svg"
-                      alt="AppVeyor"
-                    />
-                  </a>
-                  <a
-                    href="https://travis-ci.org/vaibhavpandeyvpz/apkstudio"
-                    rel="nofollow"
-                  >
-                    <img
-                      src="https://img.shields.io/travis/vaibhavpandeyvpz/apkstudio.svg"
-                      alt="Travis CI"
-                    />
-                  </a>
-                  <a
-                    href="https://github.com/vaibhavpandeyvpz/apkstudio/releases/latest"
-                  >
-                    <img
-                      src="https://img.shields.io/github/release/vaibhavpandeyvpz/apkstudio.svg"
-                      alt="Release"
-                    />
-                  </a>
-                  <a
-                    href="https://github.com/vaibhavpandeyvpz/apkstudio/releases"
-                  >
-                    <img
-                      src="https://img.shields.io/github/downloads/vaibhavpandeyvpz/apkstudio/total.svg"
-                      alt="Downloads"
-                    />
-                  </a>
-                </p>
-                <p class="card-text">
-                  <a
-                    href="https://github.com/vaibhavpandeyvpz/apkstudio/releases"
-                    rel="nofollow"
-                    >Downloads</a
-                  >
-                  /
-                  <a
-                    href="https://github.com/vaibhavpandeyvpz/apkstudio"
-                    rel="nofollow"
-                    >Source</a
-                  >
-                </p>
-                <p class="card-text">
-                  If you are just willing to quickly decompile an
-                  <a href="https://android.com/" rel="nofollow">Android</a> app,
-                  you can make use of
-                  <a href="https://deapk.vaibhavpandey.com/" rel="nofollow"
-                    >DeAPK - Online APK Decompiler</a
-                  >
-                  which lets you decompile an Android app using
-                  <a href="https://github.com/ibotpeaches/apktool">apktool</a>
-                  and <a href="https://github.com/skylot/jadx">jadx</a>.
-                </p>
-                <p class="card-text">
+                <p class="mb-0">
                   Developed &amp; maintained by
-                  <a href="https://vaibhavpandey.com/"
-                    >Vaibhav Pandey -aka- VPZ</a
-                  >
+                  <a href="https://vaibhavpandey.com/" rel="nofollow">Vaibhav Pandey -aka- VPZ</a>
                   along with
-                  <a
-                    href="https://github.com/vaibhavpandeyvpz/apkstudio/graphs/contributors"
-                    rel="nofollow"
-                    >contributor(s)</a
-                  >.
+                  <a href="https://github.com/vaibhavpandeyvpz/apkstudio/graphs/contributors" rel="nofollow">contributor(s)</a>.
                 </p>
               </div>
             </div>
@@ -137,21 +216,12 @@
         </div>
       </div>
     </div>
-    <script>
-      var WebFontConfig = {
-        google: {
-          families: ["Fira Sans:400,700,400i,700i"],
-        },
-      };
-      (function (d) {
-        var wf = d.createElement("script"),
-          s = d.scripts[0];
-        wf.src =
-          "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js";
-        wf.async = true;
-        s.parentNode.insertBefore(wf, s);
-      })(document);
-    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+      crossorigin="anonymous"
+    ></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script
       async
