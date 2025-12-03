@@ -8,7 +8,7 @@
 
 Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engineering [Android](https://android.com/) application packages. It features a friendly IDE-like layout including code editor with syntax highlighting support for \*.smali code files.
 
-[![Screenshot](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)](https://raw.githubusercontent.com/vaibhavpandeyvpz/apkstudio/master/resources/screenshot.png)
+[![Screenshot](resources/screenshot.png)](resources/screenshot.png)
 
 <p align="center">
   <a href="https://github.com/vaibhavpandeyvpz/apkstudio/actions">
