@@ -23,7 +23,6 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: "6.10.1"
-          modules: "qtbase qtdeclarative qtsvg"
           cache: true
 
       - name: Configure CMake
@@ -70,7 +69,6 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: "6.10.1"
-          modules: "qtbase qtdeclarative qtsvg"
           cache: true
 
       - name: Configure CMake
@@ -141,7 +139,6 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: "6.10.1"
-          modules: "qtbase qtdeclarative qtsvg"
           cache: true
 
       - name: Configure CMake
