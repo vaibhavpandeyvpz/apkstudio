@@ -123,7 +123,8 @@ jobs:
           # Copy and fix desktop file to use correct icon name
           cp ${{ github.workspace }}/resources/apkstudio.desktop AppDir/usr/share/applications/
           sed -i 's/^Icon=.*/Icon=apkstudio/' AppDir/usr/share/applications/apkstudio.desktop
-          # Copy icon to proper location
+          # Copy icon to both locations: root for linuxdeploy and hicolor for system
+          cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
           cp ${{ github.workspace }}/resources/icon.png AppDir/usr/share/icons/hicolor/512x512/apps/apkstudio.png
           chmod +x AppDir/usr/bin/apkstudio
 
