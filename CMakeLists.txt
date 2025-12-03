@@ -74,12 +74,10 @@ set(SOURCES
     sources/apksignworker.cpp
     sources/appearancesettingswidget.cpp
     sources/binarysettingswidget.cpp
-    sources/darkstyle.cpp
     sources/findreplacedialog.cpp
     sources/flickcharm.cpp
     sources/hexedit.cpp
     sources/imageviewerwidget.cpp
-    sources/lightstyle.cpp
     sources/mainwindow.cpp
     sources/processutils.cpp
     sources/settingsdialog.cpp
@@ -87,7 +85,6 @@ set(SOURCES
     sources/signingconfigwidget.cpp
     sources/sourcecodeedit.cpp
     sources/splashwindow.cpp
-    sources/stylecommon.cpp
     sources/themedsyntaxhighlighter.cpp
     sources/tooldownloaddialog.cpp
     sources/tooldownloadworker.cpp
@@ -100,14 +97,12 @@ set(HEADERS
     sources/apkdecompileworker.h
     sources/apkrecompileworker.h
     sources/apksignworker.h
-    sources/darkstyle.h
     sources/appearancesettingswidget.h
     sources/binarysettingswidget.h
     sources/findreplacedialog.h
     sources/flickcharm.h
     sources/hexedit.h
     sources/imageviewerwidget.h
-    sources/lightstyle.h
     sources/mainwindow.h
     sources/processutils.h
     sources/settingsdialog.h
@@ -115,7 +110,6 @@ set(HEADERS
     sources/signingconfigwidget.h
     sources/sourcecodeedit.h
     sources/splashwindow.h
-    sources/stylecommon.h
     sources/themedsyntaxhighlighter.h
     sources/tooldownloaddialog.h
     sources/tooldownloadworker.h
