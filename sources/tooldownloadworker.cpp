@@ -579,16 +579,66 @@ bool ToolDownloadWorker::installPkg(const QString &pkgPath, const QString &insta
     qDebug() << "[installPkg] Install path:" << installPath;
 #endif
     
-    QProcess process;
-    QStringList args;
-    args << "-pkg" << pkgPath;
-    args << "-target" << "/";
-    args << "-verboseR";
-    
+    // Verify PKG file exists and is readable
+    QFileInfo pkgInfo(pkgPath);
+    if (!pkgInfo.exists()) {
 #ifdef QT_DEBUG
-    qDebug() << "[installPkg] Running installer with args:" << args;
+        qDebug() << "[installPkg] ERROR: PKG file does not exist:" << pkgPath;
 #endif
-    process.start("installer", args);
+        return false;
+    }
+    if (!pkgInfo.isReadable()) {
+#ifdef QT_DEBUG
+        qDebug() << "[installPkg] ERROR: PKG file is not readable:" << pkgPath;
+#endif
+        return false;
+    }
+#ifdef QT_DEBUG
+    qDebug() << "[installPkg] PKG file exists, size:" << pkgInfo.size() << "bytes";
+#endif
+    
+    QProcess process;
+    int exitCode = 0;
+    QString stdOut;
+    QString stdErr;
+    
+    // For Java, we need admin privileges. Use osascript to elevate installer
+    if (m_Tool == Java) {
+#ifdef QT_DEBUG
+        qDebug() << "[installPkg] Java installation requires admin privileges. Requesting elevation...";
+#endif
+        
+        // Use osascript to run installer with admin privileges
+        // Escape the pkg path for use in AppleScript
+        QString escapedPkgPath = pkgPath;
+        escapedPkgPath.replace("\\", "\\\\");
+        escapedPkgPath.replace("\"", "\\\"");
+        
+        // Build the AppleScript command
+        QString script = QString("do shell script \"installer -pkg \\\"%1\\\" -target / -verboseR\" with administrator privileges")
+                            .arg(escapedPkgPath);
+        
+        QStringList args;
+        args << "-e" << script;
+        
+#ifdef QT_DEBUG
+        qDebug() << "[installPkg] Running osascript with elevation...";
+        qDebug() << "[installPkg] AppleScript command:" << script;
+#endif
+        
+        process.start("osascript", args);
+    } else {
+        // For other tools, try without elevation first
+        QStringList args;
+        args << "-pkg" << pkgPath;
+        args << "-target" << "/";
+        args << "-verboseR";
+        
+#ifdef QT_DEBUG
+        qDebug() << "[installPkg] Running installer with args:" << args;
+#endif
+        process.start("installer", args);
+    }
     
     if (!process.waitForStarted(30000)) {
 #ifdef QT_DEBUG
@@ -610,9 +660,9 @@ bool ToolDownloadWorker::installPkg(const QString &pkgPath, const QString &insta
         return false;
     }
     
-    int exitCode = process.exitCode();
-    QString stdOut = QString::fromUtf8(process.readAllStandardOutput());
-    QString stdErr = QString::fromUtf8(process.readAllStandardError());
+    exitCode = process.exitCode();
+    stdOut = QString::fromUtf8(process.readAllStandardOutput());
+    stdErr = QString::fromUtf8(process.readAllStandardError());
     
 #ifdef QT_DEBUG
     qDebug() << "[installPkg] Installer process finished with exit code:" << exitCode;
@@ -621,6 +671,15 @@ bool ToolDownloadWorker::installPkg(const QString &pkgPath, const QString &insta
     }
     if (!stdErr.isEmpty()) {
         qDebug() << "[installPkg] Installer stderr:" << stdErr;
+    }
+    
+    // Check for common error messages
+    if (exitCode != 0) {
+        if (stdErr.contains("User canceled", Qt::CaseInsensitive) || stdOut.contains("User canceled", Qt::CaseInsensitive)) {
+            qDebug() << "[installPkg] ERROR: User canceled the installation (admin password dialog was dismissed)";
+        } else if (stdErr.contains("not authorized", Qt::CaseInsensitive) || stdOut.contains("not authorized", Qt::CaseInsensitive)) {
+            qDebug() << "[installPkg] ERROR: Installation not authorized - admin privileges required";
+        }
     }
 #endif
     
