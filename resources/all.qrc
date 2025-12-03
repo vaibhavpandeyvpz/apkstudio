@@ -30,10 +30,6 @@
         <file>icon.png</file>
         <file>splash.png</file>
     </qresource>
-    <qresource prefix="/styles">
-        <file>dark.qss</file>
-        <file>light.qss</file>
-    </qresource>
     <qresource prefix="/themes">
         <file>dark.theme</file>
         <file>light.theme</file>
