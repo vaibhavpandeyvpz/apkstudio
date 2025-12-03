@@ -88,15 +88,34 @@ jobs:
           wget -c -nv "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
           chmod +x linuxdeployqt-continuous-x86_64.AppImage
 
+      - name: Find executable
+        run: |
+          echo "Searching for executable..."
+          find . -type f -executable \( -name "ApkStudio" -o -name "apkstudio" \) 2>/dev/null | head -5
+          ls -la install/bin/ 2>/dev/null || echo "install/bin/ does not exist"
+          ls -la build/ 2>/dev/null | head -10 || echo "build/ does not exist"
+
       - name: Prepare AppDir for AppImage
         run: |
           mkdir -p AppDir/usr/bin
           mkdir -p AppDir/usr/lib
-          if [ -f install/bin/apkstudio ]; then
-            cp install/bin/apkstudio AppDir/usr/bin/
+          # Find the executable (could be ApkStudio or apkstudio, in build or install)
+          EXECUTABLE=""
+          if [ -f install/bin/ApkStudio ]; then
+            EXECUTABLE="install/bin/ApkStudio"
+          elif [ -f install/bin/apkstudio ]; then
+            EXECUTABLE="install/bin/apkstudio"
+          elif [ -f build/ApkStudio ]; then
+            EXECUTABLE="build/ApkStudio"
           elif [ -f build/apkstudio ]; then
-            cp build/apkstudio AppDir/usr/bin/
+            EXECUTABLE="build/apkstudio"
+          else
+            echo "Error: Executable not found. Listing directories..."
+            find . -type f -executable -name "*pk*" 2>/dev/null || true
+            exit 1
           fi
+          echo "Found executable at: $EXECUTABLE"
+          cp "$EXECUTABLE" AppDir/usr/bin/apkstudio
           mkdir -p AppDir/usr/share/applications
           cp ${{ github.workspace }}/resources/apkstudio.desktop AppDir/usr/share/applications/
           cp ${{ github.workspace }}/resources/icon.png AppDir/apkstudio.png
