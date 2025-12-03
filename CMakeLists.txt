@@ -223,3 +223,10 @@ if(UNIX AND NOT APPLE)
     )
 endif()
 
+# Install rules (macOS)
+if(APPLE)
+    install(TARGETS ${PROJECT_NAME}
+        BUNDLE DESTINATION bin
+    )
+endif()
+

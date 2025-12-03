@@ -175,32 +175,71 @@ jobs:
       - name: Deploy Qt dependencies with macdeployqt
         run: |
           export PATH="$Qt6_DIR/bin:$PATH"
+          APP_BUNDLE=""
+          # Find the app bundle
           if [ -d install/bin/ApkStudio.app ]; then
-            macdeployqt install/bin/ApkStudio.app -always-overwrite
+            APP_BUNDLE="install/bin/ApkStudio.app"
           elif [ -d build/Release/ApkStudio.app ]; then
-            macdeployqt build/Release/ApkStudio.app -always-overwrite
+            APP_BUNDLE="build/Release/ApkStudio.app"
+          elif [ -d build/Debug/ApkStudio.app ]; then
+            APP_BUNDLE="build/Debug/ApkStudio.app"
+          elif [ -d build/ApkStudio.app ]; then
+            APP_BUNDLE="build/ApkStudio.app"
+          else
+            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
+            if [ -n "$FOUND_APP" ]; then
+              APP_BUNDLE="$FOUND_APP"
+            fi
           fi
+          if [ -n "$APP_BUNDLE" ] && [ -d "$APP_BUNDLE" ]; then
+            echo "Deploying Qt dependencies to: $APP_BUNDLE"
+            macdeployqt "$APP_BUNDLE" -always-overwrite
+          else
+            echo "Warning: ApkStudio.app not found for macdeployqt"
+            find . -type d -name "*.app" 2>/dev/null || true
+          fi
+
+      - name: Find app bundle
+        run: |
+          echo "Searching for ApkStudio.app..."
+          find . -type d -name "*.app" 2>/dev/null | head -10
+          ls -la install/bin/ 2>/dev/null || echo "install/bin/ does not exist"
+          ls -la build/ 2>/dev/null | head -10 || echo "build/ does not exist"
 
       - name: Create DMG
         run: |
           APP_PATH=""
+          # Check various possible locations
           if [ -d install/bin/ApkStudio.app ]; then
             APP_PATH="install/bin/ApkStudio.app"
           elif [ -d build/Release/ApkStudio.app ]; then
             APP_PATH="build/Release/ApkStudio.app"
+          elif [ -d build/Debug/ApkStudio.app ]; then
+            APP_PATH="build/Debug/ApkStudio.app"
+          elif [ -d build/ApkStudio.app ]; then
+            APP_PATH="build/ApkStudio.app"
+          else
+            # Try to find it
+            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
+            if [ -n "$FOUND_APP" ]; then
+              APP_PATH="$FOUND_APP"
+            fi
           fi
-
-          if [ -n "$APP_PATH" ]; then
+          
+          if [ -n "$APP_PATH" ] && [ -d "$APP_PATH" ]; then
+            echo "Found app bundle at: $APP_PATH"
             DMG_DIR_NAME=ApkStudio
             if [ -d $DMG_DIR_NAME ]; then
               rm -rf $DMG_DIR_NAME
             fi
             mkdir -p $DMG_DIR_NAME
-            cp -R $APP_PATH $DMG_DIR_NAME/
+            cp -R "$APP_PATH" $DMG_DIR_NAME/
             ln -s /Applications $DMG_DIR_NAME/Applications
             hdiutil create -volname "ApkStudio" -srcfolder $DMG_DIR_NAME -ov -format UDZO ApkStudio-macOS-x64.dmg
           else
             echo "Error: ApkStudio.app not found"
+            echo "Searched in: install/bin/, build/Release/, build/Debug/, build/"
+            find . -type d -name "*.app" 2>/dev/null || true
             exit 1
           fi
 
