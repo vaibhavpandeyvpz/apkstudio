@@ -191,6 +191,8 @@ if(APPLE)
             "    <string>6.0</string>\n"
             "    <key>CFBundleName</key>\n"
             "    <string>${PROJECT_NAME}</string>\n"
+            "    <key>CFBundleDisplayName</key>\n"
+            "    <string>APK Studio</string>\n"
             "    <key>CFBundlePackageType</key>\n"
             "    <string>APPL</string>\n"
             "    <key>CFBundleShortVersionString</key>\n"
@@ -201,7 +203,15 @@ if(APPLE)
             "    <string>10.13</string>\n"
             "    <key>NSHighResolutionCapable</key>\n"
             "    <true/>\n"
+            "    <key>NSPrincipalClass</key>\n"
+            "    <string>NSApplication</string>\n"
+            "    <key>LSApplicationCategoryType</key>\n"
+            "    <string>public.app-category.developer-tools</string>\n"
+            "    <key>NSRequiresAquaSystemAppearance</key>\n"
+            "    <false/>\n"
             "    <key>CFBundleIconFile</key>\n"
+            "    <string>icon.icns</string>\n"
+            "    <key>CFBundleIconName</key>\n"
             "    <string>icon.icns</string>\n"
             "</dict>\n"
             "</plist>\n"
@@ -226,6 +236,16 @@ if(APPLE)
         )
         # Add icon to target so it's included in the bundle
         target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON_RESOURCE_MACOSX})
+        
+        # Ensure icon is properly copied to Resources directory (post-build step)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+                "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/Contents/Resources"
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_SOURCE_DIR}/resources/icon.icns"
+                "$<TARGET_BUNDLE_DIR:${PROJECT_NAME}>/Contents/Resources/icon.icns"
+            COMMENT "Copying icon.icns to app bundle Resources"
+        )
     endif()
 endif()
 
