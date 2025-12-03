@@ -70,9 +70,20 @@ void VersionResolveWorker::resolve()
     found = false;
     const QString jadx = ProcessUtils::jadxExe();
     if (!jadx.isEmpty()) {
+#ifdef QT_DEBUG
+        qDebug() << "Attempting to get JADX version from:" << jadx;
+#endif
         ProcessResult result = ProcessUtils::runCommand(jadx, QStringList() << "--version");
 #ifdef QT_DEBUG
         qDebug() << "Jadx returned code" << result.code;
+        qDebug() << "Jadx output lines:" << result.output.size();
+        for (int i = 0; i < result.output.size(); ++i) {
+            qDebug() << "  Output[" << i << "]:" << result.output[i];
+        }
+        qDebug() << "Jadx error lines:" << result.error.size();
+        for (int i = 0; i < result.error.size(); ++i) {
+            qDebug() << "  Error[" << i << "]:" << result.error[i];
+        }
 #endif
         if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
@@ -80,7 +91,15 @@ void VersionResolveWorker::resolve()
 #endif
             emit versionResolved("jadx", result.output.first().trimmed());
             found = true;
+        } else {
+#ifdef QT_DEBUG
+            qDebug() << "Jadx version check failed - code:" << result.code << "output empty:" << result.output.isEmpty();
+#endif
         }
+    } else {
+#ifdef QT_DEBUG
+        qDebug() << "JADX executable path is empty";
+#endif
     }
     if (!found) {
         emit versionResolved("jadx", QString());
@@ -137,6 +156,8 @@ void VersionResolveWorker::resolve()
         if (!found) {
             emit versionResolved("uas", QString());
         }
+    } else {
+        emit versionResolved("uas", QString());
     }
     emit finished();
 }

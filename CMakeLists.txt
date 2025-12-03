@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find Qt6
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Network Widgets)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -89,6 +89,8 @@ set(SOURCES
     sources/splashwindow.cpp
     sources/stylecommon.cpp
     sources/themedsyntaxhighlighter.cpp
+    sources/tooldownloaddialog.cpp
+    sources/tooldownloadworker.cpp
     sources/versionresolveworker.cpp
 )
 
@@ -115,6 +117,8 @@ set(HEADERS
     sources/splashwindow.h
     sources/stylecommon.h
     sources/themedsyntaxhighlighter.h
+    sources/tooldownloaddialog.h
+    sources/tooldownloadworker.h
     sources/versionresolveworker.h
 )
 
@@ -141,6 +145,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt6::Core
     Qt6::Gui
+    Qt6::Network
     Qt6::Widgets
     QHexView
 )
