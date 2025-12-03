@@ -203,6 +203,53 @@ jobs:
             find . -type d -name "*.app" 2>/dev/null || true
           fi
 
+      - name: Code sign app bundle
+        run: |
+          APP_BUNDLE=""
+          # Find the app bundle
+          if [ -d install/bin/ApkStudio.app ]; then
+            APP_BUNDLE="install/bin/ApkStudio.app"
+          elif [ -d build/Release/ApkStudio.app ]; then
+            APP_BUNDLE="build/Release/ApkStudio.app"
+          elif [ -d build/Debug/ApkStudio.app ]; then
+            APP_BUNDLE="build/Debug/ApkStudio.app"
+          elif [ -d build/ApkStudio.app ]; then
+            APP_BUNDLE="build/ApkStudio.app"
+          else
+            FOUND_APP=$(find . -type d -name "ApkStudio.app" 2>/dev/null | head -1)
+            if [ -n "$FOUND_APP" ]; then
+              APP_BUNDLE="$FOUND_APP"
+            fi
+          fi
+          if [ -n "$APP_BUNDLE" ] && [ -d "$APP_BUNDLE" ]; then
+            echo "Code signing app bundle: $APP_BUNDLE"
+            # Sign all nested components first (required for proper code signing)
+            # Sign frameworks
+            if [ -d "$APP_BUNDLE/Contents/Frameworks" ]; then
+              find "$APP_BUNDLE/Contents/Frameworks" -type d -name "*.framework" | while read framework; do
+                codesign --force --sign - "$framework" 2>/dev/null || true
+              done
+              find "$APP_BUNDLE/Contents/Frameworks" -type f \( -name "*.dylib" -o -name "*.so" \) | while read lib; do
+                codesign --force --sign - "$lib" 2>/dev/null || true
+              done
+            fi
+            # Sign plugins
+            if [ -d "$APP_BUNDLE/Contents/PlugIns" ]; then
+              find "$APP_BUNDLE/Contents/PlugIns" -type f | while read plugin; do
+                codesign --force --sign - "$plugin" 2>/dev/null || true
+              done
+            fi
+            # Sign the app bundle itself (use --deep for nested signing)
+            codesign --force --deep --sign - --options runtime "$APP_BUNDLE"
+            # Verify the signature
+            codesign --verify --verbose "$APP_BUNDLE" || echo "Warning: Code signature verification failed"
+            # Check if app is notarized (it won't be, but this helps with Gatekeeper)
+            spctl --assess --verbose "$APP_BUNDLE" 2>/dev/null || echo "Note: App is not notarized (expected for CI builds)"
+          else
+            echo "Error: ApkStudio.app not found for code signing"
+            exit 1
+          fi
+
       - name: Find app bundle
         run: |
           echo "Searching for ApkStudio.app..."
@@ -232,6 +279,8 @@ jobs:
           
           if [ -n "$APP_PATH" ] && [ -d "$APP_PATH" ]; then
             echo "Found app bundle at: $APP_PATH"
+            # Verify app is signed before creating DMG
+            codesign --verify --verbose "$APP_PATH" || echo "Warning: App bundle verification failed"
             DMG_DIR_NAME=ApkStudio
             if [ -d $DMG_DIR_NAME ]; then
               rm -rf $DMG_DIR_NAME
@@ -239,7 +288,10 @@ jobs:
             mkdir -p $DMG_DIR_NAME
             cp -R "$APP_PATH" $DMG_DIR_NAME/
             ln -s /Applications $DMG_DIR_NAME/Applications
+            # Create DMG with proper attributes
             hdiutil create -volname "ApkStudio" -srcfolder $DMG_DIR_NAME -ov -format UDZO ApkStudio-macOS-x64.dmg
+            # Verify DMG
+            hdiutil verify ApkStudio-macOS-x64.dmg
           else
             echo "Error: ApkStudio.app not found"
             echo "Searched in: install/bin/, build/Release/, build/Debug/, build/"

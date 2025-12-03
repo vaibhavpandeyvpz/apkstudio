@@ -191,6 +191,8 @@ if(APPLE)
             "    <string>10.13</string>\n"
             "    <key>NSHighResolutionCapable</key>\n"
             "    <true/>\n"
+            "    <key>CFBundleIconFile</key>\n"
+            "    <string>icon</string>\n"
             "</dict>\n"
             "</plist>\n"
         )
@@ -207,6 +209,8 @@ if(APPLE)
         set_source_files_properties(${APP_ICON_RESOURCE_MACOSX} PROPERTIES
             MACOSX_PACKAGE_LOCATION "Resources"
         )
+        # Add icon to target so it's included in the bundle
+        target_sources(${PROJECT_NAME} PRIVATE ${APP_ICON_RESOURCE_MACOSX})
     endif()
 endif()
 
