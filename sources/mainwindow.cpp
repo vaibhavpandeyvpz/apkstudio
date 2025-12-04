@@ -15,6 +15,7 @@
 #include <QPushButton>
 #include <QProcess>
 #include <QSettings>
+#include <QSignalBlocker>
 #include <QStatusBar>
 #include <QTabWidget>
 #include <QTextDocumentFragment>
@@ -83,6 +84,10 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     m_ActionViewProject->setChecked(m_DockProject->isVisible());
     m_ActionViewFiles->setChecked(m_DockFiles->isVisible());
     m_ActionViewConsole->setChecked(m_DockConsole->isVisible());
+    
+    // Ensure main window gets focus instead of search boxes
+    setFocus();
+    
     QTimer::singleShot(100, [=] {
         QSettings settings;
         const QStringList files = settings.value("open_files").toStringList();
@@ -201,22 +206,45 @@ QDockWidget *MainWindow::buildConsoleDock()
 QDockWidget *MainWindow::buildFilesDock()
 {
     auto dock = new QDockWidget(tr("Files"), this);
+    auto widget = new QWidget(this);
+    auto layout = new QVBoxLayout(widget);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(2);
+    
+    m_SearchFiles = new QLineEdit(this);
+    m_SearchFiles->setPlaceholderText(tr("Search in open files..."));
+    m_SearchFiles->setClearButtonEnabled(true);
+    connect(m_SearchFiles, &QLineEdit::textChanged, this, &MainWindow::handleFilesSearchChanged);
+    layout->addWidget(m_SearchFiles);
+    
     m_ListOpenFiles = new QListView(this);
     m_ListOpenFiles->setContextMenuPolicy(Qt::CustomContextMenu);
     m_ListOpenFiles->setEditTriggers(QAbstractItemView::NoEditTriggers);
     m_ListOpenFiles->setMinimumWidth(240);
-    m_ListOpenFiles->setModel(m_ModelOpenFiles = new QStandardItemModel(m_ListOpenFiles));
+    m_ModelOpenFiles = new QStandardItemModel(m_ListOpenFiles);
+    m_FilesProxyModel = new QSortFilterProxyModel(this);
+    m_FilesProxyModel->setSourceModel(m_ModelOpenFiles);
+    m_FilesProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    m_FilesProxyModel->setFilterRole(Qt::DisplayRole);
+    m_ListOpenFiles->setModel(m_FilesProxyModel);
     m_ListOpenFiles->setSelectionBehavior(QAbstractItemView::SelectItems);
     m_ListOpenFiles->setSelectionMode(QAbstractItemView::SingleSelection);
-    connect(m_ListOpenFiles->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::handleFilesSelectionChanged);
+    // Get selection model after model is set to ensure it uses proxy model indices
+    QItemSelectionModel *selectionModel = m_ListOpenFiles->selectionModel();
+    if (selectionModel) {
+        connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &MainWindow::handleFilesSelectionChanged);
+    }
+    layout->addWidget(m_ListOpenFiles);
+    
+    widget->setLayout(layout);
     dock->setObjectName("FilesDock");
-    dock->setWidget(m_ListOpenFiles);
+    dock->setWidget(widget);
     return dock;
 }
 
 QToolBar *MainWindow::buildMainToolBar()
 {
-    auto toolbar = new QToolBar(this);
+    auto toolbar = new QToolBar(tr("Sidebar"), this);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open APK"), this, &MainWindow::handleActionApk);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open folder"), this, &MainWindow::handleActionFolder);
     toolbar->addSeparator();
@@ -313,6 +341,17 @@ QMenuBar *MainWindow::buildMenuBar()
 QDockWidget *MainWindow::buildProjectsDock()
 {
     auto dock = new QDockWidget(tr("Projects"), this);
+    auto widget = new QWidget(this);
+    auto layout = new QVBoxLayout(widget);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(2);
+    
+    m_SearchProjects = new QLineEdit(this);
+    m_SearchProjects->setPlaceholderText(tr("Search in project..."));
+    m_SearchProjects->setClearButtonEnabled(true);
+    connect(m_SearchProjects, &QLineEdit::textChanged, this, &MainWindow::handleProjectsSearchChanged);
+    layout->addWidget(m_SearchProjects);
+    
     m_ProjectsTree = new QTreeWidget(this);
     m_ProjectsTree->header()->hide();
     m_ProjectsTree->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -324,8 +363,11 @@ QDockWidget *MainWindow::buildProjectsDock()
     connect(m_ProjectsTree, &QTreeWidget::customContextMenuRequested, this, &MainWindow::handleTreeContextMenu);
     connect(m_ProjectsTree, &QTreeWidget::doubleClicked, this, &MainWindow::handleTreeDoubleClicked);
     connect(m_ProjectsTree->selectionModel(), &QItemSelectionModel::selectionChanged, this, &MainWindow::handleTreeSelectionChanged);
+    layout->addWidget(m_ProjectsTree);
+    
+    widget->setLayout(layout);
     dock->setObjectName("ProjectsDock");
-    dock->setWidget(m_ProjectsTree);
+    dock->setWidget(widget);
     return dock;
 }
 
@@ -834,10 +876,86 @@ void MainWindow::handleDecompileProgress(const int percent, const QString &messa
 void MainWindow::handleFilesSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
     Q_UNUSED(deselected)
-    if (!selected.isEmpty()) {
-        auto index = selected.indexes().first();
-        const QString path = index.data(Qt::UserRole + 1).toString();
-        m_TabEditors->setCurrentIndex(findTabIndex(path));
+    if (selected.isEmpty() || !m_FilesProxyModel || !m_ModelOpenFiles) {
+        return;
+    }
+    
+    auto proxyIndex = selected.indexes().first();
+    if (!proxyIndex.isValid()) {
+        return;
+    }
+    
+    // Verify the index belongs to the proxy model - this is critical to prevent the assertion
+    const QAbstractItemModel *indexModel = proxyIndex.model();
+#ifdef QT_DEBUG
+    if (indexModel != m_FilesProxyModel) {
+        qDebug() << "Warning: Selection index from wrong model. Expected:" << m_FilesProxyModel << "Got:" << indexModel;
+        return;
+    }
+#else
+    if (!indexModel || indexModel != m_FilesProxyModel) {
+        return;
+    }
+#endif
+    
+    // Additional safety check: verify the proxy model is still valid
+    if (!m_FilesProxyModel->sourceModel() || m_FilesProxyModel->sourceModel() != m_ModelOpenFiles) {
+#ifdef QT_DEBUG
+        qDebug() << "Warning: Proxy model source mismatch";
+#endif
+        return;
+    }
+    
+    auto sourceIndex = m_FilesProxyModel->mapToSource(proxyIndex);
+    if (sourceIndex.isValid() && sourceIndex.model() == m_ModelOpenFiles) {
+        const QString path = m_ModelOpenFiles->data(sourceIndex, Qt::UserRole + 1).toString();
+        if (!path.isEmpty()) {
+            m_TabEditors->setCurrentIndex(findTabIndex(path));
+        }
+    }
+}
+
+void MainWindow::handleFilesSearchChanged(const QString &text)
+{
+    m_FilesProxyModel->setFilterFixedString(text);
+}
+
+void MainWindow::handleProjectsSearchChanged(const QString &text)
+{
+    for (int i = 0; i < m_ProjectsTree->topLevelItemCount(); ++i) {
+        filterProjectTreeItems(m_ProjectsTree->topLevelItem(i), text);
+    }
+}
+
+void MainWindow::filterProjectTreeItems(QTreeWidgetItem *item, const QString &filter)
+{
+    if (!item) {
+        return;
+    }
+    
+    bool visible = false;
+    QString itemText = item->text(0);
+    
+    // Check if this item matches the filter
+    if (filter.isEmpty() || itemText.contains(filter, Qt::CaseInsensitive)) {
+        visible = true;
+    }
+    
+    // Check children recursively
+    for (int i = 0; i < item->childCount(); ++i) {
+        QTreeWidgetItem *child = item->child(i);
+        filterProjectTreeItems(child, filter);
+        // If any child is visible, this item should be visible too
+        if (!child->isHidden()) {
+            visible = true;
+        }
+    }
+    
+    item->setHidden(!visible);
+    
+    // Expand parent if this item is visible
+    if (visible && item->parent()) {
+        item->parent()->setExpanded(true);
     }
 }
 
@@ -949,12 +1067,23 @@ void MainWindow::handleTabChanged(const int index)
     } else if (viewer) {
         path = viewer->filePath();
     }
-    const int total = m_ModelOpenFiles->rowCount();
-    for (int i = 0; i < total; ++i) {
-        const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
-        if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
-            m_ListOpenFiles->setCurrentIndex(mindex);
-            break;
+    // Block signals to prevent selection change handler from firing
+    QSignalBlocker blocker(m_ListOpenFiles);
+    if (m_ListOpenFiles->selectionModel()) {
+        QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
+        const int total = m_ModelOpenFiles->rowCount();
+        for (int i = 0; i < total; ++i) {
+            const QModelIndex &sourceIndex = m_ModelOpenFiles->index(i, 0);
+            if (QString::compare(sourceIndex.data(Qt::UserRole + 1).toString(), path) == 0) {
+                // Map source index to proxy index before setting selection
+                if (m_FilesProxyModel) {
+                    QModelIndex proxyIndex = m_FilesProxyModel->mapFromSource(sourceIndex);
+                    if (proxyIndex.isValid()) {
+                        m_ListOpenFiles->setCurrentIndex(proxyIndex);
+                    }
+                }
+                break;
+            }
         }
     }
     m_ActionClose->setEnabled(index >= 0);
@@ -1009,12 +1138,26 @@ void MainWindow::handleTabCloseRequested(const int index)
     } else if (viewer) {
         path = viewer->filePath();
     }
-    const int total = m_ModelOpenFiles->rowCount();
-    for (int i = 0; i < total; ++i) {
-        const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
-        if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
-            m_ModelOpenFiles->removeRow(mindex.row());
-            break;
+    // Block signals during model update to prevent selection change errors
+    QSignalBlocker blocker(m_ListOpenFiles);
+    if (m_ListOpenFiles->selectionModel()) {
+        QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
+        const int total = m_ModelOpenFiles->rowCount();
+        for (int i = 0; i < total; ++i) {
+            const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
+            if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
+                m_ModelOpenFiles->removeRow(mindex.row());
+                break;
+            }
+        }
+    } else {
+        const int total = m_ModelOpenFiles->rowCount();
+        for (int i = 0; i < total; ++i) {
+            const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
+            if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
+                m_ModelOpenFiles->removeRow(mindex.row());
+                break;
+            }
         }
     }
     m_ActionUndo->setEnabled(false);
@@ -1025,6 +1168,13 @@ void MainWindow::handleTabCloseRequested(const int index)
     m_TabEditors->removeTab(index);
     if (m_TabEditors->count() == 0) {
         m_CentralStack->setCurrentIndex(0);
+        // Clear search boxes when all tabs are closed
+        if (m_SearchFiles) {
+            m_SearchFiles->clear();
+        }
+        if (m_SearchProjects) {
+            m_SearchProjects->clear();
+        }
     }
 }
 
@@ -1168,7 +1318,15 @@ void MainWindow::openFile(const QString &path)
     const QIcon icon = m_FileIconProvider.icon(info);
     auto item = new QStandardItem(icon, info.fileName());
     item->setData(path, Qt::UserRole + 1);
-    m_ModelOpenFiles->appendRow(item);
+    
+    // Block signals during model update to prevent selection change errors
+    QSignalBlocker blocker(m_ListOpenFiles);
+    if (m_ListOpenFiles->selectionModel()) {
+        QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
+        m_ModelOpenFiles->appendRow(item);
+    } else {
+        m_ModelOpenFiles->appendRow(item);
+    }
     const int i = m_TabEditors->addTab(widget, icon, info.fileName());
     m_TabEditors->setCurrentIndex(i);
     m_TabEditors->setTabToolTip(i, path);
@@ -1194,6 +1352,14 @@ void MainWindow::openFindReplaceDialog(QPlainTextEdit *edit, const bool replace)
 
 void MainWindow::openProject(const QString &folder, const bool last)
 {
+    // Clear search boxes when opening a new project
+    if (m_SearchFiles) {
+        m_SearchFiles->clear();
+    }
+    if (m_SearchProjects) {
+        m_SearchProjects->clear();
+    }
+    
     QSettings settings;
     settings.setValue("open_project", folder);
     settings.sync();

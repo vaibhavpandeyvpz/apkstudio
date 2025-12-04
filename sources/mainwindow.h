@@ -9,9 +9,12 @@
 #include <QMap>
 #include <QProgressDialog>
 #include <QStackedWidget>
+#include <QLineEdit>
+#include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTextEdit>
 #include <QTreeWidget>
+#include <QVBoxLayout>
 #include "findreplacedialog.h"
 #include "processutils.h"
 
@@ -58,8 +61,11 @@ private:
     QList<QMetaObject::Connection> m_EditorConnections;
     QFileIconProvider m_FileIconProvider;
     FindReplaceDialog *m_FindReplaceDialog;
+    QLineEdit *m_SearchFiles;
+    QLineEdit *m_SearchProjects;
     QListView *m_ListOpenFiles;
     QStandardItemModel *m_ModelOpenFiles;
+    QSortFilterProxyModel *m_FilesProxyModel;
     QProgressDialog *m_ProgressDialog;
     QTreeWidget *m_ProjectsTree;
     QLabel *m_StatusCursor;
@@ -116,6 +122,8 @@ private slots:
     void handleSignFinished(const QString &apk);
     void handleTabChanged(const int index);
     void handleTabCloseRequested(const int index);
+    void handleFilesSearchChanged(const QString &text);
+    void handleProjectsSearchChanged(const QString &text);
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
@@ -123,6 +131,7 @@ private slots:
     void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
     void openProject(const QString &folder, const bool last = false);
     void reloadChildren(QTreeWidgetItem *item);
+    void filterProjectTreeItems(QTreeWidgetItem *item, const QString &filter);
 private:
     bool saveTab(int index);
 };
