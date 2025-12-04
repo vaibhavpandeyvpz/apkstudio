@@ -56,6 +56,9 @@ QLayout *ApkDecompileDialog::buildForm(const QString &apk)
     layout->addRow(tr("Decompile resources?"), m_CheckResources = new QCheckBox(this));
     m_CheckResources->setChecked(true);
     layout->addRow(tr("Decompile java?"), m_CheckJava = new QCheckBox(this));
+    layout->addRow(tr("Framework tag (optional)"), m_EditFrameworkTag = new QLineEdit(this));
+    m_EditFrameworkTag->setPlaceholderText(tr("e.g., hero, desire, samsung"));
+    m_EditFrameworkTag->setToolTip(tr("Specify a framework tag if you installed frameworks with a tag. Leave empty to use default framework."));
     layout->setSpacing(2);
     return layout;
 }
@@ -69,7 +72,7 @@ void ApkDecompileDialog::handleBrowseFolder()
 {
     QFileInfo info(m_EditApk->text());
     const QString path = QFileDialog::getExistingDirectory(this,
-                                                           tr("Browse Output Folder"),
+                                                           tr("Browse output folder"),
                                                            info.dir().absolutePath(),
                                                            QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly);
     if (!path.isEmpty()) {
@@ -90,4 +93,9 @@ bool ApkDecompileDialog::resources() const
 bool ApkDecompileDialog::smali() const
 {
     return m_CheckSmali->isChecked();
+}
+
+QString ApkDecompileDialog::frameworkTag() const
+{
+    return m_EditFrameworkTag->text().trimmed();
 }

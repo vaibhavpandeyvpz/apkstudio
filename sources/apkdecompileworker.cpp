@@ -2,8 +2,8 @@
 #include "apkdecompileworker.h"
 #include "processutils.h"
 
-ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, QObject *parent)
-    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Java(java), m_Resources(resources), m_Smali(smali)
+ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, const QString &frameworkTag, QObject *parent)
+    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Java(java), m_Resources(resources), m_Smali(smali), m_FrameworkTag(frameworkTag)
 {
 }
 
@@ -30,6 +30,9 @@ void ApkDecompileWorker::decompile()
     }
     if (!m_Resources) {
         args << "-r";
+    }
+    if (!m_FrameworkTag.isEmpty()) {
+        args << "-t" << m_FrameworkTag;
     }
     args << "-o" << m_Folder << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(java, args);
