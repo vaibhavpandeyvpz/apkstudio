@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QDockWidget>
+#include <QFile>
 #include <QFileDialog>
 #include <QFrame>
 #include <QHeaderView>
@@ -421,28 +422,37 @@ void MainWindow::handleActionApk()
     qDebug() << "User selected to open" << path;
 #endif
     if (!path.isEmpty()) {
-        auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(path), this);
-        if (dialog->exec() == QDialog::Accepted) {
-            auto thread = new QThread();
-            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag());
-            worker->moveToThread(thread);
-            connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
-            connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
-            connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
-            connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
-            connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
-            connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
-            connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-            thread->start();
-            m_ProgressDialog = new QProgressDialog(this);
-            m_ProgressDialog->setCancelButton(nullptr);
-            m_ProgressDialog->setRange(0, 100);
-            m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
-            m_ProgressDialog->setWindowTitle(tr("Decompiling..."));
-            m_ProgressDialog->exec();
-        }
-        dialog->deleteLater();
+        openApkFile(path);
     }
+}
+
+void MainWindow::openApkFile(const QString &apkPath)
+{
+    if (apkPath.isEmpty() || !QFile::exists(apkPath)) {
+        return;
+    }
+    
+    auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(apkPath), this);
+    if (dialog->exec() == QDialog::Accepted) {
+        auto thread = new QThread();
+        auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag());
+        worker->moveToThread(thread);
+        connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
+        connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
+        connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+        connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
+        connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
+        connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+        thread->start();
+        m_ProgressDialog = new QProgressDialog(this);
+        m_ProgressDialog->setCancelButton(nullptr);
+        m_ProgressDialog->setRange(0, 100);
+        m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+        m_ProgressDialog->setWindowTitle(tr("Decompiling..."));
+        m_ProgressDialog->exec();
+    }
+    dialog->deleteLater();
 }
 
 void MainWindow::handleActionBuild()

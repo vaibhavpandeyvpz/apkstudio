@@ -1,8 +1,10 @@
 #include <QApplication>
+#include <QDir>
+#include <QFileInfo>
 #include <QSettings>
+#include <QStyleHints>
 #include <QTextStream>
 #include <QDateTime>
-#include <QStyleHints>
 #include "splashwindow.h"
 
 #define CODE_RESTART 60600
@@ -90,7 +92,17 @@ int main(int argc, char *argv[])
             app.setPalette(palette);
         #endif
 
-        SplashWindow window;
+        // Check for APK file path in command-line arguments
+        QString apkFilePath;
+        if (argc > 1) {
+            QString arg = QString::fromLocal8Bit(argv[1]);
+            QFileInfo fileInfo(arg);
+            if (fileInfo.exists() && fileInfo.suffix().toLower() == "apk") {
+                apkFilePath = QDir::toNativeSeparators(fileInfo.absoluteFilePath());
+            }
+        }
+        
+        SplashWindow window(apkFilePath);
         window.show();
         code = app.exec();
     } while (code == CODE_RESTART);

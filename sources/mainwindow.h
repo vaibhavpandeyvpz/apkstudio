@@ -26,6 +26,7 @@ public:
     };
     explicit MainWindow(const QMap<QString, QString> &versions, QWidget *parent = nullptr);
     ~MainWindow();
+    void openApkFile(const QString &apkPath);
 protected:
     void closeEvent(QCloseEvent *event);
 private:

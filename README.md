@@ -31,6 +31,7 @@ Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engi
 - Decompile/recompile/sign & install APKs
 - **Automatic tool download & installation** - APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer)
 - **Framework support** - Install and use manufacturer-specific framework files (e.g., HTC, LG, Samsung) with optional tagging for decompiling and recompiling APKs
+- **Command-line APK opening** - Open APK files directly from the file system via "Open with" context menu or command-line arguments
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
 - Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files
 - Built-in hex editor for binary files
@@ -41,6 +42,8 @@ Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engi
 Please head over to [Releases](https://github.com/vaibhavpandeyvpz/apkstudio/releases) page for downloading.
 
 **Note:** APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer) on first launch. If you prefer to use your own installations, you can configure them in Settings.
+
+**Tip:** You can open APK files directly from your file system by right-clicking an `.apk` file, selecting "Open with" → "Choose an app on your PC" (or "Choose another app"), then browsing to the APK Studio executable. Alternatively, you can pass the APK file path as a command-line argument. The decompile dialog will automatically open with the selected file.
 
 ### Building
 

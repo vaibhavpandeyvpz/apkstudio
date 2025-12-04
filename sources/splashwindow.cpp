@@ -14,8 +14,8 @@
 #define SPLASH_WIDTH 512
 #define SPLASH_HEIGHT 320
 
-SplashWindow::SplashWindow()
-    : QMainWindow(nullptr, Qt::SplashScreen)
+SplashWindow::SplashWindow(const QString &apkFilePath)
+    : QMainWindow(nullptr, Qt::SplashScreen), m_ApkFilePath(apkFilePath)
 {
     setCentralWidget(buildCentralWidget());
     setFixedSize(SPLASH_WIDTH, SPLASH_HEIGHT);
@@ -75,7 +75,14 @@ void SplashWindow::handleVersionResolved(const QString &binary, const QString &v
 
 void SplashWindow::handleVersionResolveFinished()
 {
-    (new MainWindow(m_Versions))->show();
+    auto mainWindow = new MainWindow(m_Versions);
+    mainWindow->show();
+    // If APK file was passed via command line, automatically open decompile dialog
+    if (!m_ApkFilePath.isEmpty()) {
+        QTimer::singleShot(100, [mainWindow, this]() {
+            mainWindow->openApkFile(m_ApkFilePath);
+        });
+    }
     close();
 }
 
