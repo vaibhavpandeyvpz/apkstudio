@@ -87,6 +87,7 @@ private slots:
     void handleActionFolder();
     void handleActionGoto();
     void handleActionInstall();
+    void handleActionInstallFramework();
     void handleActionPaste();
     void handleActionQuit();
     void handleActionRedo();

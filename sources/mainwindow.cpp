@@ -3,6 +3,7 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDir>
 #include <QDockWidget>
 #include <QFileDialog>
 #include <QFrame>
@@ -216,15 +217,15 @@ QToolBar *MainWindow::buildMainToolBar()
 {
     auto toolbar = new QToolBar(this);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open APK"), this, &MainWindow::handleActionApk);
-    toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open Folder"), this, &MainWindow::handleActionFolder);
+    toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open folder"), this, &MainWindow::handleActionFolder);
     toolbar->addSeparator();
     toolbar->addAction(QIcon(":/icons/icons8/icons8-gear-48.png"), tr("Settings"), this, &MainWindow::handleActionSettings);
     auto empty = new QWidget(this);
     empty->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     toolbar->addWidget(empty);
-    m_ActionBuild2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-hammer-48.png"), tr("Project Build"), this, &MainWindow::handleActionBuild);
+    m_ActionBuild2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-hammer-48.png"), tr("Project build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild2->setEnabled(false);
-    m_ActionInstall2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-software-installer-48.png"), tr("Project Install"), this, &MainWindow::handleActionInstall);
+    m_ActionInstall2 = toolbar->addAction(QIcon(":/icons/icons8/icons8-software-installer-48.png"), tr("Project install"), this, &MainWindow::handleActionInstall);
     m_ActionInstall2->setEnabled(false);
     toolbar->setIconSize(QSize(48, 48));
     toolbar->setMovable(false);
@@ -244,12 +245,12 @@ QMenuBar *MainWindow::buildMenuBar()
     file->addSeparator();
     m_ActionClose = file->addAction(tr("Close"), this, &MainWindow::handleActionClose, QKeySequence::Close);
     m_ActionClose->setEnabled(false);
-    m_ActionCloseAll = file->addAction(tr("Close All"), this, &MainWindow::handleActionCloseAll);
+    m_ActionCloseAll = file->addAction(tr("Close all"), this, &MainWindow::handleActionCloseAll);
     m_ActionCloseAll->setEnabled(false);
     file->addSeparator();
     m_ActionSave = file->addAction(tr("Save"), this, &MainWindow::handleActionSave, QKeySequence::Save);
     m_ActionSave->setEnabled(false);
-    m_ActionSaveAll = file->addAction(tr("Save All"), this, &MainWindow::handleActionSaveAll);
+    m_ActionSaveAll = file->addAction(tr("Save all"), this, &MainWindow::handleActionSaveAll);
     m_ActionSaveAll->setEnabled(false);
     file->addSeparator();
     file->addAction(tr("Quit"), this, &MainWindow::handleActionQuit, QKeySequence::Quit);
@@ -270,7 +271,7 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionFind->setEnabled(false);
     m_ActionReplace = edit->addAction(tr("Replace"), this, &MainWindow::handleActionReplace, QKeySequence::Replace);
     m_ActionReplace->setEnabled(false);
-    m_ActionGoto = edit->addAction(tr("Go To"), this, &MainWindow::handleActionGoto);
+    m_ActionGoto = edit->addAction(tr("Go to"), this, &MainWindow::handleActionGoto);
     m_ActionGoto->setEnabled(false);
     edit->addSeparator();
     edit->addAction(tr("Settings"), this, &MainWindow::handleActionSettings, QKeySequence::Preferences);
@@ -291,10 +292,12 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild1->setEnabled(false);
     project->addSeparator();
-    m_ActionSign = project->addAction(tr("Sign / Export"), this, &MainWindow::handleActionSign);
+    m_ActionSign = project->addAction(tr("Sign / export"), this, &MainWindow::handleActionSign);
     m_ActionSign->setEnabled(false);
     m_ActionInstall1 = project->addAction(tr("Install"), this, &MainWindow::handleActionInstall);
     m_ActionInstall1->setEnabled(false);
+    project->addSeparator();
+    project->addAction(tr("Install framework"), this, &MainWindow::handleActionInstallFramework);
     auto help = menubar->addMenu(tr("Help"));
     help->addAction(tr("About"), this, &MainWindow::handleActionAbout);
     help->addAction(tr("Documentation"), this, &MainWindow::handleActionDocumentation);
@@ -421,7 +424,7 @@ void MainWindow::handleActionApk()
         auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(path), this);
         if (dialog->exec() == QDialog::Accepted) {
             auto thread = new QThread();
-            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java());
+            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag());
             worker->moveToThread(thread);
             connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
             connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
@@ -535,7 +538,7 @@ void MainWindow::handleActionFolder()
     QSettings settings;
     const QString project = settings.value("open_project").toString();
     const QString path = QFileDialog::getOpenFileName(this,
-                                                      tr("Browse Folder (apktool.yml)"),
+                                                      tr("Browse folder (apktool.yml)"),
                                                       project,
                                                       tr("Apktool Project File(s) (apktool.yml)"));
 #ifdef QT_DEBUG
@@ -581,6 +584,62 @@ void MainWindow::handleActionInstall()
     m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
     m_ProgressDialog->setWindowTitle(tr("Installing..."));
     m_ProgressDialog->exec();
+}
+
+void MainWindow::handleActionInstallFramework()
+{
+    const QString frameworkPath = QFileDialog::getOpenFileName(this,
+                                                                 tr("Select framework APK"),
+                                                                 QString(),
+                                                                 tr("Android APK File(s) (*.apk)"));
+    if (frameworkPath.isEmpty()) {
+        return;
+    }
+    
+    bool ok;
+    const QString tag = QInputDialog::getText(this,
+                                               tr("Framework tag"),
+                                               tr("Enter an optional framework tag (leave empty for default):"),
+                                               QLineEdit::Normal,
+                                               QString(),
+                                               &ok);
+    if (!ok) {
+        return;
+    }
+    
+    const QString java = ProcessUtils::javaExe();
+    const QString apktool = ProcessUtils::apktoolJar();
+    if (java.isEmpty() || apktool.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("Java or Apktool not found. Please configure them in Settings."));
+        return;
+    }
+    
+    QString heap("-Xmx%1m");
+    heap = heap.arg(QString::number(ProcessUtils::javaHeapSize()));
+    QStringList args;
+    args << heap << "-jar" << apktool;
+    args << "if" << QDir::toNativeSeparators(frameworkPath);
+    if (!tag.trimmed().isEmpty()) {
+        args << "-t" << tag.trimmed();
+    }
+    
+    ProcessResult result = ProcessUtils::runCommand(java, args);
+    
+    if (result.code == 0) {
+        QString message = tr("Framework installed successfully!");
+        if (!result.output.isEmpty()) {
+            message += "\n\n" + result.output.join("\n");
+        }
+        QMessageBox::information(this, tr("Success"), message);
+    } else {
+        QString error = tr("Framework installation failed!");
+        if (!result.error.isEmpty()) {
+            error += "\n\n" + result.error.join("\n");
+        } else if (!result.output.isEmpty()) {
+            error += "\n\n" + result.output.join("\n");
+        }
+        QMessageBox::warning(this, tr("Error"), error);
+    }
 }
 
 void MainWindow::handleActionPaste()
