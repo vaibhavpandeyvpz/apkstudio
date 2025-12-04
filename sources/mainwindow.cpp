@@ -3,6 +3,7 @@
 #include <QCloseEvent>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QEvent>
 #include <QDir>
 #include <QDockWidget>
 #include <QFile>
@@ -21,7 +22,6 @@
 #include <QTextDocumentFragment>
 #include <QThread>
 #include <QTimer>
-#include <QToolBar>
 #include <QTreeWidgetItem>
 #include <QUrl>
 #include "adbinstallworker.h"
@@ -64,7 +64,9 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, m_DockProject = buildProjectsDock());
     addDockWidget(Qt::LeftDockWidgetArea, m_DockFiles = buildFilesDock());
     addDockWidget(Qt::BottomDockWidgetArea, m_DockConsole = buildConsoleDock());
-    addToolBar(Qt::LeftToolBarArea, buildMainToolBar());
+    addToolBar(Qt::LeftToolBarArea, m_MainToolBar = buildMainToolBar());
+    // Install event filter to sync menu action when toolbar is hidden/shown via context menu
+    m_MainToolBar->installEventFilter(this);
     setCentralWidget(buildCentralWidget());
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -84,6 +86,7 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     m_ActionViewProject->setChecked(m_DockProject->isVisible());
     m_ActionViewFiles->setChecked(m_DockFiles->isVisible());
     m_ActionViewConsole->setChecked(m_DockConsole->isVisible());
+    m_ActionViewToolBar->setChecked(m_MainToolBar->isVisible());
     
     // Ensure main window gets focus instead of search boxes
     setFocus();
@@ -317,6 +320,10 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionViewConsole->setCheckable(true);
     connect(m_ActionViewConsole, &QAction::toggled, m_DockConsole, &QDockWidget::setVisible);
     connect(m_DockConsole, &QDockWidget::visibilityChanged, m_ActionViewConsole, &QAction::setChecked);
+    view->addSeparator();
+    m_ActionViewToolBar = view->addAction(tr("Sidebar"));
+    m_ActionViewToolBar->setCheckable(true);
+    connect(m_ActionViewToolBar, &QAction::toggled, m_MainToolBar, &QToolBar::setVisible);
     auto project = menubar->addMenu(tr("Project"));
     m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild1->setEnabled(false);
@@ -398,6 +405,17 @@ QStatusBar *MainWindow::buildStatusBar(const QMap<QString, QString> &versions)
     return statusbar;
 }
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    // Sync toolbar menu action when toolbar is shown/hidden via context menu
+    if (obj == m_MainToolBar && m_ActionViewToolBar) {
+        if (event->type() == QEvent::Show || event->type() == QEvent::Hide) {
+            m_ActionViewToolBar->setChecked(m_MainToolBar->isVisible());
+        }
+    }
+    return QMainWindow::eventFilter(obj, event);
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     Q_UNUSED(event)
@@ -477,7 +495,7 @@ void MainWindow::openApkFile(const QString &apkPath)
     auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(apkPath), this);
     if (dialog->exec() == QDialog::Accepted) {
         auto thread = new QThread();
-        auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag());
+            auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag(), dialog->extraArguments());
         worker->moveToThread(thread);
         connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
         connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
@@ -508,8 +526,22 @@ void MainWindow::handleActionBuild()
     }
     QSettings settings;
     auto appt2 = settings.value("use_aapt2", true).toBool();
+    
+    // Ask for extra arguments (optional)
+    bool ok;
+    const QString extraArgs = QInputDialog::getText(this,
+                                                    tr("Extra arguments"),
+                                                    tr("Enter additional apktool arguments (optional):\nSeparate multiple arguments with spaces.\nExample: --force-all --no-res"),
+                                                    QLineEdit::Normal,
+                                                    QString(),
+                                                    &ok);
+    QString extraArguments;
+    if (ok && !extraArgs.trimmed().isEmpty()) {
+        extraArguments = extraArgs.trimmed();
+    }
+    
     auto thread = new QThread();
-    auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString(), appt2);
+    auto worker = new ApkRecompileWorker(active->data(0, Qt::UserRole + 2).toString(), appt2, extraArguments);
     worker->moveToThread(thread);
     connect(worker, &ApkRecompileWorker::recompileFailed, this, &MainWindow::handleRecompileFailed);
     connect(worker, &ApkRecompileWorker::recompileFinished, this, &MainWindow::handleRecompileFinished);

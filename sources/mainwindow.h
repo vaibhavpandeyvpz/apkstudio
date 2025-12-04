@@ -13,6 +13,7 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
 #include <QTextEdit>
+#include <QToolBar>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 #include "findreplacedialog.h"
@@ -32,6 +33,7 @@ public:
     void openApkFile(const QString &apkPath);
 protected:
     void closeEvent(QCloseEvent *event);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private:
     QAction *m_ActionBuild1;
     QAction *m_ActionBuild2;
@@ -53,6 +55,7 @@ private:
     QAction *m_ActionViewProject;
     QAction *m_ActionViewFiles;
     QAction *m_ActionViewConsole;
+    QAction *m_ActionViewToolBar;
     QStackedWidget *m_CentralStack;
     QDockWidget *m_DockProject;
     QDockWidget *m_DockFiles;
@@ -64,6 +67,7 @@ private:
     QLineEdit *m_SearchFiles;
     QLineEdit *m_SearchProjects;
     QListView *m_ListOpenFiles;
+    QToolBar *m_MainToolBar;
     QStandardItemModel *m_ModelOpenFiles;
     QSortFilterProxyModel *m_FilesProxyModel;
     QProgressDialog *m_ProgressDialog;

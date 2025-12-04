@@ -14,7 +14,7 @@ ApkDecompileDialog::ApkDecompileDialog(const QString &apk, QWidget *parent)
     layout->addWidget(buildButtonBox());
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(2);
-    setMinimumSize(340, 160);
+    setMinimumSize(340, 200);
 #ifdef Q_OS_WIN
     setWindowIcon(QIcon(":/icons/fugue/android.png"));
 #endif
@@ -59,6 +59,9 @@ QLayout *ApkDecompileDialog::buildForm(const QString &apk)
     layout->addRow(tr("Framework tag (optional)"), m_EditFrameworkTag = new QLineEdit(this));
     m_EditFrameworkTag->setPlaceholderText(tr("e.g., hero, desire, samsung"));
     m_EditFrameworkTag->setToolTip(tr("Specify a framework tag if you installed frameworks with a tag. Leave empty to use default framework."));
+    layout->addRow(tr("Extra arguments (optional)"), m_EditExtraArguments = new QLineEdit(this));
+    m_EditExtraArguments->setPlaceholderText(tr("e.g., --force-all, --no-res"));
+    m_EditExtraArguments->setToolTip(tr("Additional apktool command-line arguments. Separate multiple arguments with spaces."));
     layout->setSpacing(2);
     return layout;
 }
@@ -98,4 +101,9 @@ bool ApkDecompileDialog::smali() const
 QString ApkDecompileDialog::frameworkTag() const
 {
     return m_EditFrameworkTag->text().trimmed();
+}
+
+QString ApkDecompileDialog::extraArguments() const
+{
+    return m_EditExtraArguments->text().trimmed();
 }

@@ -7,7 +7,7 @@ class ApkDecompileWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, const QString &frameworkTag = QString(), QObject *parent = nullptr);
+    explicit ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, const QString &frameworkTag = QString(), const QString &extraArguments = QString(), QObject *parent = nullptr);
     void decompile();
 private:
     QString m_Apk;
@@ -16,6 +16,7 @@ private:
     bool m_Resources;
     bool m_Smali;
     QString m_FrameworkTag;
+    QString m_ExtraArguments;
 signals:
     void decompileFailed(const QString &apk);
     void decompileFinished(const QString &apk, const QString &folder);
