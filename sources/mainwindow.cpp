@@ -244,7 +244,7 @@ QDockWidget *MainWindow::buildFilesDock()
 
 QToolBar *MainWindow::buildMainToolBar()
 {
-    auto toolbar = new QToolBar(this);
+    auto toolbar = new QToolBar(tr("Sidebar"), this);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-android-os-48.png"), tr("Open APK"), this, &MainWindow::handleActionApk);
     toolbar->addAction(QIcon(":/icons/icons8/icons8-folder-48.png"), tr("Open folder"), this, &MainWindow::handleActionFolder);
     toolbar->addSeparator();
