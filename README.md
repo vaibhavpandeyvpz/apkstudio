@@ -32,6 +32,7 @@ Open-source, cross platform [Qt6](https://www.qt.io/) based IDE for reverse-engi
 - **Automatic tool download & installation** - APK Studio can automatically download and install required tools (Java, Apktool, JADX, ADB, Uber APK Signer)
 - **Framework support** - Install and use manufacturer-specific framework files (e.g., HTC, LG, Samsung) with optional tagging for decompiling and recompiling APKs
 - **Command-line APK opening** - Open APK files directly from the file system via "Open with" context menu or command-line arguments
+- **Extra apktool arguments** - Provide additional command-line arguments (e.g., `--force-all`, `--no-res`) for decompile and recompile operations
 - **Search functionality** - Quick search in open files and project tree to find items by name
 - Built-in code editor (\*.java; \*.smali; \*.xml; \*.yml) w/ syntax highlighting
 - Built-in viewer for image (\*.gif; \*.jpg; \*.jpeg; \*.png) files

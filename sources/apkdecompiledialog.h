@@ -17,6 +17,7 @@ public:
     bool resources() const;
     bool smali() const;
     QString frameworkTag() const;
+    QString extraArguments() const;
 private:
     QDialogButtonBox *m_ButtonBox;
     QCheckBox *m_CheckJava;
@@ -25,6 +26,7 @@ private:
     QLineEdit *m_EditApk;
     QLineEdit *m_EditFolder;
     QLineEdit *m_EditFrameworkTag;
+    QLineEdit *m_EditExtraArguments;
     QWidget *buildButtonBox();
     QLayout *buildForm(const QString &apk);
 private slots:

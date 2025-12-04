@@ -1,9 +1,10 @@
 #include <QDebug>
+#include <QRegularExpression>
 #include "apkdecompileworker.h"
 #include "processutils.h"
 
-ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, const QString &frameworkTag, QObject *parent)
-    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Java(java), m_Resources(resources), m_Smali(smali), m_FrameworkTag(frameworkTag)
+ApkDecompileWorker::ApkDecompileWorker(const QString &apk, const QString &folder, const bool smali, const bool resources, const bool java, const QString &frameworkTag, const QString &extraArguments, QObject *parent)
+    : QObject(parent), m_Apk(apk), m_Folder(folder), m_Java(java), m_Resources(resources), m_Smali(smali), m_FrameworkTag(frameworkTag), m_ExtraArguments(extraArguments)
 {
 }
 
@@ -33,6 +34,11 @@ void ApkDecompileWorker::decompile()
     }
     if (!m_FrameworkTag.isEmpty()) {
         args << "-t" << m_FrameworkTag;
+    }
+    // Parse and add extra arguments
+    if (!m_ExtraArguments.isEmpty()) {
+        QStringList extraArgs = m_ExtraArguments.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        args << extraArgs;
     }
     args << "-o" << m_Folder << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(java, args);
