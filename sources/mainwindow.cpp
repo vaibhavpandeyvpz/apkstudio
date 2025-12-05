@@ -311,19 +311,36 @@ QMenuBar *MainWindow::buildMenuBar()
     m_ActionViewProject = view->addAction(tr("Project"));
     m_ActionViewProject->setCheckable(true);
     connect(m_ActionViewProject, &QAction::toggled, m_DockProject, &QDockWidget::setVisible);
-    connect(m_DockProject, &QDockWidget::visibilityChanged, m_ActionViewProject, &QAction::setChecked);
+    connect(m_DockProject, &QDockWidget::visibilityChanged, [this](bool isVisible) {
+        if (!(windowState() & Qt::WindowMinimized)) {
+            m_ActionViewProject->setChecked(isVisible);
+        }
+    });
     m_ActionViewFiles = view->addAction(tr("Files"));
     m_ActionViewFiles->setCheckable(true);
     connect(m_ActionViewFiles, &QAction::toggled, m_DockFiles, &QDockWidget::setVisible);
-    connect(m_DockFiles, &QDockWidget::visibilityChanged, m_ActionViewFiles, &QAction::setChecked);
+    connect(m_DockFiles, &QDockWidget::visibilityChanged, [this](bool isVisible) {
+        if (!(windowState() & Qt::WindowMinimized)) {
+            m_ActionViewFiles->setChecked(isVisible);
+        }
+    });
     m_ActionViewConsole = view->addAction(tr("Console"));
     m_ActionViewConsole->setCheckable(true);
     connect(m_ActionViewConsole, &QAction::toggled, m_DockConsole, &QDockWidget::setVisible);
-    connect(m_DockConsole, &QDockWidget::visibilityChanged, m_ActionViewConsole, &QAction::setChecked);
+    connect(m_DockConsole, &QDockWidget::visibilityChanged, [this](bool isVisible) {
+        if (!(windowState() & Qt::WindowMinimized)) {
+            m_ActionViewConsole->setChecked(isVisible);
+        }
+    });
     view->addSeparator();
     m_ActionViewToolBar = view->addAction(tr("Sidebar"));
     m_ActionViewToolBar->setCheckable(true);
     connect(m_ActionViewToolBar, &QAction::toggled, m_MainToolBar, &QToolBar::setVisible);
+    connect(m_MainToolBar, &QToolBar::visibilityChanged, [this](bool isVisible) {
+        if (!(windowState() & Qt::WindowMinimized)) {
+            m_ActionViewToolBar->setChecked(isVisible);
+        }
+    });
     auto project = menubar->addMenu(tr("Project"));
     m_ActionBuild1 = project->addAction(tr("Build"), this, &MainWindow::handleActionBuild);
     m_ActionBuild1->setEnabled(false);
