@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         #else
             // Fallback for Qt 6.0-6.4: manually set palette
             QPalette palette;
-            if (dark) {
+        if (dark) {
                 palette.setColor(QPalette::Window, QColor(53, 53, 53));
                 palette.setColor(QPalette::WindowText, Qt::white);
                 palette.setColor(QPalette::Base, QColor(25, 25, 25));
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
             QFileInfo fileInfo(arg);
             if (fileInfo.exists() && fileInfo.suffix().toLower() == "apk") {
                 apkFilePath = QDir::toNativeSeparators(fileInfo.absoluteFilePath());
-            }
+        }
         }
         
         SplashWindow window(apkFilePath);
