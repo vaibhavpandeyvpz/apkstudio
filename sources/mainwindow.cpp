@@ -29,6 +29,7 @@
 #include "apkdecompileworker.h"
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
+#include "deviceselectiondialog.h"
 #include "findreplacedialog.h"
 #include "hexedit.h"
 #include "imageviewerwidget.h"
@@ -510,26 +511,27 @@ void MainWindow::openApkFile(const QString &apkPath)
     }
     
     auto dialog = new ApkDecompileDialog(QDir::toNativeSeparators(apkPath), this);
-    if (dialog->exec() == QDialog::Accepted) {
-        auto thread = new QThread();
+        if (dialog->exec() == QDialog::Accepted) {
+            auto thread = new QThread();
             auto worker = new ApkDecompileWorker(dialog->apk(), dialog->folder(), dialog->smali(), dialog->resources(), dialog->java(), dialog->frameworkTag(), dialog->extraArguments());
-        worker->moveToThread(thread);
-        connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
-        connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
-        connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
-        connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
-        connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
-        connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
-        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-        thread->start();
-        m_ProgressDialog = new QProgressDialog(this);
-        m_ProgressDialog->setCancelButton(nullptr);
-        m_ProgressDialog->setRange(0, 100);
-        m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
-        m_ProgressDialog->setWindowTitle(tr("Decompiling..."));
-        m_ProgressDialog->exec();
-    }
-    dialog->deleteLater();
+            worker->moveToThread(thread);
+            connect(worker, &ApkDecompileWorker::decompileFailed, this, &MainWindow::handleDecompileFailed);
+            connect(worker, &ApkDecompileWorker::decompileFinished, this, &MainWindow::handleDecompileFinished);
+            connect(worker, &ApkDecompileWorker::decompileProgress, this, &MainWindow::handleDecompileProgress);
+            connect(thread, &QThread::started, worker, &ApkDecompileWorker::decompile);
+            connect(worker, &ApkDecompileWorker::finished, thread, &QThread::quit);
+            connect(worker, &ApkDecompileWorker::finished, worker, &QObject::deleteLater);
+            connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+            thread->start();
+            m_ProgressDialog = new QProgressDialog(this);
+            m_ProgressDialog->setCancelButton(nullptr);
+            m_ProgressDialog->setLabelText(tr("Running apktool..."));
+            m_ProgressDialog->setRange(0, 100);
+            m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
+            m_ProgressDialog->setWindowTitle(tr("Decompiling"));
+            m_ProgressDialog->exec();
+        }
+        dialog->deleteLater();
 }
 
 void MainWindow::handleActionBuild()
@@ -573,7 +575,7 @@ void MainWindow::handleActionBuild()
     m_ProgressDialog->setRange(0, 100);
     m_ProgressDialog->setValue(50);
     m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
-    m_ProgressDialog->setWindowTitle(tr("Recompiling..."));
+    m_ProgressDialog->setWindowTitle(tr("Recompiling"));
     m_ProgressDialog->exec();
 }
 
@@ -667,8 +669,21 @@ void MainWindow::handleActionInstall()
 #ifdef QT_DEBUG
     qDebug() << "User wishes to install" << path;
 #endif
+    
+    // Show device selection dialog
+    DeviceSelectionDialog dialog(this);
+    if (dialog.exec() != QDialog::Accepted) {
+        return;
+    }
+    
+    QString deviceSerial = dialog.selectedDeviceSerial();
+    if (deviceSerial.isEmpty()) {
+        QMessageBox::warning(this, tr("Error"), tr("No device selected."));
+        return;
+    }
+    
     auto thread = new QThread();
-    auto worker = new AdbInstallWorker(path);
+    auto worker = new AdbInstallWorker(path, deviceSerial);
     worker->moveToThread(thread);
     connect(worker, &AdbInstallWorker::installFailed, this, &MainWindow::handleInstallFailed);
     connect(worker, &AdbInstallWorker::installFinished, this, &MainWindow::handleInstallFinished);
@@ -831,7 +846,7 @@ void MainWindow::handleActionSign()
         m_ProgressDialog->setRange(0, 100);
         m_ProgressDialog->setValue(50);
         m_ProgressDialog->setWindowFlags(m_ProgressDialog->windowFlags() & ~Qt::WindowCloseButtonHint);
-        m_ProgressDialog->setWindowTitle(tr("Signing..."));
+        m_ProgressDialog->setWindowTitle(tr("Signing"));
         m_ProgressDialog->exec();
     }
 }
@@ -959,7 +974,7 @@ void MainWindow::handleFilesSelectionChanged(const QItemSelection &selected, con
     if (sourceIndex.isValid() && sourceIndex.model() == m_ModelOpenFiles) {
         const QString path = m_ModelOpenFiles->data(sourceIndex, Qt::UserRole + 1).toString();
         if (!path.isEmpty()) {
-            m_TabEditors->setCurrentIndex(findTabIndex(path));
+        m_TabEditors->setCurrentIndex(findTabIndex(path));
         }
     }
 }
@@ -1120,8 +1135,8 @@ void MainWindow::handleTabChanged(const int index)
     QSignalBlocker blocker(m_ListOpenFiles);
     if (m_ListOpenFiles->selectionModel()) {
         QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
-        const int total = m_ModelOpenFiles->rowCount();
-        for (int i = 0; i < total; ++i) {
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
             const QModelIndex &sourceIndex = m_ModelOpenFiles->index(i, 0);
             if (QString::compare(sourceIndex.data(Qt::UserRole + 1).toString(), path) == 0) {
                 // Map source index to proxy index before setting selection
@@ -1131,7 +1146,7 @@ void MainWindow::handleTabChanged(const int index)
                         m_ListOpenFiles->setCurrentIndex(proxyIndex);
                     }
                 }
-                break;
+            break;
             }
         }
     }
@@ -1191,12 +1206,12 @@ void MainWindow::handleTabCloseRequested(const int index)
     QSignalBlocker blocker(m_ListOpenFiles);
     if (m_ListOpenFiles->selectionModel()) {
         QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
-        const int total = m_ModelOpenFiles->rowCount();
-        for (int i = 0; i < total; ++i) {
-            const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
-            if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
-                m_ModelOpenFiles->removeRow(mindex.row());
-                break;
+    const int total = m_ModelOpenFiles->rowCount();
+    for (int i = 0; i < total; ++i) {
+        const QModelIndex &mindex = m_ModelOpenFiles->index(i, 0);
+        if (QString::compare(mindex.data(Qt::UserRole + 1).toString(), path) == 0) {
+            m_ModelOpenFiles->removeRow(mindex.row());
+            break;
             }
         }
     } else {
@@ -1372,7 +1387,7 @@ void MainWindow::openFile(const QString &path)
     QSignalBlocker blocker(m_ListOpenFiles);
     if (m_ListOpenFiles->selectionModel()) {
         QSignalBlocker selectionBlocker(m_ListOpenFiles->selectionModel());
-        m_ModelOpenFiles->appendRow(item);
+    m_ModelOpenFiles->appendRow(item);
     } else {
         m_ModelOpenFiles->appendRow(item);
     }

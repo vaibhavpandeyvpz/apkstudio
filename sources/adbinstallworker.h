@@ -7,10 +7,11 @@ class AdbInstallWorker : public QObject
 {
     Q_OBJECT
 public:
-    explicit AdbInstallWorker(const QString &apk, QObject *parent = nullptr);
+    explicit AdbInstallWorker(const QString &apk, const QString &deviceId = QString(), QObject *parent = nullptr);
     void install();
 private:
     QString m_Apk;
+    QString m_DeviceId;
 signals:
     void finished();
     void installFailed(const QString &apk);

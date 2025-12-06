@@ -74,6 +74,8 @@ set(SOURCES
     sources/apksignworker.cpp
     sources/appearancesettingswidget.cpp
     sources/binarysettingswidget.cpp
+    sources/devicelistworker.cpp
+    sources/deviceselectiondialog.cpp
     sources/findreplacedialog.cpp
     sources/flickcharm.cpp
     sources/hexedit.cpp
@@ -99,6 +101,8 @@ set(HEADERS
     sources/apksignworker.h
     sources/appearancesettingswidget.h
     sources/binarysettingswidget.h
+    sources/devicelistworker.h
+    sources/deviceselectiondialog.h
     sources/findreplacedialog.h
     sources/flickcharm.h
     sources/hexedit.h
