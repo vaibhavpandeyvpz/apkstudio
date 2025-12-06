@@ -2,8 +2,8 @@
 #include "adbinstallworker.h"
 #include "processutils.h"
 
-AdbInstallWorker::AdbInstallWorker(const QString &apk, QObject *parent)
-    : QObject(parent), m_Apk(apk)
+AdbInstallWorker::AdbInstallWorker(const QString &apk, const QString &deviceId, QObject *parent)
+    : QObject(parent), m_Apk(apk), m_DeviceId(deviceId)
 {
 }
 
@@ -19,7 +19,11 @@ void AdbInstallWorker::install()
         return;
     }
     QStringList args;
-    args << "install" << "-r" << m_Apk;
+    args << "install";
+    if (!m_DeviceId.isEmpty()) {
+        args << "-s" << m_DeviceId;
+    }
+    args << "-r" << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(adb, args);
 #ifdef QT_DEBUG
     qDebug() << "ADB returned code" << result.code;
