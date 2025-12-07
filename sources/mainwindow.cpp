@@ -79,6 +79,13 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setStatusBar(buildStatusBar(versions));
     updateWindowTitle();
+    
+#ifdef Q_OS_LINUX
+    // Set window icon explicitly for Linux window managers
+    // This ensures the icon appears in the sidebar/dock when the window is running
+    setWindowIcon(QIcon(":/images/icon.png"));
+#endif
+    
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     QSettings settings;
     if (settings.value("app_maximized").toBool()) {
@@ -1648,6 +1655,7 @@ void MainWindow::checkAndInstallDesktopFile()
     out << "Terminal=false\n";
     out << "Categories=Development;Utility;\n";
     out << "StartupNotify=true\n";
+    out << "StartupWMClass=apkstudio\n";
     desktopFile.close();
     
     // Set appropriate permissions (readable by user, group, and others)
