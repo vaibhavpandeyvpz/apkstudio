@@ -17,6 +17,7 @@
 #include <QPixmap>
 #include <QPushButton>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QSettings>
 #include <QSignalBlocker>
 #include <QStandardPaths>
@@ -33,6 +34,7 @@
 #include "apkdecompileworker.h"
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
+#include "desktopdatabaseupdateworker.h"
 #include "deviceselectiondialog.h"
 #include "findreplacedialog.h"
 #include "hexedit.h"
@@ -1547,14 +1549,25 @@ void MainWindow::checkAndInstallDesktopFile()
     }
     
     // Get the executable path
-    QString executablePath = QApplication::applicationFilePath();
-    QFileInfo exeInfo(executablePath);
-    if (!exeInfo.exists()) {
-        // If the executable path doesn't exist (e.g., running from build directory),
-        // try to use argv[0] or a generic command
-        executablePath = "apkstudio";
+    // Check if running from AppImage - if so, use the AppImage file path
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString executablePath;
+    QString appImagePath = env.value("APPIMAGE");
+    
+    if (!appImagePath.isEmpty() && QFile::exists(appImagePath)) {
+        // Running from AppImage - use the AppImage file itself
+        executablePath = appImagePath;
     } else {
-        executablePath = exeInfo.absoluteFilePath();
+        // Not running from AppImage - use the regular executable path
+        executablePath = QApplication::applicationFilePath();
+        QFileInfo exeInfo(executablePath);
+        if (!exeInfo.exists()) {
+            // If the executable path doesn't exist (e.g., running from build directory),
+            // try to use argv[0] or a generic command
+            executablePath = "apkstudio";
+        } else {
+            executablePath = exeInfo.absoluteFilePath();
+        }
     }
     
     // Extract icon from bundled resources and save it to a location the desktop file can use
@@ -1587,7 +1600,8 @@ void MainWindow::checkAndInstallDesktopFile()
     }
     
     // If icon extraction failed, try to find it relative to executable (for non-AppImage installations)
-    if (iconPath == "apkstudio" && exeInfo.exists()) {
+    QFileInfo exeInfo(executablePath);
+    if (iconPath == "apkstudio" && exeInfo.exists() && appImagePath.isEmpty()) {
         QString exeDir = exeInfo.absolutePath();
         QFileInfo iconInfo(exeDir + "/../share/pixmaps/apkstudio.png");
         if (iconInfo.exists()) {
@@ -1624,17 +1638,33 @@ void MainWindow::checkAndInstallDesktopFile()
     out << "Name[en]=APK Studio\n";
     out << "Comment=Android APK reverse engineering tool\n";
     out << "Comment[en]=Android APK reverse engineering tool\n";
-    out << "Exec=" << executablePath << " %F\n";
+    // Escape the executable path if it contains spaces
+    QString escapedExecPath = executablePath;
+    if (executablePath.contains(" ")) {
+        escapedExecPath = "\"" + executablePath + "\"";
+    }
+    out << "Exec=" << escapedExecPath << " %F\n";
     out << "Icon=" << iconPath << "\n";
     out << "Terminal=false\n";
     out << "Categories=Development;Utility;\n";
-    out << "MimeType=application/vnd.android.package-archive;\n";
     out << "StartupNotify=true\n";
     desktopFile.close();
     
     // Set appropriate permissions (readable by user, group, and others)
     desktopFile.setPermissions(QFile::ReadUser | QFile::WriteUser | 
                                QFile::ReadGroup | QFile::ReadOther);
+    
+    // Update desktop database to make it appear in Ubuntu launcher (async using worker)
+    QThread *thread = new QThread(this);
+    DesktopDatabaseUpdateWorker *worker = new DesktopDatabaseUpdateWorker(applicationsDir);
+    worker->moveToThread(thread);
+    
+    connect(thread, &QThread::started, worker, &DesktopDatabaseUpdateWorker::updateDatabase);
+    connect(worker, &DesktopDatabaseUpdateWorker::finished, thread, &QThread::quit);
+    connect(worker, &DesktopDatabaseUpdateWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    // Note: We don't show error messages for database update failures as they're not critical
+    thread->start();
 }
 #endif
 
