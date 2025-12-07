@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
             }
             app.setPalette(palette);
         #endif
-
+        
         // Check for APK file path in command-line arguments
         QString apkFilePath;
         if (argc > 1) {

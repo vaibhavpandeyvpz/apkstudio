@@ -136,6 +136,10 @@ private slots:
     void openProject(const QString &folder, const bool last = false);
     void reloadChildren(QTreeWidgetItem *item);
     void filterProjectTreeItems(QTreeWidgetItem *item, const QString &filter);
+    void updateWindowTitle();
+#ifdef Q_OS_LINUX
+    void checkAndInstallDesktopFile();
+#endif
 private:
     bool saveTab(int index);
 };

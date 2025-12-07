@@ -138,36 +138,60 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
         process.setWorkingDirectory(workingDir);
     }
     
-    // Ensure Java is available in PATH for batch files that need it
+    // Set JAVA_HOME for all commands when Java location is known
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    if (exe.endsWith(".bat", Qt::CaseInsensitive) || exe.endsWith(".cmd", Qt::CaseInsensitive)) {
-        QString javaPath = ProcessUtils::javaExe(); // Get Java path from settings
-        if (!javaPath.isEmpty()) {
-            QFileInfo javaInfo(javaPath);
-            QString javaHome = javaInfo.absolutePath();
-            // Go up one level from bin to get JAVA_HOME
-            if (javaHome.endsWith("/bin") || javaHome.endsWith("\\bin")) {
-                QDir javaDir(javaHome);
-                javaDir.cdUp();
-                javaHome = javaDir.absolutePath();
-            }
-            env.insert("JAVA_HOME", javaHome);
-            // Also add java.exe to PATH
-            QString currentPath = env.value("PATH");
-            QString javaBinPath = javaInfo.absolutePath();
-            if (!currentPath.contains(javaBinPath, Qt::CaseInsensitive)) {
-                env.insert("PATH", javaBinPath + ";" + currentPath);
-            }
-#ifdef QT_DEBUG
-            qDebug() << "Setting JAVA_HOME to:" << javaHome;
-            qDebug() << "Adding to PATH:" << javaBinPath;
-#endif
+    QString javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    if (!javaPath.isEmpty()) {
+        QFileInfo javaInfo(javaPath);
+        QString javaHome = javaInfo.absolutePath();
+        // Go up one level from bin to get JAVA_HOME
+        if (javaHome.endsWith("/bin") || javaHome.endsWith("\\bin")) {
+            QDir javaDir(javaHome);
+            javaDir.cdUp();
+            javaHome = javaDir.absolutePath();
         }
+        env.insert("JAVA_HOME", javaHome);
+        // Also add java bin to PATH
+        QString currentPath = env.value("PATH");
+        QString javaBinPath = javaInfo.absolutePath();
+        if (!currentPath.contains(javaBinPath, Qt::CaseInsensitive)) {
+            env.insert("PATH", javaBinPath + ";" + currentPath);
+        }
+#ifdef QT_DEBUG
+        qDebug() << "Setting JAVA_HOME to:" << javaHome;
+        qDebug() << "Adding to PATH:" << javaBinPath;
+#endif
     }
     process.setProcessEnvironment(env);
     
     process.start(actualExe, actualArgs, QIODevice::ReadOnly);
 #else
+    // Set JAVA_HOME for all commands when Java location is known
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    if (!javaPath.isEmpty()) {
+        QFileInfo javaInfo(javaPath);
+        QString javaHome = javaInfo.absolutePath();
+        // Go up one level from bin to get JAVA_HOME
+        if (javaHome.endsWith("/bin")) {
+            QDir javaDir(javaHome);
+            javaDir.cdUp();
+            javaHome = javaDir.absolutePath();
+        }
+        env.insert("JAVA_HOME", javaHome);
+        // Also add java bin to PATH
+        QString currentPath = env.value("PATH");
+        QString javaBinPath = javaInfo.absolutePath();
+        if (!currentPath.contains(javaBinPath, Qt::CaseInsensitive)) {
+            env.insert("PATH", javaBinPath + ":" + currentPath);
+        }
+#ifdef QT_DEBUG
+        qDebug() << "Setting JAVA_HOME to:" << javaHome;
+        qDebug() << "Adding to PATH:" << javaBinPath;
+#endif
+    }
+    process.setProcessEnvironment(env);
+    
     process.start(exe, args, QIODevice::ReadOnly);
 #endif
     

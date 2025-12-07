@@ -8,17 +8,22 @@
 #include <QDockWidget>
 #include <QFile>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QFrame>
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPixmap>
 #include <QPushButton>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QSettings>
 #include <QSignalBlocker>
+#include <QStandardPaths>
 #include <QStatusBar>
 #include <QTabWidget>
+#include <QTextStream>
 #include <QTextDocumentFragment>
 #include <QThread>
 #include <QTimer>
@@ -29,6 +34,7 @@
 #include "apkdecompileworker.h"
 #include "apkrecompileworker.h"
 #include "apksignworker.h"
+#include "desktopdatabaseupdateworker.h"
 #include "deviceselectiondialog.h"
 #include "findreplacedialog.h"
 #include "hexedit.h"
@@ -72,7 +78,14 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setStatusBar(buildStatusBar(versions));
-    setWindowTitle(tr("APK Studio").append(" - https://vaibhavpandey.com/apkstudio/"));
+    updateWindowTitle();
+    
+#ifdef Q_OS_LINUX
+    // Set window icon explicitly for Linux window managers
+    // This ensures the icon appears in the sidebar/dock when the window is running
+    setWindowIcon(QIcon(":/images/icon.png"));
+#endif
+    
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     QSettings settings;
     if (settings.value("app_maximized").toBool()) {
@@ -92,7 +105,12 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     // Ensure main window gets focus instead of search boxes
     setFocus();
     
-    QTimer::singleShot(100, [=] {
+#ifdef Q_OS_LINUX
+    // Check and install desktop file on Linux (after window is shown)
+    QTimer::singleShot(500, this, &MainWindow::checkAndInstallDesktopFile);
+#endif
+    
+    QTimer::singleShot(500, [=] {
         QSettings settings;
         const QStringList files = settings.value("open_files").toStringList();
         foreach (const QString &file, files) {
@@ -1445,6 +1463,7 @@ void MainWindow::openProject(const QString &folder, const bool last)
             openFile(manifest);
         }
     }
+    updateWindowTitle();
 }
 
 void MainWindow::reloadChildren(QTreeWidgetItem *item)
@@ -1487,6 +1506,175 @@ bool MainWindow::saveTab(int i)
     }
     return true;
 }
+
+void MainWindow::updateWindowTitle()
+{
+    QString title = tr("APK Studio by VPZ");
+    
+    // Get the first (most recent) project from the tree
+    if (m_ProjectsTree->topLevelItemCount() > 0) {
+        QTreeWidgetItem *firstProject = m_ProjectsTree->topLevelItem(0);
+        if (firstProject) {
+            QString projectFolder = firstProject->data(0, Qt::UserRole + 2).toString();
+            if (!projectFolder.isEmpty()) {
+                QFileInfo info(projectFolder);
+                title += tr(" - %1").arg(info.fileName());
+            }
+        }
+    }
+    
+    setWindowTitle(title);
+}
+
+#ifdef Q_OS_LINUX
+void MainWindow::checkAndInstallDesktopFile()
+{
+    QString applicationsDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    if (applicationsDir.isEmpty()) {
+        // Fallback to ~/.local/share/applications
+        applicationsDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.local/share/applications";
+    }
+    
+    QString desktopFilePath = applicationsDir + "/apkstudio.desktop";
+    QFileInfo desktopFileInfo(desktopFilePath);
+    
+    // Check if .desktop file already exists
+    if (desktopFileInfo.exists()) {
+        return; // Already installed
+    }
+    
+    // Ask user for confirmation
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle(tr("Install desktop entry"));
+    msgBox.setText(tr("Would you like to install a desktop entry for APK Studio?\n\nThis will allow you to launch APK Studio from your application menu."));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    msgBox.setIcon(QMessageBox::Question);
+    
+    if (msgBox.exec() != QMessageBox::Yes) {
+        return; // User declined
+    }
+    
+    // Get the executable path
+    // Check if running from AppImage - if so, use the AppImage file path
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    QString executablePath;
+    QString appImagePath = env.value("APPIMAGE");
+    
+    if (!appImagePath.isEmpty() && QFile::exists(appImagePath)) {
+        // Running from AppImage - use the AppImage file itself
+        executablePath = appImagePath;
+    } else {
+        // Not running from AppImage - use the regular executable path
+        executablePath = QApplication::applicationFilePath();
+        QFileInfo exeInfo(executablePath);
+        if (!exeInfo.exists()) {
+            // If the executable path doesn't exist (e.g., running from build directory),
+            // try to use argv[0] or a generic command
+            executablePath = "apkstudio";
+        } else {
+            executablePath = exeInfo.absoluteFilePath();
+        }
+    }
+    
+    // Extract icon from bundled resources and save it to a location the desktop file can use
+    QString iconPath = "apkstudio"; // Fallback to generic name
+    
+    // Try to extract icon from bundled resources
+    QPixmap iconPixmap(":/images/icon.png");
+    if (!iconPixmap.isNull()) {
+        // Save icon to ~/.local/share/icons/apkstudio.png
+        QString iconsDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.local/share/icons";
+        QDir iconsDirObj;
+        if (iconsDirObj.mkpath(iconsDir)) {
+            QString iconFilePath = iconsDir + "/apkstudio.png";
+            if (iconPixmap.save(iconFilePath, "PNG")) {
+                iconPath = iconFilePath;
+            } else {
+                // Fallback: try ~/.local/share/apkstudio/icon.png
+                QString appDataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+                if (appDataDir.isEmpty()) {
+                    appDataDir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation) + "/.apkstudio";
+                }
+                if (iconsDirObj.mkpath(appDataDir)) {
+                    iconFilePath = appDataDir + "/icon.png";
+                    if (iconPixmap.save(iconFilePath, "PNG")) {
+                        iconPath = iconFilePath;
+                    }
+                }
+            }
+        }
+    }
+    
+    // If icon extraction failed, try to find it relative to executable (for non-AppImage installations)
+    QFileInfo exeInfo(executablePath);
+    if (iconPath == "apkstudio" && exeInfo.exists() && appImagePath.isEmpty()) {
+        QString exeDir = exeInfo.absolutePath();
+        QFileInfo iconInfo(exeDir + "/../share/pixmaps/apkstudio.png");
+        if (iconInfo.exists()) {
+            iconPath = iconInfo.absoluteFilePath();
+        } else {
+            // Try relative to executable
+            iconInfo.setFile(exeDir + "/../share/apkstudio/icon.png");
+            if (iconInfo.exists()) {
+                iconPath = iconInfo.absoluteFilePath();
+            }
+        }
+    }
+    
+    // Create the applications directory if it doesn't exist
+    QDir dir;
+    if (!dir.mkpath(applicationsDir)) {
+        QMessageBox::warning(this, tr("Error"), 
+                            tr("Failed to create applications directory:\n%1").arg(applicationsDir));
+        return;
+    }
+    
+    // Create the .desktop file content
+    QFile desktopFile(desktopFilePath);
+    if (!desktopFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QMessageBox::warning(this, tr("Error"), 
+                            tr("Failed to create desktop file:\n%1").arg(desktopFilePath));
+        return;
+    }
+    
+    QTextStream out(&desktopFile);
+    out << "[Desktop Entry]\n";
+    out << "Type=Application\n";
+    out << "Name=APK Studio\n";
+    out << "Name[en]=APK Studio\n";
+    out << "Comment=Android APK reverse engineering tool\n";
+    out << "Comment[en]=Android APK reverse engineering tool\n";
+    // Escape the executable path if it contains spaces
+    QString escapedExecPath = executablePath;
+    if (executablePath.contains(" ")) {
+        escapedExecPath = "\"" + executablePath + "\"";
+    }
+    out << "Exec=" << escapedExecPath << " %F\n";
+    out << "Icon=" << iconPath << "\n";
+    out << "Terminal=false\n";
+    out << "Categories=Development;Utility;\n";
+    out << "StartupNotify=true\n";
+    out << "StartupWMClass=apkstudio\n";
+    desktopFile.close();
+    
+    // Set appropriate permissions (readable by user, group, and others)
+    desktopFile.setPermissions(QFile::ReadUser | QFile::WriteUser | 
+                               QFile::ReadGroup | QFile::ReadOther);
+    
+    // Update desktop database to make it appear in Ubuntu launcher (async using worker)
+    QThread *thread = new QThread(this);
+    DesktopDatabaseUpdateWorker *worker = new DesktopDatabaseUpdateWorker(applicationsDir);
+    worker->moveToThread(thread);
+    
+    connect(thread, &QThread::started, worker, &DesktopDatabaseUpdateWorker::updateDatabase);
+    connect(worker, &DesktopDatabaseUpdateWorker::finished, thread, &QThread::quit);
+    connect(worker, &DesktopDatabaseUpdateWorker::finished, worker, &QObject::deleteLater);
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    // Note: We don't show error messages for database update failures as they're not critical
+    thread->start();
+}
+#endif
 
 MainWindow::~MainWindow()
 {
