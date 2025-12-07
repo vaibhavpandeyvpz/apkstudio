@@ -72,7 +72,7 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
     setMenuBar(buildMenuBar());
     setMinimumSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     setStatusBar(buildStatusBar(versions));
-    setWindowTitle(tr("APK Studio").append(" - https://vaibhavpandey.com/apkstudio/"));
+    updateWindowTitle();
     connect(QApplication::clipboard(), &QClipboard::dataChanged, this, &MainWindow::handleClipboardDataChanged);
     QSettings settings;
     if (settings.value("app_maximized").toBool()) {
@@ -1445,6 +1445,7 @@ void MainWindow::openProject(const QString &folder, const bool last)
             openFile(manifest);
         }
     }
+    updateWindowTitle();
 }
 
 void MainWindow::reloadChildren(QTreeWidgetItem *item)
@@ -1486,6 +1487,25 @@ bool MainWindow::saveTab(int i)
         }
     }
     return true;
+}
+
+void MainWindow::updateWindowTitle()
+{
+    QString title = tr("APK Studio by VPZ");
+    
+    // Get the first (most recent) project from the tree
+    if (m_ProjectsTree->topLevelItemCount() > 0) {
+        QTreeWidgetItem *firstProject = m_ProjectsTree->topLevelItem(0);
+        if (firstProject) {
+            QString projectFolder = firstProject->data(0, Qt::UserRole + 2).toString();
+            if (!projectFolder.isEmpty()) {
+                QFileInfo info(projectFolder);
+                title += tr(" - %1").arg(info.fileName());
+            }
+        }
+    }
+    
+    setWindowTitle(title);
 }
 
 MainWindow::~MainWindow()
