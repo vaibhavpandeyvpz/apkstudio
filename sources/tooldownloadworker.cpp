@@ -285,9 +285,8 @@ QString ToolDownloadWorker::getDownloadUrl()
             // Note: For Intel Macs, you may need to provide x64 URL
             return "https://aka.ms/download-jdk/microsoft-jdk-11.0.29-macos-aarch64.pkg";
         } else if (platform == "linux") {
-            // Linux - use aarch64 version
-            // Note: For x86_64 systems, you may need to provide x64 URL
-            return "https://aka.ms/download-jdk/microsoft-jdk-11.0.29-linux-aarch64.tar.gz";
+            // Linux
+            return "https://aka.ms/download-jdk/microsoft-jdk-11.0.29-linux-x64.tar.gz";
         } else {
             // Windows
             return "https://aka.ms/download-jdk/microsoft-jdk-11.0.29-windows-x64.msi";
