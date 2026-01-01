@@ -139,8 +139,12 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
     }
     
     // Set JAVA_HOME for all commands when Java location is known
+    // But skip if we're searching for java itself (which/where commands)
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    QString javaPath;
+    if (actualExe != "which" && actualExe != "where") {
+        javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    }
     if (!javaPath.isEmpty()) {
         QFileInfo javaInfo(javaPath);
         QString javaHome = javaInfo.absolutePath();
@@ -167,8 +171,12 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
     process.start(actualExe, actualArgs, QIODevice::ReadOnly);
 #else
     // Set JAVA_HOME for all commands when Java location is known
+    // But skip if we're searching for java itself (which/where commands)
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    QString javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    QString javaPath;
+    if (exe != "which" && exe != "where") {
+        javaPath = ProcessUtils::javaExe(); // Get Java path from settings
+    }
     if (!javaPath.isEmpty()) {
         QFileInfo javaInfo(javaPath);
         QString javaHome = javaInfo.absolutePath();

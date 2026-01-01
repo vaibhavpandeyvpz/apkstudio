@@ -25,7 +25,7 @@ void VersionResolveWorker::resolve()
 #ifdef QT_DEBUG
         qDebug() << "Java returned code" << result.code;
 #endif
-        if (result.code == 0) {
+        if ((result.code == 0) && !result.output.isEmpty()) {
 #ifdef QT_DEBUG
             qDebug() << "Java returned" << result.output[0];
 #endif
