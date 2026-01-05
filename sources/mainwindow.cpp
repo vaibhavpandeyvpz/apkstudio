@@ -36,6 +36,7 @@
 #include "apksignworker.h"
 #include "desktopdatabaseupdateworker.h"
 #include "deviceselectiondialog.h"
+#include "findinfilesdialog.h"
 #include "findreplacedialog.h"
 #include "hexedit.h"
 #include "imageviewerwidget.h"
@@ -66,7 +67,7 @@
 #define WINDOW_HEIGHT 600
 
 MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
-    : QMainWindow(parent), m_FindReplaceDialog(nullptr)
+    : QMainWindow(parent), m_FindReplaceDialog(nullptr), m_FindInFilesDialog(nullptr)
 {
     addDockWidget(Qt::LeftDockWidgetArea, m_DockProject = buildProjectsDock());
     addDockWidget(Qt::LeftDockWidgetArea, m_DockFiles = buildFilesDock());
@@ -320,6 +321,7 @@ QMenuBar *MainWindow::buildMenuBar()
     edit->addSeparator();
     m_ActionFind = edit->addAction(tr("Find"), this, &MainWindow::handleActionFind, QKeySequence::Find);
     m_ActionFind->setEnabled(false);
+    m_ActionFindInFiles = edit->addAction(tr("Find in Files"), this, &MainWindow::handleActionFindInFiles);
     m_ActionReplace = edit->addAction(tr("Replace"), this, &MainWindow::handleActionReplace, QKeySequence::Replace);
     m_ActionReplace->setEnabled(false);
     m_ActionGoto = edit->addAction(tr("Go to"), this, &MainWindow::handleActionGoto);
@@ -499,10 +501,11 @@ void MainWindow::handleActionAbout()
     QMessageBox box;
     box.setIconPixmap(QPixmap(":/images/icon.png").scaledToWidth(128));
     QFile about(":/about.html");
-    about.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream stream(&about);
-    box.setInformativeText(stream.readAll());
-    about.close();
+    if (about.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream stream(&about);
+        box.setInformativeText(stream.readAll());
+        about.close();
+    }
     box.setText(QString("<strong>Tag</strong>: %1<br><strong>Commit</strong>: %2").arg(GIT_TAG).arg(GIT_COMMIT_FULL));
     box.setWindowTitle(tr("About"));
     box.exec();
@@ -652,6 +655,29 @@ void MainWindow::handleActionFind()
 {
     auto edit = dynamic_cast<SourceCodeEdit *>(m_TabEditors->currentWidget());
     openFindReplaceDialog(edit, false);
+}
+
+void MainWindow::handleActionFindInFiles()
+{
+    QStringList roots = getProjectRoots();
+    if (roots.isEmpty()) {
+        QMessageBox::information(this, tr("Find in Files"), tr("No project folder is open. Please open a project first."));
+        return;
+    }
+    
+    if (!m_FindInFilesDialog) {
+        m_FindInFilesDialog = new FindInFilesDialog(this);
+        connect(m_FindInFilesDialog, &QDialog::finished, [=] {
+            m_FindInFilesDialog->deleteLater();
+            m_FindInFilesDialog = nullptr;
+        });
+    }
+    
+    // Use the first (most recent) project root
+    m_FindInFilesDialog->setSearchRoot(roots.first());
+    m_FindInFilesDialog->show();
+    m_FindInFilesDialog->raise();
+    m_FindInFilesDialog->activateWindow();
 }
 
 void MainWindow::handleActionFolder()
@@ -1675,6 +1701,34 @@ void MainWindow::checkAndInstallDesktopFile()
     thread->start();
 }
 #endif
+
+QWidget* MainWindow::findTabWidget(const QString& path)
+{
+    int index = findTabIndex(path);
+    if (index >= 0) {
+        return m_TabEditors->widget(index);
+    }
+    return nullptr;
+}
+
+QStringList MainWindow::getProjectRoots()
+{
+    QStringList roots;
+    int count = m_ProjectsTree->topLevelItemCount();
+    for (int i = 0; i < count; i++) {
+        QTreeWidgetItem *item = m_ProjectsTree->topLevelItem(i);
+        if (item) {
+            int type = item->data(0, Qt::UserRole + 1).toInt();
+            if (type == Project) {
+                QString path = item->data(0, Qt::UserRole + 2).toString();
+                if (!path.isEmpty()) {
+                    roots.append(path);
+                }
+            }
+        }
+    }
+    return roots;
+}
 
 MainWindow::~MainWindow()
 {

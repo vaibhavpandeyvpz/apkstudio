@@ -77,10 +77,13 @@ set(SOURCES
     sources/desktopdatabaseupdateworker.cpp
     sources/devicelistworker.cpp
     sources/deviceselectiondialog.cpp
+    sources/findinfilesdialog.cpp
     sources/findreplacedialog.cpp
     sources/flickcharm.cpp
     sources/hexedit.cpp
     sources/imageviewerwidget.cpp
+    sources/keystoregeneratedialog.cpp
+    sources/keystoregenerateworker.cpp
     sources/mainwindow.cpp
     sources/processutils.cpp
     sources/settingsdialog.cpp
@@ -105,10 +108,13 @@ set(HEADERS
     sources/desktopdatabaseupdateworker.h
     sources/devicelistworker.h
     sources/deviceselectiondialog.h
+    sources/findinfilesdialog.h
     sources/findreplacedialog.h
     sources/flickcharm.h
     sources/hexedit.h
     sources/imageviewerwidget.h
+    sources/keystoregeneratedialog.h
+    sources/keystoregenerateworker.h
     sources/mainwindow.h
     sources/processutils.h
     sources/settingsdialog.h
