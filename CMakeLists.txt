@@ -81,6 +81,8 @@ set(SOURCES
     sources/flickcharm.cpp
     sources/hexedit.cpp
     sources/imageviewerwidget.cpp
+    sources/keystoregeneratedialog.cpp
+    sources/keystoregenerateworker.cpp
     sources/mainwindow.cpp
     sources/processutils.cpp
     sources/settingsdialog.cpp
@@ -109,6 +111,8 @@ set(HEADERS
     sources/flickcharm.h
     sources/hexedit.h
     sources/imageviewerwidget.h
+    sources/keystoregeneratedialog.h
+    sources/keystoregenerateworker.h
     sources/mainwindow.h
     sources/processutils.h
     sources/settingsdialog.h
