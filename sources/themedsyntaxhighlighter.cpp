@@ -95,34 +95,35 @@ SyntaxHighlighterTheme ThemedSyntaxHighlighter::theme(const QString &name)
 {
     SyntaxHighlighterTheme theme;
     QFile file(QString(":/themes/%1.theme").arg(name));
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    QTextStream contents(&file);
-    QString data = contents.readAll();
-    file.close();
-    QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), Qt::SkipEmptyParts);
-    foreach (const QString line, lines) {
-        QStringList pair = line.split(QRegularExpression(REGEXP_THEME_LINE), Qt::SkipEmptyParts);
-        if (pair.size() == 2) {
-            QTextCharFormat tcf;
-            QRegularExpression regexp(REGEXP_THEME_STYLE);
-            QRegularExpressionMatch match = regexp.match(pair[1]);
-            while (match.hasMatch()) {
-                QString key = match.captured(1);
-                QString value = match.captured(2);
-                if (QString::compare(key, "background") == 0) {
-                    tcf.setBackground(QColor(value));
-                } else if (QString::compare(key, "bold") == 0) {
-                    tcf.setFontWeight(QString::compare(value, "true") == 0 ? QFont::Bold : QFont::Normal);
-                } else if (QString::compare(key, "foreground") == 0) {
-                    tcf.setForeground(QColor(value));
-                } else if (QString::compare(key, "italics") == 0) {
-                    tcf.setFontItalic(QString::compare(value, "true") == 0);
-                } else if (QString::compare(key, "underline") == 0) {
-                    tcf.setFontUnderline(QString::compare(value, "true") == 0);
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream contents(&file);
+        QString data = contents.readAll();
+        file.close();
+        QStringList lines = data.split(QRegularExpression(REGEXP_CRLF), Qt::SkipEmptyParts);
+        foreach (const QString line, lines) {
+            QStringList pair = line.split(QRegularExpression(REGEXP_THEME_LINE), Qt::SkipEmptyParts);
+            if (pair.size() == 2) {
+                QTextCharFormat tcf;
+                QRegularExpression regexp(REGEXP_THEME_STYLE);
+                QRegularExpressionMatch match = regexp.match(pair[1]);
+                while (match.hasMatch()) {
+                    QString key = match.captured(1);
+                    QString value = match.captured(2);
+                    if (QString::compare(key, "background") == 0) {
+                        tcf.setBackground(QColor(value));
+                    } else if (QString::compare(key, "bold") == 0) {
+                        tcf.setFontWeight(QString::compare(value, "true") == 0 ? QFont::Bold : QFont::Normal);
+                    } else if (QString::compare(key, "foreground") == 0) {
+                        tcf.setForeground(QColor(value));
+                    } else if (QString::compare(key, "italics") == 0) {
+                        tcf.setFontItalic(QString::compare(value, "true") == 0);
+                    } else if (QString::compare(key, "underline") == 0) {
+                        tcf.setFontUnderline(QString::compare(value, "true") == 0);
+                    }
+                    match = regexp.match(pair.last(), match.capturedStart() + match.capturedLength());
                 }
-                match = regexp.match(pair.last(), match.capturedStart() + match.capturedLength());
+                theme.insert(pair.first(), tcf);
             }
-            theme.insert(pair.first(), tcf);
         }
     }
     return theme;

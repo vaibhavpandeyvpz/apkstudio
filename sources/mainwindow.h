@@ -31,6 +31,8 @@ public:
     explicit MainWindow(const QMap<QString, QString> &versions, QWidget *parent = nullptr);
     ~MainWindow();
     void openApkFile(const QString &apkPath);
+    void openFile(const QString &file);
+    QWidget* findTabWidget(const QString& path);
 protected:
     void closeEvent(QCloseEvent *event);
     bool eventFilter(QObject *obj, QEvent *event) override;
@@ -42,6 +44,7 @@ private:
     QAction *m_ActionCopy;
     QAction *m_ActionCut;
     QAction *m_ActionFind;
+    QAction *m_ActionFindInFiles;
     QAction *m_ActionGoto;
     QAction *m_ActionInstall1;
     QAction *m_ActionInstall2;
@@ -64,6 +67,7 @@ private:
     QList<QMetaObject::Connection> m_EditorConnections;
     QFileIconProvider m_FileIconProvider;
     FindReplaceDialog *m_FindReplaceDialog;
+    class FindInFilesDialog *m_FindInFilesDialog;
     QLineEdit *m_SearchFiles;
     QLineEdit *m_SearchProjects;
     QListView *m_ListOpenFiles;
@@ -83,6 +87,7 @@ private:
     QDockWidget *buildProjectsDock();
     QStatusBar *buildStatusBar(const QMap<QString, QString> &versions);
     int findTabIndex(const QString& path);
+    QStringList getProjectRoots();
 private slots:
     void handleActionAbout();
     void handleActionApk();
@@ -95,6 +100,7 @@ private slots:
     void handleActionDocumentation();
     void handleActionFile();
     void handleActionFind();
+    void handleActionFindInFiles();
     void handleActionFolder();
     void handleActionGoto();
     void handleActionInstall();
@@ -131,7 +137,6 @@ private slots:
     void handleTreeContextMenu(const QPoint &point);
     void handleTreeDoubleClicked(const QModelIndex &index);
     void handleTreeSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-    void openFile(const QString &file);
     void openFindReplaceDialog(QPlainTextEdit *edit, const bool replace);
     void openProject(const QString &folder, const bool last = false);
     void reloadChildren(QTreeWidgetItem *item);

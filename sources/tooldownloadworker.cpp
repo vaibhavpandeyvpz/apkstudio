@@ -128,9 +128,10 @@ void ToolDownloadWorker::download()
 
         // Write any remaining data
         if (m_NetworkReply->bytesAvailable() > 0) {
-            m_DownloadFile->open(QIODevice::Append);
-            m_DownloadFile->write(m_NetworkReply->readAll());
-            m_DownloadFile->close();
+            if (m_DownloadFile->open(QIODevice::Append)) {
+                m_DownloadFile->write(m_NetworkReply->readAll());
+                m_DownloadFile->close();
+            }
         }
 
         // Extract or copy file to destination
