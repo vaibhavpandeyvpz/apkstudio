@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QProcess>
 #include <QRegularExpression>
 #include "apkrecompileworker.h"
 #include "processutils.h"
@@ -18,6 +19,7 @@ void ApkRecompileWorker::recompile()
     const QString apktool = ProcessUtils::apktoolJar();
     if (java.isEmpty() || apktool.isEmpty()) {
         emit recompileFailed(m_Folder);
+        emit finished();
         return;
     }
     QString heap("-Xmx%1m");
@@ -31,7 +33,7 @@ void ApkRecompileWorker::recompile()
     }
     // Parse and add extra arguments
     if (!m_ExtraArguments.isEmpty()) {
-        QStringList extraArgs = m_ExtraArguments.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        QStringList extraArgs = QProcess::splitCommand(m_ExtraArguments);
         args << extraArgs;
     }
     ProcessResult result = ProcessUtils::runCommand(java, args);
@@ -40,6 +42,7 @@ void ApkRecompileWorker::recompile()
 #endif
     if (result.code != 0) {
         emit recompileFailed(m_Folder);
+        emit finished();
         return;
     }
     emit recompileFinished(m_Folder);

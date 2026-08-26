@@ -24,6 +24,8 @@ public:
     explicit ToolDownloadWorker(ToolType tool, QObject *parent = nullptr);
     ~ToolDownloadWorker();
     void download();
+
+public slots:
     void abort();
 
 signals:
@@ -50,5 +52,4 @@ private:
 };
 
 #endif // TOOLDOWNLOADWORKER_H
-
 

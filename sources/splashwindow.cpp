@@ -55,7 +55,7 @@ QWidget *SplashWindow::buildCentralWidget()
     commit->setFont(font);
     commit->setText(QString("%1 (%2)").arg(GIT_COMMIT_SHORT).arg(GIT_COMMIT_NUMBER));
     const QString tag = QString(GIT_TAG);
-    if (tag.isEmpty()) {
+    if (!tag.isEmpty()) {
         auto version = new QLabel(tag, widget);
         version->setAlignment(Qt::AlignRight);
         version->setContentsMargins(0, 2, 4, 0);
