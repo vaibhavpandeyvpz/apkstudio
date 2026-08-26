@@ -17,6 +17,7 @@ void ApkSignWorker::sign()
     const QString uas = ProcessUtils::uberApkSignerJar();
     if (java.isEmpty() || uas.isEmpty()) {
         emit signFailed(m_Apk);
+        emit finished();
         return;
     }
     QString heap("-Xmx%1m");
@@ -39,6 +40,7 @@ void ApkSignWorker::sign()
 #endif
     if (result.code != 0) {
         emit signFailed(m_Apk);
+        emit finished();
         return;
     }
     emit signFinished(m_Apk);

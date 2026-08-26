@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QProcess>
 #include <QRegularExpression>
 #include "apkdecompileworker.h"
 #include "processutils.h"
@@ -18,6 +19,7 @@ void ApkDecompileWorker::decompile()
     const QString apktool = ProcessUtils::apktoolJar();
     if (java.isEmpty() || apktool.isEmpty()) {
         emit decompileFailed(m_Apk);
+        emit finished();
         return;
     }
     emit decompileProgress(25, tr("Running apktool..."));
@@ -37,7 +39,7 @@ void ApkDecompileWorker::decompile()
     }
     // Parse and add extra arguments
     if (!m_ExtraArguments.isEmpty()) {
-        QStringList extraArgs = m_ExtraArguments.split(QRegularExpression("\\s+"), Qt::SkipEmptyParts);
+        QStringList extraArgs = QProcess::splitCommand(m_ExtraArguments);
         args << extraArgs;
     }
     args << "-o" << m_Folder << m_Apk;
@@ -47,6 +49,7 @@ void ApkDecompileWorker::decompile()
 #endif
     if (result.code != 0) {
         emit decompileFailed(m_Apk);
+        emit finished();
         return;
     }
     if (m_Java) {
@@ -54,6 +57,7 @@ void ApkDecompileWorker::decompile()
         const QString jadx = ProcessUtils::jadxExe();
         if (jadx.isEmpty()) {
             emit decompileFailed(m_Apk);
+            emit finished();
             return;
         }
         args.clear();
@@ -62,6 +66,11 @@ void ApkDecompileWorker::decompile()
 #ifdef QT_DEBUG
         qDebug() << "Jadx returned code" << result.code;
 #endif
+        if (result.code != 0) {
+            emit decompileFailed(m_Apk);
+            emit finished();
+            return;
+        }
     }
     emit decompileFinished(m_Apk, m_Folder);
     emit finished();

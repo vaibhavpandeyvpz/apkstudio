@@ -16,20 +16,21 @@ void AdbInstallWorker::install()
     const QString adb = ProcessUtils::adbExe();
     if (adb.isEmpty()) {
         emit installFailed(m_Apk);
+        emit finished();
         return;
     }
     QStringList args;
-    args << "install";
     if (!m_DeviceId.isEmpty()) {
         args << "-s" << m_DeviceId;
     }
-    args << "-r" << m_Apk;
+    args << "install" << "-r" << m_Apk;
     ProcessResult result = ProcessUtils::runCommand(adb, args);
 #ifdef QT_DEBUG
     qDebug() << "ADB returned code" << result.code;
 #endif
     if (result.code != 0) {
         emit installFailed(m_Apk);
+        emit finished();
         return;
     }
     emit installFinished(m_Apk);

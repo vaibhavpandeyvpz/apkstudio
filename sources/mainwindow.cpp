@@ -58,9 +58,9 @@
 #define IMAGE_EXTENSIONS "gif|jpeg|jpg|png"
 #define TEXT_EXTENSIONS "java|html|properties|smali|txt|xml|yaml|yml"
 
-#define URL_CONTRIBUTE "https://github.com/vaibhavpandeyvpz/apkstudio"
+#define URL_CONTRIBUTE "https://github.com/HarryDotMYx/apkstudio"
 #define URL_DOCUMENTATION "https://vaibhavpandey.com/apkstudio/"
-#define URL_ISSUES "https://github.com/vaibhavpandeyvpz/apkstudio/issues"
+#define URL_ISSUES "https://github.com/HarryDotMYx/apkstudio/issues"
 #define URL_THANKS "https://forum.xda-developers.com/showthread.php?t=2493107"
 
 #define WINDOW_WIDTH 800
@@ -119,9 +119,22 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
                 openFile(file);
             }
         }
+        // A version command can fail because one of the tool's dependencies is
+        // missing (JADX, Apktool and UAS all need Java).  Treating that as a
+        // missing executable caused an already installed tool to be downloaded
+        // again on every restart.
+        const auto isInstalled = [](const QString &binary) {
+            if (binary == "java") return !ProcessUtils::javaExe().isEmpty();
+            if (binary == "apktool") return !ProcessUtils::apktoolJar().isEmpty();
+            if (binary == "jadx") return !ProcessUtils::jadxExe().isEmpty();
+            if (binary == "adb") return !ProcessUtils::adbExe().isEmpty();
+            if (binary == "uas") return !ProcessUtils::uberApkSignerJar().isEmpty();
+            return true;
+        };
+
         bool missing = false;
         foreach (const QString &binary, versions.keys()) {
-            if (versions[binary].isEmpty()) {
+            if (!isInstalled(binary)) {
 #ifdef QT_DEBUG
                 qDebug() << binary << "is missing";
 #endif
@@ -142,27 +155,21 @@ MainWindow::MainWindow(const QMap<QString, QString> &versions, QWidget *parent)
             if (msgBox.clickedButton() == downloadButton) {
                 // Download all missing tools
                 QList<ToolDownloadWorker::ToolType> toolsToDownload;
-                foreach (const QString &binary, versions.keys()) {
-                    if (versions[binary].isEmpty()) {
-                        if (binary == "java") {
-                            toolsToDownload.append(ToolDownloadWorker::Java);
-                        } else if (binary == "apktool") {
-                            toolsToDownload.append(ToolDownloadWorker::Apktool);
-                        } else if (binary == "jadx") {
-                            toolsToDownload.append(ToolDownloadWorker::Jadx);
-                        } else if (binary == "adb") {
-                            toolsToDownload.append(ToolDownloadWorker::Adb);
-                        } else if (binary == "uas") {
-                            toolsToDownload.append(ToolDownloadWorker::UberApkSigner);
-                        }
-                    }
-                }
+                // Keep dependencies first; QMap::keys() is alphabetical and
+                // previously placed Java after JADX.
+                if (!isInstalled("java")) toolsToDownload.append(ToolDownloadWorker::Java);
+                if (!isInstalled("apktool")) toolsToDownload.append(ToolDownloadWorker::Apktool);
+                if (!isInstalled("jadx")) toolsToDownload.append(ToolDownloadWorker::Jadx);
+                if (!isInstalled("adb")) toolsToDownload.append(ToolDownloadWorker::Adb);
+                if (!isInstalled("uas")) toolsToDownload.append(ToolDownloadWorker::UberApkSigner);
                 
                 if (!toolsToDownload.isEmpty()) {
                     ToolDownloadDialog downloadDialog(toolsToDownload, this);
                     if (downloadDialog.exec() == QDialog::Accepted && downloadDialog.wasSuccessful()) {
-                        // Restart the application to detect newly downloaded tools
-                        QApplication::exit(CODE_RESTART);
+                        // ProcessUtils reads QSettings on every call, so the new
+                        // paths are immediately available. Avoid rebuilding a
+                        // QApplication in-process solely to refresh version text.
+                        statusBar()->showMessage(tr("Required tools installed successfully."), 5000);
                     }
                 }
             } else if (msgBox.clickedButton() == settingsButton) {

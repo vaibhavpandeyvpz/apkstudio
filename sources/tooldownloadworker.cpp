@@ -14,6 +14,7 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QThread>
+#include <QTimer>
 #include <QUrl>
 #include "tooldownloadworker.h"
 
@@ -89,6 +90,8 @@ void ToolDownloadWorker::download()
     QNetworkRequest request;
     request.setUrl(QUrl(downloadUrl));
     request.setRawHeader("User-Agent", "APK Studio");
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                         QNetworkRequest::NoLessSafeRedirectPolicy);
     m_NetworkReply = m_NetworkManager->get(request);
 
     QObject::connect(m_NetworkReply, &QNetworkReply::downloadProgress, this, [this, fileName](qint64 bytesReceived, qint64 bytesTotal) {
@@ -1028,10 +1031,16 @@ QString ToolDownloadWorker::getLatestGitHubRelease(const QString &repo, const QS
     QNetworkRequest request;
     request.setUrl(QUrl(apiUrl));
     request.setRawHeader("User-Agent", "APK Studio");
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                         QNetworkRequest::NoLessSafeRedirectPolicy);
     QNetworkReply *reply = manager.get(request);
     
     QEventLoop loop;
+    QTimer timeoutTimer;
+    timeoutTimer.setSingleShot(true);
     QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QObject::connect(&timeoutTimer, &QTimer::timeout, reply, &QNetworkReply::abort);
+    timeoutTimer.start(30000);
     loop.exec();
     
     if (reply->error() != QNetworkReply::NoError) {
@@ -1061,4 +1070,3 @@ QString ToolDownloadWorker::getLatestGitHubRelease(const QString &repo, const QS
     
     return QString();
 }
-

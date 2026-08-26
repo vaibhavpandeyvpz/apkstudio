@@ -98,6 +98,7 @@ void ToolDownloadDialog::startNextDownload()
     connect(m_CurrentThread, &QThread::finished, [this]() {
         m_CurrentWorker = nullptr;
         m_CurrentThread = nullptr;
+        m_CancelButton->setEnabled(true);
     });
     
     m_CurrentThread->start();
@@ -148,6 +149,9 @@ void ToolDownloadDialog::handleFailed(const QString &error)
     m_DetailLabel->setText(tr("Please download %1 manually from the settings page.").arg(toolName));
     m_ProgressBar->setValue(0);
     m_CancelButton->setText(tr("Close"));
+    // Do not allow the dialog (which owns the QThread) to be destroyed until
+    // the worker's failure has also stopped that thread.
+    m_CancelButton->setEnabled(false);
     m_Success = false;
 }
 
@@ -173,6 +177,13 @@ void ToolDownloadDialog::handleCancel()
         accept();
         return;
     }
+
+    // Nothing is running (for example after a failure or when the tool list
+    // was empty), so a button labelled Close must close on the first click.
+    if (!m_CurrentWorker || !m_CurrentThread) {
+        reject();
+        return;
+    }
     
     if (m_Cancelled) {
         reject();
@@ -184,7 +195,9 @@ void ToolDownloadDialog::handleCancel()
     
     if (m_CurrentWorker && m_CurrentThread) {
         // Abort the download first
-        m_CurrentWorker->abort();
+        // The worker owns network/file objects in its own thread. Queue the
+        // abort instead of touching those objects from the GUI thread.
+        QMetaObject::invokeMethod(m_CurrentWorker, "abort", Qt::QueuedConnection);
         
         // Disconnect signals from worker to prevent callbacks after cancellation
         disconnect(m_CurrentWorker, &ToolDownloadWorker::progress, this, nullptr);

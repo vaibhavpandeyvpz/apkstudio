@@ -80,7 +80,7 @@ QLayout *BinarySettingsWidget::buildForm()
     m_CheckAapt2->setChecked(settings.value("use_aapt2", true).toBool());
     m_EditJadxExe->setText(settings.value("jadx_exe").toString());
     auto java = settings.value("java_exe").toString();
-    if (adb.isEmpty()) {
+    if (java.isEmpty()) {
         m_EditJavaExe->setText(ProcessUtils::javaExe());
     } else {
         m_EditJavaExe->setText(java);

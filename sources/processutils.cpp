@@ -9,6 +9,21 @@
 
 #define REGEXP_CRLF "[\\r\\n]"
 
+static QStringList redactSensitiveArguments(const QStringList &args)
+{
+    QStringList safe = args;
+    const QStringList secretOptions = {
+        "--ksPass", "--ksKeyPass", "-storepass", "-keypass"
+    };
+    for (int i = 0; i + 1 < safe.size(); ++i) {
+        if (secretOptions.contains(safe.at(i), Qt::CaseInsensitive)) {
+            safe[i + 1] = "********";
+            ++i;
+        }
+    }
+    return safe;
+}
+
 ProcessOutput* ProcessOutput::m_Self = nullptr;
 
 void ProcessOutput::emitCommandFinished(const ProcessResult &result)
@@ -105,9 +120,9 @@ int ProcessUtils::javaHeapSize()
 ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &args, const int timeout)
 {
 #ifdef QT_DEBUG
-    qDebug() << "Running" << exe << args;
+    qDebug() << "Running" << exe << redactSensitiveArguments(args);
 #endif
-    ProcessOutput::instance()->emitCommandStarting(exe, args);
+    ProcessOutput::instance()->emitCommandStarting(exe, redactSensitiveArguments(args));
     QProcess process;
     process.setProcessChannelMode(QProcess::MergedChannels);
     
@@ -207,8 +222,11 @@ ProcessResult ProcessUtils::runCommand(const QString &exe, const QStringList &ar
     if (process.waitForStarted(timeout * 1000)) {
         if (!process.waitForFinished(timeout * 1000)) {
             process.kill();
+            process.waitForFinished(5000);
+            result.code = -2;
+        } else {
+            result.code = process.exitCode();
         }
-        result.code = process.exitCode();
         QString error(process.readAllStandardError());
         QString output(process.readAllStandardOutput());
         QRegularExpression crlf(REGEXP_CRLF);
